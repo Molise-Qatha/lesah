@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';   // <-- added useEffect
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -41,6 +41,18 @@ function AdminRoute({ children }) {
 }
 
 function App() {
+  // 🔁 Record site visit once per browser session
+  useEffect(() => {
+    const alreadyVisited = sessionStorage.getItem('visit_recorded');
+    if (!alreadyVisited) {
+      sessionStorage.setItem('visit_recorded', 'true');
+      // Fire-and-forget POST to analytics endpoint
+      fetch(`${process.env.REACT_APP_API_URL}/api/v1/analytics/visit?path=/`, {
+        method: 'POST',
+      }).catch(() => {});
+    }
+  }, []);
+
   return (
     <Router>
       <div className="App">
