@@ -882,3 +882,16 @@
     flex-direction: column;
   }
 }
+/* Booking fee badge */
+.booking-fee-badge {
+  background: #fef3c7;  /* light amber */
+  color: #92400e;       /* dark amber */
+  padding: 0.3rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  margin: 0.5rem 0;
+  width: auto;
+  text-align: center;
+}
