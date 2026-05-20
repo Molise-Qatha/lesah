@@ -6,14 +6,13 @@ function AdminDashboard() {
   const [stats, setStats] = useState({
     pending_loans: 0,
     pending_drivers: 0,
-    pending_listings: 0,
     pending_deliveries: 0,
   });
   const [loans, setLoans] = useState([]);
   const [drivers, setDrivers] = useState([]);
-  const [listings, setListings] = useState([]);
   const [deliveries, setDeliveries] = useState([]);
   const [users, setUsers] = useState([]);
+  const [visitCount, setVisitCount] = useState(0);               // ← NEW
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('loans');
   const navigate = useNavigate();
@@ -34,9 +33,9 @@ function AdminDashboard() {
     fetchStats();
     fetchLoans();
     fetchDrivers();
-    fetchListings();
     fetchDeliveries();
     fetchUsers();
+    fetchVisitCount();                                            // ← NEW
   };
 
   const fetchStats = async () => {
@@ -75,18 +74,6 @@ function AdminDashboard() {
     }
   };
 
-  const fetchListings = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/v1/admin/listings/pending`,
-        { headers }
-      );
-      if (res.ok) setListings(await res.json());
-    } catch (err) {
-      console.error('Listings fetch error:', err);
-    }
-  };
-
   const fetchDeliveries = async () => {
     try {
       const res = await fetch(
@@ -108,6 +95,22 @@ function AdminDashboard() {
       if (res.ok) setUsers(await res.json());
     } catch (err) {
       console.error('Users fetch error:', err);
+    }
+  };
+
+  // NEW: fetch total site visits
+  const fetchVisitCount = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/v1/admin/visits/count`,
+        { headers }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setVisitCount(data.total_visits);
+      }
+    } catch (err) {
+      console.error('Visit count fetch error:', err);
     }
   };
 
@@ -144,13 +147,6 @@ function AdminDashboard() {
     } catch (err) { alert(`Driver verification failed: ${err.message}`); }
   };
 
-  const handleListingStatus = async (listingId, status) => {
-    try {
-      await patchWithRetry(`${process.env.REACT_APP_API_URL}/api/v1/admin/listings/${listingId}/status?status=${status}`);
-      fetchListings(); fetchStats();
-    } catch (err) { alert(`Listing update failed: ${err.message}`); }
-  };
-
   const handleDeliveryStatus = async (deliveryId, status) => {
     try {
       await patchWithRetry(`${process.env.REACT_APP_API_URL}/api/v1/admin/deliveries/${deliveryId}/status?status=${status}`);
@@ -166,18 +162,18 @@ function AdminDashboard() {
       <div className="stats-cards">
         <div className="stat-card"><span className="stat-value">{stats.pending_loans}</span> <span className="stat-label">Pending Loans</span></div>
         <div className="stat-card"><span className="stat-value">{stats.pending_drivers}</span> <span className="stat-label">Pending Drivers</span></div>
-        <div className="stat-card"><span className="stat-value">{stats.pending_listings}</span> <span className="stat-label">Pending Listings</span></div>
         <div className="stat-card"><span className="stat-value">{stats.pending_deliveries}</span> <span className="stat-label">Pending Deliveries</span></div>
         <div className="stat-card"><span className="stat-value">{users.length}</span> <span className="stat-label">Total Users</span></div>
+        <div className="stat-card"><span className="stat-value">{visitCount}</span> <span className="stat-label">Total Visits</span></div>
       </div>
       <div className="admin-tabs">
         <button className={`tab ${activeTab === 'loans' ? 'active' : ''}`} onClick={() => setActiveTab('loans')}>Loans</button>
         <button className={`tab ${activeTab === 'drivers' ? 'active' : ''}`} onClick={() => setActiveTab('drivers')}>Drivers</button>
-        <button className={`tab ${activeTab === 'listings' ? 'active' : ''}`} onClick={() => setActiveTab('listings')}>Listings</button>
         <button className={`tab ${activeTab === 'deliveries' ? 'active' : ''}`} onClick={() => setActiveTab('deliveries')}>Deliveries</button>
         <button className={`tab ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>Users</button>
       </div>
 
+      {/* Loans Tab */}
       {activeTab === 'loans' && (
         <section className="admin-section">
           <h2>Loan Applications</h2>
@@ -189,6 +185,7 @@ function AdminDashboard() {
                   <td><button className="approve-btn" onClick={() => handleLoanStatus(loan.id, 'approved')}>Approve</button>
                     <button className="reject-btn" onClick={() => handleLoanStatus(loan.id, 'rejected')}>Reject</button></td></tr>))}</tbody></table></div>)}</section>)}
 
+      {/* Drivers Tab */}
       {activeTab === 'drivers' && (
         <section className="admin-section">
           <h2>Driver Verification</h2>
@@ -200,17 +197,7 @@ function AdminDashboard() {
                   <td><button className="approve-btn" onClick={() => handleVerifyDriver(driver.id, true)}>Approve</button>
                     <button className="reject-btn" onClick={() => handleVerifyDriver(driver.id, false)}>Reject</button></td></tr>))}</tbody></table></div>)}</section>)}
 
-      {activeTab === 'listings' && (
-        <section className="admin-section">
-          <h2>Accommodation Listings</h2>
-          {listings.length === 0 ? <p>No pending listings.</p> : (
-            <div className="table-responsive"><table>
-              <thead><tr><th>ID</th><th>Name</th><th>Location</th><th>Price</th><th>Type</th><th>Actions</th></tr></thead>
-              <tbody>{listings.map(listing => (
-                <tr key={listing.id}><td>{listing.id}</td><td>{listing.name}</td><td>{listing.location}</td><td>M{listing.price_value}</td><td>{listing.room_type}</td>
-                  <td><button className="approve-btn" onClick={() => handleListingStatus(listing.id, 'approved')}>Approve</button>
-                    <button className="reject-btn" onClick={() => handleListingStatus(listing.id, 'rejected')}>Reject</button></td></tr>))}</tbody></table></div>)}</section>)}
-
+      {/* Deliveries Tab */}
       {activeTab === 'deliveries' && (
         <section className="admin-section">
           <h2>Delivery Requests</h2>
@@ -222,6 +209,7 @@ function AdminDashboard() {
                   <td><button className="approve-btn" onClick={() => handleDeliveryStatus(delivery.id, 'picked_up')}>Confirm</button>
                     <button className="reject-btn" onClick={() => handleDeliveryStatus(delivery.id, 'cancelled')}>Cancel</button></td></tr>))}</tbody></table></div>)}</section>)}
 
+      {/* Users Tab */}
       {activeTab === 'users' && (
         <section className="admin-section">
           <h2>Registered Users</h2>
