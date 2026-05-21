@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import './Accommodation.css';
 import accommodationHeroBg from '../assets/images/accommodation-hero-bg.jpg';
 
-// ------------------------------------------------------------------
-// Residence data – add more residences from other villages later
-// ------------------------------------------------------------------
+// ------------------------------------------------------------
+// Residence data – coordinates added for those with GPS pins
+// ------------------------------------------------------------
 const residences = [
   {
     id: 1,
@@ -15,6 +15,7 @@ const residences = [
     amenities: "No ceiling (assumed), security (gate)",
     internalNote: "I need him for the functioning of this business.",
     contactHidden: "56429005",
+    coordinates: { lat: -29.438410, lng: 27.716728 },
   },
   {
     id: 2,
@@ -25,6 +26,7 @@ const residences = [
     amenities: "No ceiling",
     internalNote: "I think everything is kinda okay here.",
     contactHidden: "57345827",
+    coordinates: { lat: -29.442743, lng: 27.709948 },   // ✅ fixed latitude
   },
   {
     id: 3,
@@ -35,6 +37,7 @@ const residences = [
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "Ohh she is perfect",
     contactHidden: "63231600",
+    coordinates: { lat: -29.442060, lng: 27.713597 },
   },
   {
     id: 4,
@@ -45,6 +48,7 @@ const residences = [
     amenities: "No ceiling",
     internalNote: "Well I have to call the landlord.",
     contactHidden: "63232954",
+    coordinates: null,   // no coordinates yet
   },
   {
     id: 5,
@@ -55,19 +59,38 @@ const residences = [
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "We are mostly good, need to ask for amount.",
     contactHidden: "57528555",
+    coordinates: { lat: -29.440149, lng: 27.710882 },
   },
 ];
 
+// NUL main campus (Roma) coordinates
+const NUL_CAMPUS = { lat: -29.4422, lng: 27.7148 };
+
+// Haversine distance in km
+const haversineDistance = (coord1, coord2) => {
+  const R = 6371; // Earth radius in km
+  const dLat = (coord2.lat - coord1.lat) * Math.PI / 180;
+  const dLon = (coord2.lng - coord1.lng) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(coord1.lat * Math.PI / 180) *
+      Math.cos(coord2.lat * Math.PI / 180) *
+      Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
 // Helper to generate image path from residence name
 const getImagePath = (name) => {
-  // Convert name to lowercase, remove spaces and special chars
   let slug = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-  // Special cases for names with apostrophes
-  if (slug === "memmafumaneresidence") slug = "memmafumane";
-  if (slug === "maphakisoresidence") slug = "maphakiso";
-  if (slug === "mohoneresidence") slug = "mahone";
-  if (slug === "zwagalaresidence") slug = "zwagala";
-  if (slug === "moliseresidence") slug = "molise";
+  const shortMap = {
+    "mahoneresidence": "mahone",
+    "zwagalaresidence": "zwagala",
+    "memmafumaneresidence": "memmafumane",
+    "moliseresidence": "molise",
+    "maphakisoresidence": "maphakiso",
+  };
+  if (shortMap[slug]) slug = shortMap[slug];
   return `/images/accommodation/${slug}.jpg`;
 };
 
@@ -146,6 +169,10 @@ function Accommodation() {
           {filteredResidences.map(res => {
             const imagePath = getImagePath(res.name);
             const imageFailed = imageErrors[res.id];
+            const distance = res.coordinates
+              ? haversineDistance(res.coordinates, NUL_CAMPUS).toFixed(1)
+              : null;
+
             return (
               <div key={res.id} className="accommodation-card">
                 <div className="card-image">
@@ -170,11 +197,20 @@ function Accommodation() {
                   <p className="location">
                     📍 {res.village}, {res.area}
                   </p>
+                  {distance ? (
+                    <p className="distance">
+                      🚶 {distance} km from NUL campus
+                    </p>
+                  ) : (
+                    <p className="distance" style={{ opacity: 0.5 }}>
+                      🚶 Distance unknown – coming soon
+                    </p>
+                  )}
                   <p className="price">
                     {res.amount ? `M${res.amount}/month` : 'Price on request – contact us'}
                   </p>
                   <div className="booking-fee-badge">
-                    💰 Booking fee: M{BOOKING_FEE} (non-refundable)
+                    💰 Booking fee: M{BOOKING_FEE} (non‑refundable)
                   </div>
                   <div className="amenities">
                     <span className="amenity-tag">🔧 {res.amenities}</span>
@@ -208,7 +244,7 @@ function Accommodation() {
             <div className="step">
               <div className="step-number">3</div>
               <h4>Pay Booking Fee</h4>
-              <p>A non-refundable M{BOOKING_FEE} booking fee applies.</p>
+              <p>A non‑refundable M{BOOKING_FEE} booking fee applies.</p>
             </div>
             <div className="step">
               <div className="step-number">4</div>
@@ -228,7 +264,7 @@ function Accommodation() {
             </div>
             <div className="faq-item">
               <h3>Is the booking fee refundable?</h3>
-              <p>No, the M{BOOKING_FEE} fee is non-refundable as it covers administrative and connection costs.</p>
+              <p>No, the M{BOOKING_FEE} fee is non‑refundable as it covers administrative and connection costs.</p>
             </div>
             <div className="faq-item">
               <h3>Can I see properties in other villages?</h3>
