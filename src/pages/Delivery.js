@@ -2,40 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import './Delivery.css';
 
 import { useNearbyDrivers } from '../hooks/useNearbyDrivers';
 import { deliveryService } from '../services/deliveryService';
-import DeliveryForm from '../components/Delivery/DeliveryForm';
-import DriverRegistrationForm from '../components/Delivery/DriverRegistrationForm';
 import TrackingResult from '../components/Delivery/TrackingResult';
 import DeliveryMap from '../components/Delivery/DeliveryMap';
-
-// Fix Leaflet default icon paths
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
 
 const ROMA_COORDINATES = { lat: -29.4422, lng: 27.7148 };
 
 function Delivery() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [showModal, setShowModal] = useState(false);
-  const [activeForm, setActiveForm] = useState('student'); // 'student' or 'provider'
   const [userLocation, setUserLocation] = useState(ROMA_COORDINATES);
-  const [trackingId, setTrackingId] = useState('');
   const [trackedDelivery, setTrackedDelivery] = useState(null);
-  const [isTrackingLoading, setIsTrackingLoading] = useState(false);
   const [recentRequests, setRecentRequests] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [cancellingId, setCancellingId] = useState(null); // track which request is being cancelled
+
+  // Your WhatsApp number
+  const whatsappNumber = '26656613551';
 
   // Auth check
   useEffect(() => {
@@ -63,7 +48,6 @@ function Delivery() {
   // Fetch real delivery requests from backend when logged in
   const fetchMyDeliveries = async () => {
     if (!isLoggedIn) {
-      // If not logged in, use localStorage fallback
       const saved = localStorage.getItem('recentDeliveries');
       if (saved) setRecentRequests(JSON.parse(saved));
       return;
@@ -72,7 +56,6 @@ function Delivery() {
       const data = await deliveryService.getMyRequests();
       setRecentRequests(data);
     } catch (error) {
-      // On error, show old localStorage data if available
       const saved = localStorage.getItem('recentDeliveries');
       if (saved) setRecentRequests(JSON.parse(saved));
     }
@@ -82,81 +65,34 @@ function Delivery() {
     fetchMyDeliveries();
   }, [isLoggedIn]);
 
-  const requireAuth = (action) => {
-    if (!isLoggedIn) {
-      toast.error('Please log in to continue');
-      navigate('/login', { state: { from: '/delivery', action } });
-      return false;
-    }
-    return true;
+  // General delivery request via WhatsApp
+  const handleWhatsAppDelivery = () => {
+    const message = "Hi LeSAH, I need a delivery service. Can you assist me with the details?";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
-  const handleRequestDelivery = () => {
-    if (!requireAuth('request')) return;
-    setActiveForm('student');
-    setShowModal(true);
+  // Small property / combine delivery request via WhatsApp
+  const handleCombineDelivery = () => {
+    const message = "Hi LeSAH, I have a small property to deliver. Can you combine it with other students going to the same place to reduce costs? Let's discuss.";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
-  const handleBecomeDriver = () => {
-    if (!requireAuth('driver')) return;
-    setActiveForm('provider');
-    setShowModal(true);
-  };
-
-  const handleStudentSubmit = async (formData) => {
-    try {
-      const result = await deliveryService.createRequest(formData);
-      toast.success(`Request submitted! Tracking ID: ${result.id}`);
-      setShowModal(false);
-      // Refresh list from backend
-      fetchMyDeliveries();
-      queryClient.invalidateQueries(['deliveryRequests']);
-    } catch (error) {
-      toast.error(`❌ Delivery request failed: ${error.message}`);
-      console.error('Delivery request error:', error);
-    }
-  };
-
-  const handleDriverSubmit = async (formData) => {
-    try {
-      const result = await deliveryService.registerDriver(formData);
-      toast.success('Registration successful! We will review your details.');
-      setShowModal(false);
-    } catch (error) {
-      toast.error(error.message || 'Registration failed');
-    }
-  };
-
+  // Track delivery
   const handleTrackDelivery = async (e) => {
     e.preventDefault();
-    if (!trackingId.trim()) {
+    const trackingId = e.target.trackingId?.value;
+    if (!trackingId) {
       toast.error('Please enter a tracking ID');
       return;
     }
-    setIsTrackingLoading(true);
     try {
       const data = await deliveryService.getTrackingStatus(trackingId);
       setTrackedDelivery(data);
     } catch (error) {
       toast.error('Tracking ID not found');
       setTrackedDelivery(null);
-    } finally {
-      setIsTrackingLoading(false);
-    }
-  };
-
-  // Cancel a pending request
-  const handleCancelRequest = async (requestId) => {
-    if (!window.confirm('Are you sure you want to cancel this delivery request?')) return;
-    setCancellingId(requestId);
-    try {
-      await deliveryService.cancelRequest(requestId);
-      toast.success('Delivery request cancelled');
-      fetchMyDeliveries(); // Refresh list
-    } catch (error) {
-      toast.error(`Failed to cancel: ${error.message}`);
-    } finally {
-      setCancellingId(null);
     }
   };
 
@@ -172,14 +108,14 @@ function Delivery() {
             Fast & Reliable <span className="highlight">Student Delivery</span>
           </h1>
           <p className="delivery-subtitle">
-            The academic concierge service designed for the modern campus lifestyle.
+            Chat with us directly on WhatsApp to request a delivery or combine small properties.
           </p>
           <div className="hero-buttons">
-            <button className="btn-primary" onClick={handleRequestDelivery}>
-              Request Delivery
+            <button className="btn-primary" onClick={handleWhatsAppDelivery}>
+              💬 Request Delivery via WhatsApp
             </button>
-            <button className="btn-secondary" onClick={handleBecomeDriver}>
-              Become a Driver
+            <button className="btn-secondary" onClick={handleCombineDelivery}>
+              📦 Small Property? Let's Combine
             </button>
           </div>
           <div className="hero-stats">
@@ -215,10 +151,26 @@ function Delivery() {
 
         {/* Features Cards */}
         <div className="delivery-features">
-          <div className="delivery-card"><div className="feature-icon">⚡</div><h3>Fast Delivery</h3><p>Door-to-door in under 20 minutes</p></div>
-          <div className="delivery-card"><div className="feature-icon">📍</div><h3>Real-time Location</h3><p>Watch your delivery move live</p></div>
-          <div className="delivery-card"><div className="feature-icon">🛡️</div><h3>Safe & Trusted</h3><p>All couriers are verified students</p></div>
-          <div className="delivery-card"><div className="feature-icon">💰</div><h3>Affordable</h3><p>Student-friendly rates</p></div>
+          <div className="delivery-card">
+            <div className="feature-icon">⚡</div>
+            <h3>Fast Delivery</h3>
+            <p>Door-to-door in under 20 minutes</p>
+          </div>
+          <div className="delivery-card">
+            <div className="feature-icon">📍</div>
+            <h3>Real-time Location</h3>
+            <p>Watch your delivery move live</p>
+          </div>
+          <div className="delivery-card">
+            <div className="feature-icon">🛡️</div>
+            <h3>Safe & Trusted</h3>
+            <p>All couriers are verified students</p>
+          </div>
+          <div className="delivery-card">
+            <div className="feature-icon">💰</div>
+            <h3>Affordable</h3>
+            <p>Student-friendly rates</p>
+          </div>
         </div>
 
         {/* Tracking Section */}
@@ -228,18 +180,17 @@ function Delivery() {
           <form className="tracking-form" onSubmit={handleTrackDelivery}>
             <input
               type="text"
+              name="trackingId"
               placeholder="Tracking ID (e.g., DEL123456)"
-              value={trackingId}
-              onChange={(e) => setTrackingId(e.target.value)}
             />
-            <button type="submit" disabled={isTrackingLoading}>
-              {isTrackingLoading ? 'Tracking...' : 'Track Package'}
+            <button type="submit">
+              Track Package
             </button>
           </form>
           {trackedDelivery && <TrackingResult delivery={trackedDelivery} />}
         </div>
 
-        {/* Recent Requests (real data from backend) */}
+        {/* Recent Requests (from backend) */}
         {recentRequests.length > 0 && (
           <div className="recent-requests">
             <h2>Recent Delivery Requests</h2>
@@ -253,17 +204,6 @@ function Delivery() {
                     <p><strong>Item:</strong> {(req.item_description || req.itemDescription || '').substring(0, 50)}...</p>
                     <small>Status: {req.status || 'Pending'}</small>
                   </div>
-                  {/* Cancel button – only for pending requests */}
-                  {isLoggedIn && req.status === 'pending' && (
-                    <button
-                      className="cancel-request-btn"
-                      onClick={() => handleCancelRequest(req.id)}
-                      disabled={cancellingId === req.id}
-                      title="Cancel this request"
-                    >
-                      {cancellingId === req.id ? '⏳' : '✕'}
-                    </button>
-                  )}
                 </div>
               ))}
             </div>
@@ -281,41 +221,12 @@ function Delivery() {
               <li>✓ Instant payouts after every delivery</li>
               <li>✓ Exclusive campus gear & rewards</li>
             </ul>
-            <button className="driver-btn" onClick={handleBecomeDriver}>
-              Apply to Become Driver
+            <button className="driver-btn" onClick={handleWhatsAppDelivery}>
+              💬 Chat on WhatsApp to Apply
             </button>
           </div>
         </div>
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setShowModal(false)}>✕</button>
-            <div className="form-toggle">
-              <button
-                className={activeForm === 'student' ? 'active' : ''}
-                onClick={() => setActiveForm('student')}
-              >
-                📦 Request Delivery
-              </button>
-              <button
-                className={activeForm === 'provider' ? 'active' : ''}
-                onClick={() => setActiveForm('provider')}
-              >
-                🚚 Become a Driver
-              </button>
-            </div>
-            {activeForm === 'student' && (
-              <DeliveryForm onSubmit={handleStudentSubmit} onCancel={() => setShowModal(false)} />
-            )}
-            {activeForm === 'provider' && (
-              <DriverRegistrationForm onSubmit={handleDriverSubmit} onCancel={() => setShowModal(false)} />
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
