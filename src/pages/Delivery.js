@@ -210,7 +210,7 @@ function Delivery() {
           </div>
         )}
 
-        {/* Become Driver CTA */}
+        {/* Become Driver CTA – fixed visibility */}
         <div className="become-driver">
           <div className="driver-content">
             <div className="driver-icon">🚚</div>
@@ -221,7 +221,11 @@ function Delivery() {
               <li>✓ Instant payouts after every delivery</li>
               <li>✓ Exclusive campus gear & rewards</li>
             </ul>
-            <button className="driver-btn" onClick={handleWhatsAppDelivery}>
+            <button
+              className="driver-btn"
+              onClick={handleWhatsAppDelivery}
+              style={{ color: 'white', backgroundColor: '#128C7E' }}
+            >
               💬 Chat on WhatsApp to Apply
             </button>
           </div>
