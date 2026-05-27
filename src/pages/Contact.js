@@ -57,8 +57,7 @@ function Contact() {
                 <span className="info-icon">📧</span>
                 <div>
                   <h3>Email Us</h3>
-                  <p>support@lesah.co.ls</p>
-                  <p>info@lesah.co.ls</p>
+                  <p>moliqatha@gmail.com</p>
                 </div>
               </div>
 
