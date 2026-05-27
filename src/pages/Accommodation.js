@@ -3,7 +3,7 @@ import './Accommodation.css';
 import accommodationHeroBg from '../assets/images/accommodation-hero-bg.jpg';
 
 // ------------------------------------------------------------
-// Residence data – all listings
+// Residence data – walking times from NUL campus in minutes
 // ------------------------------------------------------------
 const residences = [
   {
@@ -15,7 +15,7 @@ const residences = [
     amenities: "No ceiling (assumed), security (gate)",
     internalNote: "I need him for the functioning of this business.",
     contactHidden: "56429005",
-    coordinates: { lat: -29.438410, lng: 27.716728 },
+    walkingTime: 15,
     images: null,
   },
   {
@@ -27,7 +27,7 @@ const residences = [
     amenities: "No ceiling",
     internalNote: "I think everything is kinda okay here.",
     contactHidden: "57345827",
-    coordinates: { lat: -29.442743, lng: 27.709948 },
+    walkingTime: 20,
     images: null,
   },
   {
@@ -39,7 +39,7 @@ const residences = [
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "Ohh she is perfect",
     contactHidden: "63231600",
-    coordinates: { lat: -29.442060, lng: 27.713597 },
+    walkingTime: 25,
     images: null,
   },
   {
@@ -51,7 +51,7 @@ const residences = [
     amenities: "No ceiling",
     internalNote: "Well I have to call the landlord.",
     contactHidden: "63232954",
-    coordinates: null,
+    walkingTime: 20,
     images: null,
   },
   {
@@ -63,7 +63,7 @@ const residences = [
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "We are mostly good, need to ask for amount.",
     contactHidden: "57528555",
-    coordinates: { lat: -29.440149, lng: 27.710882 },
+    walkingTime: 20,
     images: null,
   },
   {
@@ -75,7 +75,7 @@ const residences = [
     amenities: "No ceiling, landlord lives in yard",
     internalNote: null,
     contactHidden: null,
-    coordinates: null,
+    walkingTime: 10,
     images: null,
   },
   {
@@ -87,7 +87,7 @@ const residences = [
     amenities: "Some with ceiling, some without. Security available.",
     internalNote: null,
     contactHidden: null,
-    coordinates: null,
+    walkingTime: 8,
     images: null,
   },
   {
@@ -99,30 +99,25 @@ const residences = [
     amenities: "Ceiling, prices M400 (shared electricity), M450, M500",
     internalNote: null,
     contactHidden: null,
-    coordinates: null,
+    walkingTime: 10,   // ✅ added
     images: [
       '/images/accommodation/squireng_exterior.jpg',
       '/images/accommodation/squireng_interior.jpg',
     ],
   },
+  {
+    id: 9,
+    name: "'Malethola Residence",
+    village: "Hata-Butle",
+    area: "Hata-Butle (tlasa Pius)",
+    amount: null,
+    amenities: "Pricing & details being updated – contact us",
+    internalNote: null,
+    contactHidden: null,
+    walkingTime: 7,
+    images: null,
+  },
 ];
-
-// NUL main campus (Roma) coordinates
-const NUL_CAMPUS = { lat: -29.4422, lng: 27.7148 };
-
-// Haversine distance in km
-const haversineDistance = (coord1, coord2) => {
-  const R = 6371; // Earth radius in km
-  const dLat = (coord2.lat - coord1.lat) * Math.PI / 180;
-  const dLon = (coord2.lng - coord1.lng) * Math.PI / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(coord1.lat * Math.PI / 180) *
-      Math.cos(coord2.lat * Math.PI / 180) *
-      Math.sin(dLon / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
 
 // Helper to generate image path from residence name
 const getImagePath = (name) => {
@@ -136,6 +131,7 @@ const getImagePath = (name) => {
     "neotsatsiresidence": "neotsatsi",
     "phamaresidence": "phama",
     "squirengresidence": "squireng",
+    "maletholaresidence": "malethola",
   };
   if (shortMap[slug]) slug = shortMap[slug];
   return `/images/accommodation/${slug}.jpg`;
@@ -159,12 +155,20 @@ function Accommodation() {
     return matchesSearch && matchesVillage;
   });
 
-  // WhatsApp message for a specific residence (student looking to book)
   const openWhatsApp = (residenceName, price, village, area) => {
     const priceText = price ? `M${price}/month` : 'price on request';
     const message = `Hello LeSAH, I'm interested in "${residenceName}" in ${village}, ${area} (${priceText}). I understand there is a M${BOOKING_FEE} booking fee. Could you help me get in touch with the landlord?`;
     const url = `${WHATSAPP_LINK}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
+  };
+
+  const handleImageError = (id) => {
+    setImageErrors(prev => ({ ...prev, [id]: true }));
+  };
+
+  const getImages = (res) => {
+    if (res.images && res.images.length > 0) return res.images;
+    return [getImagePath(res.name)];
   };
 
   // WhatsApp message for "Request a Closer Residence"
@@ -181,15 +185,6 @@ function Accommodation() {
     window.open(url, '_blank');
   };
 
-  const handleImageError = (id) => {
-    setImageErrors(prev => ({ ...prev, [id]: true }));
-  };
-
-  const getImages = (res) => {
-    if (res.images && res.images.length > 0) return res.images;
-    return [getImagePath(res.name)];
-  };
-
   return (
     <div className="accommodation-page">
       <div className="accommodation-container">
@@ -204,7 +199,7 @@ function Accommodation() {
         >
           <div className="hero-icon">🏠</div>
           <h1>Find Your Perfect Student Home</h1>
-          <p>We connect you with trusted residences near your campus</p>
+          <p>All distances are walking minutes from NUL campus</p>
         </div>
 
         {/* Filters */}
@@ -236,9 +231,6 @@ function Accommodation() {
         <div className="accommodation-grid">
           {filteredResidences.map(res => {
             const imageFailed = imageErrors[res.id];
-            const distance = res.coordinates
-              ? haversineDistance(res.coordinates, NUL_CAMPUS).toFixed(1)
-              : null;
             const images = getImages(res);
             const currentIdx = currentImageIndex[res.id] || 0;
 
@@ -281,13 +273,13 @@ function Accommodation() {
                   <p className="location">
                     📍 {res.village}, {res.area}
                   </p>
-                  {distance ? (
+                  {res.walkingTime != null ? (
                     <p className="distance">
-                      🚶 {distance} km from NUL campus
+                      🚶 {res.walkingTime} min walk from NUL
                     </p>
                   ) : (
                     <p className="distance" style={{ opacity: 0.5 }}>
-                      🚶 Distance unknown – coming soon
+                      🚶 Walking time unknown – coming soon
                     </p>
                   )}
                   <p className="price">
@@ -316,7 +308,7 @@ function Accommodation() {
           <button
             className="book-btn whatsapp-btn"
             onClick={requestCloserResidence}
-            style={{ backgroundColor: '#25D366', border: 'none', padding: '1rem 2rem', fontSize: '1.1rem' }}
+            style={{ backgroundColor: '#25D366', border: 'none', padding: '1rem 2rem', fontSize: '1.1rem', color: 'white' }}
           >
             🔍 Don't see what you want? Request a closer residence
           </button>
@@ -330,7 +322,7 @@ function Accommodation() {
           <button
             className="book-btn whatsapp-btn"
             onClick={listYourResidence}
-            style={{ backgroundColor: '#128C7E', border: 'none', padding: '1rem 2rem', fontSize: '1.1rem' }}
+            style={{ backgroundColor: '#128C7E', color: 'white', border: 'none', padding: '1rem 2rem', fontSize: '1.1rem' }}
           >
             🏡 Landlords – List Your Residence
           </button>
