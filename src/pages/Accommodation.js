@@ -42,18 +42,19 @@ const residences = [
     walkingTime: 25,
     images: null,
   },
-  {
-    id: 4,
-    name: "Molise Residence",
-    village: "Thoteng",
-    area: "Roma",
-    amount: null,
-    amenities: "No ceiling",
-    internalNote: "Well I have to call the landlord.",
-    contactHidden: "63232954",
-    walkingTime: 20,
-    images: null,
-  },
+  // Molise Residence temporarily hidden – still talking to the landlord
+  // {
+  //   id: 4,
+  //   name: "Molise Residence",
+  //   village: "Thoteng",
+  //   area: "Roma",
+  //   amount: null,
+  //   amenities: "No ceiling",
+  //   internalNote: "Well I have to call the landlord.",
+  //   contactHidden: "63232954",
+  //   walkingTime: 20,
+  //   images: null,
+  // },
   {
     id: 5,
     name: "'Maphakiso Residence",
@@ -99,7 +100,7 @@ const residences = [
     amenities: "Ceiling, prices M400 (shared electricity), M450, M500",
     internalNote: null,
     contactHidden: null,
-    walkingTime: 10,   // ✅ added
+    walkingTime: 10,
     images: [
       '/images/accommodation/squireng_exterior.jpg',
       '/images/accommodation/squireng_interior.jpg',
