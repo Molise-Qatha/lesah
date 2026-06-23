@@ -86,6 +86,8 @@ function Header() {
               <li><Link to="/accommodation" onClick={() => setIsMenuOpen(false)}>Accommodation</Link></li>
               <li><Link to="/loans" onClick={() => setIsMenuOpen(false)}>Loans</Link></li>
               <li><Link to="/delivery" onClick={() => setIsMenuOpen(false)}>Delivery</Link></li>
+              <li><Link to="/eats" onClick={() => setIsMenuOpen(false)}>Eats</Link></li>
+              <li><Link to="/tech" onClick={() => setIsMenuOpen(false)}>Tech</Link></li>
               <li><button className="nav-link-btn" onClick={scrollToGame}>Game</button></li>
               <li><Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link></li>
               {user?.role === 'admin' && (

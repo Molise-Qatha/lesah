@@ -1,0 +1,113 @@
+.tech-page {
+  background: #f9fafb;
+  min-height: 80vh;
+  padding: 2rem 1rem;
+}
+
+.tech-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.tech-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tech-hero h1 {
+  font-size: 2.5rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.tech-hero p {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.services-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.service-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  color: #1f2937;
+}
+
+.provider-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.provider-image {
+  width: 100px;
+  height: 100px;
+  background: #dbeafe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.provider-icon {
+  font-size: 3rem;
+}
+
+.provider-card h2 {
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.provider-card p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.provider-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.whatsapp-btn {
+  background: #25D366;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 3rem;
+  cursor: pointer;
+}
+
+.whatsapp-btn:hover {
+  background: #1da851;
+}
+
+.call-btn {
+  background: #374151;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 3rem;
+  cursor: pointer;
+}
+
+.call-btn:hover {
+  background: #1f2937;
+}
