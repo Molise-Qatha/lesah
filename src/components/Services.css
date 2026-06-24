@@ -1,4 +1,4 @@
- .services {
+.services {
   padding: 80px 0;
   background: #f8f9fa;
 }
@@ -31,26 +31,27 @@
   border-radius: 2px;
 }
 
+/* ---- FIXED GRID – automatic columns ---- */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
 
+/* ---- Card styling (unchanged) ---- */
 .service-card {
   border-radius: 20px;
   padding: 2rem;
   transition: all 0.4s ease;
   text-align: center;
   text-decoration: none;
-  display: block;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  min-height: 350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;          /* slightly reduced to avoid overly tall cards */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -120,7 +121,15 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* ==================== TABLET VIEW ==================== */
+/* ---- ICON for solid‑colour cards (Eats, Tech) ---- */
+.service-card .service-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- TABLET – smaller gap, slightly smaller cards ---- */
 @media (max-width: 992px) {
   .services {
     padding: 60px 0;
@@ -137,7 +146,7 @@
   
   .service-card {
     padding: 1.5rem;
-    min-height: 320px;
+    min-height: 280px;
   }
   
   .service-card h3 {
@@ -154,7 +163,7 @@
   }
 }
 
-/* ==================== MOBILE VIEW ==================== */
+/* ---- MOBILE – one card per row, min‑height removed ---- */
 @media (max-width: 768px) {
   .services {
     padding: 50px 0;
@@ -171,13 +180,13 @@
   }
   
   .services-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;      /* force single column */
     gap: 1.5rem;
   }
   
   .service-card {
     padding: 1.5rem;
-    min-height: auto;
+    min-height: auto;               /* let content decide height */
   }
   
   .service-card h3 {
@@ -195,7 +204,7 @@
   }
 }
 
-/* ==================== SMALL MOBILE ==================== */
+/* ---- SMALL MOBILE ---- */
 @media (max-width: 480px) {
   .services {
     padding: 40px 0;
@@ -223,15 +232,7 @@
   }
 }
 
-/* Icon for solid‑colour cards (Eats, Tech) */
-.service-card .service-icon {
-  font-size: 3rem;
-  margin-bottom: 0.75rem;
-  position: relative;
-  z-index: 1;
-}
-
-/* Animation for cards on load */
+/* ---- Animation for cards on load ---- */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -248,22 +249,8 @@
   opacity: 0;
 }
 
-.service-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.service-card:nth-child(2) {
-  animation-delay: 0.3s;
-}
-
-.service-card:nth-child(3) {
-  animation-delay: 0.5s;
-}
-
-.service-card:nth-child(4) {
-  animation-delay: 0.7s;
-}
-
-.service-card:nth-child(5) {
-  animation-delay: 0.9s;
-}
+.service-card:nth-child(1) { animation-delay: 0.1s; }
+.service-card:nth-child(2) { animation-delay: 0.3s; }
+.service-card:nth-child(3) { animation-delay: 0.5s; }
+.service-card:nth-child(4) { animation-delay: 0.7s; }
+.service-card:nth-child(5) { animation-delay: 0.9s; }
