@@ -17,6 +17,8 @@ function Services() {
       buttonText: 'Explore Listings',
       bgImage: accommodationImg,
       overlayColor: 'rgba(0, 0, 0, 0.65)',
+      icon: '🏠',
+      solidBg: null,
     },
     {
       title: 'Student Loans',
@@ -26,6 +28,8 @@ function Services() {
       buttonText: 'Check Eligibility',
       bgImage: loansImg,
       overlayColor: 'rgba(0, 0, 0, 0.7)',
+      icon: '💰',
+      solidBg: null,
     },
     {
       title: 'Asset Delivery',
@@ -35,17 +39,20 @@ function Services() {
       buttonText: 'Request Delivery',
       bgImage: deliveryImg,
       overlayColor: 'rgba(0, 0, 0, 0.65)',
+      icon: '🚚',
+      solidBg: null,
     },
-    // New services – will use solid background until images are available
+    // New services – dark overlay look without images
     {
       title: 'LeSAH Eats',
       description:
         'Order food from trusted local student‑friendly vendors around campus.',
       path: '/eats',
       buttonText: 'Order Now',
-      bgImage: null, // no background image yet
+      bgImage: null,
+      overlayColor: null,
       icon: '🍕',
-      bgColor: '#f59e0b', // warm orange for food
+      solidBg: '#1f2937',   // dark gray – same feel as the black overlays
     },
     {
       title: 'LeSAH Tech',
@@ -54,8 +61,9 @@ function Services() {
       path: '/tech',
       buttonText: 'Get Support',
       bgImage: null,
+      overlayColor: null,
       icon: '💻',
-      bgColor: '#2DBE8D', // green to match primary
+      solidBg: '#1f2937',   // dark gray
     },
   ];
 
@@ -65,7 +73,6 @@ function Services() {
         <h2 className="section-title">Our Services</h2>
         <div className="services-grid">
           {services.map((service, index) => {
-            // Build style based on whether a background image exists
             const style = service.bgImage
               ? {
                   backgroundImage: `linear-gradient(${service.overlayColor}, ${service.overlayColor}), url(${service.bgImage})`,
@@ -74,7 +81,7 @@ function Services() {
                   backgroundRepeat: 'no-repeat',
                 }
               : {
-                  backgroundColor: service.bgColor || '#f3f4f6',
+                  backgroundColor: service.solidBg,
                 };
 
             return (
@@ -84,10 +91,7 @@ function Services() {
                 className="service-card"
                 style={style}
               >
-                {/* If no bgImage, show an icon */}
-                {!service.bgImage && service.icon && (
-                  <div className="service-icon">{service.icon}</div>
-                )}
+                <div className="service-icon">{service.icon}</div>
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
                 <div className="service-link">{service.buttonText} →</div>

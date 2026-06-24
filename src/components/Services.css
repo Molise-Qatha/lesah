@@ -1,4 +1,4 @@
-.services {
+ .services {
   padding: 80px 0;
   background: #f8f9fa;
 }
@@ -223,6 +223,14 @@
   }
 }
 
+/* Icon for solid‑colour cards (Eats, Tech) */
+.service-card .service-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
 /* Animation for cards on load */
 @keyframes fadeInUp {
   from {
@@ -250,4 +258,12 @@
 
 .service-card:nth-child(3) {
   animation-delay: 0.5s;
+}
+
+.service-card:nth-child(4) {
+  animation-delay: 0.7s;
+}
+
+.service-card:nth-child(5) {
+  animation-delay: 0.9s;
 }
