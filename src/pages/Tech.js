@@ -1,22 +1,38 @@
+// src/pages/Tech.js
 import React from 'react';
 import './Tech.css';
 
 const PHONE_NUMBER = '+266 56613551';
 const WHATSAPP_NUMBER = '26656613551';
 
-const services = [
-  '🔧 Laptop Repair',
-  '🪟 Windows Installation',
-  '📱 Phone Setup',
-  '💾 Software Installation',
-  '💻 Buy Laptops',
-  '🖨 Printer Setup',
+const hardwareServices = [
+  'Laptop Sales',
+  'Desktop Sales',
+  'Laptop Chargers',
+  'SSD Sales',
+  'Screen Replacement',
+  'Hinge Repairs',
+];
+
+const softwareServices = [
+  'Windows Installation',
+  'Software Installation',
+  'Operating System Upgrades',
+  'Software Upgrades',
+];
+
+const supportServices = [
+  'Phone Setup',
+  'Printer Setup',
 ];
 
 function Tech() {
   const openWhatsApp = () => {
     const message = `Hi LeSAH, I need tech support.`;
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(
+      `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+      '_blank'
+    );
   };
 
   const callNumber = () => {
@@ -28,24 +44,49 @@ function Tech() {
       <div className="tech-container">
         <div className="tech-hero">
           <h1>💻 LeSAH Tech</h1>
-          <p>Buy, repair and upgrade your devices.</p>
+          <p>Reliable student technology support.</p>
         </div>
 
-        <div className="services-list">
-          {services.map((service, idx) => (
-            <div key={idx} className="service-item">
-              {service}
+        <div className="services-section">
+          <div className="services-category">
+            <h3>🔧 Hardware Services</h3>
+            <div className="services-grid">
+              {hardwareServices.map((s, i) => (
+                <div key={i} className="service-card">{s}</div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <div className="services-category">
+            <h3>💾 Software Services</h3>
+            <div className="services-grid">
+              {softwareServices.map((s, i) => (
+                <div key={i} className="service-card">{s}</div>
+              ))}
+            </div>
+          </div>
+
+          <div className="services-category">
+            <h3>📞 Support Services</h3>
+            <div className="services-grid">
+              {supportServices.map((s, i) => (
+                <div key={i} className="service-card">{s}</div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="provider-card">
-          <div className="provider-image">
-            <span className="provider-icon">👨🏾‍💻</span>
+        <div className="partner-card">
+          <div className="partner-badges">
+            <span className="badge verified">✅ Verified Partner</span>
+            <span className="badge fast">⚡ Fast Turnaround</span>
+            <span className="badge student">🎓 Student Friendly</span>
           </div>
-          <h2>LeSAH Tech Partner</h2>
-          <p>Reliable student IT support.</p>
-          <div className="provider-actions">
+          <div className="partner-info">
+            <div className="partner-avatar">👨🏾‍💻</div>
+            <h2>LeSAH Tech Partner</h2>
+          </div>
+          <div className="partner-actions">
             <button className="whatsapp-btn" onClick={openWhatsApp}>
               🟢 WhatsApp
             </button>
