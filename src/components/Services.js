@@ -2,17 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Services.css';
 
-// Import local images for existing services
+// Import local images for all services
 import accommodationImg from '../assets/images/accommodation-bg.jpg';
 import loansImg from '../assets/images/loans-bg.jpg';
 import deliveryImg from '../assets/images/delivery-bg.jpg';
+import eatsImg from '../assets/images/eats-bg.jpg';       // <-- new
+import techImg from '../assets/images/tech-bg.jpg';       // <-- new
 
 function Services() {
   const services = [
     {
       title: 'Accommodation',
-      description:
-        'Premium student housing located within walking distance of campus, featuring 24/7 security and high-speed fiber.',
+      description: 'Premium student housing located within walking distance of campus, featuring 24/7 security and high-speed fiber.',
       path: '/accommodation',
       buttonText: 'Explore Listings',
       bgImage: accommodationImg,
@@ -22,8 +23,7 @@ function Services() {
     },
     {
       title: 'Student Loans',
-      description:
-        'Flexible financial solutions with competitive interest rates tailored for academic success and peace of mind.',
+      description: 'Flexible financial solutions with competitive interest rates tailored for academic success and peace of mind.',
       path: '/loans',
       buttonText: 'Check Eligibility',
       bgImage: loansImg,
@@ -33,8 +33,7 @@ function Services() {
     },
     {
       title: 'Asset Delivery',
-      description:
-        'Safe and secure transport of your academic materials and personal belongings across the country with real-time tracking.',
+      description: 'Safe and secure transport of your academic materials and personal belongings across the country with real-time tracking.',
       path: '/delivery',
       buttonText: 'Request Delivery',
       bgImage: deliveryImg,
@@ -42,28 +41,26 @@ function Services() {
       icon: '🚚',
       solidBg: null,
     },
-    // New services – dark overlay look without images
+    // Eats & Tech now use background images
     {
       title: 'LeSAH Eats',
-      description:
-        'Order food from trusted local student‑friendly vendors around campus.',
+      description: 'Order food from trusted local student‑friendly vendors around campus.',
       path: '/eats',
       buttonText: 'Order Now',
-      bgImage: null,
-      overlayColor: null,
-      icon: '🍕',
-      solidBg: '#1f2937',   // dark gray – same feel as the black overlays
+      bgImage: eatsImg,
+      overlayColor: 'rgba(0, 0, 0, 0.65)',
+      icon: null,
+      solidBg: null,
     },
     {
       title: 'LeSAH Tech',
-      description:
-        'Buy, repair and upgrade your devices. Reliable student technology support.',
+      description: 'Buy, repair and upgrade your devices. Reliable student technology support.',
       path: '/tech',
       buttonText: 'Get Support',
-      bgImage: null,
-      overlayColor: null,
-      icon: '💻',
-      solidBg: '#1f2937',   // dark gray
+      bgImage: techImg,
+      overlayColor: 'rgba(0, 0, 0, 0.65)',
+      icon: null,
+      solidBg: null,
     },
   ];
 
@@ -81,7 +78,7 @@ function Services() {
                   backgroundRepeat: 'no-repeat',
                 }
               : {
-                  backgroundColor: service.solidBg,
+                  backgroundColor: service.solidBg || '#1f2937',
                 };
 
             return (
@@ -91,7 +88,7 @@ function Services() {
                 className="service-card"
                 style={style}
               >
-                <div className="service-icon">{service.icon}</div>
+                {service.icon && <div className="service-icon">{service.icon}</div>}
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
                 <div className="service-link">{service.buttonText} →</div>
