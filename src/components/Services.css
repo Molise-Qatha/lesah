@@ -4,7 +4,7 @@
 }
 
 .container {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -31,39 +31,41 @@
   border-radius: 2px;
 }
 
+/* ---- GRID – 4 columns desktop, 2 tablet, 1 mobile ---- */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  align-items: stretch;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
+/* ---- Card styling ---- */
 .service-card {
-  width: 100%;
-  min-height: 360px;
-  padding: 2rem;
   border-radius: 20px;
+  padding: 2rem;
   transition: all 0.4s ease;
   text-align: center;
   text-decoration: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-sizing: border-box;
+  min-height: 480px;               /* generous height to prevent skinny cards */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  animation: fadeInUp 0.6s ease forwards;
-  opacity: 0;
+  background-size: cover;
+  background-position: center;
 }
 
+/* Zoom Effect on Hover */
 .service-card::before {
   content: '';
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: inherit;
   background-size: cover;
   background-position: center;
@@ -72,18 +74,18 @@
 }
 
 .service-card:hover::before {
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
+/* Content Styling */
 .service-card h3 {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   margin-bottom: 1rem;
   color: white;
   font-weight: 700;
   position: relative;
   z-index: 1;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  line-height: 1.2;
 }
 
 .service-card p {
@@ -94,7 +96,6 @@
   position: relative;
   z-index: 1;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  max-width: 92%;
 }
 
 .service-link {
@@ -112,7 +113,6 @@
   width: fit-content;
   margin: 0 auto;
   font-size: 0.95rem;
-  text-decoration: none;
 }
 
 .service-card:hover .service-link {
@@ -123,6 +123,7 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* ---- ICON for solid‑colour cards (Eats, Tech) ---- */
 .service-card .service-icon {
   font-size: 3rem;
   margin-bottom: 0.75rem;
@@ -130,108 +131,111 @@
   z-index: 1;
 }
 
-.service-card:nth-child(1) { animation-delay: 0.1s; }
-.service-card:nth-child(2) { animation-delay: 0.2s; }
-.service-card:nth-child(3) { animation-delay: 0.3s; }
-.service-card:nth-child(4) { animation-delay: 0.4s; }
-.service-card:nth-child(5) { animation-delay: 0.5s; }
-
+/* ---- TABLET – 2 columns ---- */
 @media (max-width: 992px) {
   .services {
     padding: 60px 0;
   }
-
+  
   .section-title {
     font-size: 2.2rem;
     margin-bottom: 2.5rem;
   }
-
+  
   .services-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-
+  
   .service-card {
-    min-height: 330px;
     padding: 1.5rem;
+    min-height: 380px;
   }
-
+  
   .service-card h3 {
-    font-size: 1.45rem;
+    font-size: 1.5rem;
   }
-
+  
   .service-card p {
     font-size: 0.9rem;
   }
-}
-
-@media (max-width: 768px) {
-  .services {
-    padding: 50px 0;
-  }
-
-  .section-title {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .section-title::after {
-    width: 50px;
-    height: 2px;
-  }
-
-  .services-grid {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-
-  .service-card {
-    min-height: auto;
-    padding: 1.5rem;
-  }
-
-  .service-card h3 {
-    font-size: 1.35rem;
-  }
-
-  .service-card p {
-    font-size: 0.9rem;
-    margin-bottom: 1.2rem;
-  }
-
+  
   .service-link {
     padding: 10px 20px;
     font-size: 0.9rem;
   }
 }
 
+/* ---- MOBILE – 1 column ---- */
+@media (max-width: 600px) {
+  .services {
+    padding: 50px 0;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .section-title::after {
+    width: 50px;
+    height: 2px;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .service-card {
+    padding: 1.5rem;
+    min-height: auto;
+  }
+  
+  .service-card h3 {
+    font-size: 1.4rem;
+  }
+  
+  .service-card p {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .service-link {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ---- SMALL MOBILE ---- */
 @media (max-width: 480px) {
   .services {
     padding: 40px 0;
   }
-
+  
   .section-title {
     font-size: 1.8rem;
   }
-
+  
   .service-card {
     padding: 1.2rem;
   }
-
+  
   .service-card h3 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
-
+  
   .service-card p {
     font-size: 0.85rem;
   }
-
+  
   .service-link {
     padding: 8px 16px;
     font-size: 0.85rem;
   }
 }
 
+/* ---- Animation for cards on load ---- */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -242,3 +246,14 @@
     transform: translateY(0);
   }
 }
+
+.service-card {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+.service-card:nth-child(1) { animation-delay: 0.1s; }
+.service-card:nth-child(2) { animation-delay: 0.3s; }
+.service-card:nth-child(3) { animation-delay: 0.5s; }
+.service-card:nth-child(4) { animation-delay: 0.7s; }
+.service-card:nth-child(5) { animation-delay: 0.9s; }
