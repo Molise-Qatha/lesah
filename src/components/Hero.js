@@ -16,7 +16,7 @@ const slides = [
     headline: 'Everything students need — in one place.',
     subtitle: 'Find accommodation, student loans, and delivery services across Lesotho — fast, simple, and reliable.',
     buttonText: 'Explore Services',
-    link: null,                // scroll to services section
+    link: null,
     linkType: 'scroll',
   },
   {
@@ -77,7 +77,6 @@ function Hero() {
     if (section) section.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Render button based on slide
   const renderButton = () => {
     const btnStyle = 'hero-refined-cta';
 
@@ -100,7 +99,7 @@ function Hero() {
     <section
       className="hero-refined hero-carousel"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url(${currentSlide.image})`,
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${currentSlide.image})`,
       }}
     >
       <div className="hero-refined-grid">
@@ -109,10 +108,13 @@ function Hero() {
           <h1 className="hero-refined-headline">{currentSlide.headline}</h1>
           <p className="hero-refined-subtitle">{currentSlide.subtitle}</p>
 
+          {/* Updated trust badges: all 5 services */}
           <div className="hero-refined-trust">
             <span>🏠 Accommodation</span>
             <span>💰 Student Loans</span>
             <span>🚚 Delivery</span>
+            <span>🍕 Eats</span>
+            <span>💻 Tech</span>
           </div>
 
           <div className="hero-refined-action">
@@ -126,11 +128,9 @@ function Hero() {
               💬 Chat on WhatsApp
             </a>
           </div>
-
-          <p className="hero-refined-note">Free account required to submit requests.</p>
         </div>
 
-        {/* Navigation dots for manual control */}
+        {/* Navigation dots */}
         <div className="hero-dots">
           {slides.map((_, idx) => (
             <button
