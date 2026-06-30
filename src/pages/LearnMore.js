@@ -86,6 +86,40 @@ function LearnMore() {
               </ul>
               <Link to="/delivery" className="service-link">Request Delivery →</Link>
             </div>
+
+            {/* LeSAH Eats Card */}
+            <div className="service-detail-card">
+              <div className="service-icon">🍕</div>
+              <h3>LeSAH Eats</h3>
+              <p className="service-description">
+                Order delicious, affordable meals from student‑friendly vendors around campus. 
+                From pizza to local favourites, we connect you with the best food options.
+              </p>
+              <ul className="service-features">
+                <li>✓ Verified local vendors</li>
+                <li>✓ Student‑friendly prices</li>
+                <li>✓ Quick WhatsApp ordering</li>
+                <li>✓ Delivery to your doorstep</li>
+              </ul>
+              <Link to="/eats" className="service-link">Order Food →</Link>
+            </div>
+
+            {/* LeSAH Tech Card */}
+            <div className="service-detail-card">
+              <div className="service-icon">💻</div>
+              <h3>LeSAH Tech</h3>
+              <p className="service-description">
+                Get reliable technology support from a trusted student partner. 
+                Buy laptops, repair screens, install software, or upgrade your system.
+              </p>
+              <ul className="service-features">
+                <li>✓ Laptop repair & sales</li>
+                <li>✓ Windows & software installation</li>
+                <li>✓ Fast turnaround</li>
+                <li>✓ Student‑friendly pricing</li>
+              </ul>
+              <Link to="/tech" className="service-link">Get Support →</Link>
+            </div>
           </div>
         </div>
       </section>
