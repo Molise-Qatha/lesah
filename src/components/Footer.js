@@ -40,6 +40,8 @@ function Footer() {
             <h3>SERVICES</h3>
             <ul>
               <li><Link to="/accommodation" onClick={scrollToTop}>Accommodation</Link></li>
+              <li><Link to="/eats" onClick={scrollToTop}>LeSAH Eats</Link></li>
+              <li><Link to="/tech" onClick={scrollToTop}>LeSAH Tech</Link></li>
               <li><Link to="/loans" onClick={scrollToTop}>Student Loans</Link></li>
               <li><Link to="/delivery" onClick={scrollToTop}>Asset Delivery</Link></li>
             </ul>
