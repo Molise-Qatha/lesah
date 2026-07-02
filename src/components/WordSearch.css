@@ -1,12 +1,21 @@
 .wordsearch {
   text-align: center;
-  padding: 2rem;
+  padding: 2rem 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.puzzle-counter {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
 }
 
 .ws-grid {
   display: inline-flex;
   flex-direction: column;
   margin: 1.5rem 0;
+  user-select: none;
 }
 
 .ws-row {
@@ -21,7 +30,8 @@
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: background 0.1s, color 0.1s;
+  color: #1f2937;
 }
 
 .ws-cell.selected {
@@ -29,7 +39,18 @@
   border-color: #2a9d8f;
 }
 
-.ws-cell:hover {
+.ws-cell.found {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.ws-cell:disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.ws-cell:hover:not(:disabled) {
   background: #f3f4f6;
 }
 
@@ -46,6 +67,7 @@
   background: #f3f4f6;
   border-radius: 1rem;
   font-weight: 500;
+  color: #374151;
 }
 
 .ws-word.found {
@@ -56,22 +78,61 @@
 
 .ws-message {
   font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.ws-complete {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 500;
+  margin: 0.75rem 0;
   color: #2a9d8f;
-  margin: 1rem 0;
 }
 
-.ws-clear {
-  margin-top: 1rem;
+.ws-actions {
+  margin: 1.5rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.ws-clear,
+.ws-next,
+.ws-play-again {
   background: #f3f4f6;
   border: 1px solid #d1d5db;
+  padding: 0.6rem 1.5rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: #374151;
+}
+
+.ws-clear:hover,
+.ws-next:hover,
+.ws-play-again:hover {
+  background: #e5e7eb;
+}
+
+.ws-all-complete p {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2a9d8f;
+}
+
+.ws-back {
+  margin-top: 2rem;
+}
+
+.sz-back-btn {
+  display: inline-block;
+  background: none;
+  border: 1px solid #d1d5db;
+  color: #374151;
   padding: 0.5rem 1.5rem;
   border-radius: 2rem;
-  cursor: pointer;
   font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.sz-back-btn:hover {
+  background: #f3f4f6;
 }
