@@ -18,7 +18,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import LearnMore from './pages/LearnMore';
 import Eats from './pages/Eats';
 import Tech from './pages/Tech';
-import StudentZone from './pages/StudentZone';   // ✅ new
+import StudentZone from './pages/StudentZone';
+import LilothoGame from './pages/LilothoGame';           // ✅ new
+import WordScrambleGame from './pages/WordScrambleGame'; // ✅ new
+import WordSearchGame from './pages/WordSearchGame';     // ✅ new
 import './App.css';
 
 // Protected route wrapper for admin-only pages
@@ -79,8 +82,13 @@ function App() {
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/learn-more" element={<LearnMore />} />
 
-          {/* Student Zone – moved here */}
+          {/* Student Zone – hub */}
           <Route path="/student-zone" element={<StudentZone />} />
+
+          {/* Individual game pages */}
+          <Route path="/student-zone/lilotho" element={<LilothoGame />} />
+          <Route path="/student-zone/word-scramble" element={<WordScrambleGame />} />
+          <Route path="/student-zone/word-search" element={<WordSearchGame />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
