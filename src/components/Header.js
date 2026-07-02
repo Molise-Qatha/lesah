@@ -25,22 +25,6 @@ function Header() {
     }
   }, [location]);
 
-  const scrollToGame = () => {
-    const gameSection = document.getElementById('game-section');
-    if (gameSection) {
-      gameSection.scrollIntoView({ behavior: 'smooth' });
-      setIsMenuOpen(false);
-    } else {
-      navigate('/');
-      setTimeout(() => {
-        const gameSection = document.getElementById('game-section');
-        if (gameSection) {
-          gameSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  };
-
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
@@ -64,16 +48,15 @@ function Header() {
             <img src={logo} alt="LeSAH Logo" className="logo-image" />
             <span className="logo-text">LeSAH</span>
           </Link>
-          
+
           <div className="nav-actions">
-            {/* Back button - shown on all pages except home */}
             {!isHomePage && (
               <button className="back-btn" onClick={handleBack} aria-label="Go back">
                 ← Back
               </button>
             )}
-            <button 
-              className="mobile-menu-btn" 
+            <button
+              className="mobile-menu-btn"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -88,7 +71,7 @@ function Header() {
               <li><Link to="/delivery" onClick={() => setIsMenuOpen(false)}>Delivery</Link></li>
               <li><Link to="/eats" onClick={() => setIsMenuOpen(false)}>Eats</Link></li>
               <li><Link to="/tech" onClick={() => setIsMenuOpen(false)}>Tech</Link></li>
-              <li><button className="nav-link-btn" onClick={scrollToGame}>Game</button></li>
+              <li><Link to="/student-zone" onClick={() => setIsMenuOpen(false)}>🎓 Student Zone</Link></li>
               <li><Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link></li>
               {user?.role === 'admin' && (
                 <li><Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link></li>

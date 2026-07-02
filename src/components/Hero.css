@@ -213,3 +213,18 @@
     justify-content: center;
   }
 }
+/* 🎓 Student Zone CTA */
+.hero-student-zone-cta {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+.hero-student-zone-cta p {
+  color: white;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}

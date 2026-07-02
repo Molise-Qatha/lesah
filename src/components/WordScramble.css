@@ -1,0 +1,61 @@
+.wordscramble {
+  text-align: center;
+  padding: 2rem;
+}
+
+.scramble-word {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  margin: 1.5rem 0;
+  color: #2a9d8f;
+}
+
+.scramble-form {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.scramble-form input {
+  padding: 0.7rem 1.2rem;
+  font-size: 1.2rem;
+  border: 2px solid #d1d5db;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.scramble-form input:focus {
+  border-color: #2a9d8f;
+}
+
+.scramble-form button {
+  background: #2a9d8f;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.scramble-message {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.scramble-score {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.scramble-next {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 1.5rem;
+  border-radius: 2rem;
+  cursor: pointer;
+  font-weight: 600;
+}

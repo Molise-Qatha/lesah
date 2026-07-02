@@ -104,11 +104,12 @@ function Hero() {
     >
       <div className="hero-refined-grid">
         <div className="hero-refined-text">
-          <p className="hero-refined-label">{currentSlide.title || 'Your all‑in‑one student support platform'}</p>
+          <p className="hero-refined-label">
+            {currentSlide.title || 'Your all‑in‑one student support platform'}
+          </p>
           <h1 className="hero-refined-headline">{currentSlide.headline}</h1>
           <p className="hero-refined-subtitle">{currentSlide.subtitle}</p>
 
-          {/* Updated trust badges: all 5 services */}
           <div className="hero-refined-trust">
             <span>🏠 Accommodation</span>
             <span>💰 Student Loans</span>
@@ -127,6 +128,18 @@ function Hero() {
             >
               💬 Chat on WhatsApp
             </a>
+          </div>
+
+          {/* 🎓 Student Zone promo */}
+          <div className="hero-student-zone-cta">
+            <p>🧠 Need a study break?</p>
+            <Link
+              to="/student-zone"
+              className="hero-refined-cta"
+              style={{ background: '#e9c46a', color: '#111827' }}
+            >
+              Visit Student Zone
+            </Link>
           </div>
         </div>
 

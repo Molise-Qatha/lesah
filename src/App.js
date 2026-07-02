@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';   // <-- added useEffect
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Services from './components/Services';
-import GameSection from './components/GameSection';
 import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
 import Accommodation from './pages/Accommodation';
@@ -19,17 +18,18 @@ import AdminDashboard from './pages/AdminDashboard';
 import LearnMore from './pages/LearnMore';
 import Eats from './pages/Eats';
 import Tech from './pages/Tech';
+import StudentZone from './pages/StudentZone';   // ✅ new
 import './App.css';
 
 // Protected route wrapper for admin-only pages
 function AdminRoute({ children }) {
   const token = localStorage.getItem('access_token');
   const userStr = localStorage.getItem('user');
-  
+
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-  
+
   try {
     const user = userStr ? JSON.parse(userStr) : null;
     if (user?.role !== 'admin') {
@@ -38,7 +38,7 @@ function AdminRoute({ children }) {
   } catch {
     return <Navigate to="/" replace />;
   }
-  
+
   return children;
 }
 
@@ -48,7 +48,6 @@ function App() {
     const alreadyVisited = sessionStorage.getItem('visit_recorded');
     if (!alreadyVisited) {
       sessionStorage.setItem('visit_recorded', 'true');
-      // Fire-and-forget POST to analytics endpoint
       fetch(`${process.env.REACT_APP_API_URL}/api/v1/analytics/visit?path=/`, {
         method: 'POST',
       }).catch(() => {});
@@ -60,16 +59,18 @@ function App() {
       <div className="App">
         <Header />
         <Routes>
-          {/* Home Page */}
-          <Route path="/" element={
-            <>
-              <Hero />
-              <Services />
-              <GameSection />
-              <Newsletter />
-            </>
-          } />
-          
+          {/* Home Page – GameSection removed */}
+          <Route
+            path="/"
+            element={
+              <>
+                <Hero />
+                <Services />
+                <Newsletter />
+              </>
+            }
+          />
+
           {/* Service Pages */}
           <Route path="/accommodation" element={<Accommodation />} />
           <Route path="/loans" element={<Loans />} />
@@ -78,7 +79,9 @@ function App() {
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/learn-more" element={<LearnMore />} />
 
-          
+          {/* Student Zone – moved here */}
+          <Route path="/student-zone" element={<StudentZone />} />
+
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
@@ -88,26 +91,29 @@ function App() {
           <Route path="/register" element={<Register />} />
 
           {/* Admin Dashboard (Protected) */}
-          <Route 
-            path="/admin" 
+          <Route
+            path="/admin"
             element={
               <AdminRoute>
                 <AdminDashboard />
               </AdminRoute>
-            } 
+            }
           />
-          
+
           {/* Catch-all redirect to home (404 handling) */}
-          <Route path="*" element={
-            <div className="not-found-page">
-              <div className="container">
-                <h1>404</h1>
-                <h2>Page Not Found</h2>
-                <p>The page you are looking for does not exist.</p>
-                <a href="/" className="home-btn">Go Back Home</a>
+          <Route
+            path="*"
+            element={
+              <div className="not-found-page">
+                <div className="container">
+                  <h1>404</h1>
+                  <h2>Page Not Found</h2>
+                  <p>The page you are looking for does not exist.</p>
+                  <a href="/" className="home-btn">Go Back Home</a>
+                </div>
               </div>
-            </div>
-          } />
+            }
+          />
         </Routes>
         <Footer />
       </div>
