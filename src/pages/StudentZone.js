@@ -11,6 +11,13 @@ const games = [
     available: true,
   },
   {
+    id: 'morabaraba',
+    title: '🕹️ Morabaraba',
+    description: 'The classic Basotho board game. Challenge a friend!',
+    path: '/student-zone/morabaraba',
+    available: true,
+  },
+  {
     id: 'wordscramble',
     title: '🔤 Word Scramble',
     description: 'Unscramble student‑themed words. How fast can you solve them?',

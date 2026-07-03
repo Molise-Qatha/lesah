@@ -1,0 +1,337 @@
+.morabaraba-page {
+  background: #f5e6d3;
+  min-height: 100vh;
+  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.morabaraba-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.game-header h1 {
+  font-size: 2.5rem;
+  color: #5d4037;
+  margin-bottom: 0;
+}
+
+.basotho-subtitle {
+  font-style: italic;
+  color: #795548;
+  font-size: 1.1rem;
+  margin-top: 0.25rem;
+}
+
+.game-info {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.info-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.player-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  background: #f0f0f0;
+}
+
+.player-indicator.green {
+  border: 2px solid #2d6a4f;
+}
+
+.player-indicator.brown {
+  border: 2px solid #8B4513;
+}
+
+.player-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.green .player-dot {
+  background: radial-gradient(circle at 30% 30%, #52b788, #2d6a4f);
+}
+
+.brown .player-dot {
+  background: radial-gradient(circle at 30% 30%, #CD853F, #8B4513);
+}
+
+.phase-indicator {
+  font-weight: 500;
+  color: #5d4037;
+}
+
+.piece-counts {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.count {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.mill-alert {
+  background: #ff9800;
+  color: white;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.morabaraba-board {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  cursor: pointer;
+}
+
+.intersection {
+  transition: r 0.2s, stroke-width 0.2s;
+}
+
+.intersection.valid-move {
+  stroke: #2d6a4f;
+  stroke-width: 3;
+}
+
+.intersection.removable {
+  stroke: #e53935;
+  stroke-width: 3;
+  animation: blink 0.5s infinite alternate;
+}
+
+@keyframes blink {
+  from { stroke-opacity: 1; }
+  to { stroke-opacity: 0.3; }
+}
+
+.intersection.selected {
+  stroke: #fdd835;
+  stroke-width: 4;
+}
+
+.move-hint {
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.piece {
+  transition: transform 0.2s;
+}
+
+.piece-selected {
+  transform: scale(1.2);
+}
+
+.controls {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.game-message {
+  font-weight: 600;
+  color: #5d4037;
+  margin-bottom: 0.75rem;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.control-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.control-btn:hover {
+  transform: translateY(-1px);
+}
+
+.restart {
+  background: #ef5350;
+  color: white;
+}
+
+.undo {
+  background: #42a5f5;
+  color: white;
+}
+
+.rules {
+  background: #66bb6a;
+  color: white;
+}
+
+/* Rules Modal */
+.rules-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.rules-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 450px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.rules-modal h2 {
+  color: #5d4037;
+  margin-bottom: 1rem;
+}
+
+.rules-modal h3 {
+  color: #795548;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.rules-modal h4 {
+  color: #8d6e63;
+  margin-top: 0.75rem;
+}
+
+.rules-modal p {
+  line-height: 1.5;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.color-dot.green {
+  background: radial-gradient(circle at 30% 30%, #52b788, #2d6a4f);
+}
+
+.color-dot.brown {
+  background: radial-gradient(circle at 30% 30%, #CD853F, #8B4513);
+}
+
+/* Victory overlay */
+.victory-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.5s;
+}
+
+.victory-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.victory-card h2 {
+  font-size: 2rem;
+  color: #5d4037;
+  margin-bottom: 1.5rem;
+}
+
+.play-again-btn {
+  background: #2d6a4f;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.play-again-btn:hover {
+  background: #1b4332;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .game-header h1 { font-size: 2rem; }
+  .control-buttons { flex-direction: column; }
+  .info-section { flex-direction: column; gap: 0.5rem; }
+}

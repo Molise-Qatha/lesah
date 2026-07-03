@@ -19,9 +19,10 @@ import LearnMore from './pages/LearnMore';
 import Eats from './pages/Eats';
 import Tech from './pages/Tech';
 import StudentZone from './pages/StudentZone';
-import LilothoGame from './pages/LilothoGame';           // ✅ new
-import WordScrambleGame from './pages/WordScrambleGame'; // ✅ new
-import WordSearchGame from './pages/WordSearchGame';     // ✅ new
+import LilothoGame from './pages/LilothoGame';
+import WordScrambleGame from './pages/WordScrambleGame';
+import WordSearchGame from './pages/WordSearchGame';
+import MorabarabaGame from './pages/MorabarabaGame';   // ✅ new
 import './App.css';
 
 // Protected route wrapper for admin-only pages
@@ -89,6 +90,7 @@ function App() {
           <Route path="/student-zone/lilotho" element={<LilothoGame />} />
           <Route path="/student-zone/word-scramble" element={<WordScrambleGame />} />
           <Route path="/student-zone/word-search" element={<WordSearchGame />} />
+          <Route path="/student-zone/morabaraba" element={<MorabarabaGame />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
