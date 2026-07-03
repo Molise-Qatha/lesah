@@ -1,22 +1,41 @@
+/* Morabaraba.css – polished traditional board game */
+
+/* ----- page layout ----- */
 .morabaraba-page {
   background: #f5e6d3;
   min-height: 100vh;
   padding: 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .morabaraba-container {
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
+  position: relative;
 }
 
+/* back link */
+.back-link {
+  display: inline-block;
+  color: #5d4037;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* header */
 .game-header {
   text-align: center;
   margin-bottom: 1rem;
 }
 
 .game-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   color: #5d4037;
   margin-bottom: 0;
 }
@@ -24,16 +43,18 @@
 .basotho-subtitle {
   font-style: italic;
   color: #795548;
-  font-size: 1.1rem;
-  margin-top: 0.25rem;
+  font-size: 1rem;
+  margin-top: 0;
 }
 
+/* info panel */
 .game-info {
-  background: white;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.8rem 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .info-section {
@@ -50,56 +71,55 @@
   font-weight: 600;
   padding: 0.3rem 1rem;
   border-radius: 20px;
-  background: #f0f0f0;
+  background: #f0ede5;
 }
 
 .player-indicator.green {
-  border: 2px solid #2d6a4f;
+  border: 2px solid #064e3b;
+  color: #064e3b;
 }
 
 .player-indicator.brown {
-  border: 2px solid #8B4513;
+  border: 2px solid #78350f;
+  color: #78350f;
 }
 
 .player-dot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   display: inline-block;
 }
 
-.green .player-dot {
-  background: radial-gradient(circle at 30% 30%, #52b788, #2d6a4f);
+.player-indicator.green .player-dot {
+  background: radial-gradient(circle at 30% 30%, #6ee7b7, #064e3b);
 }
 
-.brown .player-dot {
-  background: radial-gradient(circle at 30% 30%, #CD853F, #8B4513);
+.player-indicator.brown .player-dot {
+  background: radial-gradient(circle at 30% 30%, #d97706, #78350f);
 }
 
 .phase-indicator {
-  font-weight: 500;
+  font-weight: 600;
   color: #5d4037;
 }
 
 .piece-counts {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.count {
+  gap: 1.5rem;
   font-size: 0.9rem;
-  font-weight: 500;
+  color: #4e342e;
 }
 
+/* mill alert */
 .mill-alert {
-  background: #ff9800;
-  color: white;
-  padding: 0.75rem;
+  background: #f59e0b;
+  color: #1e293b;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   text-align: center;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   animation: pulse 1s infinite;
 }
 
@@ -108,6 +128,7 @@
   50% { opacity: 0.8; }
 }
 
+/* board container – scales nicely */
 .board-container {
   display: flex;
   justify-content: center;
@@ -115,66 +136,86 @@
 }
 
 .morabaraba-board {
-  width: 100%;
+  width: 90%;
   max-width: 400px;
   height: auto;
+  aspect-ratio: 1 / 1;
   cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* SVG intersections */
 .intersection {
-  transition: r 0.2s, stroke-width 0.2s;
+  transition: fill 0.2s;
 }
 
 .intersection.valid-move {
-  stroke: #2d6a4f;
-  stroke-width: 3;
+  fill: #facc15;
 }
 
 .intersection.removable {
-  stroke: #e53935;
-  stroke-width: 3;
-  animation: blink 0.5s infinite alternate;
+  fill: #ef4444;
+  animation: blink 0.6s infinite alternate;
 }
 
 @keyframes blink {
-  from { stroke-opacity: 1; }
-  to { stroke-opacity: 0.3; }
+  from { fill-opacity: 1; }
+  to { fill-opacity: 0.5; }
 }
 
 .intersection.selected {
-  stroke: #fdd835;
-  stroke-width: 4;
+  fill: #facc15;
+  stroke: #facc15;
+  stroke-width: 2;
 }
 
-.move-hint {
-  animation: fadeIn 0.3s;
+/* hover indicator for empty spots */
+.hover-indicator:hover {
+  fill: rgba(245, 158, 11, 0.2);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.piece {
-  transition: transform 0.2s;
+/* pieces */
+.piece-group {
+  transition: transform 0.3s ease;
 }
 
 .piece-selected {
-  transform: scale(1.2);
+  filter: drop-shadow(0 0 6px #facc15) !important;
 }
 
+/* valid move glowing dots */
+.move-dot {
+  fill: #10b981;
+  animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+  from { opacity: 0.4; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* pop-in animation for placed/moved pieces */
+.pop-in {
+  animation: pop 0.3s ease-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* controls */
 .controls {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   text-align: center;
+  margin-bottom: 1rem;
 }
 
 .game-message {
   font-weight: 600;
   color: #5d4037;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .control-buttons {
@@ -191,9 +232,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
+  background: #e7e0d5;
+  color: #5d4037;
 }
 
 .control-btn:hover {
+  background: #d5c8b5;
   transform: translateY(-1px);
 }
 
@@ -202,17 +246,48 @@
   color: white;
 }
 
-.undo {
-  background: #42a5f5;
-  color: white;
-}
-
 .rules {
   background: #66bb6a;
   color: white;
 }
 
-/* Rules Modal */
+/* victory overlay */
+.victory-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.victory-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.play-again-btn {
+  background: #2d6a4f;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* rules modal */
 .rules-modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -227,37 +302,16 @@
   background: white;
   border-radius: 16px;
   padding: 2rem;
-  max-width: 450px;
+  max-width: 400px;
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
   position: relative;
 }
 
-.rules-modal h2 {
-  color: #5d4037;
-  margin-bottom: 1rem;
-}
-
-.rules-modal h3 {
-  color: #795548;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.rules-modal h4 {
-  color: #8d6e63;
-  margin-top: 0.75rem;
-}
-
-.rules-modal p {
-  line-height: 1.5;
-}
-
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 10px; right: 10px;
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -265,73 +319,16 @@
   color: #666;
 }
 
-.color-dot {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-
-.color-dot.green {
-  background: radial-gradient(circle at 30% 30%, #52b788, #2d6a4f);
-}
-
-.color-dot.brown {
-  background: radial-gradient(circle at 30% 30%, #CD853F, #8B4513);
-}
-
-/* Victory overlay */
-.victory-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  animation: fadeIn 0.5s;
-}
-
-.victory-card {
-  background: white;
-  border-radius: 20px;
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.victory-card h2 {
-  font-size: 2rem;
-  color: #5d4037;
-  margin-bottom: 1.5rem;
-}
-
-.play-again-btn {
-  background: #2d6a4f;
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.play-again-btn:hover {
-  background: #1b4332;
-}
-
-/* Responsive */
+/* responsive */
 @media (max-width: 480px) {
-  .game-header h1 { font-size: 2rem; }
-  .control-buttons { flex-direction: column; }
-  .info-section { flex-direction: column; gap: 0.5rem; }
+  .morabaraba-container {
+    padding: 0 0.2rem;
+  }
+  .game-header h1 {
+    font-size: 1.8rem;
+  }
+  .control-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
 }
