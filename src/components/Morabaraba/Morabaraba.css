@@ -1,6 +1,5 @@
-/* Morabaraba.css – polished traditional board game */
+/* Morabaraba.css – traditional Basotho board styling */
 
-/* ----- page layout ----- */
 .morabaraba-page {
   background: #f5e6d3;
   min-height: 100vh;
@@ -14,7 +13,6 @@
   position: relative;
 }
 
-/* back link */
 .back-link {
   display: inline-block;
   color: #5d4037;
@@ -28,7 +26,6 @@
   text-decoration: underline;
 }
 
-/* header */
 .game-header {
   text-align: center;
   margin-bottom: 1rem;
@@ -47,7 +44,6 @@
   margin-top: 0;
 }
 
-/* info panel */
 .game-info {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(6px);
@@ -111,7 +107,6 @@
   color: #4e342e;
 }
 
-/* mill alert */
 .mill-alert {
   background: #f59e0b;
   color: #1e293b;
@@ -128,7 +123,6 @@
   50% { opacity: 0.8; }
 }
 
-/* board container – scales nicely */
 .board-container {
   display: flex;
   justify-content: center;
@@ -145,7 +139,6 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* SVG intersections */
 .intersection {
   transition: fill 0.2s;
 }
@@ -170,12 +163,10 @@
   stroke-width: 2;
 }
 
-/* hover indicator for empty spots */
 .hover-indicator:hover {
   fill: rgba(245, 158, 11, 0.2);
 }
 
-/* pieces */
 .piece-group {
   transition: transform 0.3s ease;
 }
@@ -184,7 +175,6 @@
   filter: drop-shadow(0 0 6px #facc15) !important;
 }
 
-/* valid move glowing dots */
 .move-dot {
   fill: #10b981;
   animation: glow 1s infinite alternate;
@@ -195,7 +185,6 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-/* pop-in animation for placed/moved pieces */
 .pop-in {
   animation: pop 0.3s ease-out;
 }
@@ -206,7 +195,6 @@
   100% { transform: scale(1); }
 }
 
-/* controls */
 .controls {
   text-align: center;
   margin-bottom: 1rem;
@@ -251,7 +239,6 @@
   color: white;
 }
 
-/* victory overlay */
 .victory-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -287,7 +274,6 @@
   cursor: pointer;
 }
 
-/* rules modal */
 .rules-modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -319,7 +305,6 @@
   color: #666;
 }
 
-/* responsive */
 @media (max-width: 480px) {
   .morabaraba-container {
     padding: 0 0.2rem;
