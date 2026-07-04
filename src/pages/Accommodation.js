@@ -37,8 +37,8 @@ const residences = [
   {
     id: 3,
     name: "'Memmafumane Residence",
-    village: "Mafikeng",
-    area: "Mafikeng",
+    village: "Mangopeng",                  // ← moved from Mafikeng
+    area: "Mangopeng",
     amount: 350,
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "Ohh she is perfect",
@@ -51,8 +51,8 @@ const residences = [
   {
     id: 4,
     name: "'Maphakiso Residence",
-    village: "Mafikeng",
-    area: "Mafikeng",
+    village: "Mangopeng",                  // ← moved from Mafikeng
+    area: "Mangopeng",
     amount: 450,
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "We are mostly good, need to ask for amount.",
@@ -112,12 +112,12 @@ const residences = [
     name: "'Malethola Residence",
     village: "Hata-Butle",
     area: "Hata-Butle (tlasa Pius)",
-    amount: null,
-    amenities: "Pricing & details being updated – contact us",
+    amount: 500,                              // ← updated rent
+    amenities: "No ceiling, no tiles, no security",  // ← updated amenities
     internalNote: null,
     contactHidden: null,
     walkingTime: 7,
-    verified: false,
+    verified: true,                            // ← now verified
     occupied: false,
     images: null,
   },
