@@ -16,29 +16,32 @@ const POINTS = [
   { id: 24, x: 150, y: 150 },   // centre
 ];
 
-/* ==================== ADJACENCY (no diagonals, centre connects only to inner midpoints) ==================== */
-const BASE_ADJ = {
-  0: [1,7], 1: [0,2], 2: [1,3], 3: [2,4], 4: [3,5], 5: [4,6], 6: [5,7], 7: [6,0],
-  8: [9,15], 9: [8,10], 10: [9,11], 11: [10,12], 12: [11,13], 13: [12,14], 14: [13,15], 15: [14,8],
-  16: [17,23], 17: [16,18], 18: [17,19], 19: [18,20], 20: [19,21], 21: [20,22], 22: [21,23], 23: [22,16],
+/* ==================== ADJACENCY (single source of truth) ==================== */
+const RAW_ADJ = {
+  // Outer square
+  0: [1, 7], 1: [0, 2, 9], 2: [1, 3], 3: [2, 4, 11], 4: [3, 5], 5: [4, 6, 13], 6: [5, 7], 7: [6, 0, 15],
+  // Middle square
+  8: [9, 15], 9: [8, 10, 1, 17], 10: [9, 11], 11: [10, 12, 3, 19],
+  12: [11, 13], 13: [12, 14, 5, 21], 14: [13, 15], 15: [14, 8, 7, 23],
+  // Inner square
+  16: [17, 23], 17: [16, 18, 9, 24], 18: [17, 19], 19: [18, 20, 11, 24],
+  20: [19, 21], 21: [20, 22, 13, 24], 22: [21, 23], 23: [22, 16, 15, 24],
+  // Centre – only the four inner midpoints
+  24: [17, 21, 23, 19],
 };
-const MIDDLE_CONNECTIONS = {
-  1: [9],   9: [1,17],   17: [9,24],   24: [17],          // top centres
-  24: [21],  21: [24,13], 13: [21,5],   5: [13],          // bottom centres
-  7: [15],   15: [7,23],  23: [15,24],  24: [23],          // left centres
-  24: [19],  19: [24,11], 11: [19,3],   3: [11],           // right centres
-};
+
 const ADJ = {};
 for (let i = 0; i < 25; i++) ADJ[i] = [];
-Object.entries(BASE_ADJ).forEach(([k, v]) => v.forEach(n => ADJ[+k].push(n)));
-Object.entries(MIDDLE_CONNECTIONS).forEach(([k, v]) => v.forEach(n => { if (!ADJ[+k].includes(n)) ADJ[+k].push(n); }));
-// Ensure symmetry and centre connections are only the four inner midpoints (already defined above)
+Object.entries(RAW_ADJ).forEach(([k, v]) => {
+  const key = +k;
+  v.forEach(n => { if (!ADJ[key].includes(n)) ADJ[key].push(n); });
+});
 for (let i = 0; i < 25; i++) {
-  ADJ[i] = [...new Set(ADJ[i])];
   ADJ[i].forEach(j => { if (!ADJ[j].includes(i)) ADJ[j].push(i); });
+  ADJ[i].sort();
 }
 
-/* ==================== MILLS (straight lines of 3, same layer or one on each layer) ==================== */
+/* ==================== MILLS (straight lines of 3) ==================== */
 const ALL_LINES = [
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
@@ -66,11 +69,17 @@ const TIME_OPTIONS = [
   { label: '12 minutes', value: 720 },
 ];
 
-/* ==================== AUDIO (unchanged) ==================== */
+/* ==================== AUDIO ==================== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 function getAudioCtx() { if (!audioCtx) audioCtx = new AudioCtx(); if (audioCtx.state === 'suspended') audioCtx.resume(); return audioCtx; }
-function playTone(freq, duration, type = 'sine', volume = 0.15) { try { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(volume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + duration); } catch (e) {} }
+function playTone(freq, duration, type = 'sine', volume = 0.15) {
+  try { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + duration);
+  } catch (e) {} }
 function playChord(freqs, duration, volume = 0.12) { freqs.forEach(f => playTone(f, duration, 'triangle', volume)); }
 const sounds = {
   place: () => { playTone(600,0.1); setTimeout(()=>playTone(800,0.08),50); },
@@ -82,7 +91,7 @@ const sounds = {
   timeout: () => { playTone(200,0.4,'sawtooth',0.1); },
 };
 
-/* ==================== GAME LOGIC HELPERS ==================== */
+/* ==================== HELPERS ==================== */
 function millsForPlayer(board, point, player) {
   return MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
@@ -110,15 +119,19 @@ function checkGameOver(s) {
   }
   const oppPhase = s.onBoard[opp] === 3 ? PHASE.FLYING : s.phase;
   if (!canPlayerMove(s.board, opp, oppPhase)) {
-    // opponent cannot move → current player wins
     s.gameOver = true; s.winner = s.player; s.message = `🏆 ${s.player.toUpperCase()} Wins!`;
     sounds.victory();
   }
 }
 
 function cloneState(s) {
-  return { ...s, board: [...s.board], toPlace: {...s.toPlace}, onBoard: {...s.onBoard},
-           history: [...s.history], moves: [...s.moves], removable: [...s.removable], millPoints: s.millPoints ? [...s.millPoints] : null };
+  return {
+    ...s,
+    board: [...s.board], toPlace: { ...s.toPlace }, onBoard: { ...s.onBoard },
+    history: [...s.history], moves: [...s.moves], removable: [...s.removable],
+    millPoints: s.millPoints ? [...s.millPoints] : null,
+    repetitionCount: { ...s.repetitionCount },
+  };
 }
 
 function freshState(timeLimit = 30) {
@@ -130,15 +143,15 @@ function freshState(timeLimit = 30) {
     onBoard: { green: 0, brown: 0 },
     selected: null, moves: [],
     millAlert: false, removable: [], millPoints: null,
-    history: [],             // stores board snapshots for draw detection
-    repetitionCount: {},     // counts occurrences of each board state
+    history: [],
+    repetitionCount: {},
     winner: null, gameOver: false, message: '',
     gameTimeRemaining: timeLimit,
     timeLimit: timeLimit,
   };
 }
 
-/* ==================== AI (MINIMAX, unchanged) ==================== */
+/* ==================== AI (MINIMAX) ==================== */
 function evaluateState(s) {
   const aiPlayer = 'brown', human = 'green';
   let score = 0;
@@ -267,7 +280,6 @@ export default function MorabarabaPage() {
       setS(prev => {
         if (prev.gameTimeRemaining <= 1) {
           clearInterval(timerRef.current);
-          // time's up – determine winner by piece count
           const greenCount = prev.onBoard.green;
           const brownCount = prev.onBoard.brown;
           let msg = '';
@@ -284,7 +296,7 @@ export default function MorabarabaPage() {
       });
     }, 1000);
     return () => clearInterval(timerRef.current);
-  }, [mode, s.gameOver, s.millAlert, s.player]); // restart timer on turn change
+  }, [mode, s.gameOver, s.millAlert, s.player]);
 
   // ----- AI MOVE -----
   useEffect(() => {
@@ -297,7 +309,6 @@ export default function MorabarabaPage() {
         const bestMove = computerMove(prev, difficulty);
         checkGameOver(bestMove);
         if (bestMove.gameOver) setShowConfetti(true);
-        // detect repetition draw (3-fold repetition)
         const boardKey = boardToString(bestMove.board) + bestMove.player;
         const repCount = (bestMove.repetitionCount[boardKey] || 0) + 1;
         bestMove.repetitionCount = { ...bestMove.repetitionCount, [boardKey]: repCount };
@@ -332,7 +343,6 @@ export default function MorabarabaPage() {
           sounds.mill();
         } else {
           next.player = opp; checkGameOver(next);
-          // repetition detection
           const key = boardToString(next.board) + next.player;
           next.repetitionCount = { ...next.repetitionCount, [key]: (next.repetitionCount[key]||0)+1 };
           if (next.repetitionCount[key] >= 3) { next.gameOver = true; next.message = '🤝 Draw (repetition)'; }
@@ -478,7 +488,7 @@ export default function MorabarabaPage() {
   );
 }
 
-/* ==================== SUB‑COMPONENTS (unchanged) ==================== */
+/* ==================== SUB‑COMPONENTS ==================== */
 function Board({ s, animating, capturing, click, mode }) {
   const millPointSet = s.millPoints ? new Set(s.millPoints) : new Set();
   return (
