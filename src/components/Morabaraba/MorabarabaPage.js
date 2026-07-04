@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Morabaraba.css';
 
-/* ==================== BOARD GEOMETRY ==================== */
+/* ==================== BOARD GEOMETRY (25 points) ==================== */
 const POINTS = [
   { id: 0,  x: 30, y: 30 },  { id: 1,  x: 150, y: 30 },  { id: 2,  x: 270, y: 30 },
   { id: 3,  x: 270, y: 150 }, { id: 4,  x: 270, y: 270 }, { id: 5,  x: 150, y: 270 },
@@ -13,31 +13,32 @@ const POINTS = [
   { id: 16, x: 120, y: 120 },{ id: 17, x: 150, y: 120 },{ id: 18, x: 180, y: 120 },
   { id: 19, x: 180, y: 150 },{ id: 20, x: 180, y: 180 },{ id: 21, x: 150, y: 180 },
   { id: 22, x: 120, y: 180 },{ id: 23, x: 120, y: 150 },
-  { id: 24, x: 150, y: 150 },
+  { id: 24, x: 150, y: 150 },   // centre
 ];
 
-/* ==================== ADJACENCY ==================== */
+/* ==================== ADJACENCY (no diagonals, centre connects only to inner midpoints) ==================== */
 const BASE_ADJ = {
   0: [1,7], 1: [0,2], 2: [1,3], 3: [2,4], 4: [3,5], 5: [4,6], 6: [5,7], 7: [6,0],
   8: [9,15], 9: [8,10], 10: [9,11], 11: [10,12], 12: [11,13], 13: [12,14], 14: [13,15], 15: [14,8],
   16: [17,23], 17: [16,18], 18: [17,19], 19: [18,20], 20: [19,21], 21: [20,22], 22: [21,23], 23: [22,16],
 };
 const MIDDLE_CONNECTIONS = {
-  1: [9],   9: [1,17],   17: [9,24],   24: [17],
-  24: [21],  21: [24,13], 13: [21,5],   5: [13],
-  7: [15],   15: [7,23],  23: [15,24],  24: [23],
-  24: [19],  19: [24,11], 11: [19,3],   3: [11],
+  1: [9],   9: [1,17],   17: [9,24],   24: [17],          // top centres
+  24: [21],  21: [24,13], 13: [21,5],   5: [13],          // bottom centres
+  7: [15],   15: [7,23],  23: [15,24],  24: [23],          // left centres
+  24: [19],  19: [24,11], 11: [19,3],   3: [11],           // right centres
 };
 const ADJ = {};
 for (let i = 0; i < 25; i++) ADJ[i] = [];
 Object.entries(BASE_ADJ).forEach(([k, v]) => v.forEach(n => ADJ[+k].push(n)));
 Object.entries(MIDDLE_CONNECTIONS).forEach(([k, v]) => v.forEach(n => { if (!ADJ[+k].includes(n)) ADJ[+k].push(n); }));
+// Ensure symmetry and centre connections are only the four inner midpoints (already defined above)
 for (let i = 0; i < 25; i++) {
   ADJ[i] = [...new Set(ADJ[i])];
   ADJ[i].forEach(j => { if (!ADJ[j].includes(i)) ADJ[j].push(i); });
 }
 
-/* ==================== MILLS ==================== */
+/* ==================== MILLS (straight lines of 3, same layer or one on each layer) ==================== */
 const ALL_LINES = [
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
@@ -65,29 +66,12 @@ const TIME_OPTIONS = [
   { label: '12 minutes', value: 720 },
 ];
 
-/* ==================== AUDIO ==================== */
+/* ==================== AUDIO (unchanged) ==================== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new AudioCtx();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-function playTone(freq, duration, type = 'sine', volume = 0.15) {
-  try {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gain.gain.setValueAtTime(volume, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(); osc.stop(ctx.currentTime + duration);
-  } catch (e) {}
-}
-function playChord(freqs, duration, volume = 0.12) {
-  freqs.forEach(f => playTone(f, duration, 'triangle', volume));
-}
+function getAudioCtx() { if (!audioCtx) audioCtx = new AudioCtx(); if (audioCtx.state === 'suspended') audioCtx.resume(); return audioCtx; }
+function playTone(freq, duration, type = 'sine', volume = 0.15) { try { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(volume, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + duration); } catch (e) {} }
+function playChord(freqs, duration, volume = 0.12) { freqs.forEach(f => playTone(f, duration, 'triangle', volume)); }
 const sounds = {
   place: () => { playTone(600,0.1); setTimeout(()=>playTone(800,0.08),50); },
   move: () => playTone(400,0.15,'triangle',0.1),
@@ -98,7 +82,7 @@ const sounds = {
   timeout: () => { playTone(200,0.4,'sawtooth',0.1); },
 };
 
-/* ==================== HELPERS ==================== */
+/* ==================== GAME LOGIC HELPERS ==================== */
 function millsForPlayer(board, point, player) {
   return MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
@@ -115,20 +99,28 @@ function canPlayerMove(board, player, phase) {
   if (phase === PHASE.FLYING) return board.includes(null);
   return board.some((v, i) => v === player && validDestinations(board, i, player, phase).length > 0);
 }
+function boardToString(board) { return board.map(c => c ?? '.').join(''); }
+
 function checkGameOver(s) {
   if (s.gameOver || s.phase === PHASE.PLACING) return;
   const opp = s.player === 'green' ? 'brown' : 'green';
-  if (s.onBoard[opp] < 3) { s.gameOver = true; s.winner = s.player; s.message = `🏆 ${s.player.toUpperCase()} Wins!`; sounds.victory(); return; }
+  if (s.onBoard[opp] < 3) {
+    s.gameOver = true; s.winner = s.player; s.message = `🏆 ${s.player.toUpperCase()} Wins!`;
+    sounds.victory(); return;
+  }
   const oppPhase = s.onBoard[opp] === 3 ? PHASE.FLYING : s.phase;
-  if (!canPlayerMove(s.board, opp, oppPhase)) { s.gameOver = true; s.winner = s.player; s.message = `🏆 ${s.player.toUpperCase()} Wins!`; sounds.victory(); }
+  if (!canPlayerMove(s.board, opp, oppPhase)) {
+    // opponent cannot move → current player wins
+    s.gameOver = true; s.winner = s.player; s.message = `🏆 ${s.player.toUpperCase()} Wins!`;
+    sounds.victory();
+  }
 }
+
 function cloneState(s) {
-  return {
-    ...s,
-    board: [...s.board], toPlace: { ...s.toPlace }, onBoard: { ...s.onBoard },
-    history: [...s.history], moves: [...s.moves], removable: [...s.removable], millPoints: s.millPoints ? [...s.millPoints] : null,
-  };
+  return { ...s, board: [...s.board], toPlace: {...s.toPlace}, onBoard: {...s.onBoard},
+           history: [...s.history], moves: [...s.moves], removable: [...s.removable], millPoints: s.millPoints ? [...s.millPoints] : null };
 }
+
 function freshState(timeLimit = 30) {
   return {
     board: Array(25).fill(null),
@@ -138,14 +130,15 @@ function freshState(timeLimit = 30) {
     onBoard: { green: 0, brown: 0 },
     selected: null, moves: [],
     millAlert: false, removable: [], millPoints: null,
-    history: [],
+    history: [],             // stores board snapshots for draw detection
+    repetitionCount: {},     // counts occurrences of each board state
     winner: null, gameOver: false, message: '',
-    timer: timeLimit,
+    gameTimeRemaining: timeLimit,
     timeLimit: timeLimit,
   };
 }
 
-/* ==================== AI (MINIMAX) ==================== */
+/* ==================== AI (MINIMAX, unchanged) ==================== */
 function evaluateState(s) {
   const aiPlayer = 'brown', human = 'green';
   let score = 0;
@@ -230,12 +223,7 @@ function minimax(state, depth, alpha, beta, max) {
 }
 function computerMove(s, difficulty) {
   const moves = generateMoves(s);
-  if (!moves.length) {
-    const next = cloneState(s);
-    next.player = s.player === 'green' ? 'brown' : 'green';
-    next.timer = next.timeLimit;
-    return next;
-  }
+  if (!moves.length) { const next = cloneState(s); next.player = s.player === 'green' ? 'brown' : 'green'; return next; }
   if (difficulty === 'easy') return moves[Math.floor(Math.random() * moves.length)].state;
   const depth = difficulty === 'hard' ? 4 : 2;
   let best = moves[0], bestScore = -Infinity;
@@ -272,53 +260,59 @@ export default function MorabarabaPage() {
     sounds.click();
   };
 
-  // ----- TIMER -----
+  // ----- GAME TIMER (total game time) -----
   useEffect(() => {
-    if (s.gameOver || s.millAlert || (mode === 'vsComputer' && s.player === 'brown')) return;
-    setS(prev => ({ ...prev, timer: prev.timeLimit }));
-    const interval = setInterval(() => {
+    if (!mode || s.gameOver || s.millAlert) return;
+    timerRef.current = setInterval(() => {
       setS(prev => {
-        if (prev.timer <= 1) {
-          sounds.timeout();
-          const next = cloneState(prev);
-          next.player = prev.player === 'green' ? 'brown' : 'green';
-          next.timer = next.timeLimit;
-          next.selected = null;
-          next.moves = [];
-          return next;
+        if (prev.gameTimeRemaining <= 1) {
+          clearInterval(timerRef.current);
+          // time's up – determine winner by piece count
+          const greenCount = prev.onBoard.green;
+          const brownCount = prev.onBoard.brown;
+          let msg = '';
+          if (greenCount > brownCount) {
+            prev.winner = 'green'; msg = '🏆 Green Wins (time)';
+          } else if (brownCount > greenCount) {
+            prev.winner = 'brown'; msg = '🏆 Brown Wins (time)';
+          } else {
+            prev.winner = null; msg = '🤝 Draw (time)';
+          }
+          return { ...prev, gameOver: true, message: msg, gameTimeRemaining: 0 };
         }
-        return { ...prev, timer: prev.timer - 1 };
+        return { ...prev, gameTimeRemaining: prev.gameTimeRemaining - 1 };
       });
     }, 1000);
-    return () => clearInterval(interval);
-  }, [s.player, s.gameOver, s.millAlert, mode]);
+    return () => clearInterval(timerRef.current);
+  }, [mode, s.gameOver, s.millAlert, s.player]); // restart timer on turn change
 
   // ----- AI MOVE -----
   useEffect(() => {
     if (mode !== 'vsComputer' || s.player !== 'brown' || s.gameOver || s.millAlert) return;
     if (thinkingRef.current) return;
-
     thinkingRef.current = true;
     setThinking(true);
-
     aiTimerRef.current = setTimeout(() => {
       setS(prev => {
         const bestMove = computerMove(prev, difficulty);
         checkGameOver(bestMove);
         if (bestMove.gameOver) setShowConfetti(true);
-        const lastAction = bestMove.history[bestMove.history.length - 1];
-        if (lastAction?.type === 'place') { sounds.place(); setAnimating(lastAction.pointId); setTimeout(() => setAnimating(null), 400); }
-        else if (lastAction?.type === 'move') { sounds.move(); setAnimating(lastAction.to); setTimeout(() => setAnimating(null), 400); }
+        // detect repetition draw (3-fold repetition)
+        const boardKey = boardToString(bestMove.board) + bestMove.player;
+        const repCount = (bestMove.repetitionCount[boardKey] || 0) + 1;
+        bestMove.repetitionCount = { ...bestMove.repetitionCount, [boardKey]: repCount };
+        if (repCount >= 3) {
+          bestMove.gameOver = true; bestMove.message = '🤝 Draw (repetition)';
+        }
         thinkingRef.current = false;
         setThinking(false);
         return bestMove;
       });
-    }, 800);
-
+    }, 600);
     return () => clearTimeout(aiTimerRef.current);
   }, [s.player, s.gameOver, s.millAlert, mode, difficulty]);
 
-  // ----- HUMAN CLICK (with mill glow) -----
+  // ----- HUMAN CLICK -----
   const click = useCallback((pointId, action) => {
     if (mode === 'vsComputer' && s.player === 'brown') return;
     setS(prev => {
@@ -333,13 +327,15 @@ export default function MorabarabaPage() {
         sounds.place();
         if (next.toPlace.green === 0 && next.toPlace.brown === 0) next.phase = PHASE.MOVING;
         if (mill.length > 0) {
-          next.millAlert = true;
-          next.removable = getRemovable(next.board, opp);
-          next.millPoints = mill[0]; // first mill found (array of 3 IDs)
+          next.millAlert = true; next.removable = getRemovable(next.board, opp);
+          next.millPoints = mill[0];
           sounds.mill();
         } else {
-          next.player = opp; next.timer = next.timeLimit; next.millPoints = null;
-          checkGameOver(next);
+          next.player = opp; checkGameOver(next);
+          // repetition detection
+          const key = boardToString(next.board) + next.player;
+          next.repetitionCount = { ...next.repetitionCount, [key]: (next.repetitionCount[key]||0)+1 };
+          if (next.repetitionCount[key] >= 3) { next.gameOver = true; next.message = '🤝 Draw (repetition)'; }
         }
         setAnimating(pointId); setTimeout(() => setAnimating(null), 400);
         return next;
@@ -352,7 +348,7 @@ export default function MorabarabaPage() {
           setS(prev => {
             const n = cloneState(prev);
             n.board[pointId] = null; n.onBoard[opp]--; n.millAlert = false; n.removable = []; n.millPoints = null;
-            n.player = opp; n.timer = n.timeLimit; checkGameOver(n);
+            n.player = opp; checkGameOver(n);
             if (n.gameOver) setShowConfetti(true);
             return n;
           });
@@ -371,13 +367,14 @@ export default function MorabarabaPage() {
         const mill = millsForPlayer(next.board, pointId, p);
         sounds.move();
         if (mill.length > 0) {
-          next.millAlert = true;
-          next.removable = getRemovable(next.board, opp);
+          next.millAlert = true; next.removable = getRemovable(next.board, opp);
           next.millPoints = mill[0];
           sounds.mill();
         } else {
-          next.player = opp; next.timer = next.timeLimit; next.millPoints = null;
-          checkGameOver(next);
+          next.player = opp; checkGameOver(next);
+          const key = boardToString(next.board) + next.player;
+          next.repetitionCount = { ...next.repetitionCount, [key]: (next.repetitionCount[key]||0)+1 };
+          if (next.repetitionCount[key] >= 3) { next.gameOver = true; next.message = '🤝 Draw (repetition)'; }
         }
         setAnimating(pointId); setTimeout(() => setAnimating(null), 400);
         return next;
@@ -386,9 +383,7 @@ export default function MorabarabaPage() {
     });
   }, [mode, s.player]);
 
-  useEffect(() => {
-    if (s.gameOver) { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 4000); }
-  }, [s.gameOver]);
+  useEffect(() => { if (s.gameOver) { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 4000); } }, [s.gameOver]);
 
   const phaseText = () => {
     if (s.phase === PHASE.PLACING) return 'Placing Pieces';
@@ -414,7 +409,7 @@ export default function MorabarabaPage() {
               </button>
             </div>
             <div className="time-select">
-              <label>⏱️ Turn Time:</label>
+              <label>⏱️ Game Time:</label>
               <select value={gameTime} onChange={e => setGameTime(Number(e.target.value))}>
                 {TIME_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
               </select>
@@ -451,7 +446,7 @@ export default function MorabarabaPage() {
               {mode === 'vsComputer' && s.player === 'brown' && <span className="ai-label"> (Computer)</span>}
             </div>
             <div className="phase-indicator">Phase: {phaseText()}</div>
-            <div className="timer-display">⏳ {s.timer}s</div>
+            <div className="timer-display">⏳ {Math.floor(s.gameTimeRemaining / 60)}:{(s.gameTimeRemaining % 60).toString().padStart(2, '0')}</div>
           </div>
           <div className="piece-counts">
             {s.phase === PHASE.PLACING ? (
@@ -462,7 +457,7 @@ export default function MorabarabaPage() {
           </div>
           {thinking && <div className="thinking-indicator">Computer is thinking…</div>}
         </div>
-        {s.millAlert && <div className="mill-alert">⚡ Mill formed! Click a glowing opponent piece to capture it.</div>}
+        {s.millAlert && <div className="mill-alert">⚡ Mill formed! Capture one opponent piece.</div>}
         {capturingPiece !== null && <div className="capture-alert">🔴 Removing piece…</div>}
         <Board s={s} animating={animating} capturing={capturingPiece} click={click} mode={mode} />
         <div className="controls">
@@ -483,7 +478,7 @@ export default function MorabarabaPage() {
   );
 }
 
-/* ==================== SUB‑COMPONENTS ==================== */
+/* ==================== SUB‑COMPONENTS (unchanged) ==================== */
 function Board({ s, animating, capturing, click, mode }) {
   const millPointSet = s.millPoints ? new Set(s.millPoints) : new Set();
   return (
@@ -513,7 +508,6 @@ function Board({ s, animating, capturing, click, mode }) {
               else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
               else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
             }}>
-              {/* Mill glow ring */}
               {isMill && <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="3" className="mill-glow-ring" />}
               <circle cx={pt.x} cy={pt.y} r="5" fill="#a08464"
                 className={`intersection ${isValid?'valid-move':''} ${isRem?'removable':''} ${isSel?'selected':''} ${isCapturing?'capturing':''}`} />
@@ -551,8 +545,10 @@ function RulesModal({ open, close }) {
         <p><strong>Phase 1 – Placing:</strong> Alternate placing pieces until all 24 are placed.</p>
         <p><strong>Phase 2 – Moving:</strong> Move one piece per turn along lines.</p>
         <p><strong>Phase 3 – Flying:</strong> With 3 pieces left, move anywhere.</p>
-        <p><strong>Mills:</strong> Form 3 in a line to capture an opponent piece.</p>
+        <p><strong>Mills:</strong> Form 3 in a line (same layer or one per layer) to capture an opponent piece.</p>
         <p><strong>Winning:</strong> Reduce opponent to &lt;3 pieces or block all moves.</p>
+        <p><strong>Draw:</strong> If the same position repeats 3 times, the game is a draw.</p>
+        <p><strong>Time:</strong> The game clock counts down. When time expires, the player with more pieces on the board wins. Equal pieces = draw.</p>
       </div>
     </div>
   );
