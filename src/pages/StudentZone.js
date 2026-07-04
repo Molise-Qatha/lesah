@@ -17,6 +17,7 @@ const games = [
     title: 'Morabaraba',
     desc: 'Traditional Basotho board game. Challenge a friend or the computer.',
     link: '/student-zone/morabaraba',
+    img: '/images/student-zone/game-morabaraba.jpg',
     available: true,
   },
   {
@@ -24,6 +25,7 @@ const games = [
     title: 'Lilotho',
     desc: 'Sesotho riddle game. Test your wit with proverbs.',
     link: '/student-zone/lilotho',
+    img: '/images/student-zone/game-lilotho.jpg',
     available: true,
   },
   {
@@ -31,6 +33,7 @@ const games = [
     title: 'Word Search',
     desc: 'Find hidden student‑themed words.',
     link: '/student-zone/word-search',
+    img: '/images/student-zone/game-wordsearch.jpg',
     available: true,
   },
   {
@@ -38,6 +41,7 @@ const games = [
     title: 'Word Scramble',
     desc: 'Unscramble student‑themed words as fast as you can.',
     link: '/student-zone/word-scramble',
+    img: '/images/student-zone/game-wordscramble.jpg',
     available: true,
   },
   {
@@ -45,6 +49,7 @@ const games = [
     title: 'Sudoku',
     desc: 'Challenge your logic skills.',
     link: null,
+    img: null,                 // no image yet
     available: false,
   },
 ];
@@ -64,8 +69,37 @@ const quickLinks = [
   { icon: '📆', title: 'Academic Calendar', path: null, comingSoon: true },
 ];
 
+const highlights = [
+  {
+    id: 'meme',
+    title: "Today's Meme",
+    emoji: '😂',
+    img: '/images/student-zone/highlight-meme.jpg',
+    quote: "When you realise the assignment was due yesterday.",
+    badge: 'Updated Daily',
+    button: 'View',
+  },
+  {
+    id: 'motivation',
+    title: "Today's Motivation",
+    emoji: '💡',
+    img: '/images/student-zone/highlight-motivation.jpg',
+    quote: "Small progress is still progress.",
+    button: 'Read',
+  },
+  {
+    id: 'notice',
+    title: "Campus Notice",
+    emoji: '📢',
+    img: null,                 // no image yet
+    quote: "Registration opens next Monday.",
+    badge: 'Notice',
+    button: 'More',
+  },
+];
+
 function StudentZone() {
-  const recentGames = []; // placeholder
+  const recentGames = [];
 
   const scrollToGames = () => {
     const el = document.getElementById('games-section');
@@ -74,7 +108,9 @@ function StudentZone() {
 
   return (
     <div className="student-zone-page">
+      {/* Hero section now expects an image via CSS background */}
       <div className="sz-hero">
+        <div className="sz-hero-overlay" />
         <div className="sz-hero-content">
           <h1>Student Zone</h1>
           <p className="sz-hero-subtitle">Your campus. Your community. Your space.</p>
@@ -113,7 +149,14 @@ function StudentZone() {
         <div className="sz-games-grid">
           {games.map((game, idx) => (
             <div key={idx} className={`sz-game-card ${!game.available ? 'disabled' : ''}`}>
-              <span className="sz-game-icon">{game.icon}</span>
+              <div className="sz-game-image">
+                {game.img ? (
+                  <img src={game.img} alt={game.title} className="game-card-img"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                ) : null}
+                <span className="sz-game-icon">{game.icon}</span>
+              </div>
               <h3>{game.title}</h3>
               <p>{game.desc}</p>
               {game.available ? (
@@ -126,39 +169,27 @@ function StudentZone() {
         </div>
       </section>
 
-      {/* ========== NEW: DAILY HIGHLIGHTS ========== */}
+      {/* Daily Highlights */}
       <section className="sz-section">
         <h2 className="sz-section-title">✨ Daily Highlights</h2>
         <div className="sz-highlights-grid">
-          {/* Card 1: Today's Meme */}
-          <div className="sz-highlight-card">
-            <div className="sz-highlight-image meme-placeholder">😂</div>
-            <span className="sz-badge highlight-badge">Updated Daily</span>
-            <p className="sz-highlight-quote">
-              "When you realise the assignment was due yesterday."
-            </p>
-            <button className="sz-highlight-btn">View</button>
-          </div>
-
-          {/* Card 2: Today's Motivation */}
-          <div className="sz-highlight-card">
-            <div className="sz-highlight-image motivation-placeholder">💡</div>
-            <p className="sz-highlight-quote">"Small progress is still progress."</p>
-            <button className="sz-highlight-btn">Read</button>
-          </div>
-
-          {/* Card 3: Campus Notice */}
-          <div className="sz-highlight-card">
-            <div className="sz-highlight-image notice-placeholder">📢</div>
-            <span className="sz-badge highlight-badge">Notice</span>
-            <p className="sz-highlight-quote">
-              Registration opens next Monday.
-            </p>
-            <button className="sz-highlight-btn">More</button>
-          </div>
+          {highlights.map(card => (
+            <div key={card.id} className="sz-highlight-card">
+              <div className={`sz-highlight-image ${card.id}-placeholder`}>
+                {card.img ? (
+                  <img src={card.img} alt={card.title} className="highlight-img"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                ) : null}
+                <span className="highlight-emoji">{card.emoji}</span>
+              </div>
+              {card.badge && <span className="sz-badge highlight-badge">{card.badge}</span>}
+              <p className="sz-highlight-quote">"{card.quote}"</p>
+              <button className="sz-highlight-btn">{card.button}</button>
+            </div>
+          ))}
         </div>
       </section>
-      {/* ============================================= */}
 
       {/* Daily Basotho Motivation */}
       <section className="sz-section">
