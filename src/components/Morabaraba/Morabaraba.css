@@ -505,3 +505,18 @@
   font-size: 1rem;
   cursor: pointer;
 }
+/* Mill glow ring */
+.mill-glow-ring {
+  animation: mill-pulse 1s infinite alternate;
+  opacity: 0.8;
+}
+
+@keyframes mill-pulse {
+  from { r: 16; stroke-width: 2; }
+  to { r: 20; stroke-width: 4; opacity: 1; }
+}
+
+/* Mill piece subtle enlargement */
+.mill-piece circle:last-child {
+  filter: drop-shadow(0 0 6px #facc15) !important;
+}

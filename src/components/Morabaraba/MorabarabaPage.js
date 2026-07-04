@@ -126,7 +126,7 @@ function cloneState(s) {
   return {
     ...s,
     board: [...s.board], toPlace: { ...s.toPlace }, onBoard: { ...s.onBoard },
-    history: [...s.history], moves: [...s.moves], removable: [...s.removable],
+    history: [...s.history], moves: [...s.moves], removable: [...s.removable], millPoints: s.millPoints ? [...s.millPoints] : null,
   };
 }
 function freshState(timeLimit = 30) {
@@ -137,7 +137,7 @@ function freshState(timeLimit = 30) {
     toPlace: { green: NUM_PIECES, brown: NUM_PIECES },
     onBoard: { green: 0, brown: 0 },
     selected: null, moves: [],
-    millAlert: false, removable: [],
+    millAlert: false, removable: [], millPoints: null,
     history: [],
     winner: null, gameOver: false, message: '',
     timer: timeLimit,
@@ -231,7 +231,6 @@ function minimax(state, depth, alpha, beta, max) {
 function computerMove(s, difficulty) {
   const moves = generateMoves(s);
   if (!moves.length) {
-    // No moves available – just switch turns
     const next = cloneState(s);
     next.player = s.player === 'green' ? 'brown' : 'green';
     next.timer = next.timeLimit;
@@ -261,7 +260,7 @@ export default function MorabarabaPage() {
 
   const timerRef = useRef(null);
   const aiTimerRef = useRef(null);
-  const thinkingRef = useRef(false); // track thinking without triggering re‑render
+  const thinkingRef = useRef(false);
 
   const startGame = (selectedMode) => {
     setMode(selectedMode);
@@ -294,10 +293,10 @@ export default function MorabarabaPage() {
     return () => clearInterval(interval);
   }, [s.player, s.gameOver, s.millAlert, mode]);
 
-  // ----- AI MOVE (FIXED) -----
+  // ----- AI MOVE -----
   useEffect(() => {
     if (mode !== 'vsComputer' || s.player !== 'brown' || s.gameOver || s.millAlert) return;
-    if (thinkingRef.current) return; // already thinking
+    if (thinkingRef.current) return;
 
     thinkingRef.current = true;
     setThinking(true);
@@ -307,19 +306,9 @@ export default function MorabarabaPage() {
         const bestMove = computerMove(prev, difficulty);
         checkGameOver(bestMove);
         if (bestMove.gameOver) setShowConfetti(true);
-
-        // Animation for the move
         const lastAction = bestMove.history[bestMove.history.length - 1];
-        if (lastAction?.type === 'place') {
-          sounds.place();
-          setAnimating(lastAction.pointId);
-          setTimeout(() => setAnimating(null), 400);
-        } else if (lastAction?.type === 'move') {
-          sounds.move();
-          setAnimating(lastAction.to);
-          setTimeout(() => setAnimating(null), 400);
-        }
-
+        if (lastAction?.type === 'place') { sounds.place(); setAnimating(lastAction.pointId); setTimeout(() => setAnimating(null), 400); }
+        else if (lastAction?.type === 'move') { sounds.move(); setAnimating(lastAction.to); setTimeout(() => setAnimating(null), 400); }
         thinkingRef.current = false;
         setThinking(false);
         return bestMove;
@@ -329,7 +318,7 @@ export default function MorabarabaPage() {
     return () => clearTimeout(aiTimerRef.current);
   }, [s.player, s.gameOver, s.millAlert, mode, difficulty]);
 
-  // ----- HUMAN CLICK -----
+  // ----- HUMAN CLICK (with mill glow) -----
   const click = useCallback((pointId, action) => {
     if (mode === 'vsComputer' && s.player === 'brown') return;
     setS(prev => {
@@ -344,9 +333,14 @@ export default function MorabarabaPage() {
         sounds.place();
         if (next.toPlace.green === 0 && next.toPlace.brown === 0) next.phase = PHASE.MOVING;
         if (mill.length > 0) {
-          next.millAlert = true; next.removable = getRemovable(next.board, opp);
+          next.millAlert = true;
+          next.removable = getRemovable(next.board, opp);
+          next.millPoints = mill[0]; // first mill found (array of 3 IDs)
           sounds.mill();
-        } else { next.player = opp; next.timer = next.timeLimit; checkGameOver(next); }
+        } else {
+          next.player = opp; next.timer = next.timeLimit; next.millPoints = null;
+          checkGameOver(next);
+        }
         setAnimating(pointId); setTimeout(() => setAnimating(null), 400);
         return next;
       }
@@ -357,7 +351,7 @@ export default function MorabarabaPage() {
           setCapturingPiece(null);
           setS(prev => {
             const n = cloneState(prev);
-            n.board[pointId] = null; n.onBoard[opp]--; n.millAlert = false; n.removable = [];
+            n.board[pointId] = null; n.onBoard[opp]--; n.millAlert = false; n.removable = []; n.millPoints = null;
             n.player = opp; n.timer = n.timeLimit; checkGameOver(n);
             if (n.gameOver) setShowConfetti(true);
             return n;
@@ -377,9 +371,14 @@ export default function MorabarabaPage() {
         const mill = millsForPlayer(next.board, pointId, p);
         sounds.move();
         if (mill.length > 0) {
-          next.millAlert = true; next.removable = getRemovable(next.board, opp);
+          next.millAlert = true;
+          next.removable = getRemovable(next.board, opp);
+          next.millPoints = mill[0];
           sounds.mill();
-        } else { next.player = opp; next.timer = next.timeLimit; checkGameOver(next); }
+        } else {
+          next.player = opp; next.timer = next.timeLimit; next.millPoints = null;
+          checkGameOver(next);
+        }
         setAnimating(pointId); setTimeout(() => setAnimating(null), 400);
         return next;
       }
@@ -463,7 +462,7 @@ export default function MorabarabaPage() {
           </div>
           {thinking && <div className="thinking-indicator">Computer is thinking…</div>}
         </div>
-        {s.millAlert && <div className="mill-alert">⚡ Mill formed! Capture one opponent piece.</div>}
+        {s.millAlert && <div className="mill-alert">⚡ Mill formed! Click a glowing opponent piece to capture it.</div>}
         {capturingPiece !== null && <div className="capture-alert">🔴 Removing piece…</div>}
         <Board s={s} animating={animating} capturing={capturingPiece} click={click} mode={mode} />
         <div className="controls">
@@ -486,6 +485,7 @@ export default function MorabarabaPage() {
 
 /* ==================== SUB‑COMPONENTS ==================== */
 function Board({ s, animating, capturing, click, mode }) {
+  const millPointSet = s.millPoints ? new Set(s.millPoints) : new Set();
   return (
     <div className="board-container">
       <svg viewBox="0 0 300 300" className="morabaraba-board">
@@ -503,6 +503,7 @@ function Board({ s, animating, capturing, click, mode }) {
           const isRem = s.removable.includes(pt.id);
           const isNew = animating === pt.id;
           const isCapturing = capturing === pt.id;
+          const isMill = millPointSet.has(pt.id);
           const clickable = mode === 'twoPlayer' || (mode === 'vsComputer' && s.player === 'green');
           return (
             <g key={pt.id} onClick={() => {
@@ -512,11 +513,13 @@ function Board({ s, animating, capturing, click, mode }) {
               else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
               else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
             }}>
+              {/* Mill glow ring */}
+              {isMill && <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="3" className="mill-glow-ring" />}
               <circle cx={pt.x} cy={pt.y} r="5" fill="#a08464"
                 className={`intersection ${isValid?'valid-move':''} ${isRem?'removable':''} ${isSel?'selected':''} ${isCapturing?'capturing':''}`} />
               {!piece && !isRem && <circle cx={pt.x} cy={pt.y} r="9" fill="transparent" className="hover-indicator" />}
               {piece && (
-                <g className={`piece-group ${isNew?'pop-in':''} ${isCapturing?'shake':''}`}>
+                <g className={`piece-group ${isNew?'pop-in':''} ${isCapturing?'shake':''} ${isMill?'mill-piece':''}`}>
                   <defs>
                     <radialGradient id={`grad-${piece}-${pt.id}`} cx="30%" cy="30%">
                       <stop offset="0%" stopColor={piece==='green'?'#6ee7b7':'#d97706'} stopOpacity="0.9" />
