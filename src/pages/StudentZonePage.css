@@ -18,8 +18,9 @@
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* HERO (Basotho-themed background via gradient + texture) */
+/* ==================== HERO (original gradient – image ready) ==================== */
 .sz-hero {
+  position: relative;
   background: linear-gradient(135deg, rgba(42,157,143,0.08) 0%, rgba(233,196,106,0.15) 100%),
               url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L55 25 L30 45 L5 25 Z' fill='none' stroke='%232a9d8f' stroke-opacity='0.15' stroke-width='1'/%3E%3C/svg%3E");
   background-size: cover;
@@ -28,7 +29,26 @@
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
+/* Optional: uncomment these lines AFTER you upload hero-bg.jpg */
+/*
+.sz-hero {
+  background-image: url('/images/student-zone/hero-bg.jpg');
+  background-color: rgba(0,0,0,0.45);
+  background-blend-mode: overlay;
+}
+*/
+
+/* dark overlay for image (keep it, harmless without image) */
+.sz-hero-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
 .sz-hero-content {
+  position: relative;
+  z-index: 2;
   max-width: 700px;
   margin: 0 auto;
 }
@@ -162,7 +182,7 @@
   margin-top: 0.5rem;
 }
 
-/* GAMES GRID */
+/* ==================== GAMES GRID (with image support) ==================== */
 .sz-games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -190,9 +210,32 @@
   opacity: 0.7;
 }
 
-.sz-game-icon {
-  font-size: 3rem;
-  margin-bottom: 0.75rem;
+/* Game card image container */
+.sz-game-image {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #f3f4f6;
+}
+
+.game-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.sz-game-image .sz-game-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  z-index: 2;
 }
 
 .sz-game-card h3 {
@@ -369,21 +412,6 @@
   font-style: italic;
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .sz-hero {
-    padding: 2.5rem 1rem;
-  }
-  .sz-hero h1 {
-    font-size: 2rem;
-  }
-  .sz-section {
-    padding: 2rem 1rem;
-  }
-  .sz-section-title {
-    font-size: 1.5rem;
-  }
-}
 /* ==================== DAILY HIGHLIGHTS ==================== */
 .sz-highlights-grid {
   display: grid;
@@ -409,17 +437,35 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
 
+/* Highlight card image container */
 .sz-highlight-image {
-  font-size: 3rem;
+  position: relative;
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.5rem;
+  overflow: hidden;
+  margin: 0 auto 1rem;
+  background: #f3f4f6;
 }
 
+.highlight-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.highlight-emoji {
+  font-size: 2.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Placeholder colours (fallback when no image) */
 .meme-placeholder {
   background: #fef3c7;
 }
@@ -458,95 +504,19 @@
 .sz-highlight-btn:hover {
   background: var(--primary-dark);
 }
-/* ==================== HERO BACKGROUND IMAGE ==================== */
-.sz-hero {
-  /* keep your existing padding, text styles, etc. */
-  position: relative;
-  background-image: url('/images/student-zone/hero-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  /* dark overlay for readability */
-  background-color: rgba(0,0,0,0.45);
-  background-blend-mode: overlay;
-}
 
-/* Ensure text remains readable */
-.sz-hero-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 1;
-}
-
-.sz-hero-content {
-  position: relative;
-  z-index: 2;
-}
-
-/* ==================== GAME CARD IMAGES ==================== */
-.sz-game-image {
-  position: relative;
-  width: 100%;
-  height: 120px;          /* adjust as needed */
-  border-radius: 1rem;
-  overflow: hidden;
-  margin-bottom: 1rem;
-  background: #f3f4f6;    /* fallback */
-}
-
-.game-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0; left: 0;
-}
-
-.sz-game-image .sz-game-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2.5rem;
-  z-index: 2;
-  /* show emoji when image is missing or fails */
-  opacity: 1;
-}
-
-/* When image is present, hide the emoji */
-.sz-game-image img[src] + .sz-game-icon {
-  display: none;
-}
-
-/* ==================== HIGHLIGHT CARD IMAGES ==================== */
-.sz-highlight-image {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: 0 auto 1rem;
-  background: #f3f4f6;
-}
-
-.highlight-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0; left: 0;
-}
-
-.highlight-emoji {
-  font-size: 2.5rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-}
-
-/* Hide emoji when image exists */
-.sz-highlight-image img[src] + .highlight-emoji {
-  display: none;
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sz-hero {
+    padding: 2.5rem 1rem;
+  }
+  .sz-hero h1 {
+    font-size: 2rem;
+  }
+  .sz-section {
+    padding: 2rem 1rem;
+  }
+  .sz-section-title {
+    font-size: 1.5rem;
+  }
 }
