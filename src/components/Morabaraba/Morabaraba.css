@@ -317,3 +317,135 @@
     align-items: center;
   }
 }
+/* ----- Mode Selection Menu ----- */
+.mode-selection {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.mode-selection h2 {
+  color: #5d4037;
+  margin-bottom: 1.5rem;
+}
+
+.mode-cards {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.mode-card {
+  background: #f5e6d3;
+  border: 2px solid #8B7355;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 180px;
+  text-align: center;
+  color: #5d4037;
+}
+
+.mode-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.mode-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.mode-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: block;
+}
+
+.mode-desc {
+  font-size: 0.9rem;
+  color: #795548;
+  margin-top: 0.3rem;
+}
+
+.difficulty-select {
+  margin-top: 1rem;
+}
+
+.difficulty-select label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+  color: #5d4037;
+}
+
+.difficulty-select select {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #8B7355;
+  background: white;
+  font-size: 1rem;
+}
+
+.back-to-menu-btn {
+  background: none;
+  border: 1px solid #8B7355;
+  color: #5d4037;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.ai-label {
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: #78350f;
+}
+
+.thinking-indicator {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #5d4037;
+  font-style: italic;
+  margin-top: 0.5rem;
+  animation: pulse 1.5s infinite;
+}
+/* Confetti */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 300;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10%;
+  border-radius: 2px;
+  animation: confetti-fall 3s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* Victory card enhancement */
+.victory-card h2 {
+  animation: victory-bounce 0.6s ease-out;
+}
+
+@keyframes victory-bounce {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
