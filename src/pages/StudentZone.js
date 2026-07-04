@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './StudentZonePage.css';
 
@@ -49,7 +49,7 @@ const games = [
     title: 'Sudoku',
     desc: 'Challenge your logic skills.',
     link: null,
-    img: null,                 // no image yet
+    img: null,
     available: false,
   },
 ];
@@ -91,7 +91,7 @@ const highlights = [
     id: 'notice',
     title: "Campus Notice",
     emoji: '📢',
-    img: null,                 // no image yet
+    img: null,
     quote: "Registration opens next Monday.",
     badge: 'Notice',
     button: 'More',
@@ -99,6 +99,7 @@ const highlights = [
 ];
 
 function StudentZone() {
+  const [heroImgFailed, setHeroImgFailed] = useState(false);
   const recentGames = [];
 
   const scrollToGames = () => {
@@ -106,10 +107,24 @@ function StudentZone() {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Inline style for hero background – only use image if it loaded successfully
+  const heroStyle = heroImgFailed ? {} : {
+    backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/images/student-zone/hero-bg.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  };
+
   return (
     <div className="student-zone-page">
-      {/* Hero section now expects an image via CSS background */}
-      <div className="sz-hero">
+      <div className="sz-hero" style={heroStyle}>
+        {/* Hidden img to test if the image exists */}
+        <img
+          src="/images/student-zone/hero-bg.jpg"
+          alt=""
+          style={{ display: 'none' }}
+          onLoad={() => setHeroImgFailed(false)}
+          onError={() => setHeroImgFailed(true)}
+        />
         <div className="sz-hero-overlay" />
         <div className="sz-hero-content">
           <h1>Student Zone</h1>
