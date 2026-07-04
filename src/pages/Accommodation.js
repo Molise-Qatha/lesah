@@ -3,7 +3,7 @@ import './Accommodation.css';
 import accommodationHeroBg from '../assets/images/accommodation-hero-bg.jpg';
 
 // ------------------------------------------------------------
-// Residence data – walking times from NUL campus in minutes
+// Residence data – all listings with verification status
 // ------------------------------------------------------------
 const residences = [
   {
@@ -16,6 +16,8 @@ const residences = [
     internalNote: "I need him for the functioning of this business.",
     contactHidden: "56429005",
     walkingTime: 15,
+    verified: false,
+    occupied: false,
     images: null,
   },
   {
@@ -28,47 +30,40 @@ const residences = [
     internalNote: "I think everything is kinda okay here.",
     contactHidden: "57345827",
     walkingTime: 20,
+    verified: false,
+    occupied: false,
     images: null,
   },
   {
     id: 3,
     name: "'Memmafumane Residence",
-    village: "Thoteng",
-    area: "Roma",
+    village: "Mafikeng",
+    area: "Mafikeng",
     amount: 350,
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "Ohh she is perfect",
     contactHidden: "63231600",
     walkingTime: 25,
+    verified: true,
+    occupied: false,
     images: null,
   },
-  // Molise Residence temporarily hidden – still talking to the landlord
-  // {
-  //   id: 4,
-  //   name: "Molise Residence",
-  //   village: "Thoteng",
-  //   area: "Roma",
-  //   amount: null,
-  //   amenities: "No ceiling",
-  //   internalNote: "Well I have to call the landlord.",
-  //   contactHidden: "63232954",
-  //   walkingTime: 20,
-  //   images: null,
-  // },
   {
-    id: 5,
+    id: 4,
     name: "'Maphakiso Residence",
-    village: "Thoteng",
-    area: "Roma",
-    amount: null,
+    village: "Mafikeng",
+    area: "Mafikeng",
+    amount: 450,
     amenities: "No ceiling, good security, landlord lives on site",
     internalNote: "We are mostly good, need to ask for amount.",
     contactHidden: "57528555",
     walkingTime: 20,
+    verified: true,
+    occupied: false,
     images: null,
   },
   {
-    id: 6,
+    id: 5,
     name: "Neo Tsatsi Residence",
     village: "Thoteng",
     area: "Thoteng (pela toreng)",
@@ -77,22 +72,26 @@ const residences = [
     internalNote: null,
     contactHidden: null,
     walkingTime: 10,
+    verified: false,
+    occupied: true,
     images: null,
   },
   {
-    id: 7,
+    id: 6,
     name: "Phama Residence",
     village: "Hata-Butle",
     area: "Hata-Butle",
     amount: 500,
-    amenities: "Some with ceiling, some without. Security available.",
+    amenities: "Only rooms without ceiling available. Security available.",
     internalNote: null,
     contactHidden: null,
     walkingTime: 8,
+    verified: true,
+    occupied: false,
     images: null,
   },
   {
-    id: 8,
+    id: 7,
     name: "Squireng Residence",
     village: "Hata-Butle",
     area: "Hata-Butle",
@@ -101,13 +100,15 @@ const residences = [
     internalNote: null,
     contactHidden: null,
     walkingTime: 10,
+    verified: false,
+    occupied: false,
     images: [
       '/images/accommodation/squireng_exterior.jpg',
       '/images/accommodation/squireng_interior.jpg',
     ],
   },
   {
-    id: 9,
+    id: 8,
     name: "'Malethola Residence",
     village: "Hata-Butle",
     area: "Hata-Butle (tlasa Pius)",
@@ -116,7 +117,24 @@ const residences = [
     internalNote: null,
     contactHidden: null,
     walkingTime: 7,
+    verified: false,
+    occupied: false,
     images: null,
+  },
+  {
+    id: 9,
+    name: "Tefo Residence",
+    village: "Mangopeng",
+    area: "Mangopeng",
+    amount: 400,
+    amenities: "Tiles, ceiling, 25 min walk from NUL",
+    internalNote: null,
+    contactHidden: null,
+    walkingTime: 25,
+    verified: false,
+    occupied: false,
+    images: null,
+    noImage: true,
   },
 ];
 
@@ -127,12 +145,12 @@ const getImagePath = (name) => {
     "mahoneresidence": "mahone",
     "zwagalaresidence": "zwagala",
     "memmafumaneresidence": "memmafumane",
-    "moliseresidence": "molise",
     "maphakisoresidence": "maphakiso",
     "neotsatsiresidence": "neotsatsi",
     "phamaresidence": "phama",
     "squirengresidence": "squireng",
     "maletholaresidence": "malethola",
+    "teforesidence": "tefo",
   };
   if (shortMap[slug]) slug = shortMap[slug];
   return `/images/accommodation/${slug}.jpg`;
@@ -172,14 +190,6 @@ function Accommodation() {
     return [getImagePath(res.name)];
   };
 
-  // WhatsApp message for "Request a Closer Residence"
-  const requestCloserResidence = () => {
-    const message = `Hello LeSAH, I'm looking for a residence closer to the university that isn't listed on the app. I understand there is a M${BOOKING_FEE} booking fee once you find one. Could you help me? I'm willing to wait up to a day.`;
-    const url = `${WHATSAPP_LINK}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-  };
-
-  // WhatsApp message for landlords who want to list their residence
   const listYourResidence = () => {
     const message = `Hello LeSAH, I'd like to list my residence on the app. I can provide interior & exterior images, whether there's a ceiling, whether electricity is shared, and the rent amount. Please guide me through the listing process.`;
     const url = `${WHATSAPP_LINK}?text=${encodeURIComponent(message)}`;
@@ -242,7 +252,13 @@ function Accommodation() {
             return (
               <div key={res.id} className="accommodation-card">
                 <div className="card-image">
-                  {!imageFailed ? (
+                  {res.noImage ? (
+                    <div className="image-placeholder no-image-visit">
+                      <span className="placeholder-icon">📷</span>
+                      <span className="placeholder-text">No image available</span>
+                      <span className="placeholder-sub">Visit in person to view</span>
+                    </div>
+                  ) : !imageFailed ? (
                     <img
                       src={images[currentIdx]}
                       alt={res.name}
@@ -255,7 +271,7 @@ function Accommodation() {
                       <span className="placeholder-text">Photo coming soon</span>
                     </div>
                   )}
-                  {images.length > 1 && !imageFailed && (
+                  {images.length > 1 && !imageFailed && !res.noImage && (
                     <div className="image-dots">
                       {images.map((_, idx) => (
                         <span
@@ -265,6 +281,15 @@ function Accommodation() {
                         />
                       ))}
                     </div>
+                  )}
+                  {/* Verification badge */}
+                  {res.verified ? (
+                    <span className="verified-badge">✅ Verified</span>
+                  ) : (
+                    <span className="unverified-badge">⚠️ Unverified</span>
+                  )}
+                  {res.occupied && (
+                    <span className="occupied-badge">🚫 Fully Occupied</span>
                   )}
                 </div>
                 <div className="card-content">
@@ -293,29 +318,16 @@ function Accommodation() {
                     <span className="amenity-tag">🔧 {res.amenities}</span>
                   </div>
                   <button
-                    className="book-btn whatsapp-btn"
+                    className={`book-btn whatsapp-btn ${res.occupied ? 'disabled' : ''}`}
                     onClick={() => openWhatsApp(res.name, res.amount, res.village, res.area)}
+                    disabled={res.occupied}
                   >
-                    💬 Chat with us on WhatsApp
+                    {res.occupied ? 'Currently Unavailable' : '💬 Chat with us on WhatsApp'}
                   </button>
                 </div>
               </div>
             );
           })}
-        </div>
-
-        {/* Request a Closer Residence Button */}
-        <div style={{ textAlign: 'center', margin: '2rem 0' }}>
-          <button
-            className="book-btn whatsapp-btn"
-            onClick={requestCloserResidence}
-            style={{ backgroundColor: '#25D366', border: 'none', padding: '1rem 2rem', fontSize: '1.1rem', color: 'white' }}
-          >
-            🔍 Don't see what you want? Request a closer residence
-          </button>
-          <p style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-            We'll find you a residence near campus within a day. A M{BOOKING_FEE} booking fee applies once we connect you.
-          </p>
         </div>
 
         {/* Landlords – List Your Residence Button */}
@@ -336,26 +348,10 @@ function Accommodation() {
         <div className="info-section">
           <h3>📋 How It Works</h3>
           <div className="steps">
-            <div className="step">
-              <div className="step-number">1</div>
-              <h4>Browse Residences</h4>
-              <p>See the list of trusted student homes by village.</p>
-            </div>
-            <div className="step">
-              <div className="step-number">2</div>
-              <h4>Click WhatsApp Button</h4>
-              <p>Chat with us directly – no forms, no delays.</p>
-            </div>
-            <div className="step">
-              <div className="step-number">3</div>
-              <h4>Pay Booking Fee</h4>
-              <p>A non‑refundable M{BOOKING_FEE} booking fee applies.</p>
-            </div>
-            <div className="step">
-              <div className="step-number">4</div>
-              <h4>We Connect You</h4>
-              <p>We'll share landlord details and arrange a visit.</p>
-            </div>
+            <div className="step"><div className="step-number">1</div><h4>Browse Residences</h4><p>See the list of trusted student homes by village.</p></div>
+            <div className="step"><div className="step-number">2</div><h4>Click WhatsApp Button</h4><p>Chat with us directly – no forms, no delays.</p></div>
+            <div className="step"><div className="step-number">3</div><h4>Pay Booking Fee</h4><p>A non‑refundable M{BOOKING_FEE} booking fee applies.</p></div>
+            <div className="step"><div className="step-number">4</div><h4>We Connect You</h4><p>We'll share landlord details and arrange a visit.</p></div>
           </div>
         </div>
 
@@ -363,26 +359,10 @@ function Accommodation() {
         <div className="faq-section">
           <h2>Frequently Asked Questions</h2>
           <div className="faq-grid">
-            <div className="faq-item">
-              <h3>How do I book a room?</h3>
-              <p>Click the WhatsApp button on any residence, and we'll guide you. A M{BOOKING_FEE} booking fee is required.</p>
-            </div>
-            <div className="faq-item">
-              <h3>Is the booking fee refundable?</h3>
-              <p>No, the M{BOOKING_FEE} fee is non‑refundable as it covers administrative and connection costs.</p>
-            </div>
-            <div className="faq-item">
-              <h3>Can I see properties in other villages?</h3>
-              <p>Currently we have listings in Thoteng, Roma, and Hata‑Butle. More villages coming soon!</p>
-            </div>
-            <div className="faq-item">
-              <h3>What if I don't see a suitable residence?</h3>
-              <p>Use the "Request a closer residence" button and we'll personally find one for you within a day.</p>
-            </div>
-            <div className="faq-item">
-              <h3>I'm a landlord – how do I list my property?</h3>
-              <p>Click the "Landlords – List Your Residence" button and send us the required details via WhatsApp. We'll get back to you promptly.</p>
-            </div>
+            <div className="faq-item"><h3>How do I book a room?</h3><p>Click the WhatsApp button on any residence, and we'll guide you. A M{BOOKING_FEE} booking fee is required.</p></div>
+            <div className="faq-item"><h3>Is the booking fee refundable?</h3><p>No, the M{BOOKING_FEE} fee is non‑refundable as it covers administrative and connection costs.</p></div>
+            <div className="faq-item"><h3>Can I see properties in other villages?</h3><p>Currently we have listings in Thoteng, Roma, Mafikeng, Mangopeng, and Hata‑Butle. More villages coming soon!</p></div>
+            <div className="faq-item"><h3>I'm a landlord – how do I list my property?</h3><p>Click the "Landlords – List Your Residence" button and send us the required details via WhatsApp. We'll get back to you promptly.</p></div>
           </div>
         </div>
       </div>
