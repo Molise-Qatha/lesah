@@ -449,3 +449,37 @@
   60% { transform: scale(1.15); }
   100% { transform: scale(1); opacity: 1; }
 }
+.timer-display {
+  font-weight: 700;
+  color: #5d4037;
+  font-size: 1.2rem;
+  margin-left: auto;
+}
+
+.capture-alert {
+  background: #ef4444;
+  color: white;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  animation: pulse 0.5s infinite;
+}
+
+.intersection.capturing {
+  fill: #ef4444 !important;
+  stroke: #ef4444;
+  stroke-width: 3;
+  animation: blink 0.3s infinite alternate;
+}
+
+.piece-group.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
