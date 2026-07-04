@@ -4,107 +4,57 @@ import './Morabaraba.css';
 
 /* ---------- 25‑POINT BOARD (PLUS CENTRE) ---------- */
 const POINTS = [
-  // Outer square (0‑7)
-  { id: 0,  x: 30, y: 30 },
-  { id: 1,  x: 150, y: 30 },
-  { id: 2,  x: 270, y: 30 },
-  { id: 3,  x: 270, y: 150 },
-  { id: 4,  x: 270, y: 270 },
-  { id: 5,  x: 150, y: 270 },
-  { id: 6,  x: 30, y: 270 },
-  { id: 7,  x: 30, y: 150 },
-
-  // Middle square (8‑15)
-  { id: 8,  x: 90, y: 90 },
-  { id: 9,  x: 150, y: 90 },
-  { id: 10, x: 210, y: 90 },
-  { id: 11, x: 210, y: 150 },
-  { id: 12, x: 210, y: 210 },
-  { id: 13, x: 150, y: 210 },
-  { id: 14, x: 90, y: 210 },
-  { id: 15, x: 90, y: 150 },
-
-  // Inner square (16‑23)
-  { id: 16, x: 120, y: 120 },
-  { id: 17, x: 150, y: 120 },
-  { id: 18, x: 180, y: 120 },
-  { id: 19, x: 180, y: 150 },
-  { id: 20, x: 180, y: 180 },
-  { id: 21, x: 150, y: 180 },
-  { id: 22, x: 120, y: 180 },
-  { id: 23, x: 120, y: 150 },
-
-  // Centre (24)
+  { id: 0,  x: 30, y: 30 },  { id: 1,  x: 150, y: 30 },  { id: 2,  x: 270, y: 30 },
+  { id: 3,  x: 270, y: 150 }, { id: 4,  x: 270, y: 270 }, { id: 5,  x: 150, y: 270 },
+  { id: 6,  x: 30, y: 270 }, { id: 7,  x: 30, y: 150 },
+  { id: 8,  x: 90, y: 90 },  { id: 9,  x: 150, y: 90 },  { id: 10, x: 210, y: 90 },
+  { id: 11, x: 210, y: 150 }, { id: 12, x: 210, y: 210 }, { id: 13, x: 150, y: 210 },
+  { id: 14, x: 90, y: 210 }, { id: 15, x: 90, y: 150 },
+  { id: 16, x: 120, y: 120 },{ id: 17, x: 150, y: 120 },{ id: 18, x: 180, y: 120 },
+  { id: 19, x: 180, y: 150 },{ id: 20, x: 180, y: 180 },{ id: 21, x: 150, y: 180 },
+  { id: 22, x: 120, y: 180 },{ id: 23, x: 120, y: 150 },
   { id: 24, x: 150, y: 150 },
 ];
 
 /* ---------- ADJACENCY (HORIZONTAL / VERTICAL ONLY, PLUS CENTRE) ---------- */
 const BASE_ADJ = {
-  // Outer square
   0: [1,7], 1: [0,2], 2: [1,3], 3: [2,4], 4: [3,5], 5: [4,6], 6: [5,7], 7: [6,0],
-  // Middle square
   8: [9,15], 9: [8,10], 10: [9,11], 11: [10,12], 12: [11,13], 13: [12,14], 14: [13,15], 15: [14,8],
-  // Inner square
   16: [17,23], 17: [16,18], 18: [17,19], 19: [18,20], 20: [19,21], 21: [20,22], 22: [21,23], 23: [22,16],
 };
 
-// Connect centres through the plus (+)
 const MIDDLE_CONNECTIONS = {
-  // Top centres (1 → 9 → 17 → 24)
   1: [9],   9: [1,17],   17: [9,24],   24: [17],
-  // Bottom centres (24 → 21 → 13 → 5)
   24: [21],  21: [24,13], 13: [21,5],   5: [13],
-  // Left centres (7 → 15 → 23 → 24)
   7: [15],   15: [7,23],  23: [15,24],  24: [23],
-  // Right centres (24 → 19 → 11 → 3)
   24: [19],  19: [24,11], 11: [19,3],   3: [11],
 };
 
-// Merge all connections
 const ADJ = {};
 for (let i = 0; i < 25; i++) ADJ[i] = [];
-Object.entries(BASE_ADJ).forEach(([k, v]) => {
-  const key = parseInt(k);
-  v.forEach(n => ADJ[key].push(n));
-});
-Object.entries(MIDDLE_CONNECTIONS).forEach(([k, v]) => {
-  const key = parseInt(k);
-  v.forEach(n => { if (!ADJ[key].includes(n)) ADJ[key].push(n); });
-});
-// Ensure symmetry
+Object.entries(BASE_ADJ).forEach(([k, v]) => v.forEach(n => ADJ[+k].push(n)));
+Object.entries(MIDDLE_CONNECTIONS).forEach(([k, v]) => v.forEach(n => { if (!ADJ[+k].includes(n)) ADJ[+k].push(n); }));
 for (let i = 0; i < 25; i++) {
   ADJ[i] = [...new Set(ADJ[i])];
-  ADJ[i].forEach(j => {
-    if (!ADJ[j].includes(i)) ADJ[j].push(i);
-  });
+  ADJ[i].forEach(j => { if (!ADJ[j].includes(i)) ADJ[j].push(i); });
 }
 
-/* ---------- MILLS (STRAIGHT LINES OF 3 ON CONNECTIONS) ---------- */
-// Pre‑compute all possible lines that are collinear and have 3 points
 const ALL_LINES = [
-  // outer edges
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
-  // middle edges
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
-  // inner edges
   [16,17,18], [18,19,20], [20,21,22], [22,23,16],
-  // vertical centre line (top to bottom) – 1,9,17,24,21,13,5 → we need to pick every consecutive three
   [1,9,17], [9,17,24], [17,24,21], [24,21,13], [21,13,5],
-  // horizontal centre line (left to right) – 7,15,23,24,19,11,3
   [7,15,23], [15,23,24], [23,24,19], [24,19,11], [19,11,3],
-  // corner connectors are only two points – cannot form mills
 ];
-// Filter only collinear triples
 const MILLS = ALL_LINES.filter(arr => {
   const [a,b,c] = arr;
-  const p1 = POINTS[a], p2 = POINTS[b], p3 = POINTS[c];
+  const p1=POINTS[a], p2=POINTS[b], p3=POINTS[c];
   const cross = (p2.x-p1.x)*(p3.y-p1.y) - (p2.y-p1.y)*(p3.x-p1.x);
   if (Math.abs(cross) > 0.1) return false;
   const dot = (p3.x-p1.x)*(p2.x-p1.x) + (p3.y-p1.y)*(p2.y-p1.y);
   return dot >= 0;
 });
 
-/* ---------- GAME CONSTANTS & HELPERS ---------- */
 const PHASE = { PLACING: 'placing', MOVING: 'moving', FLYING: 'flying' };
 const NUM_PIECES = 12;
 
@@ -146,8 +96,9 @@ function canPlayerMove(board, player, phase) {
   return board.some((v, i) => v === player && validDestinations(board, i, player, phase).length > 0);
 }
 
+/* ---------- FIX: only check game over in moving/flying phases ---------- */
 function checkGameOver(s) {
-  if (s.gameOver) return;
+  if (s.gameOver || s.phase === PHASE.PLACING) return;   // <-- no winner during placing
   const opp = s.player === 'green' ? 'brown' : 'green';
   if (s.onBoard[opp] < 3) {
     s.gameOver = true;
@@ -191,7 +142,6 @@ export default function MorabarabaPage() {
         next.onBoard[p]++;
         const mill = millsForPlayer(next.board, pointId, p);
         next.history.push({ type: 'place', pointId, player: p });
-
         if (next.toPlace.green === 0 && next.toPlace.brown === 0) {
           next.phase = PHASE.MOVING;
         }
@@ -297,30 +247,20 @@ export default function MorabarabaPage() {
         <div className="board-container">
           <svg viewBox="0 0 300 300" className="morabaraba-board">
             <rect width="300" height="300" fill="#f5e6d3" />
-
-            {/* Draw all connections */}
             {Object.entries(ADJ).map(([from, toList]) =>
               toList.map(to =>
-                parseInt(from) < parseInt(to) ? (
-                  <line
-                    key={`${from}-${to}`}
-                    x1={POINTS[from].x} y1={POINTS[from].y}
-                    x2={POINTS[to].x} y2={POINTS[to].y}
-                    stroke="#8B7355"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                  />
+                +from < +to ? (
+                  <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y}
+                        x2={POINTS[to].x} y2={POINTS[to].y} stroke="#8B7355" strokeWidth="4" strokeLinecap="round" />
                 ) : null
               )
             )}
-
             {POINTS.map(pt => {
               const piece = s.board[pt.id];
               const isSel = s.selected === pt.id;
               const isValid = s.moves.includes(pt.id);
               const isRem = s.removable.includes(pt.id);
               const isNew = animating === pt.id;
-
               return (
                 <g key={pt.id} onClick={() => {
                   if (isRem && s.millAlert) click(pt.id, 'remove');
@@ -328,39 +268,24 @@ export default function MorabarabaPage() {
                   else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
                   else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
                 }}>
-                  {/* Intersection dot */}
-                  <circle
-                    cx={pt.x} cy={pt.y} r="5"
-                    fill="#a08464"
-                    className={`intersection ${isValid ? 'valid-move' : ''} ${isRem ? 'removable' : ''} ${isSel ? 'selected' : ''}`}
-                  />
-                  {!piece && !isRem && (
-                    <circle cx={pt.x} cy={pt.y} r="9" fill="transparent" className="hover-indicator" />
-                  )}
+                  <circle cx={pt.x} cy={pt.y} r="5" fill="#a08464"
+                    className={`intersection ${isValid?'valid-move':''} ${isRem?'removable':''} ${isSel?'selected':''}`} />
+                  {!piece && !isRem && <circle cx={pt.x} cy={pt.y} r="9" fill="transparent" className="hover-indicator" />}
                   {piece && (
-                    <g className={`piece-group ${isNew ? 'pop-in' : ''}`}>
+                    <g className={`piece-group ${isNew?'pop-in':''}`}>
                       <defs>
                         <radialGradient id={`grad-${piece}-${pt.id}`} cx="30%" cy="30%">
-                          <stop offset="0%" stopColor={piece === 'green' ? '#6ee7b7' : '#d97706'} stopOpacity="0.9" />
-                          <stop offset="100%" stopColor={piece === 'green' ? '#064e3b' : '#78350f'} stopOpacity="0.9" />
+                          <stop offset="0%" stopColor={piece==='green'?'#6ee7b7':'#d97706'} stopOpacity="0.9" />
+                          <stop offset="100%" stopColor={piece==='green'?'#064e3b':'#78350f'} stopOpacity="0.9" />
                         </radialGradient>
-                        <filter id={`shadow-${piece}`}>
-                          <feDropShadow dx="2" dy="2" stdDeviation="3" floodOpacity="0.5" />
-                        </filter>
+                        <filter id={`shadow-${piece}`}><feDropShadow dx="2" dy="2" stdDeviation="3" floodOpacity="0.5"/></filter>
                       </defs>
-                      <circle
-                        cx={pt.x} cy={pt.y} r="12"
-                        fill={`url(#grad-${piece}-${pt.id})`}
-                        filter={`url(#shadow-${piece})`}
-                        stroke={isSel ? '#facc15' : 'transparent'}
-                        strokeWidth="2"
-                        className={isSel ? 'piece-selected' : ''}
-                      />
+                      <circle cx={pt.x} cy={pt.y} r="12" fill={`url(#grad-${piece}-${pt.id})`}
+                        filter={`url(#shadow-${piece})`} stroke={isSel?'#facc15':'transparent'} strokeWidth="2"
+                        className={isSel?'piece-selected':''} />
                     </g>
                   )}
-                  {isValid && !piece && (
-                    <circle cx={pt.x} cy={pt.y} r="6" className="move-dot" />
-                  )}
+                  {isValid && !piece && <circle cx={pt.x} cy={pt.y} r="6" className="move-dot" />}
                 </g>
               );
             })}
