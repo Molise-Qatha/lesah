@@ -4,23 +4,19 @@ import './Morabaraba.css';
 
 /* ==================== BOARD GEOMETRY ==================== */
 const POINTS = [
-  // Outer square (0‑7)
   { id: 0,  x: 30, y: 30 },  { id: 1,  x: 150, y: 30 },  { id: 2,  x: 270, y: 30 },
   { id: 3,  x: 270, y: 150 }, { id: 4,  x: 270, y: 270 }, { id: 5,  x: 150, y: 270 },
   { id: 6,  x: 30, y: 270 }, { id: 7,  x: 30, y: 150 },
-  // Middle square (8‑15)
   { id: 8,  x: 90, y: 90 },  { id: 9,  x: 150, y: 90 },  { id: 10, x: 210, y: 90 },
   { id: 11, x: 210, y: 150 }, { id: 12, x: 210, y: 210 }, { id: 13, x: 150, y: 210 },
   { id: 14, x: 90, y: 210 }, { id: 15, x: 90, y: 150 },
-  // Inner square (16‑23)
   { id: 16, x: 120, y: 120 },{ id: 17, x: 150, y: 120 },{ id: 18, x: 180, y: 120 },
   { id: 19, x: 180, y: 150 },{ id: 20, x: 180, y: 180 },{ id: 21, x: 150, y: 180 },
   { id: 22, x: 120, y: 180 },{ id: 23, x: 120, y: 150 },
-  // Centre (24)
   { id: 24, x: 150, y: 150 },
 ];
 
-/* ==================== ADJACENCY (NO DIAGONALS) ==================== */
+/* ==================== ADJACENCY ==================== */
 const BASE_ADJ = {
   0: [1,7], 1: [0,2], 2: [1,3], 3: [2,4], 4: [3,5], 5: [4,6], 6: [5,7], 7: [6,0],
   8: [9,15], 9: [8,10], 10: [9,11], 11: [10,12], 12: [11,13], 13: [12,14], 14: [13,15], 15: [14,8],
@@ -41,7 +37,7 @@ for (let i = 0; i < 25; i++) {
   ADJ[i].forEach(j => { if (!ADJ[j].includes(i)) ADJ[j].push(i); });
 }
 
-/* ==================== MILLS (STRAIGHT LINES OF 3) ==================== */
+/* ==================== MILLS ==================== */
 const ALL_LINES = [
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
@@ -69,7 +65,7 @@ const TIME_OPTIONS = [
   { label: '12 minutes', value: 720 },
 ];
 
-/* ==================== AUDIO ENGINE ==================== */
+/* ==================== AUDIO ==================== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 function getAudioCtx() {
@@ -102,7 +98,7 @@ const sounds = {
   timeout: () => { playTone(200,0.4,'sawtooth',0.1); },
 };
 
-/* ==================== GAME LOGIC HELPERS ==================== */
+/* ==================== HELPERS ==================== */
 function millsForPlayer(board, point, player) {
   return MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
@@ -234,7 +230,13 @@ function minimax(state, depth, alpha, beta, max) {
 }
 function computerMove(s, difficulty) {
   const moves = generateMoves(s);
-  if (!moves.length) return s;
+  if (!moves.length) {
+    // No moves available – just switch turns
+    const next = cloneState(s);
+    next.player = s.player === 'green' ? 'brown' : 'green';
+    next.timer = next.timeLimit;
+    return next;
+  }
   if (difficulty === 'easy') return moves[Math.floor(Math.random() * moves.length)].state;
   const depth = difficulty === 'hard' ? 4 : 2;
   let best = moves[0], bestScore = -Infinity;
@@ -247,7 +249,7 @@ function computerMove(s, difficulty) {
 
 /* ==================== MAIN COMPONENT ==================== */
 export default function MorabarabaPage() {
-  const [mode, setMode] = useState(null); // null | 'twoPlayer' | 'vsComputer'
+  const [mode, setMode] = useState(null);
   const [difficulty, setDifficulty] = useState('medium');
   const [gameTime, setGameTime] = useState(30);
   const [s, setS] = useState(freshState);
@@ -259,18 +261,19 @@ export default function MorabarabaPage() {
 
   const timerRef = useRef(null);
   const aiTimerRef = useRef(null);
+  const thinkingRef = useRef(false); // track thinking without triggering re‑render
 
-  // ----- START GAME -----
   const startGame = (selectedMode) => {
     setMode(selectedMode);
     setS(freshState(gameTime));
     setThinking(false);
+    thinkingRef.current = false;
     setShowConfetti(false);
     setCapturingPiece(null);
     sounds.click();
   };
 
-  // ----- TIMER (ticks every second when it's human's turn) -----
+  // ----- TIMER -----
   useEffect(() => {
     if (s.gameOver || s.millAlert || (mode === 'vsComputer' && s.player === 'brown')) return;
     setS(prev => ({ ...prev, timer: prev.timeLimit }));
@@ -291,29 +294,21 @@ export default function MorabarabaPage() {
     return () => clearInterval(interval);
   }, [s.player, s.gameOver, s.millAlert, mode]);
 
-  // ----- AI MOVE (with visible capture) -----
+  // ----- AI MOVE (FIXED) -----
   useEffect(() => {
-    if (mode !== 'vsComputer' || s.player !== 'brown' || s.gameOver || s.millAlert || thinking) return;
+    if (mode !== 'vsComputer' || s.player !== 'brown' || s.gameOver || s.millAlert) return;
+    if (thinkingRef.current) return; // already thinking
+
+    thinkingRef.current = true;
     setThinking(true);
+
     aiTimerRef.current = setTimeout(() => {
       setS(prev => {
         const bestMove = computerMove(prev, difficulty);
+        checkGameOver(bestMove);
         if (bestMove.gameOver) setShowConfetti(true);
-        // highlight capture if mill formed
-        if (bestMove.millAlert && bestMove.removable.length) {
-          setCapturingPiece(bestMove.removable[0]);
-          sounds.mill();
-          setTimeout(() => {
-            setCapturingPiece(null);
-            sounds.capture();
-            setS(bestMove);
-            checkGameOver(bestMove);
-            if (bestMove.gameOver) setShowConfetti(true);
-          }, 800);
-          setThinking(false);
-          return prev; // keep current state while animating
-        }
-        // animate movement
+
+        // Animation for the move
         const lastAction = bestMove.history[bestMove.history.length - 1];
         if (lastAction?.type === 'place') {
           sounds.place();
@@ -324,14 +319,17 @@ export default function MorabarabaPage() {
           setAnimating(lastAction.to);
           setTimeout(() => setAnimating(null), 400);
         }
+
+        thinkingRef.current = false;
         setThinking(false);
         return bestMove;
       });
-    }, 600);
-    return () => clearTimeout(aiTimerRef.current);
-  }, [s.player, s.gameOver, s.millAlert, mode, difficulty, thinking]);
+    }, 800);
 
-  // ----- HUMAN CLICK HANDLER -----
+    return () => clearTimeout(aiTimerRef.current);
+  }, [s.player, s.gameOver, s.millAlert, mode, difficulty]);
+
+  // ----- HUMAN CLICK -----
   const click = useCallback((pointId, action) => {
     if (mode === 'vsComputer' && s.player === 'brown') return;
     setS(prev => {
@@ -340,7 +338,6 @@ export default function MorabarabaPage() {
       let next = cloneState(prev);
       const p = next.player, opp = p === 'green' ? 'brown' : 'green';
 
-      // PLACE
       if (action === 'place' && next.phase === PHASE.PLACING && !next.board[pointId]) {
         next.board[pointId] = p; next.toPlace[p]--; next.onBoard[p]++;
         const mill = millsForPlayer(next.board, pointId, p);
@@ -353,7 +350,6 @@ export default function MorabarabaPage() {
         setAnimating(pointId); setTimeout(() => setAnimating(null), 400);
         return next;
       }
-      // REMOVE
       if (action === 'remove' && prev.millAlert && prev.removable.includes(pointId)) {
         setCapturingPiece(pointId);
         sounds.capture();
@@ -369,14 +365,12 @@ export default function MorabarabaPage() {
         }, 600);
         return { ...prev, millAlert: false };
       }
-      // SELECT
       if (action === 'select' && next.phase !== PHASE.PLACING && next.board[pointId] === p) {
         const fly = next.onBoard[p] === 3 ? PHASE.FLYING : next.phase;
         next.selected = pointId; next.moves = validDestinations(next.board, pointId, p, fly);
         sounds.click();
         return next;
       }
-      // MOVE
       if (action === 'move' && prev.selected !== null && prev.moves.includes(pointId)) {
         next.board[prev.selected] = null; next.board[pointId] = p;
         next.selected = null; next.moves = [];
@@ -393,7 +387,6 @@ export default function MorabarabaPage() {
     });
   }, [mode, s.player]);
 
-  // Auto‑show confetti on game over
   useEffect(() => {
     if (s.gameOver) { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 4000); }
   }, [s.gameOver]);
@@ -404,7 +397,7 @@ export default function MorabarabaPage() {
     return 'Moving Pieces';
   };
 
-  /* ==================== MENU ==================== */
+  // ── MENU ──
   if (!mode) {
     return (
       <div className="morabaraba-page">
@@ -441,7 +434,7 @@ export default function MorabarabaPage() {
     );
   }
 
-  /* ==================== GAME ==================== */
+  // ── GAME ──
   return (
     <div className="morabaraba-page">
       {showConfetti && <Confetti />}
