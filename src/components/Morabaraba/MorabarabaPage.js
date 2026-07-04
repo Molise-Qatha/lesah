@@ -2,34 +2,36 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Morabaraba.css';
 
-/* ---------- 25‑POINT BOARD (PLUS CENTRE) ---------- */
+/* ==================== BOARD GEOMETRY ==================== */
 const POINTS = [
+  // Outer square (0‑7)
   { id: 0,  x: 30, y: 30 },  { id: 1,  x: 150, y: 30 },  { id: 2,  x: 270, y: 30 },
   { id: 3,  x: 270, y: 150 }, { id: 4,  x: 270, y: 270 }, { id: 5,  x: 150, y: 270 },
   { id: 6,  x: 30, y: 270 }, { id: 7,  x: 30, y: 150 },
+  // Middle square (8‑15)
   { id: 8,  x: 90, y: 90 },  { id: 9,  x: 150, y: 90 },  { id: 10, x: 210, y: 90 },
   { id: 11, x: 210, y: 150 }, { id: 12, x: 210, y: 210 }, { id: 13, x: 150, y: 210 },
   { id: 14, x: 90, y: 210 }, { id: 15, x: 90, y: 150 },
+  // Inner square (16‑23)
   { id: 16, x: 120, y: 120 },{ id: 17, x: 150, y: 120 },{ id: 18, x: 180, y: 120 },
   { id: 19, x: 180, y: 150 },{ id: 20, x: 180, y: 180 },{ id: 21, x: 150, y: 180 },
   { id: 22, x: 120, y: 180 },{ id: 23, x: 120, y: 150 },
+  // Centre (24)
   { id: 24, x: 150, y: 150 },
 ];
 
-/* ---------- ADJACENCY ---------- */
+/* ==================== ADJACENCY (NO DIAGONALS) ==================== */
 const BASE_ADJ = {
   0: [1,7], 1: [0,2], 2: [1,3], 3: [2,4], 4: [3,5], 5: [4,6], 6: [5,7], 7: [6,0],
   8: [9,15], 9: [8,10], 10: [9,11], 11: [10,12], 12: [11,13], 13: [12,14], 14: [13,15], 15: [14,8],
   16: [17,23], 17: [16,18], 18: [17,19], 19: [18,20], 20: [19,21], 21: [20,22], 22: [21,23], 23: [22,16],
 };
-
 const MIDDLE_CONNECTIONS = {
   1: [9],   9: [1,17],   17: [9,24],   24: [17],
   24: [21],  21: [24,13], 13: [21,5],   5: [13],
   7: [15],   15: [7,23],  23: [15,24],  24: [23],
   24: [19],  19: [24,11], 11: [19,3],   3: [11],
 };
-
 const ADJ = {};
 for (let i = 0; i < 25; i++) ADJ[i] = [];
 Object.entries(BASE_ADJ).forEach(([k, v]) => v.forEach(n => ADJ[+k].push(n)));
@@ -39,6 +41,7 @@ for (let i = 0; i < 25; i++) {
   ADJ[i].forEach(j => { if (!ADJ[j].includes(i)) ADJ[j].push(i); });
 }
 
+/* ==================== MILLS (STRAIGHT LINES OF 3) ==================== */
 const ALL_LINES = [
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
@@ -55,11 +58,18 @@ const MILLS = ALL_LINES.filter(arr => {
   return dot >= 0;
 });
 
+/* ==================== CONSTANTS ==================== */
 const PHASE = { PLACING: 'placing', MOVING: 'moving', FLYING: 'flying' };
 const NUM_PIECES = 12;
-const TURN_TIME = 30; // seconds per turn
+const TIME_OPTIONS = [
+  { label: '30 seconds', value: 30 },
+  { label: '1 minute', value: 60 },
+  { label: '5 minutes', value: 300 },
+  { label: '10 minutes', value: 600 },
+  { label: '12 minutes', value: 720 },
+];
 
-/* ---------- AUDIO ENGINE ---------- */
+/* ==================== AUDIO ENGINE ==================== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 function getAudioCtx() {
@@ -92,7 +102,7 @@ const sounds = {
   timeout: () => { playTone(200,0.4,'sawtooth',0.1); },
 };
 
-/* ---------- HELPERS ---------- */
+/* ==================== GAME LOGIC HELPERS ==================== */
 function millsForPlayer(board, point, player) {
   return MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
@@ -123,7 +133,7 @@ function cloneState(s) {
     history: [...s.history], moves: [...s.moves], removable: [...s.removable],
   };
 }
-function freshState() {
+function freshState(timeLimit = 30) {
   return {
     board: Array(25).fill(null),
     player: 'green',
@@ -134,52 +144,143 @@ function freshState() {
     millAlert: false, removable: [],
     history: [],
     winner: null, gameOver: false, message: '',
-    timer: TURN_TIME,
+    timer: timeLimit,
+    timeLimit: timeLimit,
   };
 }
 
-/* ---------- AI ---------- */
-function evaluateState(s) { /* same as before */ }
-function generateMoves(s) { /* same as before */ }
-function minimax(state, depth, alpha, beta, max) { /* same as before */ }
-function computerMove(s, difficulty) { /* same as before */ }
+/* ==================== AI (MINIMAX) ==================== */
+function evaluateState(s) {
+  const aiPlayer = 'brown', human = 'green';
+  let score = 0;
+  score += (s.onBoard[aiPlayer] - s.onBoard[human]) * 10;
+  const aiPhase = s.onBoard[aiPlayer] === 3 ? PHASE.FLYING : s.phase;
+  const humanPhase = s.onBoard[human] === 3 ? PHASE.FLYING : s.phase;
+  let aiMobility = 0, humanMobility = 0;
+  s.board.forEach((v, i) => {
+    if (v === aiPlayer) aiMobility += validDestinations(s.board, i, aiPlayer, aiPhase).length;
+    if (v === human) humanMobility += validDestinations(s.board, i, human, humanPhase).length;
+  });
+  score += (aiMobility - humanMobility) * 2;
+  let aiMills = 0, humanMills = 0;
+  MILLS.forEach(mill => {
+    if (mill.every(i => s.board[i] === aiPlayer)) aiMills++;
+    if (mill.every(i => s.board[i] === human)) humanMills++;
+  });
+  score += (aiMills - humanMills) * 30;
+  if (s.onBoard[aiPlayer] === 3 && s.onBoard[human] > 3) score += 20;
+  if (s.onBoard[human] === 3 && s.onBoard[aiPlayer] > 3) score -= 20;
+  return score;
+}
+function generateMoves(s) {
+  const moves = [];
+  const p = s.player, opp = p === 'green' ? 'brown' : 'green';
+  const fly = s.onBoard[p] === 3 ? PHASE.FLYING : s.phase;
+  if (s.phase === PHASE.PLACING) {
+    s.board.forEach((cell, i) => {
+      if (cell === null) {
+        const next = cloneState(s);
+        next.board[i] = p; next.toPlace[p]--; next.onBoard[p]++;
+        const mill = millsForPlayer(next.board, i, p);
+        if (next.toPlace.green === 0 && next.toPlace.brown === 0) next.phase = PHASE.MOVING;
+        if (mill.length > 0) {
+          getRemovable(next.board, opp).forEach(r => {
+            const after = cloneState(next);
+            after.board[r] = null; after.onBoard[opp]--; after.player = opp;
+            moves.push({ state: after });
+          });
+        } else {
+          next.player = opp;
+          moves.push({ state: next });
+        }
+      }
+    });
+  } else {
+    s.board.forEach((cell, i) => {
+      if (cell === p) {
+        validDestinations(s.board, i, p, fly).forEach(d => {
+          const next = cloneState(s);
+          next.board[i] = null; next.board[d] = p; next.selected = null; next.moves = [];
+          const mill = millsForPlayer(next.board, d, p);
+          if (mill.length > 0) {
+            getRemovable(next.board, opp).forEach(r => {
+              const after = cloneState(next);
+              after.board[r] = null; after.onBoard[opp]--; after.player = opp;
+              moves.push({ state: after });
+            });
+          } else {
+            next.player = opp;
+            moves.push({ state: next });
+          }
+        });
+      }
+    });
+  }
+  return moves;
+}
+function minimax(state, depth, alpha, beta, max) {
+  if (depth === 0 || state.gameOver) return evaluateState(state);
+  const moves = generateMoves(state);
+  if (!moves.length) return evaluateState(state);
+  if (max) {
+    let best = -Infinity;
+    for (const m of moves) { best = Math.max(best, minimax(m.state, depth-1, alpha, beta, false)); alpha = Math.max(alpha, best); if (beta <= alpha) break; }
+    return best;
+  } else {
+    let best = Infinity;
+    for (const m of moves) { best = Math.min(best, minimax(m.state, depth-1, alpha, beta, true)); beta = Math.min(beta, best); if (beta <= alpha) break; }
+    return best;
+  }
+}
+function computerMove(s, difficulty) {
+  const moves = generateMoves(s);
+  if (!moves.length) return s;
+  if (difficulty === 'easy') return moves[Math.floor(Math.random() * moves.length)].state;
+  const depth = difficulty === 'hard' ? 4 : 2;
+  let best = moves[0], bestScore = -Infinity;
+  for (const m of moves) {
+    const score = minimax(m.state, depth-1, -Infinity, Infinity, false);
+    if (score > bestScore) { bestScore = score; best = m; }
+  }
+  return best.state;
+}
 
-// (keeping the AI functions, truncated for readability — they are identical to the previous version)
-
-/* ---------- COMPONENT ---------- */
+/* ==================== MAIN COMPONENT ==================== */
 export default function MorabarabaPage() {
-  const [mode, setMode] = useState(null);
+  const [mode, setMode] = useState(null); // null | 'twoPlayer' | 'vsComputer'
   const [difficulty, setDifficulty] = useState('medium');
+  const [gameTime, setGameTime] = useState(30);
   const [s, setS] = useState(freshState);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [animating, setAnimating] = useState(null);
   const [thinking, setThinking] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [capturingPiece, setCapturingPiece] = useState(null); // highlighted capture
+  const [capturingPiece, setCapturingPiece] = useState(null);
+
   const timerRef = useRef(null);
   const aiTimerRef = useRef(null);
 
+  // ----- START GAME -----
   const startGame = (selectedMode) => {
     setMode(selectedMode);
-    setS(freshState());
+    setS(freshState(gameTime));
     setThinking(false);
     setShowConfetti(false);
     setCapturingPiece(null);
     sounds.click();
   };
 
-  // Turn timer for human players
+  // ----- TIMER (ticks every second when it's human's turn) -----
   useEffect(() => {
     if (s.gameOver || s.millAlert || (mode === 'vsComputer' && s.player === 'brown')) return;
-    setS(prev => ({ ...prev, timer: TURN_TIME }));
+    setS(prev => ({ ...prev, timer: prev.timeLimit }));
     const interval = setInterval(() => {
       setS(prev => {
         if (prev.timer <= 1) {
           sounds.timeout();
-          // time's up — switch turns
           const next = cloneState(prev);
           next.player = prev.player === 'green' ? 'brown' : 'green';
-          next.timer = TURN_TIME;
+          next.timer = next.timeLimit;
           next.selected = null;
           next.moves = [];
           return next;
@@ -190,57 +291,39 @@ export default function MorabarabaPage() {
     return () => clearInterval(interval);
   }, [s.player, s.gameOver, s.millAlert, mode]);
 
-  // AI move with visual steps
+  // ----- AI MOVE (with visible capture) -----
   useEffect(() => {
     if (mode !== 'vsComputer' || s.player !== 'brown' || s.gameOver || s.millAlert || thinking) return;
-
     setThinking(true);
     aiTimerRef.current = setTimeout(() => {
       setS(prev => {
         const bestMove = computerMove(prev, difficulty);
-
-        // Step 1: select piece and move (if moving phase)
-        // For placing, just place; for moving, we need to show selection and movement separately
-        if (bestMove.history.length > prev.history.length) {
-          const lastAction = bestMove.history[bestMove.history.length - 1];
-
-          if (lastAction.type === 'place') {
-            sounds.place();
-            setAnimating(lastAction.pointId);
-            setTimeout(() => setAnimating(null), 400);
-          } else if (lastAction.type === 'move') {
-            // show the piece being moved
-            setAnimating(null);
-            // we need to simulate the movement step by step — we already have the final state
-            // instead, we directly set the state and let the piece animation happen
-            sounds.move();
-            setAnimating(lastAction.to);
-            setTimeout(() => setAnimating(null), 400);
-          }
-
-          if (bestMove.millAlert) {
-            // show the captured piece before removal
-            const capturedId = bestMove.removable[0]; // AI picks first removable
-            setCapturingPiece(capturedId);
-            sounds.mill();
-            setTimeout(() => {
-              setCapturingPiece(null);
-              sounds.capture();
-            }, 800);
-
-            // after delay, apply the final state
-            setTimeout(() => {
-              setS(bestMove);
-              checkGameOver(bestMove);
-              if (bestMove.gameOver) setShowConfetti(true);
-              setThinking(false);
-            }, 1200);
-            return prev; // keep current state while animating
-          }
-        }
-
-        checkGameOver(bestMove);
         if (bestMove.gameOver) setShowConfetti(true);
+        // highlight capture if mill formed
+        if (bestMove.millAlert && bestMove.removable.length) {
+          setCapturingPiece(bestMove.removable[0]);
+          sounds.mill();
+          setTimeout(() => {
+            setCapturingPiece(null);
+            sounds.capture();
+            setS(bestMove);
+            checkGameOver(bestMove);
+            if (bestMove.gameOver) setShowConfetti(true);
+          }, 800);
+          setThinking(false);
+          return prev; // keep current state while animating
+        }
+        // animate movement
+        const lastAction = bestMove.history[bestMove.history.length - 1];
+        if (lastAction?.type === 'place') {
+          sounds.place();
+          setAnimating(lastAction.pointId);
+          setTimeout(() => setAnimating(null), 400);
+        } else if (lastAction?.type === 'move') {
+          sounds.move();
+          setAnimating(lastAction.to);
+          setTimeout(() => setAnimating(null), 400);
+        }
         setThinking(false);
         return bestMove;
       });
@@ -248,6 +331,7 @@ export default function MorabarabaPage() {
     return () => clearTimeout(aiTimerRef.current);
   }, [s.player, s.gameOver, s.millAlert, mode, difficulty, thinking]);
 
+  // ----- HUMAN CLICK HANDLER -----
   const click = useCallback((pointId, action) => {
     if (mode === 'vsComputer' && s.player === 'brown') return;
     setS(prev => {
@@ -256,6 +340,7 @@ export default function MorabarabaPage() {
       let next = cloneState(prev);
       const p = next.player, opp = p === 'green' ? 'brown' : 'green';
 
+      // PLACE
       if (action === 'place' && next.phase === PHASE.PLACING && !next.board[pointId]) {
         next.board[pointId] = p; next.toPlace[p]--; next.onBoard[p]++;
         const mill = millsForPlayer(next.board, pointId, p);
@@ -264,10 +349,11 @@ export default function MorabarabaPage() {
         if (mill.length > 0) {
           next.millAlert = true; next.removable = getRemovable(next.board, opp);
           sounds.mill();
-        } else { next.player = opp; next.timer = TURN_TIME; checkGameOver(next); }
+        } else { next.player = opp; next.timer = next.timeLimit; checkGameOver(next); }
         setAnimating(pointId); setTimeout(() => setAnimating(null), 400);
         return next;
       }
+      // REMOVE
       if (action === 'remove' && prev.millAlert && prev.removable.includes(pointId)) {
         setCapturingPiece(pointId);
         sounds.capture();
@@ -276,19 +362,21 @@ export default function MorabarabaPage() {
           setS(prev => {
             const n = cloneState(prev);
             n.board[pointId] = null; n.onBoard[opp]--; n.millAlert = false; n.removable = [];
-            n.player = opp; n.timer = TURN_TIME; checkGameOver(n);
+            n.player = opp; n.timer = n.timeLimit; checkGameOver(n);
             if (n.gameOver) setShowConfetti(true);
             return n;
           });
         }, 600);
-        return { ...prev, millAlert: false }; // temporarily disable alerts
+        return { ...prev, millAlert: false };
       }
+      // SELECT
       if (action === 'select' && next.phase !== PHASE.PLACING && next.board[pointId] === p) {
         const fly = next.onBoard[p] === 3 ? PHASE.FLYING : next.phase;
         next.selected = pointId; next.moves = validDestinations(next.board, pointId, p, fly);
         sounds.click();
         return next;
       }
+      // MOVE
       if (action === 'move' && prev.selected !== null && prev.moves.includes(pointId)) {
         next.board[prev.selected] = null; next.board[pointId] = p;
         next.selected = null; next.moves = [];
@@ -297,7 +385,7 @@ export default function MorabarabaPage() {
         if (mill.length > 0) {
           next.millAlert = true; next.removable = getRemovable(next.board, opp);
           sounds.mill();
-        } else { next.player = opp; next.timer = TURN_TIME; checkGameOver(next); }
+        } else { next.player = opp; next.timer = next.timeLimit; checkGameOver(next); }
         setAnimating(pointId); setTimeout(() => setAnimating(null), 400);
         return next;
       }
@@ -305,7 +393,10 @@ export default function MorabarabaPage() {
     });
   }, [mode, s.player]);
 
-  useEffect(() => { if (s.gameOver) { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 4000); } }, [s.gameOver]);
+  // Auto‑show confetti on game over
+  useEffect(() => {
+    if (s.gameOver) { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 4000); }
+  }, [s.gameOver]);
 
   const phaseText = () => {
     if (s.phase === PHASE.PLACING) return 'Placing Pieces';
@@ -313,7 +404,7 @@ export default function MorabarabaPage() {
     return 'Moving Pieces';
   };
 
-  // ── MENU ──
+  /* ==================== MENU ==================== */
   if (!mode) {
     return (
       <div className="morabaraba-page">
@@ -330,6 +421,12 @@ export default function MorabarabaPage() {
                 <span className="mode-icon">🤖</span><span className="mode-title">vs Computer</span><span className="mode-desc">Challenge the AI</span>
               </button>
             </div>
+            <div className="time-select">
+              <label>⏱️ Turn Time:</label>
+              <select value={gameTime} onChange={e => setGameTime(Number(e.target.value))}>
+                {TIME_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+              </select>
+            </div>
             <div className="difficulty-select">
               <label>Difficulty:</label>
               <select value={difficulty} onChange={e => setDifficulty(e.target.value)}>
@@ -344,7 +441,7 @@ export default function MorabarabaPage() {
     );
   }
 
-  // ── GAME ──
+  /* ==================== GAME ==================== */
   return (
     <div className="morabaraba-page">
       {showConfetti && <Confetti />}
@@ -377,14 +474,14 @@ export default function MorabarabaPage() {
         {capturingPiece !== null && <div className="capture-alert">🔴 Removing piece…</div>}
         <Board s={s} animating={animating} capturing={capturingPiece} click={click} mode={mode} />
         <div className="controls">
-          <button onClick={() => { setS(freshState()); sounds.click(); }} className="control-btn restart">🔄 Restart</button>
+          <button onClick={() => { setS(freshState(gameTime)); sounds.click(); }} className="control-btn restart">🔄 Restart</button>
           <button onClick={() => setRulesOpen(true)} className="control-btn rules">📖 How to Play</button>
         </div>
         {s.gameOver && (
           <div className="victory-overlay">
             <div className="victory-card">
               <h2>{s.message}</h2>
-              <button onClick={() => { setS(freshState()); sounds.click(); }} className="play-again-btn">Play Again</button>
+              <button onClick={() => { setS(freshState(gameTime)); sounds.click(); }} className="play-again-btn">Play Again</button>
             </div>
           </div>
         )}
@@ -394,7 +491,7 @@ export default function MorabarabaPage() {
   );
 }
 
-/* ---------- SUB-COMPONENTS (same as before, but Board now uses capturing prop) ---------- */
+/* ==================== SUB‑COMPONENTS ==================== */
 function Board({ s, animating, capturing, click, mode }) {
   return (
     <div className="board-container">
@@ -402,8 +499,8 @@ function Board({ s, animating, capturing, click, mode }) {
         <rect width="300" height="300" fill="#f5e6d3" />
         {Object.entries(ADJ).map(([from, toList]) =>
           toList.map(to => +from < +to ? (
-            <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y} x2={POINTS[to].x} y2={POINTS[to].y}
-              stroke="#8B7355" strokeWidth="4" strokeLinecap="round" />
+            <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y}
+                  x2={POINTS[to].x} y2={POINTS[to].y} stroke="#8B7355" strokeWidth="4" strokeLinecap="round" />
           ) : null)
         )}
         {POINTS.map(pt => {
