@@ -69,12 +69,13 @@ const quickLinks = [
   { icon: '📆', title: 'Academic Calendar', path: null, comingSoon: true },
 ];
 
+// ----- FULL‑BLEED BACKGROUND IMAGES FOR HIGHLIGHTS -----
 const highlights = [
   {
     id: 'meme',
     title: "Today's Meme",
     emoji: '😂',
-    img: '/images/student-zone/highlight-meme.jpg',
+    bgImg: '/images/student-zone/highlight-meme.jpg',   // full‑bleed background
     quote: "When you realise the assignment was due yesterday.",
     badge: 'Updated Daily',
     button: 'View',
@@ -83,7 +84,7 @@ const highlights = [
     id: 'motivation',
     title: "Today's Motivation",
     emoji: '💡',
-    img: '/images/student-zone/highlight-motivation.jpg',
+    bgImg: '/images/student-zone/highlight-motivation.jpg',
     quote: "Small progress is still progress.",
     button: 'Read',
   },
@@ -91,7 +92,7 @@ const highlights = [
     id: 'notice',
     title: "Campus Notice",
     emoji: '📢',
-    img: null,
+    bgImg: null,                                       // no image yet
     quote: "Registration opens next Monday.",
     badge: 'Notice',
     button: 'More',
@@ -107,7 +108,6 @@ function StudentZone() {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Inline style for hero background – only use image if it loaded successfully
   const heroStyle = heroImgFailed ? {} : {
     backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/images/student-zone/hero-bg.jpg')`,
     backgroundSize: 'cover',
@@ -117,7 +117,6 @@ function StudentZone() {
   return (
     <div className="student-zone-page">
       <div className="sz-hero" style={heroStyle}>
-        {/* Hidden img to test if the image exists */}
         <img
           src="/images/student-zone/hero-bg.jpg"
           alt=""
@@ -184,23 +183,26 @@ function StudentZone() {
         </div>
       </section>
 
-      {/* Daily Highlights */}
+      {/* Daily Highlights – full‑bleed images */}
       <section className="sz-section">
         <h2 className="sz-section-title">✨ Daily Highlights</h2>
         <div className="sz-highlights-grid">
           {highlights.map(card => (
-            <div key={card.id} className="sz-highlight-card">
-              <div className={`sz-highlight-image ${card.id}-placeholder`}>
-                {card.img ? (
-                  <img src={card.img} alt={card.title} className="highlight-img"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                ) : null}
-                <span className="highlight-emoji">{card.emoji}</span>
+            <div
+              key={card.id}
+              className="sz-highlight-card"
+              style={card.bgImg ? {
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(${card.bgImg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              } : {}}
+            >
+              <div className="sz-highlight-overlay" />
+              <div className="sz-highlight-content">
+                {card.badge && <span className="sz-badge highlight-badge">{card.badge}</span>}
+                <p className="sz-highlight-quote">"{card.quote}"</p>
+                <button className="sz-highlight-btn">{card.button}</button>
               </div>
-              {card.badge && <span className="sz-badge highlight-badge">{card.badge}</span>}
-              <p className="sz-highlight-quote">"{card.quote}"</p>
-              <button className="sz-highlight-btn">{card.button}</button>
             </div>
           ))}
         </div>

@@ -412,7 +412,7 @@
   font-style: italic;
 }
 
-/* ==================== DAILY HIGHLIGHTS ==================== */
+/* ==================== DAILY HIGHLIGHTS (full‑bleed images) ==================== */
 .sz-highlights-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -420,89 +420,66 @@
 }
 
 .sz-highlight-card {
-  background: white;
+  position: relative;
   border-radius: var(--radius-xl);
-  padding: 2rem 1.5rem;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  min-height: 240px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
+  justify-content: flex-end;
+  /* fallback background when no image */
+  background-color: #f3f4f6;
 }
 
 .sz-highlight-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
-/* Highlight card image container */
-.sz-highlight-image {
+.sz-highlight-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1;
+}
+
+.sz-highlight-content {
   position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: 0 auto 1rem;
-  background: #f3f4f6;
-}
-
-.highlight-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0; left: 0;
-}
-
-.highlight-emoji {
-  font-size: 2.5rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 2;
-}
-
-/* Placeholder colours (fallback when no image) */
-.meme-placeholder {
-  background: #fef3c7;
-}
-
-.motivation-placeholder {
-  background: #e0f2f1;
-}
-
-.notice-placeholder {
-  background: #dbeafe;
-}
-
-.highlight-badge {
-  margin-top: 0;
+  padding: 1.5rem;
+  color: white;
+  text-align: center;
 }
 
 .sz-highlight-quote {
   font-size: 0.95rem;
-  color: var(--text-dark);
   line-height: 1.5;
-  flex: 1;
+  margin-bottom: 1rem;
+  font-weight: 500;
 }
 
 .sz-highlight-btn {
-  background: var(--primary);
-  color: white;
+  background: white;
+  color: var(--primary-dark);
   border: none;
   padding: 0.5rem 1.5rem;
   border-radius: 2rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.2s;
-  margin-top: 0.5rem;
 }
 
 .sz-highlight-btn:hover {
-  background: var(--primary-dark);
+  background: var(--primary-light);
+}
+
+.highlight-badge {
+  margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  color: white;
 }
 
 /* RESPONSIVE */
