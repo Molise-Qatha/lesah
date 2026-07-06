@@ -48,9 +48,9 @@ const games = [
     icon: '🧩',
     title: 'Sudoku',
     desc: 'Challenge your logic skills.',
-    link: null,
+    link: '/student-zone/sudoku',          // ✅ new route
     img: null,
-    available: false,
+    available: true,                       // ✅ enabled
   },
 ];
 
