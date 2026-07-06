@@ -24,6 +24,7 @@ import WordScrambleGame from './pages/WordScrambleGame';
 import WordSearchGame from './pages/WordSearchGame';
 import MorabarabaGame from './pages/MorabarabaGame';
 import SudokuGame from './pages/SudokuGame';   // ✅ new
+import LesahLifePage from "./pages/LesahLifePage";
 import './App.css';
 
 // Protected route wrapper for admin-only pages
@@ -93,6 +94,7 @@ function App() {
           <Route path="/student-zone/word-search" element={<WordSearchGame />} />
           <Route path="/student-zone/morabaraba" element={<MorabarabaGame />} />
           <Route path="/student-zone/sudoku" element={<SudokuGame />} />   {/* ✅ new */}
+          <Route path="/student-zone/lesah-life" element={<LesahLifePage />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />

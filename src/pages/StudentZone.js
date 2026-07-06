@@ -52,6 +52,14 @@ const games = [
     img: null,
     available: true,                       // ✅ enabled
   },
+  {
+  icon: '🌱',
+  title: 'LeSAH Life',
+  desc: 'Semester Survival – balance your stats and thrive!',
+  link: '/student-zone/lesah-life',
+  img: null,
+  available: true,
+},
 ];
 
 const notices = [
