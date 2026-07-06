@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/logo.png';   // 👈 Replace with your new logo file
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,7 +46,7 @@ function Header() {
         <nav className="navbar">
           <Link to="/" className="logo">
             <img src={logo} alt="LeSAH Logo" className="logo-image" />
-            <span className="logo-text">LeSAH</span>
+            {/* The text is already in the new logo, so we remove the span */}
           </Link>
 
           <div className="nav-actions">
