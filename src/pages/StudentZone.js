@@ -53,6 +53,14 @@ const games = [
     available: true,                       // ✅ enabled
   },
   {
+  icon: '🎲',
+  title: 'LeSAH Quest',
+  desc: 'Board game: study, complete challenges, earn Lilotho Points!',
+  link: '/student-zone/lesah-quest',
+  img: null,
+  available: true,
+},
+  {
   icon: '🌱',
   title: 'LeSAH Life',
   desc: 'Semester Survival – balance your stats and thrive!',

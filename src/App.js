@@ -24,6 +24,7 @@ import WordScrambleGame from './pages/WordScrambleGame';
 import WordSearchGame from './pages/WordSearchGame';
 import MorabarabaGame from './pages/MorabarabaGame';
 import SudokuGame from './pages/SudokuGame';   // ✅ new
+import LeSAHQuest from './pages/LeSAHQuest';
 import LesahLifePage from "./pages/LesahLifePage";
 import './App.css';
 
@@ -95,6 +96,7 @@ function App() {
           <Route path="/student-zone/morabaraba" element={<MorabarabaGame />} />
           <Route path="/student-zone/sudoku" element={<SudokuGame />} />   {/* ✅ new */}
           <Route path="/student-zone/lesah-life" element={<LesahLifePage />} />
+          <Route path="/student-zone/lesah-quest" element={<LeSAHQuest />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />

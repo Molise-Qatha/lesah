@@ -1,0 +1,351 @@
+/* ==================== LE SAH QUEST ==================== */
+:root {
+  --primary: #2a9d8f;
+  --primary-dark: #21867a;
+  --primary-light: #e0f2f1;
+  --bg-warm: #fefae0;
+  --text-dark: #1f2937;
+  --text-muted: #6b7280;
+}
+
+.lesah-quest-page {
+  background: var(--bg-warm);
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding-bottom: 2rem;
+}
+
+.quest-container {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.back-link {
+  color: var(--text-dark);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+/* ---- START CARD ---- */
+.quest-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+.quest-card h1 {
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.quest-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.quest-input-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.quest-input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+.quest-input:focus {
+  border-color: var(--primary);
+}
+
+/* ---- BUTTONS ---- */
+.quest-btn {
+  padding: 0.8rem 1.6rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.quest-btn.primary {
+  background: var(--primary);
+  color: white;
+}
+
+.quest-btn.primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.quest-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quest-btn.small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background: #f3f4f6;
+  color: var(--text-dark);
+}
+
+.quest-btn.small:hover {
+  background: #e5e7eb;
+}
+
+/* ---- HEADER STATS ---- */
+.quest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.quest-stats {
+  display: flex;
+  gap: 1.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* ---- BOARD ---- */
+.quest-board {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+.board-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.board-space {
+  width: 70px;
+  height: 70px;
+  border-radius: 0.75rem;
+  background: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.board-space.special {
+  border-color: var(--primary-light);
+}
+
+.board-space.player-here {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 12px rgba(42,157,143,0.4);
+}
+
+.board-space.bonus { background: #fef3c7; }
+.board-space.challenge { background: #fce7f3; }
+.board-space.leSAH { background: #e0f2f1; }
+.board-space.study { background: #dbeafe; }
+.board-space.finish { background: #d1fae5; }
+.board-space.start { background: #f3f4f6; }
+
+.space-number {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+
+.space-icon {
+  font-size: 1.2rem;
+}
+
+.player-token {
+  font-size: 1.5rem;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* ---- CONTROLS ---- */
+.quest-controls {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.roll-btn {
+  font-size: 1.2rem;
+  padding: 1rem 2.5rem;
+}
+
+.roll-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ---- MODALS ---- */
+.quest-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.quest-modal {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.quest-action h2 {
+  margin-bottom: 1rem;
+}
+
+.challenge-question, .study-goal, .lesah-task {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.study-hint, .lesah-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.result-msg {
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.result-msg.correct { color: #059669; }
+.result-msg.wrong { color: #ef4444; }
+
+.quest-action form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* ---- LEADERBOARD ---- */
+.quest-leaderboard {
+  margin-top: 2rem;
+  background: #f3f4f6;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.leaderboard-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ---- REDEEM CARD ---- */
+.quest-redeem-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-top: 2rem;
+}
+
+.quest-redeem-card h3 {
+  margin-bottom: 0.75rem;
+}
+
+.quest-redeem-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+}
+
+.quest-redeem-card li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.redeem-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ---- CONFETTI ---- */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 300;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10%;
+  border-radius: 2px;
+  animation: confetti-fall 3s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 500px) {
+  .board-space {
+    width: 55px;
+    height: 55px;
+  }
+  .quest-stats {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
