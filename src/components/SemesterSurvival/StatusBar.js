@@ -1,23 +1,33 @@
 import React from "react";
-import { stats, playerData } from "../../data/semesterData";
+import { useGame } from "../../context/GameContext";
+
+const STATS_KEYS = [
+  { key: "money", icon: "💰" },
+  { key: "knowledge", icon: "📚" },
+  { key: "health", icon: "❤️" },
+  { key: "energy", icon: "⚡" },
+  { key: "happiness", icon: "😊" },
+];
 
 export default function StatusBar() {
+  const { state } = useGame();
+
   return (
     <div className="status-bar">
-      {stats.map((stat) => (
-        <div key={stat.id} className="status-item">
-          <span className="status-icon">{stat.icon}</span>
-          <span className="status-value">{stat.value}</span>
+      {STATS_KEYS.map(({ key, icon }) => (
+        <div key={key} className="status-item">
+          <span className="status-icon">{icon}</span>
+          <span className="status-value">{state[key]}</span>
         </div>
       ))}
       <div className="status-item">
-        <span>📅</span> Week {playerData.week}
+        <span>📅</span> Week {state.week}
       </div>
       <div className="status-item">
-        <span>📆</span> {playerData.day}
+        <span>📆</span> Day {state.day}
       </div>
       <div className="status-item">
-        <span>📊</span> {playerData.semesterProgress}%
+        <span>📊</span> {state.semesterProgress}%
       </div>
     </div>
   );
