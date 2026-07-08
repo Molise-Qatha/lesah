@@ -17,7 +17,7 @@ body {
 }
 
 .page-container {
-  padding-top: 100px;
+  padding-top: 20px; /* <-- CHANGED: Reduced from 100px to give just a tiny gap */
   padding-bottom: 60px;
   min-height: 100vh;
   background: #f8f9fa;
