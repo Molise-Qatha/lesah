@@ -7,7 +7,7 @@ const quickAccess = [
   { icon: '📢', title: 'Campus Notices', desc: 'Coming Soon', available: false },
   { icon: '📚', title: 'Past Papers', desc: 'Coming Soon', available: false },
   { icon: '📅', title: 'Exam Timetable', desc: 'Coming Soon', available: false },
-  { icon: '🗺️', title: 'Campus Map', desc: 'Coming Soon', available: false },
+  { icon: '🗺️', title: 'Campus Map', desc: 'Explore NUL', available: true, link: '/student-zone/campus-map' },
   { icon: '💬', title: 'Daily Motivation', desc: 'Coming Soon', available: false },
 ];
 
@@ -52,22 +52,6 @@ const games = [
     img: null,
     available: true,                       // ✅ enabled
   },
-  {
-  icon: '🎲',
-  title: 'LeSAH Quest',
-  desc: 'Board game: study, complete challenges, earn Lilotho Points!',
-  link: '/student-zone/lesah-quest',
-  img: null,
-  available: true,
-},
-  {
-  icon: '🌱',
-  title: 'LeSAH Life',
-  desc: 'Semester Survival – balance your stats and thrive!',
-  link: '/student-zone/lesah-life',
-  img: null,
-  available: true,
-},
 ];
 
 const notices = [
