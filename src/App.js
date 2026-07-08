@@ -23,8 +23,8 @@ import LilothoGame from './pages/LilothoGame';
 import WordScrambleGame from './pages/WordScrambleGame';
 import WordSearchGame from './pages/WordSearchGame';
 import MorabarabaGame from './pages/MorabarabaGame';
-import SudokuGame from './pages/SudokuGame';   // ✅ new
-import CampusMap from './pages/CampusMap';
+import SudokuGame from './pages/SudokuGame';
+import CampusMap from './pages/CampusMap';   // ✅ new
 import './App.css';
 
 // Protected route wrapper for admin-only pages
@@ -93,8 +93,8 @@ function App() {
           <Route path="/student-zone/word-scramble" element={<WordScrambleGame />} />
           <Route path="/student-zone/word-search" element={<WordSearchGame />} />
           <Route path="/student-zone/morabaraba" element={<MorabarabaGame />} />
-          <Route path="/student-zone/sudoku" element={<SudokuGame />} />   {/* ✅ new */}
-          <Route path="/student-zone/campus-map" element={<CampusMap />} />
+          <Route path="/student-zone/sudoku" element={<SudokuGame />} />
+          <Route path="/student-zone/campus-map" element={<CampusMap />} />   {/* ✅ new */}
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
