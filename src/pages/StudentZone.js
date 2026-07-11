@@ -78,7 +78,6 @@ const highlights = [
     bgImg: '/images/student-zone/highlight-meme.jpg',
     quote: "When you realise the assignment was due yesterday.",
     badge: 'Updated Daily',
-    button: 'View',
   },
   {
     id: 'motivation',
@@ -86,14 +85,13 @@ const highlights = [
     emoji: '💡',
     bgImg: '/images/student-zone/highlight-motivation.jpg',
     quote: "Small progress is still progress.",
-    button: 'Read',
   },
   {
     id: 'notice',
     title: "Campus Notice",
     emoji: '📢',
     bgImg: null,
-    quote: "Registration opens next Monday.",
+    quote: "Coming Soon.",
     badge: 'Notice',
     button: 'More',
   },
@@ -216,7 +214,7 @@ function StudentZone() {
       <section className="sz-section">
         <h2 className="sz-section-title">Today's Motivation</h2>
         <div className="sz-motivation-card">
-          <p className="sz-quote">"Molapo o tlala ka melatswana."</p>
+          <p className="sz-quote">"Molapo o tlatsoa ke melatsoana."</p>
           <p className="sz-quote-translation">Small consistent actions create great achievements.</p>
           <button className="sz-refresh-icon" aria-label="Refresh quote" onClick={() => {}}>🔄</button>
         </div>
