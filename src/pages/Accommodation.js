@@ -37,7 +37,7 @@ const residences = [
   {
     id: 3,
     name: "'Memmafumane Residence",
-    village: "Mangopeng",                  // ← moved from Mafikeng
+    village: "Mangopeng",
     area: "Mangopeng",
     amount: 350,
     amenities: "No ceiling, good security, landlord lives on site",
@@ -51,7 +51,7 @@ const residences = [
   {
     id: 4,
     name: "'Maphakiso Residence",
-    village: "Mangopeng",                  // ← moved from Mafikeng
+    village: "Mangopeng",
     area: "Mangopeng",
     amount: 450,
     amenities: "No ceiling, good security, landlord lives on site",
@@ -112,12 +112,12 @@ const residences = [
     name: "'Malethola Residence",
     village: "Hata-Butle",
     area: "Hata-Butle (tlasa Pius)",
-    amount: 500,                              // ← updated rent
-    amenities: "No ceiling, no tiles, no security",  // ← updated amenities
+    amount: 500,
+    amenities: "No ceiling, no tiles, no security",
     internalNote: null,
     contactHidden: null,
     walkingTime: 7,
-    verified: true,                            // ← now verified
+    verified: true,
     occupied: false,
     images: null,
   },
@@ -156,8 +156,8 @@ const getImagePath = (name) => {
   return `/images/accommodation/${slug}.jpg`;
 };
 
-// Unique villages for filter
-const villages = [...new Set(residences.map(r => r.village))];
+// Unique villages for filter – now includes Mafikeng and Liphakoeng without listings
+const villages = [...new Set([...residences.map(r => r.village), "Mafikeng", "Liphakoeng"])];
 
 const WHATSAPP_LINK = "https://wa.me/26656613551";
 const BOOKING_FEE = 60;
