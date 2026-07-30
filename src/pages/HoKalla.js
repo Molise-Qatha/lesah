@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { startGameLoop } from '../game/hoKalla/gameLoop';
+import { startGameLoop } from '../../game/hoKalla/gameLoop';
 import {
   initRenderer,
   clearCanvas,
@@ -7,10 +7,10 @@ import {
   drawTitle,
   drawFPS,
   getCanvas
-} from '../game/hoKalla/renderer';
-import { initInput } from '../game/hoKalla/inputManager';
+} from '../../game/hoKalla/renderer';
+import { initInput } from '../../game/hoKalla/inputManager';
 // Entity manager will be used later
-// import * as EntityManager from '../game/hoKalla/entityManager';
+// import * as EntityManager from '../../game/hoKalla/entityManager';
 
 const HoKalla = () => {
   const canvasRef = useRef(null);
