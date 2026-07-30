@@ -14,12 +14,12 @@ const HoKalla = () => {
   // Sprite image
   const spriteImage = useRef(null);
 
-  // Player state – width/height will be set after image loads
+  // Player state
   const player = useRef({
     x: 200,
     y: 0,
-    width: 60,        // default; will be overwritten by sprite size
-    height: 100,      // default; will be overwritten by sprite size
+    width: 60,        // updated on sprite load
+    height: 100,      // updated on sprite load
     vx: 0,
     vy: 0,
     speed: 3.5,
@@ -29,8 +29,7 @@ const HoKalla = () => {
     animTime: 0,
     state: 'idle',
     landTimer: 0,
-    // Sprite scale factor (adjust if image is too big)
-    scale: 0.15,      // change this to fit your sprite
+    scale: 0.15,
   });
 
   // Camera (fixed for now)
@@ -46,13 +45,12 @@ const HoKalla = () => {
 
   const groundFrac = 0.65;
 
-  // ---------- Load the sprite ----------
+  // ---------- Load Khotso sprite ----------
   useEffect(() => {
     const img = new Image();
-    img.src = '/images/characters/khotso.png';  // adjust path if needed
+    img.src = '/images/characters/khotso.png';
     img.onload = () => {
       spriteImage.current = img;
-      // Set player dimensions based on image size * scale
       const p = player.current;
       p.width = img.naturalWidth * p.scale;
       p.height = img.naturalHeight * p.scale;
@@ -70,43 +68,159 @@ const HoKalla = () => {
   const handleTouchJumpStart = (e) => { e.preventDefault(); touchJump.current = true; };
   const handleTouchJumpEnd = (e) => { e.preventDefault(); touchJump.current = false; };
 
-  // ---------- Drawing ----------
+  // ---------- Background helpers ----------
+  const drawAcaciaTree = (ctx, x, y, size) => {
+    ctx.save();
+    // Trunk
+    ctx.fillStyle = '#8B5A2B';
+    ctx.fillRect(x - 3, y - size * 0.6, 6, size * 0.6);
+    // Branches
+    ctx.strokeStyle = '#8B5A2B';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y - size * 0.4);
+    ctx.lineTo(x - size * 0.4, y - size * 0.8);
+    ctx.moveTo(x, y - size * 0.4);
+    ctx.lineTo(x + size * 0.4, y - size * 0.8);
+    ctx.moveTo(x, y - size * 0.5);
+    ctx.lineTo(x - size * 0.2, y - size * 0.9);
+    ctx.moveTo(x, y - size * 0.5);
+    ctx.lineTo(x + size * 0.2, y - size * 0.9);
+    ctx.stroke();
+    // Leaves (flat canopy)
+    ctx.fillStyle = '#2E8B57';
+    ctx.beginPath();
+    ctx.ellipse(x, y - size * 0.85, size * 0.35, size * 0.15, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#3CB371';
+    ctx.beginPath();
+    ctx.ellipse(x, y - size * 0.9, size * 0.25, size * 0.1, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  const drawHut = (ctx, x, y, size) => {
+    ctx.save();
+    // Walls
+    ctx.fillStyle = '#D2B48C';
+    ctx.fillRect(x - size * 0.4, y - size * 0.5, size * 0.8, size * 0.5);
+    ctx.strokeStyle = '#8B7355';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - size * 0.4, y - size * 0.5, size * 0.8, size * 0.5);
+    // Door
+    ctx.fillStyle = '#5C4033';
+    ctx.fillRect(x - size * 0.1, y - size * 0.2, size * 0.2, size * 0.2);
+    // Thatch roof
+    ctx.fillStyle = '#C4A35A';
+    ctx.beginPath();
+    ctx.moveTo(x, y - size * 0.9);
+    ctx.lineTo(x - size * 0.5, y - size * 0.5);
+    ctx.lineTo(x + size * 0.5, y - size * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#8B7355';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y - size * 0.9);
+    ctx.lineTo(x - size * 0.25, y - size * 0.5);
+    ctx.moveTo(x, y - size * 0.9);
+    ctx.lineTo(x + size * 0.25, y - size * 0.5);
+    ctx.stroke();
+    ctx.restore();
+  };
+
   const drawBackground = (ctx, canvas) => {
-    const groundY = canvas.height * groundFrac;
+    const w = canvas.width;
+    const h = canvas.height;
+    const groundY = h * 0.65;
+
+    // Sky gradient
     const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
     skyGrad.addColorStop(0, '#87CEEB');
+    skyGrad.addColorStop(0.6, '#B0E0E6');
     skyGrad.addColorStop(1, '#E0F0FF');
     ctx.fillStyle = skyGrad;
-    ctx.fillRect(0, 0, canvas.width, groundY);
+    ctx.fillRect(0, 0, w, groundY);
 
-    const grassGrad = ctx.createLinearGradient(0, groundY, 0, canvas.height);
+    // Distant mountains
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, groundY);
+    ctx.lineTo(w * 0.25, groundY - 120);
+    ctx.lineTo(w * 0.35, groundY - 60);
+    ctx.lineTo(w * 0.6, groundY - 160);
+    ctx.lineTo(w * 0.75, groundY - 80);
+    ctx.lineTo(w, groundY - 40);
+    ctx.lineTo(w, groundY);
+    ctx.closePath();
+    ctx.fillStyle = '#7B8D7B';
+    ctx.fill();
+    ctx.restore();
+
+    // Rolling hills (mid ground)
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, groundY + 20);
+    ctx.quadraticCurveTo(w * 0.2, groundY - 30, w * 0.5, groundY + 10);
+    ctx.quadraticCurveTo(w * 0.8, groundY + 40, w, groundY - 10);
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
+    ctx.fillStyle = '#6B8E23';
+    ctx.fill();
+    ctx.restore();
+
+    // Foreground grass
+    const grassGrad = ctx.createLinearGradient(0, groundY - 20, 0, h);
     grassGrad.addColorStop(0, '#4caf50');
     grassGrad.addColorStop(1, '#2e7d32');
     ctx.fillStyle = grassGrad;
-    ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+    ctx.fillRect(0, groundY - 20, w, h - groundY + 20);
 
+    // Ground line
     ctx.beginPath();
     ctx.moveTo(0, groundY);
-    ctx.lineTo(canvas.width, groundY);
+    ctx.lineTo(w, groundY);
     ctx.strokeStyle = '#388E3C';
     ctx.lineWidth = 2;
     ctx.stroke();
+
+    // Acacia trees
+    drawAcaciaTree(ctx, w * 0.15, groundY - 60, 40);
+    drawAcaciaTree(ctx, w * 0.85, groundY - 70, 50);
+
+    // Rondavel hut
+    drawHut(ctx, w * 0.7, groundY - 35, 40);
+
+    // Grass tufts
+    ctx.save();
+    ctx.strokeStyle = '#2E7D32';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 30; i++) {
+      const gx = (i * 37 + 13) % w;
+      const gy = groundY + 5 + (i % 5) * 3;
+      ctx.beginPath();
+      ctx.moveTo(gx, gy);
+      ctx.quadraticCurveTo(gx - 4, gy - 6, gx - 3, gy - 12);
+      ctx.moveTo(gx, gy);
+      ctx.quadraticCurveTo(gx + 4, gy - 6, gx + 3, gy - 12);
+      ctx.stroke();
+    }
+    ctx.restore();
   };
 
+  // ---------- Drawing ----------
   const drawPlayer = (ctx, p) => {
     ctx.save();
-    // Player's (x, y) is the bottom‑center (feet)
     const px = p.x;
     const py = p.y;
     ctx.translate(px, py);
 
-    // Face left/right
     if (!p.facingRight) {
       ctx.scale(-1, 1);
     }
 
     if (spriteImage.current) {
-      // Draw the sprite centred horizontally and bottom‑aligned
       ctx.drawImage(
         spriteImage.current,
         -p.width / 2,
@@ -115,7 +229,7 @@ const HoKalla = () => {
         p.height
       );
     } else {
-      // Fallback if image hasn't loaded
+      // Fallback placeholder
       ctx.fillStyle = '#D32F2F';
       ctx.fillRect(-15, -80, 30, 80);
       ctx.fillStyle = '#FFC107';
@@ -193,7 +307,7 @@ const HoKalla = () => {
 
     p.animTime += 1;
     if (!p.grounded) {
-      p.state = p.vy < 0 ? 'jump' : 'jump'; // still one state for now
+      p.state = 'jump';
     } else {
       if (p.landTimer > 0) {
         p.state = 'land';
