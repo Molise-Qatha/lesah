@@ -52,6 +52,15 @@ const games = [
     img: null,
     available: true,
   },
+  // ----- NEW: Ho Kalla game card -----
+  {
+    icon: '⚔️',   // crossed swords to represent stick fighting
+    title: 'Ho Kalla',
+    desc: 'Traditional Basotho stick fighting game. 🇱🇸 Basotho Heritage',
+    link: '/student-zone/hokalla',
+    img: null,   // placeholder – will add later
+    available: true,
+  },
 ];
 
 const notices = [
