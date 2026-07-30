@@ -1,0 +1,14 @@
+.ho-kalla-container {
+  width: 100%;
+  height: 100%; /* Assumes parent fills available space */
+  min-height: 500px; /* Fallback */
+  position: relative;
+  overflow: hidden;
+  background: #1b5e20; /* matches dark green if canvas fails */
+}
+
+.ho-kalla-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
