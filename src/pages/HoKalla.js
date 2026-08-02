@@ -1,24 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './HoKalla.css';
 
-// ---- SPRITE SHEET CONFIGURATION ----
+// ---- SPRITE CONFIGURATION ----
 const SPRITE_CONFIG = {
-  sheetPath: '/images/characters/khotso-sprites.png',
-  frameWidth: 240,              // ← changed from 128 to 240
-  frameHeight: 341,
-  rows: {
-    idle: 0,
-    walk: 0,
-    jump: 2,
-    land: 2,
-  },
+  basePath: '/images/characters/khotso/',
+  // Number of frames per state
   framesPerState: {
-    idle: 1,
-    walk: 6,
-    jump: 4,
-    land: 6,
+    idle: 1,     // uses walk_0.png
+    walk: 5,
+    jump: 7,
+    land: 7,
+    crouch: 7,
   },
-  animationSpeed: 10,
+  animationSpeed: 10, // fps
 };
 
 const HoKalla = () => {
@@ -31,13 +25,24 @@ const HoKalla = () => {
   const touchJump = useRef(false);
   const jumpRequested = useRef(false);
 
-  const spriteSheet = useRef(null);
+  // Object to hold arrays of loaded Image objects for each state
+  const sprites = useRef({
+    idle: [],
+    walk: [],
+    jump: [],
+    land: [],
+    crouch: [],
+  });
+
+  const loadedCount = useRef(0);
+  const totalFrames = useRef(0);
+  const allLoaded = useRef(false);
 
   const player = useRef({
     x: 200,
     y: 0,
-    width: SPRITE_CONFIG.frameWidth,
-    height: SPRITE_CONFIG.frameHeight,
+    width: 150,   // adjust to your average frame width (will be updated after image load)
+    height: 200,  // adjust to your average frame height
     vx: 0,
     vy: 0,
     speed: 3.5,
@@ -49,30 +54,63 @@ const HoKalla = () => {
     currentFrame: 0,
     frameTimer: 0,
     landAnimFinished: false,
+    crouching: false,  // new: track crouch
   });
 
   const camera = useRef({ x: 0, y: 0 });
-
   const fpsState = useRef({
-    lastTime: 0,
-    fps: 0,
-    frameCount: 0,
-    fpsUpdateTime: 0,
+    lastTime: 0, fps: 0, frameCount: 0, fpsUpdateTime: 0,
   });
-
   const groundFrac = 0.65;
 
-  // ---------- Load sprite sheet ----------
+  // ---------- Load all frame images ----------
   useEffect(() => {
-    const img = new Image();
-    img.src = SPRITE_CONFIG.sheetPath;
-    img.onload = () => {
-      spriteSheet.current = img;
-      const p = player.current;
-      p.width = SPRITE_CONFIG.frameWidth;
-      p.height = SPRITE_CONFIG.frameHeight;
+    const loadFrames = (state, count, prefix = state) => {
+      const arr = [];
+      for (let i = 0; i < count; i++) {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.basePath}${prefix}_${i}.png`;
+        img.onload = () => {
+          loadedCount.current++;
+          if (loadedCount.current >= totalFrames.current) {
+            allLoaded.current = true;
+            // Set player dimensions from first walk frame (or idle)
+            if (sprites.current.walk[0]) {
+              player.current.width = sprites.current.walk[0].naturalWidth;
+              player.current.height = sprites.current.walk[0].naturalHeight;
+            }
+          }
+        };
+        img.onerror = () => console.warn(`Failed to load ${state} frame ${i}`);
+        arr.push(img);
+      }
+      return arr;
     };
-    img.onerror = () => console.warn('Sprite sheet not found – using fallback');
+
+    // Load all states (idle uses first walk frame)
+    sprites.current.walk = loadFrames('walk', SPRITE_CONFIG.framesPerState.walk, 'walk');
+    sprites.current.idle = []; // will be set to walk[0] after load
+    sprites.current.jump = loadFrames('jump', SPRITE_CONFIG.framesPerState.jump, 'jump');
+    sprites.current.land = loadFrames('land', SPRITE_CONFIG.framesPerState.land, 'land');
+    sprites.current.crouch = loadFrames('crouch', SPRITE_CONFIG.framesPerState.crouch, 'crouch');
+
+    totalFrames.current =
+      SPRITE_CONFIG.framesPerState.walk +
+      SPRITE_CONFIG.framesPerState.jump +
+      SPRITE_CONFIG.framesPerState.land +
+      SPRITE_CONFIG.framesPerState.crouch;
+
+    // Once walk first frame loads, set idle to the same image
+    const checkWalk = setInterval(() => {
+      if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
+        sprites.current.idle = [sprites.current.walk[0]];
+        clearInterval(checkWalk);
+        if (!player.current.width) {
+          player.current.width = sprites.current.walk[0].naturalWidth;
+          player.current.height = sprites.current.walk[0].naturalHeight;
+        }
+      }
+    }, 50);
   }, []);
 
   // ---------- Touch handlers ----------
@@ -83,7 +121,7 @@ const HoKalla = () => {
   const handleTouchJumpStart  = (e) => { e.preventDefault(); touchJump.current = true; };
   const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
 
-  // ---------- Background drawing ----------
+  // ---------- Background drawing (unchanged) ----------
   const drawAcaciaTree = (ctx, x, y, size) => {
     ctx.save();
     ctx.fillStyle = '#8B5A2B';
@@ -168,38 +206,30 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Player drawing ----------
+  // ---------- Player drawing with individual frames ----------
   const drawPlayer = (ctx, p) => {
     ctx.save();
     ctx.translate(p.x, p.y);
     if (!p.facingRight) ctx.scale(-1, 1);
 
-    if (spriteSheet.current) {
-      const cfg = SPRITE_CONFIG;
-      let row = cfg.rows[p.state] || 0;
-      let frameIdx = 0;
-
-      if (p.state === 'idle') {
-        row = cfg.rows.idle;
-        frameIdx = 0;
-      } else if (p.state === 'land') {
-        row = cfg.rows.land;
-        const jumpFrames = cfg.framesPerState.jump;
-        frameIdx = jumpFrames + Math.floor(p.currentFrame);
+    const state = p.state;
+    const frames = sprites.current[state];
+    if (frames && frames.length > 0) {
+      let frameIndex = 0;
+      if (state === 'idle') {
+        frameIndex = 0; // walk_0
       } else {
-        const maxFrames = cfg.framesPerState[p.state] || 1;
-        frameIdx = Math.floor(p.currentFrame) % maxFrames;
+        frameIndex = Math.floor(p.currentFrame) % frames.length;
       }
-
-      const sx = frameIdx * cfg.frameWidth;
-      const sy = row * cfg.frameHeight;
-      ctx.drawImage(
-        spriteSheet.current,
-        sx, sy, cfg.frameWidth, cfg.frameHeight,
-        -p.width / 2, -p.height,
-        p.width, p.height
-      );
+      const img = frames[frameIndex];
+      if (img && img.complete) {
+        // Maintain original aspect ratio but scale if needed
+        const drawWidth = p.width || img.naturalWidth;
+        const drawHeight = p.height || img.naturalHeight;
+        ctx.drawImage(img, -drawWidth / 2, -drawHeight, drawWidth, drawHeight);
+      }
     } else {
+      // Fallback
       ctx.fillStyle = '#D32F2F'; ctx.fillRect(-15, -80, 30, 80);
       ctx.fillStyle = '#FFC107'; ctx.beginPath(); ctx.arc(0, -90, 12, 0, Math.PI * 2); ctx.fill();
     }
@@ -223,14 +253,20 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Physics & input ----------
+  // ---------- Physics & input (with crouch) ----------
   const update = (canvas, deltaTime) => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
 
+    // Crouch control (Down arrow or 's' key)
+    const crouchKey = keys.current['ArrowDown'] || keys.current['s'] || keys.current['S'];
+    p.crouching = crouchKey && p.grounded; // only crouch on ground
+
     let moveDir = 0;
-    if (keys.current['ArrowLeft'] || keys.current['a'] || keys.current['A'] || touchMoveLeft.current) moveDir -= 1;
-    if (keys.current['ArrowRight'] || keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDir += 1;
+    if (!p.crouching) { // can't move while crouching (optional, adjust)
+      if (keys.current['ArrowLeft'] || keys.current['a'] || keys.current['A'] || touchMoveLeft.current) moveDir -= 1;
+      if (keys.current['ArrowRight'] || keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDir += 1;
+    }
     p.vx = moveDir * p.speed;
 
     if (
@@ -238,7 +274,7 @@ const HoKalla = () => {
        keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] ||
        touchJump.current)
     ) {
-      if (p.grounded && !jumpRequested.current) {
+      if (p.grounded && !jumpRequested.current && !p.crouching) {
         p.vy = p.jumpForce;
         p.grounded = false;
         jumpRequested.current = true;
@@ -273,12 +309,16 @@ const HoKalla = () => {
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
 
+    // State selection
     if (!p.grounded) {
       p.state = 'jump';
     } else {
       if (p.landTimer > 0) {
         p.state = 'land';
         p.landTimer--;
+      } else if (p.crouching) {
+        p.state = 'crouch';
+        p.frameTimer = 0; // start crouch animation from frame 0 (optional)
       } else if (moveDir !== 0) {
         p.state = 'walk';
       } else {
@@ -286,28 +326,26 @@ const HoKalla = () => {
       }
     }
 
+    // Advance frame timer (except idle and landing/crouch have separate handling)
     const cfg = SPRITE_CONFIG;
     if (p.state === 'walk' || p.state === 'jump') {
       p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
+    } else if (p.state === 'crouch') {
+      // Loop crouch animation while crouching
+      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
     } else if (p.state === 'land') {
-      const landFrames = cfg.framesPerState.land;
       if (!p.landAnimFinished) {
         p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
+        const landFrames = cfg.framesPerState.land;
         if (Math.floor(p.frameTimer) >= landFrames) {
           p.frameTimer = landFrames - 1;
           p.landAnimFinished = true;
         }
       }
-      p.currentFrame = p.frameTimer;
     } else if (p.state === 'idle') {
       p.frameTimer = 0;
     }
-
-    if (p.state === 'walk' || p.state === 'jump') {
-      p.currentFrame = p.frameTimer;
-    } else if (p.state === 'idle') {
-      p.currentFrame = 0;
-    }
+    p.currentFrame = p.frameTimer;
   };
 
   // ---------- Game loop ----------
@@ -351,6 +389,7 @@ const HoKalla = () => {
     p.landAnimFinished = false;
     p.frameTimer = 0;
     p.currentFrame = 0;
+    p.crouching = false;
   };
 
   useEffect(() => {
