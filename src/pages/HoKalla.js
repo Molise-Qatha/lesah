@@ -4,17 +4,17 @@ import './HoKalla.css';
 // ---- SPRITE SHEET CONFIGURATION ----
 const SPRITE_CONFIG = {
   sheetPath: '/images/characters/khotso-sprites.png',
-  frameWidth: 128,              // ← halved from 256 to show one frame only
-  frameHeight: 341,             // height unchanged
+  frameWidth: 240,              // ← changed from 128 to 240
+  frameHeight: 341,
   rows: {
-    idle: 0,   // same row as walk; will use first frame
+    idle: 0,
     walk: 0,
     jump: 2,
     land: 2,
   },
   framesPerState: {
     idle: 1,
-    walk: 6,   // if walk row now has 12 frames, increase this later
+    walk: 6,
     jump: 4,
     land: 6,
   },
@@ -36,7 +36,7 @@ const HoKalla = () => {
   const player = useRef({
     x: 200,
     y: 0,
-    width: SPRITE_CONFIG.frameWidth,  // now 128
+    width: SPRITE_CONFIG.frameWidth,
     height: SPRITE_CONFIG.frameHeight,
     vx: 0,
     vy: 0,
