@@ -1,6 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './HoKalla.css';
 
+// ---- SPRITE SHEET CONFIGURATION (as provided) ----
+const SPRITE_CONFIG = {
+  sheetPath: '/images/characters/khotso-sprites.png',
+  frameWidth: 170,
+  frameHeight: 227,
+  rows: {
+    idle: 0,  // Row 0 first frame used for idle
+    walk: 0,  // Row 0 has 6 frames of walking
+    jump: 2,  // Row 2 contains the jump sequence
+    land: 2,  // Row 2 final dust frame (frame 5)
+  },
+  framesPerState: {
+    idle: 1,     // Only frame 0
+    walk: 6,     // 6 frames
+    jump: 4,     // Frames 0‑3
+    land: 1,     // Fixed to frame 5 (see code)
+  },
+  animationSpeed: 10, // fps
+};
+
 const HoKalla = () => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -11,31 +31,27 @@ const HoKalla = () => {
   const touchJump = useRef(false);
   const jumpRequested = useRef(false);
 
-  // Sprite image
-  const spriteImage = useRef(null);
+  const spriteSheet = useRef(null);
 
-  // Player state
   const player = useRef({
     x: 200,
     y: 0,
-    width: 60,        // updated on sprite load
-    height: 100,      // updated on sprite load
+    width: SPRITE_CONFIG.frameWidth,
+    height: SPRITE_CONFIG.frameHeight,
     vx: 0,
     vy: 0,
     speed: 3.5,
     jumpForce: -9,
     facingRight: true,
     grounded: false,
-    animTime: 0,
     state: 'idle',
     landTimer: 0,
-    scale: 0.15,
+    currentFrame: 0,
+    frameTimer: 0,
   });
 
-  // Camera (fixed for now)
   const camera = useRef({ x: 0, y: 0 });
 
-  // FPS tracking
   const fpsState = useRef({
     lastTime: 0,
     fps: 0,
@@ -45,49 +61,39 @@ const HoKalla = () => {
 
   const groundFrac = 0.65;
 
-  // ---------- Load Khotso sprite ----------
+  // ---------- Load sprite sheet ----------
   useEffect(() => {
     const img = new Image();
-    img.src = '/images/characters/khotso.png';
+    img.src = SPRITE_CONFIG.sheetPath;
     img.onload = () => {
-      spriteImage.current = img;
+      spriteSheet.current = img;
       const p = player.current;
-      p.width = img.naturalWidth * p.scale;
-      p.height = img.naturalHeight * p.scale;
+      p.width = SPRITE_CONFIG.frameWidth;
+      p.height = SPRITE_CONFIG.frameHeight;
     };
-    img.onerror = () => {
-      console.warn('Khotso sprite not found – using fallback shapes');
-    };
+    img.onerror = () => console.warn('Sprite sheet not found – using fallback');
   }, []);
 
   // ---------- Touch handlers ----------
-  const handleTouchLeftStart = (e) => { e.preventDefault(); touchMoveLeft.current = true; };
-  const handleTouchLeftEnd = (e) => { e.preventDefault(); touchMoveLeft.current = false; };
+  const handleTouchLeftStart  = (e) => { e.preventDefault(); touchMoveLeft.current = true; };
+  const handleTouchLeftEnd    = (e) => { e.preventDefault(); touchMoveLeft.current = false; };
   const handleTouchRightStart = (e) => { e.preventDefault(); touchMoveRight.current = true; };
-  const handleTouchRightEnd = (e) => { e.preventDefault(); touchMoveRight.current = false; };
-  const handleTouchJumpStart = (e) => { e.preventDefault(); touchJump.current = true; };
-  const handleTouchJumpEnd = (e) => { e.preventDefault(); touchJump.current = false; };
+  const handleTouchRightEnd   = (e) => { e.preventDefault(); touchMoveRight.current = false; };
+  const handleTouchJumpStart  = (e) => { e.preventDefault(); touchJump.current = true; };
+  const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
 
-  // ---------- Background helpers ----------
+  // ---------- Background drawing (unchanged) ----------
   const drawAcaciaTree = (ctx, x, y, size) => {
     ctx.save();
-    // Trunk
     ctx.fillStyle = '#8B5A2B';
     ctx.fillRect(x - 3, y - size * 0.6, 6, size * 0.6);
-    // Branches
-    ctx.strokeStyle = '#8B5A2B';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#8B5A2B'; ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(x, y - size * 0.4);
-    ctx.lineTo(x - size * 0.4, y - size * 0.8);
-    ctx.moveTo(x, y - size * 0.4);
-    ctx.lineTo(x + size * 0.4, y - size * 0.8);
-    ctx.moveTo(x, y - size * 0.5);
-    ctx.lineTo(x - size * 0.2, y - size * 0.9);
-    ctx.moveTo(x, y - size * 0.5);
-    ctx.lineTo(x + size * 0.2, y - size * 0.9);
+    ctx.moveTo(x, y - size * 0.4); ctx.lineTo(x - size * 0.4, y - size * 0.8);
+    ctx.moveTo(x, y - size * 0.4); ctx.lineTo(x + size * 0.4, y - size * 0.8);
+    ctx.moveTo(x, y - size * 0.5); ctx.lineTo(x - size * 0.2, y - size * 0.9);
+    ctx.moveTo(x, y - size * 0.5); ctx.lineTo(x + size * 0.2, y - size * 0.9);
     ctx.stroke();
-    // Leaves (flat canopy)
     ctx.fillStyle = '#2E8B57';
     ctx.beginPath();
     ctx.ellipse(x, y - size * 0.85, size * 0.35, size * 0.15, 0, 0, Math.PI * 2);
@@ -101,16 +107,12 @@ const HoKalla = () => {
 
   const drawHut = (ctx, x, y, size) => {
     ctx.save();
-    // Walls
     ctx.fillStyle = '#D2B48C';
     ctx.fillRect(x - size * 0.4, y - size * 0.5, size * 0.8, size * 0.5);
-    ctx.strokeStyle = '#8B7355';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#8B7355'; ctx.lineWidth = 1;
     ctx.strokeRect(x - size * 0.4, y - size * 0.5, size * 0.8, size * 0.5);
-    // Door
     ctx.fillStyle = '#5C4033';
     ctx.fillRect(x - size * 0.1, y - size * 0.2, size * 0.2, size * 0.2);
-    // Thatch roof
     ctx.fillStyle = '#C4A35A';
     ctx.beginPath();
     ctx.moveTo(x, y - size * 0.9);
@@ -118,134 +120,97 @@ const HoKalla = () => {
     ctx.lineTo(x + size * 0.5, y - size * 0.5);
     ctx.closePath();
     ctx.fill();
-    ctx.strokeStyle = '#8B7355';
-    ctx.stroke();
+    ctx.strokeStyle = '#8B7355'; ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(x, y - size * 0.9);
-    ctx.lineTo(x - size * 0.25, y - size * 0.5);
-    ctx.moveTo(x, y - size * 0.9);
-    ctx.lineTo(x + size * 0.25, y - size * 0.5);
+    ctx.moveTo(x, y - size * 0.9); ctx.lineTo(x - size * 0.25, y - size * 0.5);
+    ctx.moveTo(x, y - size * 0.9); ctx.lineTo(x + size * 0.25, y - size * 0.5);
     ctx.stroke();
     ctx.restore();
   };
 
   const drawBackground = (ctx, canvas) => {
-    const w = canvas.width;
-    const h = canvas.height;
-    const groundY = h * 0.65;
-
-    // Sky gradient
+    const w = canvas.width, h = canvas.height, groundY = h * 0.65;
     const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
-    skyGrad.addColorStop(0, '#87CEEB');
-    skyGrad.addColorStop(0.6, '#B0E0E6');
-    skyGrad.addColorStop(1, '#E0F0FF');
-    ctx.fillStyle = skyGrad;
-    ctx.fillRect(0, 0, w, groundY);
-
-    // Distant mountains
+    skyGrad.addColorStop(0, '#87CEEB'); skyGrad.addColorStop(0.6, '#B0E0E6'); skyGrad.addColorStop(1, '#E0F0FF');
+    ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, w, groundY);
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(0, groundY);
-    ctx.lineTo(w * 0.25, groundY - 120);
-    ctx.lineTo(w * 0.35, groundY - 60);
-    ctx.lineTo(w * 0.6, groundY - 160);
-    ctx.lineTo(w * 0.75, groundY - 80);
-    ctx.lineTo(w, groundY - 40);
-    ctx.lineTo(w, groundY);
-    ctx.closePath();
-    ctx.fillStyle = '#7B8D7B';
-    ctx.fill();
+    ctx.moveTo(0, groundY); ctx.lineTo(w * 0.25, groundY - 120); ctx.lineTo(w * 0.35, groundY - 60);
+    ctx.lineTo(w * 0.6, groundY - 160); ctx.lineTo(w * 0.75, groundY - 80); ctx.lineTo(w, groundY - 40);
+    ctx.lineTo(w, groundY); ctx.closePath();
+    ctx.fillStyle = '#7B8D7B'; ctx.fill();
     ctx.restore();
-
-    // Rolling hills (mid ground)
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(0, groundY + 20);
-    ctx.quadraticCurveTo(w * 0.2, groundY - 30, w * 0.5, groundY + 10);
+    ctx.moveTo(0, groundY + 20); ctx.quadraticCurveTo(w * 0.2, groundY - 30, w * 0.5, groundY + 10);
     ctx.quadraticCurveTo(w * 0.8, groundY + 40, w, groundY - 10);
-    ctx.lineTo(w, h);
-    ctx.lineTo(0, h);
-    ctx.closePath();
-    ctx.fillStyle = '#6B8E23';
-    ctx.fill();
+    ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+    ctx.fillStyle = '#6B8E23'; ctx.fill();
     ctx.restore();
-
-    // Foreground grass
     const grassGrad = ctx.createLinearGradient(0, groundY - 20, 0, h);
-    grassGrad.addColorStop(0, '#4caf50');
-    grassGrad.addColorStop(1, '#2e7d32');
-    ctx.fillStyle = grassGrad;
-    ctx.fillRect(0, groundY - 20, w, h - groundY + 20);
-
-    // Ground line
-    ctx.beginPath();
-    ctx.moveTo(0, groundY);
-    ctx.lineTo(w, groundY);
-    ctx.strokeStyle = '#388E3C';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Acacia trees
+    grassGrad.addColorStop(0, '#4caf50'); grassGrad.addColorStop(1, '#2e7d32');
+    ctx.fillStyle = grassGrad; ctx.fillRect(0, groundY - 20, w, h - groundY + 20);
+    ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(w, groundY);
+    ctx.strokeStyle = '#388E3C'; ctx.lineWidth = 2; ctx.stroke();
     drawAcaciaTree(ctx, w * 0.15, groundY - 60, 40);
     drawAcaciaTree(ctx, w * 0.85, groundY - 70, 50);
-
-    // Rondavel hut
     drawHut(ctx, w * 0.7, groundY - 35, 40);
-
-    // Grass tufts
     ctx.save();
-    ctx.strokeStyle = '#2E7D32';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#2E7D32'; ctx.lineWidth = 1.5;
     for (let i = 0; i < 30; i++) {
-      const gx = (i * 37 + 13) % w;
-      const gy = groundY + 5 + (i % 5) * 3;
+      const gx = (i * 37 + 13) % w, gy = groundY + 5 + (i % 5) * 3;
       ctx.beginPath();
-      ctx.moveTo(gx, gy);
-      ctx.quadraticCurveTo(gx - 4, gy - 6, gx - 3, gy - 12);
-      ctx.moveTo(gx, gy);
-      ctx.quadraticCurveTo(gx + 4, gy - 6, gx + 3, gy - 12);
+      ctx.moveTo(gx, gy); ctx.quadraticCurveTo(gx - 4, gy - 6, gx - 3, gy - 12);
+      ctx.moveTo(gx, gy); ctx.quadraticCurveTo(gx + 4, gy - 6, gx + 3, gy - 12);
       ctx.stroke();
     }
     ctx.restore();
   };
 
-  // ---------- Drawing ----------
+  // ---------- Player drawing with sprite animation ----------
   const drawPlayer = (ctx, p) => {
     ctx.save();
-    const px = p.x;
-    const py = p.y;
-    ctx.translate(px, py);
+    ctx.translate(p.x, p.y);
+    if (!p.facingRight) ctx.scale(-1, 1);
 
-    if (!p.facingRight) {
-      ctx.scale(-1, 1);
-    }
+    if (spriteSheet.current) {
+      const cfg = SPRITE_CONFIG;
+      let row = cfg.rows[p.state] || 0;
+      let frameIdx = Math.floor(p.currentFrame);
 
-    if (spriteImage.current) {
+      // Special overrides for fixed frames
+      if (p.state === 'idle') {
+        frameIdx = 0;               // first frame of row 0
+        row = cfg.rows.idle;        // row 0
+      } else if (p.state === 'land') {
+        frameIdx = 5;               // dust frame (last frame of row 2)
+        row = cfg.rows.land;        // row 2
+      } else {
+        // walk / jump use normal looping
+        const maxFrames = cfg.framesPerState[p.state] || 1;
+        frameIdx = Math.floor(p.currentFrame) % maxFrames;
+      }
+
+      const sx = frameIdx * cfg.frameWidth;
+      const sy = row * cfg.frameHeight;
       ctx.drawImage(
-        spriteImage.current,
-        -p.width / 2,
-        -p.height,
-        p.width,
-        p.height
+        spriteSheet.current,
+        sx, sy, cfg.frameWidth, cfg.frameHeight,
+        -p.width / 2, -p.height,
+        p.width, p.height
       );
     } else {
       // Fallback placeholder
-      ctx.fillStyle = '#D32F2F';
-      ctx.fillRect(-15, -80, 30, 80);
-      ctx.fillStyle = '#FFC107';
-      ctx.beginPath();
-      ctx.arc(0, -90, 12, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillStyle = '#D32F2F'; ctx.fillRect(-15, -80, 30, 80);
+      ctx.fillStyle = '#FFC107'; ctx.beginPath(); ctx.arc(0, -90, 12, 0, Math.PI * 2); ctx.fill();
     }
     ctx.restore();
   };
 
   const drawTitle = (ctx, canvas) => {
     ctx.save();
-    ctx.font = 'bold 36px Arial, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.7)';
-    ctx.shadowBlur = 6;
+    ctx.font = 'bold 36px Arial, sans-serif'; ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 6;
     ctx.textAlign = 'center';
     ctx.fillText('Ho Kalla (Prototype)', canvas.width / 2, 80);
     ctx.restore();
@@ -253,17 +218,14 @@ const HoKalla = () => {
 
   const drawFPS = (ctx, fps) => {
     ctx.save();
-    ctx.font = '16px monospace';
-    ctx.fillStyle = '#ffff00';
-    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-    ctx.shadowBlur = 3;
-    ctx.textAlign = 'left';
-    ctx.fillText(`FPS: ${fps}`, 10, 30);
+    ctx.font = '16px monospace'; ctx.fillStyle = '#ffff00';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 3;
+    ctx.textAlign = 'left'; ctx.fillText(`FPS: ${fps}`, 10, 30);
     ctx.restore();
   };
 
-  // ---------- Physics & input ----------
-  const update = (canvas) => {
+  // ---------- Physics & input (with animation timer) ----------
+  const update = (canvas, deltaTime) => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
 
@@ -281,6 +243,8 @@ const HoKalla = () => {
         p.vy = p.jumpForce;
         p.grounded = false;
         jumpRequested.current = true;
+        // Reset animation for jump start
+        p.frameTimer = 0;
       }
     } else {
       jumpRequested.current = false;
@@ -293,7 +257,11 @@ const HoKalla = () => {
     if (p.y > groundY) {
       p.y = groundY;
       p.vy = 0;
-      if (!p.grounded) p.landTimer = 10;
+      if (!p.grounded) {
+        p.landTimer = 10;   // frames to show landing dust
+        p.state = 'land';
+        p.frameTimer = 0;    // reset timer so land snapshot is shown
+      }
       p.grounded = true;
     } else {
       p.grounded = false;
@@ -305,60 +273,66 @@ const HoKalla = () => {
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
 
-    p.animTime += 1;
+    // Animation state
     if (!p.grounded) {
-      p.state = 'jump';
+      p.state = p.vy < 0 ? 'jump' : 'jump'; // keep airborne
     } else {
       if (p.landTimer > 0) {
         p.state = 'land';
         p.landTimer--;
       } else if (moveDir !== 0) {
         p.state = 'walk';
+        // when transitioning to walk, continue timer or reset? we'll keep existing timer
       } else {
         p.state = 'idle';
+        p.frameTimer = 0; // force idle frame
       }
     }
+
+    // Advance frame timer (except idle and land are fixed)
+    if (p.state === 'walk' || p.state === 'jump') {
+      const fps = SPRITE_CONFIG.animationSpeed;
+      p.frameTimer += (deltaTime / 1000) * fps;
+    }
+    // For idle and land, currentFrame is set in drawPlayer directly
   };
 
   // ---------- Game loop ----------
+  let lastTimestamp = 0;
   const gameLoop = (timestamp) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const deltaTime = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
 
     const fs = fpsState.current;
     if (!fs.lastTime) fs.lastTime = timestamp;
     fs.frameCount++;
     if (timestamp - fs.fpsUpdateTime >= 1000) {
       fs.fps = Math.round((fs.frameCount * 1000) / (timestamp - fs.fpsUpdateTime));
-      fs.frameCount = 0;
-      fs.fpsUpdateTime = timestamp;
+      fs.frameCount = 0; fs.fpsUpdateTime = timestamp;
     }
 
-    update(canvas);
-
+    update(canvas, deltaTime);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
     drawTitle(ctx, canvas);
     drawFPS(ctx, fs.fps);
     drawPlayer(ctx, player.current);
-
     animFrameId.current = requestAnimationFrame(gameLoop);
   };
 
   // ---------- Resize & setup ----------
   const handleResize = () => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
+    const canvas = canvasRef.current, container = containerRef.current;
     if (!canvas || !container) return;
     const { width, height } = container.getBoundingClientRect();
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = width; canvas.height = height;
     const p = player.current;
-    const groundY = canvas.height * groundFrac;
-    p.y = groundY;
-    p.vy = 0;
-    p.grounded = true;
+    p.y = canvas.height * groundFrac;
+    p.vy = 0; p.grounded = true;
   };
 
   useEffect(() => {
@@ -367,9 +341,7 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
-        e.preventDefault();
-      }
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown);
@@ -398,37 +370,19 @@ const HoKalla = () => {
       <canvas ref={canvasRef} className="ho-kalla-canvas" />
       {isTouchDevice && (
         <div className="touch-controls">
-          <button
-            className="touch-btn left-btn"
-            onTouchStart={handleTouchLeftStart}
-            onTouchEnd={handleTouchLeftEnd}
-            onTouchCancel={handleTouchLeftEnd}
-            onMouseDown={handleTouchLeftStart}
-            onMouseUp={handleTouchLeftEnd}
-            onMouseLeave={handleTouchLeftEnd}
-          >
+          <button className="touch-btn left-btn"
+            onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd}
+            onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>
             ◀ Move Left
           </button>
-          <button
-            className="touch-btn jump-btn"
-            onTouchStart={handleTouchJumpStart}
-            onTouchEnd={handleTouchJumpEnd}
-            onTouchCancel={handleTouchJumpEnd}
-            onMouseDown={handleTouchJumpStart}
-            onMouseUp={handleTouchJumpEnd}
-            onMouseLeave={handleTouchJumpEnd}
-          >
+          <button className="touch-btn jump-btn"
+            onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd}
+            onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>
             ▲ Jump
           </button>
-          <button
-            className="touch-btn right-btn"
-            onTouchStart={handleTouchRightStart}
-            onTouchEnd={handleTouchRightEnd}
-            onTouchCancel={handleTouchRightEnd}
-            onMouseDown={handleTouchRightStart}
-            onMouseUp={handleTouchRightEnd}
-            onMouseLeave={handleTouchRightEnd}
-          >
+          <button className="touch-btn right-btn"
+            onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd}
+            onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>
             ▶ Move Right
           </button>
         </div>
