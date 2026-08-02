@@ -5,11 +5,11 @@ import './HoKalla.css';
 const SPRITE_CONFIG = {
   basePath: '/images/characters/khotso/',
   framesPerState: {
-    idle: 1,     // uses walk1-removebg-preview.png
-    walk: 5,     // walk1 ... walk5 (with suffix)
-    jump: 7,     // jump1 ... jump7 (with suffix)
-    land: 7,     // land1 ... land7 (with suffix)
-    crouch: 7,   // crouch1 ... crouch7 (with suffix)
+    idle: 1,     // uses walk1.png
+    walk: 5,     // walk1.png ... walk5.png
+    jump: 7,     // jump1.png ... jump7.png
+    land: 7,     // land1.png ... land7.png
+    crouch: 7,   // crouch1.png ... crouch7.png
   },
   animationSpeed: 10, // fps
 };
@@ -61,14 +61,14 @@ const HoKalla = () => {
   });
   const groundFrac = 0.65;
 
-  // ---------- Load all frame images (with -removebg-preview suffix) ----------
+  // ---------- Load all frame images (simple names) ----------
   useEffect(() => {
     const loadFrames = (prefix, count) => {
       const arr = [];
       for (let i = 1; i <= count; i++) {
         const img = new Image();
-        // Construct the new filename: walk1-removebg-preview.png, etc.
-        img.src = `${SPRITE_CONFIG.basePath}${prefix}${i}-removebg-preview.png`;
+        // Use simple names: walk1.png, jump7.png, etc.
+        img.src = `${SPRITE_CONFIG.basePath}${prefix}${i}.png`;
         img.onload = () => {
           loadedCount.current++;
           if (loadedCount.current >= totalFrames.current) {
@@ -79,7 +79,7 @@ const HoKalla = () => {
             }
           }
         };
-        img.onerror = () => console.warn(`Failed to load ${prefix}${i}-removebg-preview.png`);
+        img.onerror = () => console.warn(`Failed to load ${prefix}${i}.png`);
         arr.push(img);
       }
       return arr;
@@ -96,7 +96,7 @@ const HoKalla = () => {
       SPRITE_CONFIG.framesPerState.land +
       SPRITE_CONFIG.framesPerState.crouch;
 
-    // Use walk1-removebg-preview.png for idle
+    // Use walk1.png for idle
     const checkWalk = setInterval(() => {
       if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
         sprites.current.idle = [sprites.current.walk[0]];
@@ -213,7 +213,7 @@ const HoKalla = () => {
     if (frames && frames.length > 0) {
       let frameIndex = 0;
       if (state === 'idle') {
-        frameIndex = 0; // walk1-removebg-preview.png
+        frameIndex = 0; // walk1.png
       } else {
         frameIndex = Math.floor(p.currentFrame) % frames.length;
       }
