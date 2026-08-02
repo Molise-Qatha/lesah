@@ -14,6 +14,12 @@ const SPRITE_CONFIG = {
   animationSpeed: 10, // fps
 };
 
+// ---- ARENA BACKGROUND IMAGE ----
+const ARENA_PATH = '/images/arenas/arena1.png'; // <-- change this if your file is named differently
+
+// ---- HEALTH CONFIG ----
+const PLAYER_MAX_HEALTH = 100;
+
 const HoKalla = () => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -24,6 +30,7 @@ const HoKalla = () => {
   const touchJump = useRef(false);
   const jumpRequested = useRef(false);
 
+  // Sprite frames
   const sprites = useRef({
     idle: [],
     walk: [],
@@ -32,10 +39,14 @@ const HoKalla = () => {
     crouch: [],
   });
 
+  // Arena background image
+  const arenaImage = useRef(null);
+  const arenaLoaded = useRef(false);
+
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
-  const allLoaded = useRef(false);
 
+  // Player state
   const player = useRef({
     x: 200,
     y: 0,
@@ -53,6 +64,8 @@ const HoKalla = () => {
     frameTimer: 0,
     landAnimFinished: false,
     crouching: false,
+    health: PLAYER_MAX_HEALTH,   // current health
+    maxHealth: PLAYER_MAX_HEALTH,
   });
 
   const camera = useRef({ x: 0, y: 0 });
@@ -61,18 +74,26 @@ const HoKalla = () => {
   });
   const groundFrac = 0.65;
 
-  // ---------- Load all frame images (simple names) ----------
+  // ---------- Load sprites and arena ----------
   useEffect(() => {
+    // Load arena background
+    const arenaImg = new Image();
+    arenaImg.src = ARENA_PATH;
+    arenaImg.onload = () => {
+      arenaImage.current = arenaImg;
+      arenaLoaded.current = true;
+    };
+    arenaImg.onerror = () => console.warn('Arena image not found – using fallback green background');
+
+    // Load sprite frames
     const loadFrames = (prefix, count) => {
       const arr = [];
       for (let i = 1; i <= count; i++) {
         const img = new Image();
-        // Use simple names: walk1.png, jump7.png, etc.
         img.src = `${SPRITE_CONFIG.basePath}${prefix}${i}.png`;
         img.onload = () => {
           loadedCount.current++;
           if (loadedCount.current >= totalFrames.current) {
-            allLoaded.current = true;
             if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
               player.current.width = sprites.current.walk[0].naturalWidth;
               player.current.height = sprites.current.walk[0].naturalHeight;
@@ -117,92 +138,18 @@ const HoKalla = () => {
   const handleTouchJumpStart  = (e) => { e.preventDefault(); touchJump.current = true; };
   const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
 
-  // ---------- Background drawing (unchanged) ----------
-  const drawAcaciaTree = (ctx, x, y, size) => {
-    ctx.save();
-    ctx.fillStyle = '#8B5A2B';
-    ctx.fillRect(x - 3, y - size * 0.6, 6, size * 0.6);
-    ctx.strokeStyle = '#8B5A2B'; ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x, y - size * 0.4); ctx.lineTo(x - size * 0.4, y - size * 0.8);
-    ctx.moveTo(x, y - size * 0.4); ctx.lineTo(x + size * 0.4, y - size * 0.8);
-    ctx.moveTo(x, y - size * 0.5); ctx.lineTo(x - size * 0.2, y - size * 0.9);
-    ctx.moveTo(x, y - size * 0.5); ctx.lineTo(x + size * 0.2, y - size * 0.9);
-    ctx.stroke();
-    ctx.fillStyle = '#2E8B57';
-    ctx.beginPath();
-    ctx.ellipse(x, y - size * 0.85, size * 0.35, size * 0.15, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#3CB371';
-    ctx.beginPath();
-    ctx.ellipse(x, y - size * 0.9, size * 0.25, size * 0.1, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  };
-
-  const drawHut = (ctx, x, y, size) => {
-    ctx.save();
-    ctx.fillStyle = '#D2B48C';
-    ctx.fillRect(x - size * 0.4, y - size * 0.5, size * 0.8, size * 0.5);
-    ctx.strokeStyle = '#8B7355'; ctx.lineWidth = 1;
-    ctx.strokeRect(x - size * 0.4, y - size * 0.5, size * 0.8, size * 0.5);
-    ctx.fillStyle = '#5C4033';
-    ctx.fillRect(x - size * 0.1, y - size * 0.2, size * 0.2, size * 0.2);
-    ctx.fillStyle = '#C4A35A';
-    ctx.beginPath();
-    ctx.moveTo(x, y - size * 0.9);
-    ctx.lineTo(x - size * 0.5, y - size * 0.5);
-    ctx.lineTo(x + size * 0.5, y - size * 0.5);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = '#8B7355'; ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y - size * 0.9); ctx.lineTo(x - size * 0.25, y - size * 0.5);
-    ctx.moveTo(x, y - size * 0.9); ctx.lineTo(x + size * 0.25, y - size * 0.5);
-    ctx.stroke();
-    ctx.restore();
-  };
-
+  // ---------- Drawing functions ----------
   const drawBackground = (ctx, canvas) => {
-    const w = canvas.width, h = canvas.height, groundY = h * 0.65;
-    const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
-    skyGrad.addColorStop(0, '#87CEEB'); skyGrad.addColorStop(0.6, '#B0E0E6'); skyGrad.addColorStop(1, '#E0F0FF');
-    ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, w, groundY);
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(0, groundY); ctx.lineTo(w * 0.25, groundY - 120); ctx.lineTo(w * 0.35, groundY - 60);
-    ctx.lineTo(w * 0.6, groundY - 160); ctx.lineTo(w * 0.75, groundY - 80); ctx.lineTo(w, groundY - 40);
-    ctx.lineTo(w, groundY); ctx.closePath();
-    ctx.fillStyle = '#7B8D7B'; ctx.fill();
-    ctx.restore();
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(0, groundY + 20); ctx.quadraticCurveTo(w * 0.2, groundY - 30, w * 0.5, groundY + 10);
-    ctx.quadraticCurveTo(w * 0.8, groundY + 40, w, groundY - 10);
-    ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-    ctx.fillStyle = '#6B8E23'; ctx.fill();
-    ctx.restore();
-    const grassGrad = ctx.createLinearGradient(0, groundY - 20, 0, h);
-    grassGrad.addColorStop(0, '#4caf50'); grassGrad.addColorStop(1, '#2e7d32');
-    ctx.fillStyle = grassGrad; ctx.fillRect(0, groundY - 20, w, h - groundY + 20);
-    ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(w, groundY);
-    ctx.strokeStyle = '#388E3C'; ctx.lineWidth = 2; ctx.stroke();
-    drawAcaciaTree(ctx, w * 0.15, groundY - 60, 40);
-    drawAcaciaTree(ctx, w * 0.85, groundY - 70, 50);
-    drawHut(ctx, w * 0.7, groundY - 35, 40);
-    ctx.save();
-    ctx.strokeStyle = '#2E7D32'; ctx.lineWidth = 1.5;
-    for (let i = 0; i < 30; i++) {
-      const gx = (i * 37 + 13) % w, gy = groundY + 5 + (i % 5) * 3;
-      ctx.beginPath();
-      ctx.moveTo(gx, gy); ctx.quadraticCurveTo(gx - 4, gy - 6, gx - 3, gy - 12);
-      ctx.moveTo(gx, gy); ctx.quadraticCurveTo(gx + 4, gy - 6, gx + 3, gy - 12);
-      ctx.stroke();
+    if (arenaLoaded.current && arenaImage.current) {
+      // Draw arena stretched to full canvas
+      ctx.drawImage(arenaImage.current, 0, 0, canvas.width, canvas.height);
+    } else {
+      // Fallback: plain green
+      ctx.fillStyle = '#2e7d32';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    ctx.restore();
   };
 
-  // ---------- Player drawing ----------
   const drawPlayer = (ctx, p) => {
     ctx.save();
     ctx.translate(p.x, p.y);
@@ -213,7 +160,7 @@ const HoKalla = () => {
     if (frames && frames.length > 0) {
       let frameIndex = 0;
       if (state === 'idle') {
-        frameIndex = 0; // walk1.png
+        frameIndex = 0;
       } else {
         frameIndex = Math.floor(p.currentFrame) % frames.length;
       }
@@ -231,10 +178,49 @@ const HoKalla = () => {
     ctx.restore();
   };
 
+  const drawHUD = (ctx, canvas, p) => {
+    // Health bar background
+    const barWidth = 200;
+    const barHeight = 20;
+    const x = 20;
+    const y = 20;
+
+    // Name label
+    ctx.save();
+    ctx.font = 'bold 18px Arial, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.7)';
+    ctx.shadowBlur = 4;
+    ctx.fillText('Khotso', x, y - 5);
+    ctx.restore();
+
+    // Health bar background
+    ctx.fillStyle = '#333333';
+    ctx.fillRect(x, y, barWidth, barHeight);
+
+    // Health bar fill
+    const healthPercent = p.health / p.maxHealth;
+    const fillWidth = barWidth * healthPercent;
+    // Gradient green to red
+    const grad = ctx.createLinearGradient(x, y, x + barWidth, y);
+    grad.addColorStop(0, '#4caf50');
+    grad.addColorStop(0.6, '#ffeb3b');
+    grad.addColorStop(1, '#f44336');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x, y, fillWidth, barHeight);
+
+    // Border
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, barWidth, barHeight);
+  };
+
   const drawTitle = (ctx, canvas) => {
     ctx.save();
-    ctx.font = 'bold 36px Arial, sans-serif'; ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 6;
+    ctx.font = 'bold 36px Arial, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.7)';
+    ctx.shadowBlur = 6;
     ctx.textAlign = 'center';
     ctx.fillText('Ho Kalla (Prototype)', canvas.width / 2, 80);
     ctx.restore();
@@ -242,13 +228,16 @@ const HoKalla = () => {
 
   const drawFPS = (ctx, fps) => {
     ctx.save();
-    ctx.font = '16px monospace'; ctx.fillStyle = '#ffff00';
-    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 3;
-    ctx.textAlign = 'left'; ctx.fillText(`FPS: ${fps}`, 10, 30);
+    ctx.font = '16px monospace';
+    ctx.fillStyle = '#ffff00';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 3;
+    ctx.textAlign = 'left';
+    ctx.fillText(`FPS: ${fps}`, 10, canvas.height - 10);
     ctx.restore();
   };
 
-  // ---------- Physics & input ----------
+  // ---------- Physics & input (unchanged) ----------
   const update = (canvas, deltaTime) => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
@@ -357,11 +346,16 @@ const HoKalla = () => {
     }
 
     update(canvas, deltaTime);
+
+    // Render order: background → player → HUD
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
-    drawTitle(ctx, canvas);
-    drawFPS(ctx, fs.fps);
     drawPlayer(ctx, player.current);
+    // Overlays (on top of everything)
+    drawTitle(ctx, canvas);
+    drawFPS(ctx, canvas, fs.fps);
+    drawHUD(ctx, canvas, player.current);
+
     animFrameId.current = requestAnimationFrame(gameLoop);
   };
 
