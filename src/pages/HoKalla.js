@@ -30,7 +30,6 @@ const HoKalla = () => {
   const touchJump = useRef(false);
   const jumpRequested = useRef(false);
 
-  // Sprite frames
   const sprites = useRef({
     idle: [],
     walk: [],
@@ -39,14 +38,12 @@ const HoKalla = () => {
     crouch: [],
   });
 
-  // Arena background image
   const arenaImage = useRef(null);
   const arenaLoaded = useRef(false);
 
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
 
-  // Player state
   const player = useRef({
     x: 200,
     y: 0,
@@ -82,7 +79,7 @@ const HoKalla = () => {
       arenaImage.current = arenaImg;
       arenaLoaded.current = true;
     };
-    arenaImg.onerror = () => console.warn('Arena image not found – using fallback green');
+    arenaImg.onerror = () => console.warn('Arena image not found – using fallback');
 
     const loadFrames = (prefix, count) => {
       const arr = [];
@@ -138,7 +135,19 @@ const HoKalla = () => {
   // ---------- Drawing functions ----------
   const drawBackground = (ctx, canvas) => {
     if (arenaLoaded.current && arenaImage.current) {
-      ctx.drawImage(arenaImage.current, 0, 0, canvas.width, canvas.height);
+      const img = arenaImage.current;
+      const imgWidth = canvas.width;  // stretch to canvas width
+      const imgHeight = canvas.height;
+
+      // Camera offset for wrapping
+      const camX = camera.current.x;
+      // Wrap position so background repeats infinitely
+      let drawX = -(camX % imgWidth);
+      if (drawX > 0) drawX -= imgWidth;
+
+      // Draw two copies of the arena side by side
+      ctx.drawImage(img, drawX, 0, imgWidth, imgHeight);
+      ctx.drawImage(img, drawX + imgWidth, 0, imgWidth, imgHeight);
     } else {
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -147,7 +156,9 @@ const HoKalla = () => {
 
   const drawPlayer = (ctx, p) => {
     ctx.save();
-    ctx.translate(p.x, p.y);
+    // Player position adjusted by camera
+    const screenX = p.x - camera.current.x;
+    ctx.translate(screenX, p.y);
     if (!p.facingRight) ctx.scale(-1, 1);
 
     const state = p.state;
@@ -214,7 +225,7 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  const drawFPS = (ctx, canvas, fps) => {   // ← FIXED: added canvas parameter
+  const drawFPS = (ctx, canvas, fps) => {
     ctx.save();
     ctx.font = '16px monospace';
     ctx.fillStyle = '#ffff00';
@@ -260,6 +271,12 @@ const HoKalla = () => {
     p.x += p.vx;
     p.y += p.vy;
 
+    // World wrapping for player
+    const worldWidth = canvas.width; // arena width = canvas width
+    if (p.x > worldWidth) p.x -= worldWidth;
+    if (p.x < 0) p.x += worldWidth;
+
+    // Ground collision
     if (p.y > groundY) {
       p.y = groundY;
       p.vy = 0;
@@ -274,8 +291,8 @@ const HoKalla = () => {
       p.grounded = false;
     }
 
-    if (p.x < 0) p.x = 0;
-    if (p.x + p.width > canvas.width) p.x = canvas.width - p.width;
+    // Update camera to follow player
+    camera.current.x = p.x - canvas.width / 2;
 
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
@@ -339,7 +356,7 @@ const HoKalla = () => {
     drawBackground(ctx, canvas);
     drawPlayer(ctx, player.current);
     drawTitle(ctx, canvas);
-    drawFPS(ctx, canvas, fs.fps);          // ← fixed: now passes canvas
+    drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current);
 
     animFrameId.current = requestAnimationFrame(gameLoop);
@@ -360,6 +377,7 @@ const HoKalla = () => {
     p.frameTimer = 0;
     p.currentFrame = 0;
     p.crouching = false;
+    camera.current.x = p.x - canvas.width / 2;
   };
 
   useEffect(() => {
