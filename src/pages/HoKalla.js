@@ -4,13 +4,12 @@ import './HoKalla.css';
 // ---- SPRITE CONFIGURATION ----
 const SPRITE_CONFIG = {
   basePath: '/images/characters/khotso/',
-  // Number of frames per state
   framesPerState: {
-    idle: 1,     // uses walk_0.png
-    walk: 5,
-    jump: 7,
-    land: 7,
-    crouch: 7,
+    idle: 1,     // uses walk1.png
+    walk: 5,     // walk1.png ... walk5.png
+    jump: 7,     // jump1.png ... jump7.png
+    land: 7,     // land1.png ... land7.png
+    crouch: 7,   // crouch1.png ... crouch7.png
   },
   animationSpeed: 10, // fps
 };
@@ -25,7 +24,6 @@ const HoKalla = () => {
   const touchJump = useRef(false);
   const jumpRequested = useRef(false);
 
-  // Object to hold arrays of loaded Image objects for each state
   const sprites = useRef({
     idle: [],
     walk: [],
@@ -41,8 +39,8 @@ const HoKalla = () => {
   const player = useRef({
     x: 200,
     y: 0,
-    width: 150,   // adjust to your average frame width (will be updated after image load)
-    height: 200,  // adjust to your average frame height
+    width: 150,
+    height: 200,
     vx: 0,
     vy: 0,
     speed: 3.5,
@@ -54,7 +52,7 @@ const HoKalla = () => {
     currentFrame: 0,
     frameTimer: 0,
     landAnimFinished: false,
-    crouching: false,  // new: track crouch
+    crouching: false,
   });
 
   const camera = useRef({ x: 0, y: 0 });
@@ -63,36 +61,34 @@ const HoKalla = () => {
   });
   const groundFrac = 0.65;
 
-  // ---------- Load all frame images ----------
+  // ---------- Load all frame images (1‑indexed) ----------
   useEffect(() => {
-    const loadFrames = (state, count, prefix = state) => {
+    const loadFrames = (prefix, count) => {
       const arr = [];
-      for (let i = 0; i < count; i++) {
+      for (let i = 1; i <= count; i++) {
         const img = new Image();
-        img.src = `${SPRITE_CONFIG.basePath}${prefix}_${i}.png`;
+        img.src = `${SPRITE_CONFIG.basePath}${prefix}${i}.png`;
         img.onload = () => {
           loadedCount.current++;
           if (loadedCount.current >= totalFrames.current) {
             allLoaded.current = true;
-            // Set player dimensions from first walk frame (or idle)
-            if (sprites.current.walk[0]) {
+            // Set player size from first walk frame
+            if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
               player.current.width = sprites.current.walk[0].naturalWidth;
               player.current.height = sprites.current.walk[0].naturalHeight;
             }
           }
         };
-        img.onerror = () => console.warn(`Failed to load ${state} frame ${i}`);
+        img.onerror = () => console.warn(`Failed to load ${prefix}${i}.png`);
         arr.push(img);
       }
       return arr;
     };
 
-    // Load all states (idle uses first walk frame)
-    sprites.current.walk = loadFrames('walk', SPRITE_CONFIG.framesPerState.walk, 'walk');
-    sprites.current.idle = []; // will be set to walk[0] after load
-    sprites.current.jump = loadFrames('jump', SPRITE_CONFIG.framesPerState.jump, 'jump');
-    sprites.current.land = loadFrames('land', SPRITE_CONFIG.framesPerState.land, 'land');
-    sprites.current.crouch = loadFrames('crouch', SPRITE_CONFIG.framesPerState.crouch, 'crouch');
+    sprites.current.walk = loadFrames('walk', SPRITE_CONFIG.framesPerState.walk);
+    sprites.current.jump = loadFrames('jump', SPRITE_CONFIG.framesPerState.jump);
+    sprites.current.land = loadFrames('land', SPRITE_CONFIG.framesPerState.land);
+    sprites.current.crouch = loadFrames('crouch', SPRITE_CONFIG.framesPerState.crouch);
 
     totalFrames.current =
       SPRITE_CONFIG.framesPerState.walk +
@@ -100,7 +96,7 @@ const HoKalla = () => {
       SPRITE_CONFIG.framesPerState.land +
       SPRITE_CONFIG.framesPerState.crouch;
 
-    // Once walk first frame loads, set idle to the same image
+    // Use walk1.png for idle
     const checkWalk = setInterval(() => {
       if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
         sprites.current.idle = [sprites.current.walk[0]];
@@ -206,7 +202,7 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Player drawing with individual frames ----------
+  // ---------- Player drawing ----------
   const drawPlayer = (ctx, p) => {
     ctx.save();
     ctx.translate(p.x, p.y);
@@ -217,13 +213,12 @@ const HoKalla = () => {
     if (frames && frames.length > 0) {
       let frameIndex = 0;
       if (state === 'idle') {
-        frameIndex = 0; // walk_0
+        frameIndex = 0; // walk1.png
       } else {
         frameIndex = Math.floor(p.currentFrame) % frames.length;
       }
       const img = frames[frameIndex];
       if (img && img.complete) {
-        // Maintain original aspect ratio but scale if needed
         const drawWidth = p.width || img.naturalWidth;
         const drawHeight = p.height || img.naturalHeight;
         ctx.drawImage(img, -drawWidth / 2, -drawHeight, drawWidth, drawHeight);
@@ -253,17 +248,16 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Physics & input (with crouch) ----------
+  // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
 
-    // Crouch control (Down arrow or 's' key)
     const crouchKey = keys.current['ArrowDown'] || keys.current['s'] || keys.current['S'];
-    p.crouching = crouchKey && p.grounded; // only crouch on ground
+    p.crouching = crouchKey && p.grounded;
 
     let moveDir = 0;
-    if (!p.crouching) { // can't move while crouching (optional, adjust)
+    if (!p.crouching) {
       if (keys.current['ArrowLeft'] || keys.current['a'] || keys.current['A'] || touchMoveLeft.current) moveDir -= 1;
       if (keys.current['ArrowRight'] || keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDir += 1;
     }
@@ -309,7 +303,6 @@ const HoKalla = () => {
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
 
-    // State selection
     if (!p.grounded) {
       p.state = 'jump';
     } else {
@@ -318,7 +311,7 @@ const HoKalla = () => {
         p.landTimer--;
       } else if (p.crouching) {
         p.state = 'crouch';
-        p.frameTimer = 0; // start crouch animation from frame 0 (optional)
+        p.frameTimer = 0;
       } else if (moveDir !== 0) {
         p.state = 'walk';
       } else {
@@ -326,19 +319,16 @@ const HoKalla = () => {
       }
     }
 
-    // Advance frame timer (except idle and landing/crouch have separate handling)
     const cfg = SPRITE_CONFIG;
     if (p.state === 'walk' || p.state === 'jump') {
       p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
     } else if (p.state === 'crouch') {
-      // Loop crouch animation while crouching
       p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
     } else if (p.state === 'land') {
       if (!p.landAnimFinished) {
         p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-        const landFrames = cfg.framesPerState.land;
-        if (Math.floor(p.frameTimer) >= landFrames) {
-          p.frameTimer = landFrames - 1;
+        if (Math.floor(p.frameTimer) >= cfg.framesPerState.land) {
+          p.frameTimer = cfg.framesPerState.land - 1;
           p.landAnimFinished = true;
         }
       }
