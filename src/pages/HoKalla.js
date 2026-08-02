@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './HoKalla.css';
 
-// ---- SPRITE SHEET CONFIGURATION (as provided) ----
+// ---- SPRITE SHEET CONFIGURATION ----
 const SPRITE_CONFIG = {
   sheetPath: '/images/characters/khotso-sprites.png',
-  frameWidth: 256,
-  frameHeight: 341,
+  frameWidth: 128,              // ← halved from 256 to show one frame only
+  frameHeight: 341,             // height unchanged
   rows: {
-    idle: 0,
+    idle: 0,   // same row as walk; will use first frame
     walk: 0,
     jump: 2,
     land: 2,
   },
   framesPerState: {
     idle: 1,
-    walk: 6,
+    walk: 6,   // if walk row now has 12 frames, increase this later
     jump: 4,
     land: 6,
   },
@@ -36,7 +36,7 @@ const HoKalla = () => {
   const player = useRef({
     x: 200,
     y: 0,
-    width: SPRITE_CONFIG.frameWidth,
+    width: SPRITE_CONFIG.frameWidth,  // now 128
     height: SPRITE_CONFIG.frameHeight,
     vx: 0,
     vy: 0,
@@ -48,7 +48,6 @@ const HoKalla = () => {
     landTimer: 0,
     currentFrame: 0,
     frameTimer: 0,
-    // keep track of whether landing animation has finished
     landAnimFinished: false,
   });
 
@@ -84,7 +83,7 @@ const HoKalla = () => {
   const handleTouchJumpStart  = (e) => { e.preventDefault(); touchJump.current = true; };
   const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
 
-  // ---------- Background drawing (unchanged) ----------
+  // ---------- Background drawing ----------
   const drawAcaciaTree = (ctx, x, y, size) => {
     ctx.save();
     ctx.fillStyle = '#8B5A2B';
@@ -169,7 +168,7 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Player drawing with sprite animation ----------
+  // ---------- Player drawing ----------
   const drawPlayer = (ctx, p) => {
     ctx.save();
     ctx.translate(p.x, p.y);
@@ -182,15 +181,12 @@ const HoKalla = () => {
 
       if (p.state === 'idle') {
         row = cfg.rows.idle;
-        frameIdx = 0; // first frame of row 0
+        frameIdx = 0;
       } else if (p.state === 'land') {
-        row = cfg.rows.land; // row 2
-        // landing frames occupy indices 4,5,6,7,8,9 (offset by jump frame count)
+        row = cfg.rows.land;
         const jumpFrames = cfg.framesPerState.jump;
-        // p.currentFrame is already clamped to the correct range (0..landFrames-1)
         frameIdx = jumpFrames + Math.floor(p.currentFrame);
       } else {
-        // walk or jump – normal looping
         const maxFrames = cfg.framesPerState[p.state] || 1;
         frameIdx = Math.floor(p.currentFrame) % maxFrames;
       }
@@ -204,7 +200,6 @@ const HoKalla = () => {
         p.width, p.height
       );
     } else {
-      // Fallback placeholder
       ctx.fillStyle = '#D32F2F'; ctx.fillRect(-15, -80, 30, 80);
       ctx.fillStyle = '#FFC107'; ctx.beginPath(); ctx.arc(0, -90, 12, 0, Math.PI * 2); ctx.fill();
     }
@@ -228,7 +223,7 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Physics & input (with animation timer) ----------
+  // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
@@ -238,7 +233,6 @@ const HoKalla = () => {
     if (keys.current['ArrowRight'] || keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDir += 1;
     p.vx = moveDir * p.speed;
 
-    // Jump
     if (
       (keys.current[' '] || keys.current['Space'] ||
        keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] ||
@@ -248,7 +242,6 @@ const HoKalla = () => {
         p.vy = p.jumpForce;
         p.grounded = false;
         jumpRequested.current = true;
-        // Start jump animation from frame 0
         p.frameTimer = 0;
         p.state = 'jump';
       }
@@ -256,18 +249,15 @@ const HoKalla = () => {
       jumpRequested.current = false;
     }
 
-    // Gravity & movement
     p.vy += 0.6;
     p.x += p.vx;
     p.y += p.vy;
 
-    // Ground collision
     if (p.y > groundY) {
       p.y = groundY;
       p.vy = 0;
       if (!p.grounded) {
-        // Just landed – start landing animation
-        p.landTimer = 15; // duration in frames to show landing (adjust as needed)
+        p.landTimer = 15;
         p.state = 'land';
         p.frameTimer = 0;
         p.landAnimFinished = false;
@@ -277,17 +267,14 @@ const HoKalla = () => {
       p.grounded = false;
     }
 
-    // Boundaries
     if (p.x < 0) p.x = 0;
     if (p.x + p.width > canvas.width) p.x = canvas.width - p.width;
 
-    // Facing direction
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
 
-    // Animation state machine & frame timer
     if (!p.grounded) {
-      p.state = 'jump'; // airborne
+      p.state = 'jump';
     } else {
       if (p.landTimer > 0) {
         p.state = 'land';
@@ -299,36 +286,28 @@ const HoKalla = () => {
       }
     }
 
-    // Advance frame timer based on state
     const cfg = SPRITE_CONFIG;
     if (p.state === 'walk' || p.state === 'jump') {
-      const fps = cfg.animationSpeed;
-      p.frameTimer += (deltaTime / 1000) * fps;
-      // Loop automatically via modulo in drawPlayer
+      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
     } else if (p.state === 'land') {
-      // Landing animation plays once (frames 0 .. landFrames-1)
       const landFrames = cfg.framesPerState.land;
       if (!p.landAnimFinished) {
         p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
         if (Math.floor(p.frameTimer) >= landFrames) {
-          // Stay on the last frame
           p.frameTimer = landFrames - 1;
           p.landAnimFinished = true;
         }
       }
-      // else keep currentFrame = last frame (already set)
-      p.currentFrame = p.frameTimer; // currentFrame is the raw timer value, clamped in drawPlayer
+      p.currentFrame = p.frameTimer;
     } else if (p.state === 'idle') {
-      p.frameTimer = 0; // always frame 0
+      p.frameTimer = 0;
     }
 
-    // Update currentFrame for walk/jump (we do modulo in drawPlayer, so just store timer)
     if (p.state === 'walk' || p.state === 'jump') {
       p.currentFrame = p.frameTimer;
     } else if (p.state === 'idle') {
       p.currentFrame = 0;
     }
-    // For land, currentFrame was set above
   };
 
   // ---------- Game loop ----------
