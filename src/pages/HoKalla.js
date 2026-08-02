@@ -15,7 +15,7 @@ const SPRITE_CONFIG = {
 };
 
 // ---- ARENA BACKGROUND IMAGE ----
-const ARENA_PATH = '/images/arenas/arena1.png'; // <-- change this if your file is named differently
+const ARENA_PATH = '/images/arenas/arena1.png';
 
 // ---- HEALTH CONFIG ----
 const PLAYER_MAX_HEALTH = 100;
@@ -64,7 +64,7 @@ const HoKalla = () => {
     frameTimer: 0,
     landAnimFinished: false,
     crouching: false,
-    health: PLAYER_MAX_HEALTH,   // current health
+    health: PLAYER_MAX_HEALTH,
     maxHealth: PLAYER_MAX_HEALTH,
   });
 
@@ -76,16 +76,14 @@ const HoKalla = () => {
 
   // ---------- Load sprites and arena ----------
   useEffect(() => {
-    // Load arena background
     const arenaImg = new Image();
     arenaImg.src = ARENA_PATH;
     arenaImg.onload = () => {
       arenaImage.current = arenaImg;
       arenaLoaded.current = true;
     };
-    arenaImg.onerror = () => console.warn('Arena image not found – using fallback green background');
+    arenaImg.onerror = () => console.warn('Arena image not found – using fallback green');
 
-    // Load sprite frames
     const loadFrames = (prefix, count) => {
       const arr = [];
       for (let i = 1; i <= count; i++) {
@@ -117,7 +115,6 @@ const HoKalla = () => {
       SPRITE_CONFIG.framesPerState.land +
       SPRITE_CONFIG.framesPerState.crouch;
 
-    // Use walk1.png for idle
     const checkWalk = setInterval(() => {
       if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
         sprites.current.idle = [sprites.current.walk[0]];
@@ -141,10 +138,8 @@ const HoKalla = () => {
   // ---------- Drawing functions ----------
   const drawBackground = (ctx, canvas) => {
     if (arenaLoaded.current && arenaImage.current) {
-      // Draw arena stretched to full canvas
       ctx.drawImage(arenaImage.current, 0, 0, canvas.width, canvas.height);
     } else {
-      // Fallback: plain green
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
@@ -171,7 +166,6 @@ const HoKalla = () => {
         ctx.drawImage(img, -drawWidth / 2, -drawHeight, drawWidth, drawHeight);
       }
     } else {
-      // Fallback
       ctx.fillStyle = '#D32F2F'; ctx.fillRect(-15, -80, 30, 80);
       ctx.fillStyle = '#FFC107'; ctx.beginPath(); ctx.arc(0, -90, 12, 0, Math.PI * 2); ctx.fill();
     }
@@ -179,13 +173,11 @@ const HoKalla = () => {
   };
 
   const drawHUD = (ctx, canvas, p) => {
-    // Health bar background
     const barWidth = 200;
     const barHeight = 20;
     const x = 20;
     const y = 20;
 
-    // Name label
     ctx.save();
     ctx.font = 'bold 18px Arial, sans-serif';
     ctx.fillStyle = '#ffffff';
@@ -194,14 +186,11 @@ const HoKalla = () => {
     ctx.fillText('Khotso', x, y - 5);
     ctx.restore();
 
-    // Health bar background
     ctx.fillStyle = '#333333';
     ctx.fillRect(x, y, barWidth, barHeight);
 
-    // Health bar fill
     const healthPercent = p.health / p.maxHealth;
     const fillWidth = barWidth * healthPercent;
-    // Gradient green to red
     const grad = ctx.createLinearGradient(x, y, x + barWidth, y);
     grad.addColorStop(0, '#4caf50');
     grad.addColorStop(0.6, '#ffeb3b');
@@ -209,7 +198,6 @@ const HoKalla = () => {
     ctx.fillStyle = grad;
     ctx.fillRect(x, y, fillWidth, barHeight);
 
-    // Border
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.strokeRect(x, y, barWidth, barHeight);
@@ -226,7 +214,7 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  const drawFPS = (ctx, fps) => {
+  const drawFPS = (ctx, canvas, fps) => {   // ← FIXED: added canvas parameter
     ctx.save();
     ctx.font = '16px monospace';
     ctx.fillStyle = '#ffff00';
@@ -237,7 +225,7 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Physics & input (unchanged) ----------
+  // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
@@ -347,13 +335,11 @@ const HoKalla = () => {
 
     update(canvas, deltaTime);
 
-    // Render order: background → player → HUD
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
     drawPlayer(ctx, player.current);
-    // Overlays (on top of everything)
     drawTitle(ctx, canvas);
-    drawFPS(ctx, canvas, fs.fps);
+    drawFPS(ctx, canvas, fs.fps);          // ← fixed: now passes canvas
     drawHUD(ctx, canvas, player.current);
 
     animFrameId.current = requestAnimationFrame(gameLoop);
