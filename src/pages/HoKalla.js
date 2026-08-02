@@ -4,21 +4,21 @@ import './HoKalla.css';
 // ---- SPRITE SHEET CONFIGURATION (as provided) ----
 const SPRITE_CONFIG = {
   sheetPath: '/images/characters/khotso-sprites.png',
-  frameWidth: 170,
-  frameHeight: 227,
+  frameWidth: 256,
+  frameHeight: 341,
   rows: {
-    idle: 0,  // Row 0 first frame used for idle
-    walk: 0,  // Row 0 has 6 frames of walking
-    jump: 2,  // Row 2 contains the jump sequence
-    land: 2,  // Row 2 final dust frame (frame 5)
+    idle: 0,
+    walk: 0,
+    jump: 2,
+    land: 2,
   },
   framesPerState: {
-    idle: 1,     // Only frame 0
-    walk: 6,     // 6 frames
-    jump: 4,     // Frames 0‑3
-    land: 1,     // Fixed to frame 5 (see code)
+    idle: 1,
+    walk: 6,
+    jump: 4,
+    land: 6,
   },
-  animationSpeed: 10, // fps
+  animationSpeed: 10,
 };
 
 const HoKalla = () => {
@@ -48,6 +48,8 @@ const HoKalla = () => {
     landTimer: 0,
     currentFrame: 0,
     frameTimer: 0,
+    // keep track of whether landing animation has finished
+    landAnimFinished: false,
   });
 
   const camera = useRef({ x: 0, y: 0 });
@@ -176,17 +178,19 @@ const HoKalla = () => {
     if (spriteSheet.current) {
       const cfg = SPRITE_CONFIG;
       let row = cfg.rows[p.state] || 0;
-      let frameIdx = Math.floor(p.currentFrame);
+      let frameIdx = 0;
 
-      // Special overrides for fixed frames
       if (p.state === 'idle') {
-        frameIdx = 0;               // first frame of row 0
-        row = cfg.rows.idle;        // row 0
+        row = cfg.rows.idle;
+        frameIdx = 0; // first frame of row 0
       } else if (p.state === 'land') {
-        frameIdx = 5;               // dust frame (last frame of row 2)
-        row = cfg.rows.land;        // row 2
+        row = cfg.rows.land; // row 2
+        // landing frames occupy indices 4,5,6,7,8,9 (offset by jump frame count)
+        const jumpFrames = cfg.framesPerState.jump;
+        // p.currentFrame is already clamped to the correct range (0..landFrames-1)
+        frameIdx = jumpFrames + Math.floor(p.currentFrame);
       } else {
-        // walk / jump use normal looping
+        // walk or jump – normal looping
         const maxFrames = cfg.framesPerState[p.state] || 1;
         frameIdx = Math.floor(p.currentFrame) % maxFrames;
       }
@@ -234,6 +238,7 @@ const HoKalla = () => {
     if (keys.current['ArrowRight'] || keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDir += 1;
     p.vx = moveDir * p.speed;
 
+    // Jump
     if (
       (keys.current[' '] || keys.current['Space'] ||
        keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] ||
@@ -243,58 +248,87 @@ const HoKalla = () => {
         p.vy = p.jumpForce;
         p.grounded = false;
         jumpRequested.current = true;
-        // Reset animation for jump start
+        // Start jump animation from frame 0
         p.frameTimer = 0;
+        p.state = 'jump';
       }
     } else {
       jumpRequested.current = false;
     }
 
+    // Gravity & movement
     p.vy += 0.6;
     p.x += p.vx;
     p.y += p.vy;
 
+    // Ground collision
     if (p.y > groundY) {
       p.y = groundY;
       p.vy = 0;
       if (!p.grounded) {
-        p.landTimer = 10;   // frames to show landing dust
+        // Just landed – start landing animation
+        p.landTimer = 15; // duration in frames to show landing (adjust as needed)
         p.state = 'land';
-        p.frameTimer = 0;    // reset timer so land snapshot is shown
+        p.frameTimer = 0;
+        p.landAnimFinished = false;
       }
       p.grounded = true;
     } else {
       p.grounded = false;
     }
 
+    // Boundaries
     if (p.x < 0) p.x = 0;
     if (p.x + p.width > canvas.width) p.x = canvas.width - p.width;
 
+    // Facing direction
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
 
-    // Animation state
+    // Animation state machine & frame timer
     if (!p.grounded) {
-      p.state = p.vy < 0 ? 'jump' : 'jump'; // keep airborne
+      p.state = 'jump'; // airborne
     } else {
       if (p.landTimer > 0) {
         p.state = 'land';
         p.landTimer--;
       } else if (moveDir !== 0) {
         p.state = 'walk';
-        // when transitioning to walk, continue timer or reset? we'll keep existing timer
       } else {
         p.state = 'idle';
-        p.frameTimer = 0; // force idle frame
       }
     }
 
-    // Advance frame timer (except idle and land are fixed)
+    // Advance frame timer based on state
+    const cfg = SPRITE_CONFIG;
     if (p.state === 'walk' || p.state === 'jump') {
-      const fps = SPRITE_CONFIG.animationSpeed;
+      const fps = cfg.animationSpeed;
       p.frameTimer += (deltaTime / 1000) * fps;
+      // Loop automatically via modulo in drawPlayer
+    } else if (p.state === 'land') {
+      // Landing animation plays once (frames 0 .. landFrames-1)
+      const landFrames = cfg.framesPerState.land;
+      if (!p.landAnimFinished) {
+        p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
+        if (Math.floor(p.frameTimer) >= landFrames) {
+          // Stay on the last frame
+          p.frameTimer = landFrames - 1;
+          p.landAnimFinished = true;
+        }
+      }
+      // else keep currentFrame = last frame (already set)
+      p.currentFrame = p.frameTimer; // currentFrame is the raw timer value, clamped in drawPlayer
+    } else if (p.state === 'idle') {
+      p.frameTimer = 0; // always frame 0
     }
-    // For idle and land, currentFrame is set in drawPlayer directly
+
+    // Update currentFrame for walk/jump (we do modulo in drawPlayer, so just store timer)
+    if (p.state === 'walk' || p.state === 'jump') {
+      p.currentFrame = p.frameTimer;
+    } else if (p.state === 'idle') {
+      p.currentFrame = 0;
+    }
+    // For land, currentFrame was set above
   };
 
   // ---------- Game loop ----------
@@ -333,6 +367,11 @@ const HoKalla = () => {
     const p = player.current;
     p.y = canvas.height * groundFrac;
     p.vy = 0; p.grounded = true;
+    p.state = 'idle';
+    p.landTimer = 0;
+    p.landAnimFinished = false;
+    p.frameTimer = 0;
+    p.currentFrame = 0;
   };
 
   useEffect(() => {
