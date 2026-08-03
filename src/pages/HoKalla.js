@@ -139,14 +139,14 @@ const HoKalla = () => {
 
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
-      const suffix = SPRITE_CONFIG.thabo.nameSuffix;
+      // 🛠️ DO NOT ADD SUFFIX FOR ATTACK FRAMES
       for (let i = 1; i <= count; i++) {
         const img = new Image(); 
         const src = prefix === 'attack' 
           ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
-          : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+          : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${SPRITE_CONFIG.thabo.nameSuffix}.png`;
         
-        console.log(`Loading Thabo Attack Frame: ${src}`); // 🛠️ Check the console!
+        console.log(`Loading: ${src}`); // Check console!
         img.src = src;
         img.onload = onFrameLoad;
         img.onerror = () => console.warn(`Missing Thabo ${prefix}${i}.png`);
@@ -254,21 +254,24 @@ const HoKalla = () => {
       img = frames[idx];
     }
 
-    if (!img || !img.complete || img.naturalWidth === 0) {
-      img = fallbackImg;
-    }
-
+    // 🛠️ FIX: Attack frames are much larger, calculate their real size!
     if (img && img.complete && img.naturalWidth > 0) {
-      let dw = char.width; 
-      let dh = char.height;
-
-      // 🛠️ FIX: If the character is in the attack state, use the image's natural size!
+      let dw, dh;
+      
       if (char.state === 'attack') {
+        // Use the image's perfect natural size
         dw = img.naturalWidth;
         dh = img.naturalHeight;
+      } else {
+        dw = char.width; 
+        dh = char.height;
       }
 
       ctx.drawImage(img, -dw / 2, -dh, dw, dh);
+    } else if (char.state === 'attack') {
+      // 🛠️ NEW: If attack frames fail to load, draw a bright RED block so we know for sure it's the file!
+      ctx.fillStyle = '#ff0000'; 
+      ctx.fillRect(-25, -50, 50, 80);
     }
     
     ctx.restore();
