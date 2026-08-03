@@ -34,7 +34,9 @@ const ARENA_PATH = '/images/arenas/arena1.png';
 const PLAYER_MAX_HEALTH = 100;
 const ATTACK_DAMAGE = 8;
 const ATTACK_RANGE = 80;
-const ROUND_INTRO_DURATION = 3000; // 3 seconds
+const AI_AGGRO_RANGE = 300;
+const AI_ATTACK_RANGE = 70;
+const ROUND_INTRO_DURATION = 3000;
 
 const HoKalla = () => {
   const canvasRef = useRef(null);
@@ -57,13 +59,15 @@ const HoKalla = () => {
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
 
-  // Game state
-  const roundState = useRef('intro'); // 'intro' | 'fighting' | 'roundEnd'
+  const roundState = useRef('intro');
   const roundIntroStart = useRef(0);
   const roundNumber = useRef(1);
   const winner = useRef(null);
 
-  // Player 1 (Khotso)
+  // AI decision timer
+  const aiDecisionTimer = useRef(0);
+  const aiCurrentAction = useRef('idle');
+
   const player = useRef({
     x: 200,
     y: 0,
@@ -82,12 +86,11 @@ const HoKalla = () => {
     landAnimFinished: false,
     crouching: false,
     attackLock: false,
-    hitActive: false,     // true during the active frames of attack
+    hitActive: false,
     health: PLAYER_MAX_HEALTH,
     maxHealth: PLAYER_MAX_HEALTH,
   });
 
-  // Player 2 (Thabo)
   const opponent = useRef({
     x: 600,
     y: 0,
@@ -95,7 +98,7 @@ const HoKalla = () => {
     height: SPRITE_CONFIG.targetHeight,
     vx: 0,
     vy: 0,
-    speed: 3.5,
+    speed: 2.5,         // slightly slower than player for fairness
     jumpForce: -9,
     facingRight: false,
     grounded: false,
@@ -241,16 +244,89 @@ const HoKalla = () => {
 
     const distance = Math.abs(attacker.x - defender.x);
     if (distance < ATTACK_RANGE) {
-      // Only hit once per attack
       attacker.hitActive = false;
       defender.health = Math.max(0, defender.health - ATTACK_DAMAGE);
 
-      // Check for KO
       if (defender.health <= 0) {
         winner.current = attacker === player.current ? 'Khotso' : 'Thabo';
         roundState.current = 'roundEnd';
       }
     }
+  };
+
+  // ---------- AI Logic ----------
+  const updateAI = (deltaTime) => {
+    const p1 = player.current;
+    const p2 = opponent.current;
+
+    if (p2.state === 'attack' || p2.state === 'land') return; // Let current action finish
+
+    aiDecisionTimer.current -= deltaTime;
+
+    // Make a new decision every 500-800ms
+    if (aiDecisionTimer.current <= 0 && p2.grounded && p2.state !== 'attack') {
+      const distance = Math.abs(p1.x - p2.x);
+
+      if (distance < AI_ATTACK_RANGE) {
+        // Close enough to attack
+        aiCurrentAction.current = Math.random() < 0.7 ? 'attack' : 'crouch';
+      } else if (distance < AI_AGGRO_RANGE) {
+        // In aggro range – mostly chase, sometimes jump
+        const r = Math.random();
+        if (r < 0.6) aiCurrentAction.current = 'chase';
+        else if (r < 0.85) aiCurrentAction.current = 'jump';
+        else aiCurrentAction.current = 'idle';
+      } else {
+        // Far away – approach
+        aiCurrentAction.current = 'chase';
+      }
+
+      aiDecisionTimer.current = 500 + Math.random() * 300;
+    }
+
+    // Execute AI action
+    if (p2.grounded && p2.state !== 'attack' && p2.state !== 'land') {
+      const moveDir = p1.x < p2.x ? -1 : 1;
+
+      switch (aiCurrentAction.current) {
+        case 'chase':
+          p2.vx = moveDir * p2.speed;
+          p2.state = 'walk';
+          break;
+        case 'attack':
+          p2.vx = 0;
+          if (!p2.attackLock) {
+            p2.state = 'attack';
+            p2.frameTimer = 0;
+            p2.attackLock = true;
+            p2.hitActive = true;
+          }
+          break;
+        case 'jump':
+          p2.vx = moveDir * p2.speed * 0.5;
+          p2.vy = p2.jumpForce;
+          p2.grounded = false;
+          p2.state = 'jump';
+          p2.frameTimer = 0;
+          aiCurrentAction.current = 'idle';
+          break;
+        case 'crouch':
+          p2.vx = 0;
+          p2.crouching = true;
+          p2.state = 'crouch';
+          aiDecisionTimer.current = 300 + Math.random() * 200;
+          aiCurrentAction.current = 'idle';
+          break;
+        default:
+          p2.vx = 0;
+          p2.crouching = false;
+          p2.state = 'idle';
+          break;
+      }
+    }
+
+    // Always face player
+    p2.facingRight = p2.x < p1.x;
   };
 
   // ---------- Drawing functions ----------
@@ -305,7 +381,7 @@ const HoKalla = () => {
     ctx.save();
     ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
     ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
-    ctx.fillText('Khotso', kx, ky - 5);
+    ctx.fillText('Khotso (You)', kx, ky - 5);
     ctx.restore();
     ctx.fillStyle = '#333'; ctx.fillRect(kx, ky, barW, barH);
     const kFill = barW * (p.health / p.maxHealth);
@@ -320,7 +396,7 @@ const HoKalla = () => {
     ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
     ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
     ctx.textAlign = 'right';
-    ctx.fillText('Thabo', canvas.width - 20, ty - 5);
+    ctx.fillText('Thabo (AI)', canvas.width - 20, ty - 5);
     ctx.restore();
     ctx.fillStyle = '#333'; ctx.fillRect(tx, ty, barW, barH);
     const tFill = barW * (opponentChar.health / opponentChar.maxHealth);
@@ -338,23 +414,17 @@ const HoKalla = () => {
 
     ctx.save();
     ctx.globalAlpha = alpha;
-    
-    // Overlay
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Round text
     ctx.font = 'bold 64px Arial';
     ctx.fillStyle = '#FFD700';
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 10;
     ctx.textAlign = 'center';
     ctx.fillText(`Round ${roundNumber.current}`, canvas.width / 2, canvas.height / 2 - 30);
-
     ctx.font = '28px Arial';
     ctx.fillStyle = '#fff';
     ctx.fillText('Fight!', canvas.width / 2, canvas.height / 2 + 30);
-
     ctx.restore();
   };
 
@@ -362,14 +432,12 @@ const HoKalla = () => {
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.font = 'bold 56px Arial';
     ctx.fillStyle = '#FFD700';
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 10;
     ctx.textAlign = 'center';
     ctx.fillText(`${winner.current} Wins!`, canvas.width / 2, canvas.height / 2 - 20);
-
     ctx.font = '24px Arial';
     ctx.fillStyle = '#fff';
     ctx.fillText('Press R to restart', canvas.width / 2, canvas.height / 2 + 30);
@@ -383,8 +451,8 @@ const HoKalla = () => {
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 4;
     ctx.textAlign = 'left';
-    ctx.fillText("Khotso: W (Jump), A/D (Move), J (Attack), S (Crouch)", 20, canvas.height - 60);
-    ctx.fillText("Thabo:  ↑  (Jump), ←/→ (Move),  L  (Attack), ↓ (Crouch)", 20, canvas.height - 30);
+    ctx.fillText("Khotso: W (Jump), A/D (Move), J (Attack), S (Crouch)", 20, canvas.height - 40);
+    ctx.fillText("Thabo: AI Controlled", 20, canvas.height - 20);
     ctx.restore();
   };
 
@@ -408,27 +476,25 @@ const HoKalla = () => {
 
   // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
-    // Handle round intro timer
     if (roundState.current === 'intro') {
       if (Date.now() - roundIntroStart.current > ROUND_INTRO_DURATION) {
         roundState.current = 'fighting';
       }
-      return; // Don't update characters during intro
+      return;
     }
 
-    // Restart on R key
     if (keys.current['r'] || keys.current['R']) {
       resetRound();
       return;
     }
 
-    if (roundState.current === 'roundEnd') return; // Freeze on round end
+    if (roundState.current === 'roundEnd') return;
 
     const p1 = player.current;
     const p2 = opponent.current;
     const groundY = canvas.height * groundFrac;
 
-    // --- PLAYER 1: KHOTSO CONTROLS ---
+    // --- PLAYER 1: KHOTSO (Human) ---
     const attackPressedP1 = keys.current['j'] || keys.current['J'] || touchAttack.current;
     if (attackPressedP1 && !p1.attackLock && p1.grounded) {
       p1.state = 'attack';
@@ -454,31 +520,8 @@ const HoKalla = () => {
       p1.state = 'jump';
     }
 
-    // --- PLAYER 2: THABO CONTROLS ---
-    const attackPressedP2 = keys.current['l'] || keys.current['L'];
-    if (attackPressedP2 && !p2.attackLock && p2.grounded) {
-      p2.state = 'attack';
-      p2.frameTimer = 0;
-      p2.attackLock = true;
-      p2.hitActive = true;
-    }
-
-    const crouchKeyP2 = keys.current['ArrowDown'];
-    p2.crouching = crouchKeyP2 && p2.grounded && p2.state !== 'attack';
-
-    let moveDirP2 = 0;
-    if (!p2.crouching && p2.state !== 'attack') {
-      if (keys.current['ArrowLeft']) moveDirP2 -= 1;
-      if (keys.current['ArrowRight']) moveDirP2 += 1;
-    }
-    p2.vx = moveDirP2 * p2.speed;
-
-    if (keys.current['ArrowUp'] && p2.grounded && !p2.crouching && p2.state !== 'attack') {
-      p2.vy = p2.jumpForce;
-      p2.grounded = false;
-      p2.frameTimer = 0;
-      p2.state = 'jump';
-    }
+    // --- PLAYER 2: THABO (AI) ---
+    updateAI(deltaTime);
 
     // --- APPLY PHYSICS ---
     const applyPhysics = (char) => {
@@ -515,14 +558,10 @@ const HoKalla = () => {
     checkAttackHit(p1, p2);
     checkAttackHit(p2, p1);
 
-    // --- FACING LOGIC ---
+    // --- PLAYER FACING ---
     if (moveDirP1 > 0) p1.facingRight = true;
     else if (moveDirP1 < 0) p1.facingRight = false;
     else if (p1.state === 'idle' || p1.state === 'attack') p1.facingRight = p1.x < p2.x;
-
-    if (moveDirP2 > 0) p2.facingRight = true;
-    else if (moveDirP2 < 0) p2.facingRight = false;
-    else if (p2.state === 'idle' || p2.state === 'attack') p2.facingRight = p2.x < p1.x;
 
     // --- STATE SWITCHING ---
     const updateState = (char, maxAttackFrames) => {
@@ -535,7 +574,7 @@ const HoKalla = () => {
           char.state = char.grounded ? 'idle' : 'jump';
           char.frameTimer = 0;
         }
-      } else {
+      } else if (char.grounded) {
         if (char.landTimer > 0) {
           char.state = 'land';
           char.landTimer--;
@@ -589,14 +628,16 @@ const HoKalla = () => {
 
     p1.x = 200; p1.y = groundY; p1.vx = 0; p1.vy = 0;
     p1.grounded = true; p1.state = 'idle'; p1.facingRight = true;
-    p1.attackLock = false; p1.hitActive = false;
-    p1.health = PLAYER_MAX_HEALTH;
+    p1.attackLock = false; p1.hitActive = false; p1.crouching = false;
+    p1.health = PLAYER_MAX_HEALTH; p1.frameTimer = 0; p1.currentFrame = 0;
 
     p2.x = 600; p2.y = groundY; p2.vx = 0; p2.vy = 0;
     p2.grounded = true; p2.state = 'idle'; p2.facingRight = false;
-    p2.attackLock = false; p2.hitActive = false;
-    p2.health = PLAYER_MAX_HEALTH;
+    p2.attackLock = false; p2.hitActive = false; p2.crouching = false;
+    p2.health = PLAYER_MAX_HEALTH; p2.frameTimer = 0; p2.currentFrame = 0;
 
+    aiDecisionTimer.current = 500;
+    aiCurrentAction.current = 'idle';
     winner.current = null;
     roundNumber.current = 1;
     roundState.current = 'intro';
@@ -610,7 +651,7 @@ const HoKalla = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!lastTimestamp) lastTimestamp = timestamp;
-    const deltaTime = Math.min(timestamp - lastTimestamp, 33); // cap at 30fps equivalent
+    const deltaTime = Math.min(timestamp - lastTimestamp, 33);
     lastTimestamp = timestamp;
 
     const fs = fpsState.current;
@@ -632,7 +673,6 @@ const HoKalla = () => {
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
 
-    // Draw round intro or end overlay
     if (roundState.current === 'intro') {
       drawRoundIntro(ctx, canvas);
     } else if (roundState.current === 'roundEnd') {
@@ -655,7 +695,6 @@ const HoKalla = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Initialize round intro
     roundIntroStart.current = Date.now();
     roundState.current = 'intro';
 
@@ -693,23 +732,23 @@ const HoKalla = () => {
           <button className="touch-btn left-btn"
             onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd}
             onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>
-            ◀ P1 Left
+            ◀ Move Left
           </button>
           <button className="touch-btn jump-btn"
             onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd}
             onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>
-            ▲ P1 Jump
+            ▲ Jump
           </button>
           <button className="touch-btn atk-btn"
             onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd}
             onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd}
             style={{background: '#d32f2f', color: 'white', border: '2px solid #fff'}}>
-            ⚔️ P1 Atk
+            ⚔️ Attack
           </button>
           <button className="touch-btn right-btn"
             onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd}
             onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>
-            ▶ P1 Right
+            ▶ Move Right
           </button>
         </div>
       )}
