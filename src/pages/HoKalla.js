@@ -39,7 +39,6 @@ const HoKalla = () => {
   const animFrameId = useRef(null);
   const keys = useRef({});
   
-  // Touch refs for Player 1 (Khotso)
   const touchMoveLeft = useRef(false);
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
@@ -48,7 +47,6 @@ const HoKalla = () => {
   const jumpRequestedP1 = useRef(false);
   const jumpRequestedP2 = useRef(false);
 
-  // Sprites for both fighters
   const sprites = useRef({
     khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [] },
     thabo:  { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [] },
@@ -59,8 +57,8 @@ const HoKalla = () => {
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
 
-  // 🛠️ NEW: Focus lock state
-  const [isFocused, setIsFocused] = useState(false);
+  // 🛠️ Removed focus state. We will just use a Hover overlay check
+  const [gameReady, setGameReady] = useState(false);
 
   // Player 1 (Khotso)
   const player = useRef({
@@ -176,14 +174,12 @@ const HoKalla = () => {
       }
     };
 
-    // Load Khotso Frames
     sprites.current.khotso.attack = loadKhotsoFrames('Kattack', SPRITE_CONFIG.khotso.framesPerState.attack);
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', SPRITE_CONFIG.khotso.framesPerState.walk);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', SPRITE_CONFIG.khotso.framesPerState.jump);
     sprites.current.khotso.land   = loadKhotsoFrames('land', SPRITE_CONFIG.khotso.framesPerState.land);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
 
-    // Load Thabo Frames
     sprites.current.thabo.attack = loadThaboFrames('Tattack', SPRITE_CONFIG.thabo.framesPerState.attack);
     sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
     sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
@@ -313,7 +309,7 @@ const HoKalla = () => {
     ctx.textAlign = 'left';
     
     ctx.fillText("Khotso: W (Jump), A/D (Move), J (Attack)", 20, canvas.height - 60);
-    ctx.fillText("Thabo:  ↑  (Jump), ←/→ (Move),  K  (Attack)", 20, canvas.height - 30);
+    ctx.fillText("Thabo:  ↑  (Jump), ←/→ (Move),  L  (Attack)", 20, canvas.height - 30);
     ctx.restore();
   };
 
@@ -335,9 +331,9 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // 🛠️ NEW: Draw overlay if user hasn't clicked the screen
+  // 🛠️ FIX: Overlay disappears when mouse enters the area
   const drawFocusOverlay = (ctx, canvas) => {
-    if (!isFocused) {
+    if (!gameReady) {
       ctx.save();
       ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -347,15 +343,15 @@ const HoKalla = () => {
       ctx.textAlign = 'center';
       ctx.shadowColor = '#000';
       ctx.shadowBlur = 10;
-      ctx.fillText('⚔️ CLICK TO PLAY ⚔️', canvas.width / 2, canvas.height / 2);
+      ctx.fillText('⚔️ HOVER TO START ⚔️', canvas.width / 2, canvas.height / 2);
       ctx.restore();
     }
   };
 
   // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
-    const p1 = player.current;   // Khotso
-    const p2 = opponent.current; // Thabo
+    const p1 = player.current;   
+    const p2 = opponent.current; 
     const groundY = canvas.height * groundFrac;
 
     // --- PLAYER 1: KHOTSO CONTROLS ---
@@ -387,7 +383,8 @@ const HoKalla = () => {
     }
 
     // --- PLAYER 2: THABO CONTROLS ---
-    const attackPressedP2 = keys.current['k'] || keys.current['K']; 
+    // 🛠️ CHANGED TO 'L' KEY TO AVOID KEYBOARD CONFLICTS
+    const attackPressedP2 = keys.current['l'] || keys.current['L']; 
     if (attackPressedP2 && !p2.attackLock && p2.grounded) {
       p2.state = 'attack';
       p2.frameTimer = 0;
@@ -454,7 +451,6 @@ const HoKalla = () => {
     if (moveDirP2 > 0) p2.facingRight = true;
     else if (moveDirP2 < 0) p2.facingRight = false;
 
-    // Force them to face each other when idle
     if (p1.state === 'idle') p1.facingRight = p1.x < p2.x;
     if (p2.state === 'idle') p2.facingRight = p2.x < p1.x;
 
@@ -561,7 +557,7 @@ const HoKalla = () => {
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
 
-    // 🛠️ NEW: If they haven't clicked, draw the overlay on top
+    // 🛠️ Overlay checked on every frame
     drawFocusOverlay(ctx, canvas);
 
     animFrameId.current = requestAnimationFrame(gameLoop);
@@ -595,26 +591,19 @@ const HoKalla = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // 🛠️ NEW: Handle clicking the canvas to get "Focus"
-    const handleCanvasClick = () => {
-      setIsFocused(true);
-      if (canvasRef.current) {
-        canvasRef.current.focus(); // Forcibly lock the keyboard to the canvas
-      }
-    };
-
-    // Prevent the browser from scrolling when keys are pressed INSIDE the canvas
+    // 🛠️ FIX: Always capture keyboard input from the Window
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', 'j', 'J', 'k', 'K'].includes(e.key)) e.preventDefault();
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', 'j', 'J', 'l', 'L'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     
     window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', keyUp);
 
-    // Add click listener
-    canvas.addEventListener('click', handleCanvasClick);
+    // 🛠️ FIX: Turn off the overlay on mouse enter
+    const handleMouseEnter = () => setGameReady(true);
+    canvas.addEventListener('mouseenter', handleMouseEnter);
 
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -626,7 +615,7 @@ const HoKalla = () => {
     return () => {
       window.removeEventListener('keydown', keyDown);
       window.removeEventListener('keyup', keyUp);
-      canvas.removeEventListener('click', handleCanvasClick);
+      canvas.removeEventListener('mouseenter', handleMouseEnter);
       window.removeEventListener('resize', handleResize);
       resizeObserver.disconnect();
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
