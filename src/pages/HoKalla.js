@@ -59,6 +59,9 @@ const HoKalla = () => {
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
 
+  // 🛠️ NEW: Focus lock state
+  const [isFocused, setIsFocused] = useState(false);
+
   // Player 1 (Khotso)
   const player = useRef({
     x: 200,
@@ -257,7 +260,6 @@ const HoKalla = () => {
       img = frames[idx];
     }
 
-    // Fallback to idle if attack frame isn't loaded yet
     if (!img || !img.complete || img.naturalWidth === 0) {
       img = fallbackImg;
     }
@@ -302,11 +304,10 @@ const HoKalla = () => {
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(tx, ty, barW, barH);
   };
 
-  // 🛠️ NEW: Draw Control Instructions so you know what to press
   const drawControls = (ctx, canvas) => {
     ctx.save();
     ctx.font = '16px Arial';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 4;
     ctx.textAlign = 'left';
@@ -332,6 +333,23 @@ const HoKalla = () => {
     ctx.textAlign = 'left';
     ctx.fillText(`FPS: ${fps}`, 10, canvas.height - 10);
     ctx.restore();
+  };
+
+  // 🛠️ NEW: Draw overlay if user hasn't clicked the screen
+  const drawFocusOverlay = (ctx, canvas) => {
+    if (!isFocused) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 48px Arial';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 10;
+      ctx.fillText('⚔️ CLICK TO PLAY ⚔️', canvas.width / 2, canvas.height / 2);
+      ctx.restore();
+    }
   };
 
   // ---------- Physics & input ----------
@@ -369,7 +387,6 @@ const HoKalla = () => {
     }
 
     // --- PLAYER 2: THABO CONTROLS ---
-    // 🛠️ CHANGED: Attack is now 'K' instead of Space to avoid browser scrolling
     const attackPressedP2 = keys.current['k'] || keys.current['K']; 
     if (attackPressedP2 && !p2.attackLock && p2.grounded) {
       p2.state = 'attack';
@@ -540,9 +557,12 @@ const HoKalla = () => {
     drawCharacter(ctx, player.current, sprites.current.khotso);
     
     drawTitle(ctx, canvas);
-    drawControls(ctx, canvas); // 🛠️ Draw the controls
+    drawControls(ctx, canvas);
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
+
+    // 🛠️ NEW: If they haven't clicked, draw the overlay on top
+    drawFocusOverlay(ctx, canvas);
 
     animFrameId.current = requestAnimationFrame(gameLoop);
   };
@@ -575,14 +595,26 @@ const HoKalla = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // 🛠️ NEW: Handle clicking the canvas to get "Focus"
+    const handleCanvasClick = () => {
+      setIsFocused(true);
+      if (canvasRef.current) {
+        canvasRef.current.focus(); // Forcibly lock the keyboard to the canvas
+      }
+    };
+
+    // Prevent the browser from scrolling when keys are pressed INSIDE the canvas
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      // Prevent scrolling for ALL keys
       if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', 'j', 'J', 'k', 'K'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
+    
     window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', keyUp);
+
+    // Add click listener
+    canvas.addEventListener('click', handleCanvasClick);
 
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -594,6 +626,7 @@ const HoKalla = () => {
     return () => {
       window.removeEventListener('keydown', keyDown);
       window.removeEventListener('keyup', keyUp);
+      canvas.removeEventListener('click', handleCanvasClick);
       window.removeEventListener('resize', handleResize);
       resizeObserver.disconnect();
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
