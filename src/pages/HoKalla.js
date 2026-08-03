@@ -44,6 +44,14 @@ const AI_ATTACK_RANGE = 70;
 const ROUND_INTRO_DURATION = 3000;
 const HIT_STUN_DURATION = 400;     
 
+// 🔉 SOUND CONFIGURATION (Save your .mp3 files in the public folder!)
+const SOUNDS = {
+  punch: new Audio('/punch.mp3'),
+  block: new Audio('/block.mp3'),
+  hit: new Audio('/hit.mp3'),
+  ko: new Audio('/ko.mp3'),
+};
+
 const HoKalla = () => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -74,6 +82,7 @@ const HoKalla = () => {
   const aiDecisionTimer = useRef(0);
   const aiCurrentAction = useRef('idle');
 
+  // 🛠️ ARROW KEY CONTROLS
   const player = useRef({
     x: 200,
     y: 0,
@@ -171,7 +180,6 @@ const HoKalla = () => {
       return arr;
     };
 
-    // 🛠️ FIXED: Load exact filenames from your folder screenshot
     const loadKhotsoDefenseFrames = () => {
       const filenames = ['blockhold', 'guardraise', 'highblock', 'lowblock', 'midblock'];
       const arr = [];
@@ -267,7 +275,6 @@ const HoKalla = () => {
     };
 
     // --- LOAD ALL SPRITES ---
-    // Khotso
     sprites.current.khotso.attack = loadKhotsoAttackFrames();
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
@@ -276,7 +283,6 @@ const HoKalla = () => {
     sprites.current.khotso.block  = loadKhotsoDefenseFrames();
     sprites.current.khotso.hit    = loadKhotsoPainFrames();
 
-    // Thabo
     sprites.current.thabo.attack = loadThaboAttackFrames();
     sprites.current.thabo.walk   = loadThaboFrames('walk', 3);
     sprites.current.thabo.jump   = loadThaboFrames('jump', 6);
@@ -289,7 +295,6 @@ const HoKalla = () => {
       Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
       Object.values(SPRITE_CONFIG.thabo.framesPerState).reduce((a,b)=>a+b,0);
 
-    // Fallback idle checker
     const checkIdle = setInterval(() => {
       if (sprites.current.khotso.walk[0]?.complete) {
         sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
@@ -325,6 +330,14 @@ const HoKalla = () => {
   const handleTouchBlockStart  = (e) => { e.preventDefault(); touchBlock.current = true; };
   const handleTouchBlockEnd    = (e) => { e.preventDefault(); touchBlock.current = false; };
 
+  // 🔉 Play sound helper
+  const playSound = (sound) => {
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+    }
+  };
+
   // ---------- Hit detection ----------
   const checkAttackHit = (attacker, defender) => {
     if (!attacker.hitActive) return;
@@ -340,6 +353,14 @@ const HoKalla = () => {
       const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
       defender.health = Math.max(0, defender.health - damage);
       
+      // 🔊 Trigger Sound Effects
+      if (isBlocked) {
+        playSound(SOUNDS.block);
+      } else {
+        playSound(SOUNDS.punch);
+        playSound(SOUNDS.hit);
+      }
+
       if (!isBlocked) {
         defender.hitStunTimer = HIT_STUN_DURATION;
         defender.state = 'hit';
@@ -349,6 +370,7 @@ const HoKalla = () => {
       if (defender.health <= 0) {
         winner.current = attacker === player.current ? 'Khotso' : 'Thabo';
         roundState.current = 'roundEnd';
+        playSound(SOUNDS.ko);
       }
     }
   };
@@ -546,7 +568,7 @@ const HoKalla = () => {
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 4;
     ctx.textAlign = 'left';
-    ctx.fillText("Khotso: W (Jump), A/D (Move), S (Block), J (Attack)", 20, canvas.height - 40);
+    ctx.fillText("Khotso: Arrows (Move), K (Block), J (Attack)", 20, canvas.height - 40);
     ctx.fillText("Thabo: AI Controlled", 20, canvas.height - 20);
     ctx.restore();
   };
@@ -593,9 +615,9 @@ const HoKalla = () => {
     if (p1.hitStunTimer > 0) p1.hitStunTimer -= deltaTime;
     if (p2.hitStunTimer > 0) p2.hitStunTimer -= deltaTime;
 
-    // --- PLAYER 1: KHOTSO (Human) ---
+    // --- PLAYER 1: KHOTSO (Human - ARROW KEYS) ---
     const isStunned1 = p1.hitStunTimer > 0;
-    const blockPressed1 = (keys.current['s'] || keys.current['S'] || touchBlock.current) && p1.grounded && !isStunned1;
+    const blockPressed1 = (keys.current['k'] || keys.current['K'] || touchBlock.current) && p1.grounded && !isStunned1;
 
     if (!isStunned1) {
       p1.blocking = blockPressed1;
@@ -610,12 +632,14 @@ const HoKalla = () => {
 
       let moveDirP1 = 0;
       if (!p1.blocking && p1.state !== 'attack') {
-        if (keys.current['a'] || keys.current['A'] || touchMoveLeft.current) moveDirP1 -= 1;
-        if (keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDirP1 += 1;
+        // 🛠️ MAP MOVEMENT TO ARROW KEYS
+        if (keys.current['ArrowLeft']) moveDirP1 -= 1;
+        if (keys.current['ArrowRight']) moveDirP1 += 1;
       }
       p1.vx = p1.blocking ? 0 : moveDirP1 * p1.speed;
 
-      if ((keys.current['w'] || keys.current['W'] || touchJump.current) && p1.grounded && !p1.blocking && p1.state !== 'attack') {
+      // 🛠️ MAP JUMP TO UP ARROW
+      if ((keys.current['ArrowUp']) && p1.grounded && !p1.blocking && p1.state !== 'attack') {
         p1.vy = p1.jumpForce;
         p1.grounded = false;
         p1.frameTimer = 0;
@@ -824,7 +848,8 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w','W','a','A','s','S','d','D','j','J','l','L','r','R'].includes(e.key)) e.preventDefault();
+      // 🛠️ UPDATED: Only prevent default for game controls
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'j','J','k','K','r','R'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown);
