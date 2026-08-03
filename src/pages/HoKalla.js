@@ -25,7 +25,7 @@ const SPRITE_CONFIG = {
     nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
-  // 🛠️ FIX: Set a unified height for both fighters (in pixels)
+  // 🛠️ Adjust this number to make both characters bigger or smaller!
   targetHeight: 180, 
 };
 
@@ -57,7 +57,7 @@ const HoKalla = () => {
   const player = useRef({
     x: 200,
     y: 0,
-    width: 100, // Default temp width, will be updated by load
+    width: 100,
     height: SPRITE_CONFIG.targetHeight,
     vx: 0,
     vy: 0,
@@ -79,7 +79,7 @@ const HoKalla = () => {
   const opponent = useRef({
     x: 600,
     y: 0,
-    width: 100, // Default temp width, will be updated by load
+    width: 100,
     height: SPRITE_CONFIG.targetHeight,
     facingRight: false,
     state: 'idle',
@@ -103,7 +103,6 @@ const HoKalla = () => {
     arenaImg.onload = () => { arenaImage.current = arenaImg; arenaLoaded.current = true; };
     arenaImg.onerror = () => console.warn('Arena image not found');
 
-    // 🛠️ NEW HELPER: Scales sprite dimensions to target height automatically
     const scaleSpriteToTargetHeight = (img) => {
       if (!img || !img.complete || img.naturalWidth === 0) return { width: 100, height: SPRITE_CONFIG.targetHeight };
       const ratio = SPRITE_CONFIG.targetHeight / img.naturalHeight;
@@ -113,7 +112,6 @@ const HoKalla = () => {
       };
     };
 
-    // Load Khotso frames
     const loadKhotsoFrames = (prefix, count) => {
       const arr = [];
       for (let i = 1; i <= count; i++) {
@@ -126,7 +124,6 @@ const HoKalla = () => {
       return arr;
     };
 
-    // Load Thabo frames
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
@@ -143,15 +140,12 @@ const HoKalla = () => {
     const onFrameLoad = () => {
       loadedCount.current++;
       
-      // Once everything is loaded, set standardized dimensions
       if (loadedCount.current >= totalFrames.current) {
-        // Set Khotso dimensions
         if (sprites.current.khotso.walk[0]?.complete) {
           const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
           player.current.width = dims.width;
           player.current.height = dims.height;
         }
-        // Set Thabo dimensions
         if (sprites.current.thabo.walk[0]?.complete) {
           const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
           opponent.current.width = dims.width;
@@ -160,13 +154,11 @@ const HoKalla = () => {
       }
     };
 
-    // Khotso frames
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', SPRITE_CONFIG.khotso.framesPerState.walk);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', SPRITE_CONFIG.khotso.framesPerState.jump);
     sprites.current.khotso.land   = loadKhotsoFrames('land', SPRITE_CONFIG.khotso.framesPerState.land);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
 
-    // Thabo frames
     sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
     sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
     sprites.current.thabo.land   = loadThaboFrames('land', SPRITE_CONFIG.thabo.framesPerState.land);
@@ -176,7 +168,6 @@ const HoKalla = () => {
       Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
       Object.values(SPRITE_CONFIG.thabo.framesPerState).reduce((a,b)=>a+b,0);
 
-    // Set idle frames & handle early sizing
     const checkIdle = setInterval(() => {
       if (sprites.current.khotso.walk[0]?.complete) {
         sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
@@ -213,11 +204,10 @@ const HoKalla = () => {
     if (arenaLoaded.current && arenaImage.current) {
       const img = arenaImage.current;
       const w = canvas.width, h = canvas.height;
+      
+      // 🛠️ FINAL FIX: Centered, stable camera with NO looping
       const camX = camera.current.x;
-      let drawX = -(camX % w);
-      if (drawX > 0) drawX -= w;
-      ctx.drawImage(img, drawX, 0, w, h);
-      ctx.drawImage(img, drawX + w, 0, w, h);
+      ctx.drawImage(img, -camX, 0, w, h);
     } else {
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -237,7 +227,7 @@ const HoKalla = () => {
       else idx = Math.floor(char.currentFrame) % frames.length;
       const img = frames[idx];
       if (img?.complete) {
-        // 🛠️ FIX: Use the standardized width/height we calculated during load
+        // Draw using our fixed, equalized width/height
         const dw = char.width; 
         const dh = char.height;
         ctx.drawImage(img, -dw / 2, -dh, dw, dh);
@@ -249,7 +239,6 @@ const HoKalla = () => {
   const drawHUD = (ctx, canvas, p, opponentChar) => {
     const barW = 200, barH = 20;
 
-    // Khotso health (left)
     const kx = 20, ky = 20;
     ctx.save();
     ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
@@ -263,7 +252,6 @@ const HoKalla = () => {
     ctx.fillStyle = gradK; ctx.fillRect(kx, ky, kFill, barH);
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(kx, ky, barW, barH);
 
-    // Thabo health (right)
     const tx = canvas.width - barW - 20, ty = 20;
     ctx.save();
     ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
@@ -332,10 +320,15 @@ const HoKalla = () => {
     p.x += p.vx;
     p.y += p.vy;
 
-    const worldWidth = canvas.width;
-    if (p.x > worldWidth) p.x -= worldWidth;
-    if (p.x < 0) p.x += worldWidth;
+    // 🛠️ FINAL FIX: SOLID STAGE BOUNDARIES (No wrapping)
+    const boundaryBuffer = 50;
+    const stageLeft = boundaryBuffer;
+    const stageRight = canvas.width - boundaryBuffer - p.width;
 
+    if (p.x < stageLeft) p.x = stageLeft;
+    if (p.x > stageRight) p.x = stageRight;
+
+    // Floor collision
     if (p.y > groundY) {
       p.y = groundY;
       p.vy = 0;
@@ -350,7 +343,8 @@ const HoKalla = () => {
       p.grounded = false;
     }
 
-    camera.current.x = p.x - canvas.width / 2;
+    // 🛠️ FINAL FIX: Locked camera (No movement, completely stable)
+    camera.current.x = 0;
 
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
@@ -410,13 +404,13 @@ const HoKalla = () => {
 
     update(canvas, deltaTime);
 
-    // Thabo idle animation (just breathe)
+    // Thabo idle animation
     opponent.current.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
-    drawCharacter(ctx, opponent.current, sprites.current.thabo);  // draw Thabo first (behind)
-    drawCharacter(ctx, player.current, sprites.current.khotso);   // then Khotso
+    drawCharacter(ctx, opponent.current, sprites.current.thabo);
+    drawCharacter(ctx, player.current, sprites.current.khotso);
     drawTitle(ctx, canvas);
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
@@ -439,10 +433,11 @@ const HoKalla = () => {
     p.frameTimer = 0;
     p.currentFrame = 0;
     p.crouching = false;
-    camera.current.x = p.x - canvas.width / 2;
 
     const o = opponent.current;
     o.y = canvas.height * groundFrac;
+
+    camera.current.x = 0;
   };
 
   useEffect(() => {
