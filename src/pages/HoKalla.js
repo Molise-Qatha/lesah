@@ -25,6 +25,8 @@ const SPRITE_CONFIG = {
     nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
+  // 🛠️ FIX: Set a unified height for both fighters (in pixels)
+  targetHeight: 180, 
 };
 
 const ARENA_PATH = '/images/arenas/arena1.png';
@@ -55,8 +57,8 @@ const HoKalla = () => {
   const player = useRef({
     x: 200,
     y: 0,
-    width: 150,
-    height: 200,
+    width: 100, // Default temp width, will be updated by load
+    height: SPRITE_CONFIG.targetHeight,
     vx: 0,
     vy: 0,
     speed: 3.5,
@@ -73,13 +75,13 @@ const HoKalla = () => {
     maxHealth: PLAYER_MAX_HEALTH,
   });
 
-  // Opponent (Thabo) – stands still for now
+  // Opponent (Thabo)
   const opponent = useRef({
     x: 600,
     y: 0,
-    width: 150,
-    height: 200,
-    facingRight: false,   // faces left toward Khotso
+    width: 100, // Default temp width, will be updated by load
+    height: SPRITE_CONFIG.targetHeight,
+    facingRight: false,
     state: 'idle',
     currentFrame: 0,
     frameTimer: 0,
@@ -101,7 +103,17 @@ const HoKalla = () => {
     arenaImg.onload = () => { arenaImage.current = arenaImg; arenaLoaded.current = true; };
     arenaImg.onerror = () => console.warn('Arena image not found');
 
-    // Load Khotso frames (simple names)
+    // 🛠️ NEW HELPER: Scales sprite dimensions to target height automatically
+    const scaleSpriteToTargetHeight = (img) => {
+      if (!img || !img.complete || img.naturalWidth === 0) return { width: 100, height: SPRITE_CONFIG.targetHeight };
+      const ratio = SPRITE_CONFIG.targetHeight / img.naturalHeight;
+      return {
+        width: Math.floor(img.naturalWidth * ratio),
+        height: SPRITE_CONFIG.targetHeight
+      };
+    };
+
+    // Load Khotso frames
     const loadKhotsoFrames = (prefix, count) => {
       const arr = [];
       for (let i = 1; i <= count; i++) {
@@ -114,7 +126,7 @@ const HoKalla = () => {
       return arr;
     };
 
-    // Load Thabo frames (with suffix)
+    // Load Thabo frames
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
@@ -130,15 +142,20 @@ const HoKalla = () => {
 
     const onFrameLoad = () => {
       loadedCount.current++;
+      
+      // Once everything is loaded, set standardized dimensions
       if (loadedCount.current >= totalFrames.current) {
-        // Set dimensions from first walk frames
+        // Set Khotso dimensions
         if (sprites.current.khotso.walk[0]?.complete) {
-          player.current.width = sprites.current.khotso.walk[0].naturalWidth;
-          player.current.height = sprites.current.khotso.walk[0].naturalHeight;
+          const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
+          player.current.width = dims.width;
+          player.current.height = dims.height;
         }
+        // Set Thabo dimensions
         if (sprites.current.thabo.walk[0]?.complete) {
-          opponent.current.width = sprites.current.thabo.walk[0].naturalWidth;
-          opponent.current.height = sprites.current.thabo.walk[0].naturalHeight;
+          const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
+          opponent.current.width = dims.width;
+          opponent.current.height = dims.height;
         }
       }
     };
@@ -159,20 +176,22 @@ const HoKalla = () => {
       Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
       Object.values(SPRITE_CONFIG.thabo.framesPerState).reduce((a,b)=>a+b,0);
 
-    // Set idle frames
+    // Set idle frames & handle early sizing
     const checkIdle = setInterval(() => {
       if (sprites.current.khotso.walk[0]?.complete) {
         sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
-        if (player.current.width === 150) {
-          player.current.width = sprites.current.khotso.walk[0].naturalWidth;
-          player.current.height = sprites.current.khotso.walk[0].naturalHeight;
+        if (player.current.width === 100) {
+          const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
+          player.current.width = dims.width;
+          player.current.height = dims.height;
         }
       }
       if (sprites.current.thabo.walk[0]?.complete) {
         sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
-        if (opponent.current.width === 150) {
-          opponent.current.width = sprites.current.thabo.walk[0].naturalWidth;
-          opponent.current.height = sprites.current.thabo.walk[0].naturalHeight;
+        if (opponent.current.width === 100) {
+          const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
+          opponent.current.width = dims.width;
+          opponent.current.height = dims.height;
         }
       }
       if (sprites.current.khotso.idle.length && sprites.current.thabo.idle.length) {
@@ -218,8 +237,9 @@ const HoKalla = () => {
       else idx = Math.floor(char.currentFrame) % frames.length;
       const img = frames[idx];
       if (img?.complete) {
-        const dw = char.width || img.naturalWidth;
-        const dh = char.height || img.naturalHeight;
+        // 🛠️ FIX: Use the standardized width/height we calculated during load
+        const dw = char.width; 
+        const dh = char.height;
         ctx.drawImage(img, -dw / 2, -dh, dw, dh);
       }
     }
