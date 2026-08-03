@@ -11,7 +11,7 @@ const SPRITE_CONFIG = {
       jump: 7,
       land: 7,
       crouch: 7,
-      attack: 3,
+      attack: 3, // Khotso has exactly 3 attack frames
     },
   },
   thabo: {
@@ -22,12 +22,12 @@ const SPRITE_CONFIG = {
       jump: 6,
       land: 3,
       crouch: 4,
-      attack: 5,
+      attack: 5, // Thabo has exactly 5 attack frames
     },
-    nameSuffix: '-removebg-preview',
+    nameSuffix: '-removebg-preview', 
   },
   animationSpeed: 10,
-  targetHeight: 180,
+  targetHeight: 180, 
 };
 
 const ARENA_PATH = '/images/arenas/arena1.png';
@@ -44,6 +44,17 @@ const HoKalla = () => {
   const touchAttack = useRef(false);
   const jumpRequested = useRef(false);
 
+  // Sprites for both fighters
+  const sprites = useRef({
+    khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [] },
+    thabo:  { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [] },
+  });
+
+  const arenaImage = useRef(null);
+  const arenaLoaded = useRef(false);
+  const loadedCount = useRef(0);
+  const totalFrames = useRef(0);
+
   // Player (Khotso)
   const player = useRef({
     x: 200,
@@ -56,7 +67,7 @@ const HoKalla = () => {
     jumpForce: -9,
     facingRight: true,
     grounded: false,
-    state: 'idle', // Starts in idle
+    state: 'idle',
     landTimer: 0,
     currentFrame: 0,
     frameTimer: 0,
@@ -69,21 +80,15 @@ const HoKalla = () => {
 
   // Opponent (Thabo)
   const opponent = useRef({
-    x: 750, 
+    x: 600,
     y: 0,
     width: 100,
     height: SPRITE_CONFIG.targetHeight,
-    vx: 0,
-    vy: 0,
-    speed: 0, 
     facingRight: false,
     state: 'idle',
     currentFrame: 0,
     frameTimer: 0,
     grounded: true,
-    attackLock: false,
-    landTimer: 0,
-    landAnimFinished: false,
     health: PLAYER_MAX_HEALTH,
     maxHealth: PLAYER_MAX_HEALTH,
   });
@@ -94,112 +99,199 @@ const HoKalla = () => {
   });
   const groundFrac = 0.65;
 
-  // ⚠️ TEMPORARY TEST IMAGES - Replace these if you know the exact names!
-  // If your 'idle' frame is the first walk frame, this will work perfectly.
-  const khotsoIdleImg = useRef(null);
-  const thaboIdleImg = useRef(null);
-  const arenaImage = useRef(null);
-  const arenaLoaded = useRef(false);
-
-  // ---------- Load sprites (SIMPLIFIED FOR TESTING) ----------
+  // ---------- Load sprites and arena ----------
   useEffect(() => {
-    // Load Arena
     const arenaImg = new Image();
     arenaImg.src = ARENA_PATH;
     arenaImg.onload = () => { arenaImage.current = arenaImg; arenaLoaded.current = true; };
+    arenaImg.onerror = () => console.warn('Arena image not found');
 
-    // 🛠️ FORCE LOAD KHOTSO IDLE
-    khotsoIdleImg.current = new Image();
-    khotsoIdleImg.current.src = `${SPRITE_CONFIG.khotso.basePath}walk1.png`;
-    khotsoIdleImg.current.onload = () => {
-      console.log("Khotso Idle Loaded!");
-      // Set his actual size based on the real image
-      player.current.width = khotsoIdleImg.current.naturalWidth;
-      player.current.height = khotsoIdleImg.current.naturalHeight;
+    const scaleSpriteToTargetHeight = (img) => {
+      if (!img || !img.complete || img.naturalWidth === 0) return { width: 100, height: SPRITE_CONFIG.targetHeight };
+      const ratio = SPRITE_CONFIG.targetHeight / img.naturalHeight;
+      return {
+        width: Math.floor(img.naturalWidth * ratio),
+        height: SPRITE_CONFIG.targetHeight
+      };
     };
 
-    // 🛠️ FORCE LOAD THABO IDLE
-    thaboIdleImg.current = new Image();
-    thaboIdleImg.current.src = `${SPRITE_CONFIG.thabo.basePath}walk1-removebg-preview.png`;
-    thaboIdleImg.current.onload = () => {
-      console.log("Thabo Idle Loaded!");
-      opponent.current.width = thaboIdleImg.current.naturalWidth;
-      opponent.current.height = thaboIdleImg.current.naturalHeight;
+    const loadKhotsoFrames = (prefix, count) => {
+      const arr = [];
+      for (let i = 1; i <= count; i++) {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.khotso.basePath}${prefix}${i}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing ${prefix}${i}.png`);
+        arr.push(img);
+      }
+      return arr;
     };
 
+    const loadThaboFrames = (prefix, count) => {
+      const arr = [];
+      const suffix = SPRITE_CONFIG.thabo.nameSuffix;
+      for (let i = 1; i <= count; i++) {
+        // 🛠️ FIXED: Added 'const img = new Image();' here
+        const img = new Image(); 
+        const src = prefix === 'attack' 
+          ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
+          : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+        
+        img.src = src;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing ${prefix}${i}.png`);
+        arr.push(img);
+      }
+      return arr;
+    };
+
+    const onFrameLoad = () => {
+      loadedCount.current++;
+      
+      if (loadedCount.current >= totalFrames.current) {
+        if (sprites.current.khotso.walk[0]?.complete) {
+          const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
+          player.current.width = dims.width;
+          player.current.height = dims.height;
+        }
+        if (sprites.current.thabo.walk[0]?.complete) {
+          const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
+          opponent.current.width = dims.width;
+          opponent.current.height = dims.height;
+        }
+      }
+    };
+
+    // Load Khotso Frames
+    sprites.current.khotso.attack = loadKhotsoFrames('Kattack', SPRITE_CONFIG.khotso.framesPerState.attack);
+    sprites.current.khotso.walk   = loadKhotsoFrames('walk', SPRITE_CONFIG.khotso.framesPerState.walk);
+    sprites.current.khotso.jump   = loadKhotsoFrames('jump', SPRITE_CONFIG.khotso.framesPerState.jump);
+    sprites.current.khotso.land   = loadKhotsoFrames('land', SPRITE_CONFIG.khotso.framesPerState.land);
+    sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
+
+    // Load Thabo Frames
+    sprites.current.thabo.attack = loadThaboFrames('Tattack', SPRITE_CONFIG.thabo.framesPerState.attack);
+    sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
+    sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
+    sprites.current.thabo.land   = loadThaboFrames('land', SPRITE_CONFIG.thabo.framesPerState.land);
+    sprites.current.thabo.crouch = loadThaboFrames('crouch', SPRITE_CONFIG.thabo.framesPerState.crouch);
+
+    totalFrames.current =
+      Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
+      Object.values(SPRITE_CONFIG.thabo.framesPerState).reduce((a,b)=>a+b,0);
+
+    const checkIdle = setInterval(() => {
+      if (sprites.current.khotso.walk[0]?.complete) {
+        sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
+        if (player.current.width === 100) {
+          const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
+          player.current.width = dims.width;
+          player.current.height = dims.height;
+        }
+      }
+      if (sprites.current.thabo.walk[0]?.complete) {
+        sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
+        if (opponent.current.width === 100) {
+          const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
+          opponent.current.width = dims.width;
+          opponent.current.height = dims.height;
+        }
+      }
+      if (sprites.current.khotso.idle.length && sprites.current.thabo.idle.length) {
+        clearInterval(checkIdle);
+      }
+    }, 50);
   }, []);
 
   // ---------- Touch handlers ----------
-  const handleTouchLeftStart = (e) => { e.preventDefault(); touchMoveLeft.current = true; };
-  const handleTouchLeftEnd = (e) => { e.preventDefault(); touchMoveLeft.current = false; };
+  const handleTouchLeftStart  = (e) => { e.preventDefault(); touchMoveLeft.current = true; };
+  const handleTouchLeftEnd    = (e) => { e.preventDefault(); touchMoveLeft.current = false; };
   const handleTouchRightStart = (e) => { e.preventDefault(); touchMoveRight.current = true; };
-  const handleTouchRightEnd = (e) => { e.preventDefault(); touchMoveRight.current = false; };
-  const handleTouchJumpStart = (e) => { e.preventDefault(); touchJump.current = true; };
-  const handleTouchJumpEnd = (e) => { e.preventDefault(); touchJump.current = false; };
+  const handleTouchRightEnd   = (e) => { e.preventDefault(); touchMoveRight.current = false; };
+  const handleTouchJumpStart  = (e) => { e.preventDefault(); touchJump.current = true; };
+  const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
   const handleTouchAttackStart = (e) => { e.preventDefault(); touchAttack.current = true; };
-  const handleTouchAttackEnd = (e) => { e.preventDefault(); touchAttack.current = false; };
+  const handleTouchAttackEnd   = (e) => { e.preventDefault(); touchAttack.current = false; };
 
   // ---------- Drawing functions ----------
   const drawBackground = (ctx, canvas) => {
     if (arenaLoaded.current && arenaImage.current) {
       const img = arenaImage.current;
       const w = canvas.width, h = canvas.height;
-      ctx.drawImage(img, 0, 0, w, h);
+      const camX = camera.current.x;
+      ctx.drawImage(img, -camX, 0, w, h);
     } else {
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   };
 
-  const drawCharacter = (ctx, char, defaultImg) => {
+  const drawCharacter = (ctx, char, spriteSet) => {
     ctx.save();
-    ctx.translate(char.x, char.y);
+    const screenX = char.x - camera.current.x;
+    ctx.translate(screenX, char.y);
     if (!char.facingRight) ctx.scale(-1, 1);
 
-    // 🛠️ PRIORITY 1: Use the forced idle image if available
-    let imgToDraw = defaultImg.current;
-
-    // 🛠️ PRIORITY 2: If this is a fallback block, replace with default image
-    if (imgToDraw && imgToDraw.complete && imgToDraw.naturalWidth > 0) {
-      const dw = char.width || imgToDraw.naturalWidth;
-      const dh = char.height || imgToDraw.naturalHeight;
-      ctx.drawImage(imgToDraw, -dw / 2, -dh, dw, dh);
-    } else {
-      // If STILL not loaded, keep using the colored block so he never disappears
-      ctx.fillStyle = char === player.current ? '#1565C0' : '#b71c1c';
-      ctx.fillRect(-char.width / 2, -char.height, char.width, char.height);
+    const frames = spriteSet[char.state];
+    if (frames && frames.length > 0) {
+      let idx = 0;
+      if (char.state === 'idle') idx = 0;
+      else idx = Math.floor(char.currentFrame) % frames.length;
+      const img = frames[idx];
+      
+      // Safety Check: If the image failed to load, skip it
+      if (img && img.complete && img.naturalWidth > 0) {
+        const dw = char.width; 
+        const dh = char.height;
+        ctx.drawImage(img, -dw / 2, -dh, dw, dh);
+      } else if (idx > 0) {
+        // If a frame is missing, try to render the previous valid frame
+        const prevImg = frames[idx - 1];
+        if (prevImg && prevImg.complete && prevImg.naturalWidth > 0) {
+          const dw = char.width; 
+          const dh = char.height;
+          ctx.drawImage(prevImg, -dw / 2, -dh, dw, dh);
+        }
+      }
     }
-
     ctx.restore();
   };
 
-  const drawHUD = (ctx, canvas, p, o) => {
+  const drawHUD = (ctx, canvas, p, opponentChar) => {
     const barW = 200, barH = 20;
 
     const kx = 20, ky = 20;
+    ctx.save();
+    ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+    ctx.fillText('Khotso', kx, ky - 5);
+    ctx.restore();
     ctx.fillStyle = '#333'; ctx.fillRect(kx, ky, barW, barH);
     const kFill = barW * (p.health / p.maxHealth);
     const gradK = ctx.createLinearGradient(kx, ky, kx + barW, ky);
     gradK.addColorStop(0, '#4caf50'); gradK.addColorStop(0.6, '#ffeb3b'); gradK.addColorStop(1, '#f44336');
     ctx.fillStyle = gradK; ctx.fillRect(kx, ky, kFill, barH);
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(kx, ky, barW, barH);
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Arial'; ctx.fillText('Khotso', kx, ky - 5);
 
     const tx = canvas.width - barW - 20, ty = 20;
+    ctx.save();
+    ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+    ctx.textAlign = 'right';
+    ctx.fillText('Thabo', canvas.width - 20, ty - 5);
+    ctx.restore();
     ctx.fillStyle = '#333'; ctx.fillRect(tx, ty, barW, barH);
-    const tFill = barW * (o.health / o.maxHealth);
+    const tFill = barW * (opponentChar.health / opponentChar.maxHealth);
     const gradT = ctx.createLinearGradient(tx, ty, tx + barW, ty);
     gradT.addColorStop(0, '#4caf50'); gradT.addColorStop(0.6, '#ffeb3b'); gradT.addColorStop(1, '#f44336');
     ctx.fillStyle = gradT; ctx.fillRect(tx, ty, tFill, barH);
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(tx, ty, barW, barH);
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'right'; ctx.fillText('Thabo', canvas.width - 20, ty - 5);
-    ctx.textAlign = 'start';
   };
 
   const drawTitle = (ctx, canvas) => {
     ctx.save();
-    ctx.font = 'bold 36px Arial'; ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 6;
+    ctx.font = 'bold 36px Arial'; ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 6;
     ctx.textAlign = 'center';
     ctx.fillText('Ho Kalla (Prototype)', canvas.width / 2, 80);
     ctx.restore();
@@ -207,8 +299,8 @@ const HoKalla = () => {
 
   const drawFPS = (ctx, canvas, fps) => {
     ctx.save();
-    ctx.font = '16px monospace'; ctx.fillStyle = '#ffff00';
-    ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 3;
+    ctx.font = '16px monospace'; ctx.fillStyle = '#ff0';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 3;
     ctx.textAlign = 'left';
     ctx.fillText(`FPS: ${fps}`, 10, canvas.height - 10);
     ctx.restore();
@@ -217,9 +309,9 @@ const HoKalla = () => {
   // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
     const p = player.current;
-    const o = opponent.current;
     const groundY = canvas.height * groundFrac;
 
+    // Attack Logic
     const attackPressed = keys.current['j'] || keys.current['J'] || keys.current[' '] || touchAttack.current;
     if (attackPressed && !p.attackLock && p.grounded) {
       p.state = 'attack';
@@ -237,13 +329,17 @@ const HoKalla = () => {
     }
     p.vx = moveDir * p.speed;
 
-    // Player Jump
-    if ((keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] || touchJump.current) && p.grounded && !p.crouching && p.state !== 'attack') {
-      p.vy = p.jumpForce;
-      p.grounded = false;
-      jumpRequested.current = true;
-      p.frameTimer = 0;
-      p.state = 'jump';
+    // Jump
+    if (
+      (keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] || touchJump.current)
+    ) {
+      if (p.grounded && !jumpRequested.current && !p.crouching && p.state !== 'attack') {
+        p.vy = p.jumpForce;
+        p.grounded = false;
+        jumpRequested.current = true;
+        p.frameTimer = 0;
+        p.state = 'jump';
+      }
     } else {
       jumpRequested.current = false;
     }
@@ -252,10 +348,11 @@ const HoKalla = () => {
     p.x += p.vx;
     p.y += p.vy;
 
-    // Boundaries
+    // Stage Boundaries
     const boundaryBuffer = 50;
     const stageLeft = boundaryBuffer;
     const stageRight = canvas.width - boundaryBuffer - p.width;
+
     if (p.x < stageLeft) p.x = stageLeft;
     if (p.x > stageRight) p.x = stageRight;
 
@@ -264,7 +361,7 @@ const HoKalla = () => {
       p.y = groundY;
       p.vy = 0;
       if (!p.grounded) {
-        p.landTimer = 10;
+        p.landTimer = 15;
         p.state = 'land';
         p.frameTimer = 0;
         p.landAnimFinished = false;
@@ -274,41 +371,52 @@ const HoKalla = () => {
       p.grounded = false;
     }
 
-    // Face opponent
-    o.facingRight = o.x < p.x;
+    camera.current.x = 0;
 
-    // Animation Timers
-    if (p.state === 'attack') {
-      p.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
-      if (Math.floor(p.frameTimer) >= SPRITE_CONFIG.khotso.framesPerState.attack) {
+    if (moveDir > 0) p.facingRight = true;
+    else if (moveDir < 0) p.facingRight = false;
+
+    // State switching
+    if (!p.grounded && p.state !== 'attack') {
+      p.state = 'jump';
+    } else if (p.state === 'attack') {
+      const attackTotalFrames = SPRITE_CONFIG.khotso.framesPerState.attack;
+      if (Math.floor(p.frameTimer) >= attackTotalFrames) {
         p.attackLock = false;
-        p.state = 'idle';
+        if (p.grounded) p.state = 'idle';
         p.frameTimer = 0;
       }
-    } else if (p.state === 'walk' || p.state === 'jump') {
-      p.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
     } else {
+      if (p.landTimer > 0) {
+        p.state = 'land';
+        p.landTimer--;
+      } else if (p.crouching) {
+        p.state = 'crouch';
+        p.frameTimer = 0;
+      } else if (moveDir !== 0) {
+        p.state = 'walk';
+      } else {
+        p.state = 'idle';
+      }
+    }
+
+    const cfg = SPRITE_CONFIG;
+    if (p.state === 'walk' || p.state === 'jump' || p.state === 'attack') {
+      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
+    } else if (p.state === 'crouch') {
+      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
+    } else if (p.state === 'land') {
+      if (!p.landAnimFinished) {
+        p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
+        if (Math.floor(p.frameTimer) >= SPRITE_CONFIG.khotso.framesPerState.land) {
+          p.frameTimer = SPRITE_CONFIG.khotso.framesPerState.land - 1;
+          p.landAnimFinished = true;
+        }
+      }
+    } else if (p.state === 'idle') {
       p.frameTimer = 0;
     }
     p.currentFrame = p.frameTimer;
-
-    // Khotso state handling
-    if (p.state !== 'attack') {
-      if (!p.grounded) {
-        p.state = 'jump';
-      } else {
-        if (p.landTimer > 0) {
-          p.state = 'land';
-          p.landTimer--;
-        } else if (p.crouching) {
-          p.state = 'crouch';
-        } else if (moveDir !== 0) {
-          p.state = 'walk';
-        } else {
-          p.state = 'idle';
-        }
-      }
-    }
   };
 
   // ---------- Game loop ----------
@@ -326,19 +434,17 @@ const HoKalla = () => {
     fs.frameCount++;
     if (timestamp - fs.fpsUpdateTime >= 1000) {
       fs.fps = Math.round((fs.frameCount * 1000) / (timestamp - fs.fpsUpdateTime));
-      fs.frameCount = 0;
-      fs.fpsUpdateTime = timestamp;
+      fs.frameCount = 0; fs.fpsUpdateTime = timestamp;
     }
 
     update(canvas, deltaTime);
 
+    opponent.current.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
-    
-    // 🛠️ DRAW CHARACTERS WITH THEIR FORCED IDLE IMAGES
-    drawCharacter(ctx, opponent.current, thaboIdleImg);
-    drawCharacter(ctx, player.current, khotsoIdleImg);
-    
+    drawCharacter(ctx, opponent.current, sprites.current.thabo);
+    drawCharacter(ctx, player.current, sprites.current.khotso);
     drawTitle(ctx, canvas);
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
@@ -352,12 +458,20 @@ const HoKalla = () => {
     if (!canvas || !container) return;
     const { width, height } = container.getBoundingClientRect();
     canvas.width = width; canvas.height = height;
+    const p = player.current;
+    p.y = canvas.height * groundFrac;
+    p.vy = 0; p.grounded = true;
+    p.state = 'idle';
+    p.landTimer = 0;
+    p.landAnimFinished = false;
+    p.frameTimer = 0;
+    p.currentFrame = 0;
+    p.crouching = false;
+    p.attackLock = false;
 
-    const groundY = canvas.height * groundFrac;
-    player.current.y = groundY;
-    player.current.grounded = true;
-    opponent.current.y = groundY;
-    opponent.current.grounded = true;
+    const o = opponent.current;
+    o.y = canvas.height * groundFrac;
+
     camera.current.x = 0;
   };
 
@@ -367,7 +481,7 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'j', 'J'].includes(e.key)) e.preventDefault();
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'j', 'J'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown);
@@ -396,16 +510,25 @@ const HoKalla = () => {
       <canvas ref={canvasRef} className="ho-kalla-canvas" />
       {isTouchDevice && (
         <div className="touch-controls">
-          <button className="touch-btn left-btn" onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd} onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>
+          <button className="touch-btn left-btn"
+            onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd}
+            onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>
             ◀ Move Left
           </button>
-          <button className="touch-btn jump-btn" onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd} onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>
+          <button className="touch-btn jump-btn"
+            onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd}
+            onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>
             ▲ Jump
           </button>
-          <button className="touch-btn atk-btn" onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd} onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd} style={{ background: '#d32f2f', color: 'white', border: '2px solid #fff' }}>
+          <button className="touch-btn atk-btn"
+            onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd}
+            onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd}
+            style={{background: '#d32f2f', color: 'white', border: '2px solid #fff'}}>
             ⚔️ Attack
           </button>
-          <button className="touch-btn right-btn" onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd} onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>
+          <button className="touch-btn right-btn"
+            onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd}
+            onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>
             ▶ Move Right
           </button>
         </div>
