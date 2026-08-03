@@ -46,7 +46,7 @@ const HoKalla = () => {
   const touchAttack = useRef(false);
 
   const jumpRequestedP1 = useRef(false);
-  const jumpRequestedP2 = useRef(false); // For Player 2 (Thabo)
+  const jumpRequestedP2 = useRef(false);
 
   // Sprites for both fighters
   const sprites = useRef({
@@ -82,7 +82,7 @@ const HoKalla = () => {
     maxHealth: PLAYER_MAX_HEALTH,
   });
 
-  // Player 2 / Opponent (Thabo) - 🛠️ Now controllable!
+  // Player 2 (Thabo)
   const opponent = useRef({
     x: 600,
     y: 0,
@@ -90,7 +90,7 @@ const HoKalla = () => {
     height: SPRITE_CONFIG.targetHeight,
     vx: 0,
     vy: 0,
-    speed: 3.5, // 🛠️ Gave Thabo his own speed
+    speed: 3.5,
     jumpForce: -9,
     facingRight: false,
     grounded: false,
@@ -133,7 +133,7 @@ const HoKalla = () => {
         const img = new Image();
         img.src = `${SPRITE_CONFIG.khotso.basePath}${prefix}${i}.png`;
         img.onload = onFrameLoad;
-        img.onerror = () => console.warn(`Missing ${prefix}${i}.png`);
+        img.onerror = () => console.warn(`Missing Khotso ${prefix}${i}.png`);
         arr.push(img);
       }
       return arr;
@@ -150,7 +150,7 @@ const HoKalla = () => {
         
         img.src = src;
         img.onload = onFrameLoad;
-        img.onerror = () => console.warn(`Missing ${prefix}${i}.png`);
+        img.onerror = () => console.warn(`Missing Thabo ${prefix}${i}.png`);
         arr.push(img);
       }
       return arr;
@@ -242,18 +242,35 @@ const HoKalla = () => {
     if (!char.facingRight) ctx.scale(-1, 1);
 
     const frames = spriteSet[char.state];
+    
+    // 🛠️ FIXED: Handle missing attack frames by falling back to idle
+    let img = null;
+    let fallbackImg = null;
+
+    // Try to grab the idle frame just in case
+    if (spriteSet.idle && spriteSet.idle.length > 0) {
+      fallbackImg = spriteSet.idle[0];
+    }
+
     if (frames && frames.length > 0) {
       let idx = 0;
       if (char.state === 'idle') idx = 0;
       else idx = Math.floor(char.currentFrame) % frames.length;
-      const img = frames[idx];
-      
-      if (img && img.complete && img.naturalWidth > 0) {
-        const dw = char.width; 
-        const dh = char.height;
-        ctx.drawImage(img, -dw / 2, -dh, dw, dh);
-      }
+      img = frames[idx];
     }
+
+    // 🛠️ SAFETY: If the frame isn't downloaded yet, use the idle frame instead
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      img = fallbackImg;
+    }
+
+    // Draw it
+    if (img && img.complete && img.naturalWidth > 0) {
+      const dw = char.width; 
+      const dh = char.height;
+      ctx.drawImage(img, -dw / 2, -dh, dw, dh);
+    }
+    
     ctx.restore();
   };
 
@@ -507,7 +524,7 @@ const HoKalla = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
     
-    // Drawing order doesn't matter here since they are side-by-side
+    // Draw both characters
     drawCharacter(ctx, opponent.current, sprites.current.thabo);
     drawCharacter(ctx, player.current, sprites.current.khotso);
     
