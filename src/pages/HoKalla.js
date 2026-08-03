@@ -11,7 +11,7 @@ const SPRITE_CONFIG = {
       jump: 7,
       land: 7,
       crouch: 7,
-      attack: 3, // Khotso has exactly 3 attack frames
+      attack: 3, // Khotso has 3 attack frames
     },
   },
   thabo: {
@@ -22,7 +22,7 @@ const SPRITE_CONFIG = {
       jump: 6,
       land: 3,
       crouch: 4,
-      attack: 5, // Thabo has exactly 5 attack frames
+      attack: 5, // Thabo has 5 attack frames
     },
     nameSuffix: '-removebg-preview', 
   },
@@ -38,11 +38,15 @@ const HoKalla = () => {
   const containerRef = useRef(null);
   const animFrameId = useRef(null);
   const keys = useRef({});
+  
+  // Touch refs for Player 1 (Khotso)
   const touchMoveLeft = useRef(false);
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
   const touchAttack = useRef(false);
-  const jumpRequested = useRef(false);
+
+  const jumpRequestedP1 = useRef(false);
+  const jumpRequestedP2 = useRef(false); // For Player 2 (Thabo)
 
   // Sprites for both fighters
   const sprites = useRef({
@@ -55,7 +59,7 @@ const HoKalla = () => {
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
 
-  // Player (Khotso)
+  // Player 1 (Khotso)
   const player = useRef({
     x: 200,
     y: 0,
@@ -78,17 +82,25 @@ const HoKalla = () => {
     maxHealth: PLAYER_MAX_HEALTH,
   });
 
-  // Opponent (Thabo)
+  // Player 2 / Opponent (Thabo) - 🛠️ Now controllable!
   const opponent = useRef({
     x: 600,
     y: 0,
     width: 100,
     height: SPRITE_CONFIG.targetHeight,
+    vx: 0,
+    vy: 0,
+    speed: 3.5, // 🛠️ Gave Thabo his own speed
+    jumpForce: -9,
     facingRight: false,
+    grounded: false,
     state: 'idle',
+    landTimer: 0,
     currentFrame: 0,
     frameTimer: 0,
-    grounded: true,
+    landAnimFinished: false,
+    crouching: false,
+    attackLock: false,
     health: PLAYER_MAX_HEALTH,
     maxHealth: PLAYER_MAX_HEALTH,
   });
@@ -131,7 +143,6 @@ const HoKalla = () => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
       for (let i = 1; i <= count; i++) {
-        // 🛠️ FIXED: Added 'const img = new Image();' here
         const img = new Image(); 
         const src = prefix === 'attack' 
           ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
@@ -218,8 +229,7 @@ const HoKalla = () => {
     if (arenaLoaded.current && arenaImage.current) {
       const img = arenaImage.current;
       const w = canvas.width, h = canvas.height;
-      const camX = camera.current.x;
-      ctx.drawImage(img, -camX, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
     } else {
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -228,8 +238,7 @@ const HoKalla = () => {
 
   const drawCharacter = (ctx, char, spriteSet) => {
     ctx.save();
-    const screenX = char.x - camera.current.x;
-    ctx.translate(screenX, char.y);
+    ctx.translate(char.x, char.y);
     if (!char.facingRight) ctx.scale(-1, 1);
 
     const frames = spriteSet[char.state];
@@ -239,19 +248,10 @@ const HoKalla = () => {
       else idx = Math.floor(char.currentFrame) % frames.length;
       const img = frames[idx];
       
-      // Safety Check: If the image failed to load, skip it
       if (img && img.complete && img.naturalWidth > 0) {
         const dw = char.width; 
         const dh = char.height;
         ctx.drawImage(img, -dw / 2, -dh, dw, dh);
-      } else if (idx > 0) {
-        // If a frame is missing, try to render the previous valid frame
-        const prevImg = frames[idx - 1];
-        if (prevImg && prevImg.complete && prevImg.naturalWidth > 0) {
-          const dw = char.width; 
-          const dh = char.height;
-          ctx.drawImage(prevImg, -dw / 2, -dh, dw, dh);
-        }
       }
     }
     ctx.restore();
@@ -308,115 +308,180 @@ const HoKalla = () => {
 
   // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
-    const p = player.current;
+    const p1 = player.current;   // Khotso
+    const p2 = opponent.current; // Thabo
     const groundY = canvas.height * groundFrac;
 
-    // Attack Logic
-    const attackPressed = keys.current['j'] || keys.current['J'] || keys.current[' '] || touchAttack.current;
-    if (attackPressed && !p.attackLock && p.grounded) {
-      p.state = 'attack';
-      p.frameTimer = 0;
-      p.attackLock = true;
+    // --- PLAYER 1: KHOTSO CONTROLS ---
+    const attackPressedP1 = keys.current['j'] || keys.current['J'] || touchAttack.current;
+    if (attackPressedP1 && !p1.attackLock && p1.grounded) {
+      p1.state = 'attack';
+      p1.frameTimer = 0;
+      p1.attackLock = true;
     }
 
-    const crouchKey = keys.current['ArrowDown'] || keys.current['s'] || keys.current['S'];
-    p.crouching = crouchKey && p.grounded && p.state !== 'attack';
+    const crouchKeyP1 = keys.current['s'] || keys.current['S'];
+    p1.crouching = crouchKeyP1 && p1.grounded && p1.state !== 'attack';
 
-    let moveDir = 0;
-    if (!p.crouching && p.state !== 'attack') {
-      if (keys.current['ArrowLeft'] || keys.current['a'] || keys.current['A'] || touchMoveLeft.current) moveDir -= 1;
-      if (keys.current['ArrowRight'] || keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDir += 1;
+    let moveDirP1 = 0;
+    if (!p1.crouching && p1.state !== 'attack') {
+      if (keys.current['a'] || keys.current['A'] || touchMoveLeft.current) moveDirP1 -= 1;
+      if (keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDirP1 += 1;
     }
-    p.vx = moveDir * p.speed;
+    p1.vx = moveDirP1 * p1.speed;
 
-    // Jump
-    if (
-      (keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] || touchJump.current)
-    ) {
-      if (p.grounded && !jumpRequested.current && !p.crouching && p.state !== 'attack') {
-        p.vy = p.jumpForce;
-        p.grounded = false;
-        jumpRequested.current = true;
-        p.frameTimer = 0;
-        p.state = 'jump';
-      }
+    if ((keys.current['w'] || keys.current['W'] || touchJump.current) && p1.grounded && !p1.crouching && p1.state !== 'attack') {
+      p1.vy = p1.jumpForce;
+      p1.grounded = false;
+      jumpRequestedP1.current = true;
+      p1.frameTimer = 0;
+      p1.state = 'jump';
     } else {
-      jumpRequested.current = false;
+      jumpRequestedP1.current = false;
     }
 
-    p.vy += 0.6;
-    p.x += p.vx;
-    p.y += p.vy;
+    // --- PLAYER 2: THABO CONTROLS ---
+    const attackPressedP2 = keys.current[' '] || keys.current['Space']; 
+    if (attackPressedP2 && !p2.attackLock && p2.grounded) {
+      p2.state = 'attack';
+      p2.frameTimer = 0;
+      p2.attackLock = true;
+    }
 
-    // Stage Boundaries
-    const boundaryBuffer = 50;
-    const stageLeft = boundaryBuffer;
-    const stageRight = canvas.width - boundaryBuffer - p.width;
+    const crouchKeyP2 = keys.current['ArrowDown'];
+    p2.crouching = crouchKeyP2 && p2.grounded && p2.state !== 'attack';
 
-    if (p.x < stageLeft) p.x = stageLeft;
-    if (p.x > stageRight) p.x = stageRight;
+    let moveDirP2 = 0;
+    if (!p2.crouching && p2.state !== 'attack') {
+      if (keys.current['ArrowLeft']) moveDirP2 -= 1;
+      if (keys.current['ArrowRight']) moveDirP2 += 1;
+    }
+    p2.vx = moveDirP2 * p2.speed;
 
-    // Floor collision
-    if (p.y > groundY) {
-      p.y = groundY;
-      p.vy = 0;
-      if (!p.grounded) {
-        p.landTimer = 15;
-        p.state = 'land';
-        p.frameTimer = 0;
-        p.landAnimFinished = false;
-      }
-      p.grounded = true;
+    if ((keys.current['ArrowUp']) && p2.grounded && !p2.crouching && p2.state !== 'attack') {
+      p2.vy = p2.jumpForce;
+      p2.grounded = false;
+      jumpRequestedP2.current = true;
+      p2.frameTimer = 0;
+      p2.state = 'jump';
     } else {
-      p.grounded = false;
+      jumpRequestedP2.current = false;
     }
+
+    // --- UNIVERSAL PHYSICS LOOP ---
+    const applyPhysics = (char) => {
+      char.vy += 0.6;
+      char.x += char.vx;
+      char.y += char.vy;
+
+      const boundaryBuffer = 50;
+      const stageLeft = boundaryBuffer;
+      const stageRight = canvas.width - boundaryBuffer - char.width;
+
+      if (char.x < stageLeft) char.x = stageLeft;
+      if (char.x > stageRight) char.x = stageRight;
+
+      if (char.y > groundY) {
+        char.y = groundY;
+        char.vy = 0;
+        if (!char.grounded) {
+          char.landTimer = 15;
+          char.state = 'land';
+          char.frameTimer = 0;
+          char.landAnimFinished = false;
+        }
+        char.grounded = true;
+      } else {
+        char.grounded = false;
+      }
+    };
+
+    applyPhysics(p1);
+    applyPhysics(p2);
 
     camera.current.x = 0;
 
-    if (moveDir > 0) p.facingRight = true;
-    else if (moveDir < 0) p.facingRight = false;
+    // --- FACING LOGIC ---
+    if (moveDirP1 > 0) p1.facingRight = true;
+    else if (moveDirP1 < 0) p1.facingRight = false;
 
-    // State switching
-    if (!p.grounded && p.state !== 'attack') {
-      p.state = 'jump';
-    } else if (p.state === 'attack') {
+    if (moveDirP2 > 0) p2.facingRight = true;
+    else if (moveDirP2 < 0) p2.facingRight = false;
+
+    // Force them to face each other when idle
+    if (p1.state === 'idle') p1.facingRight = p1.x < p2.x;
+    if (p2.state === 'idle') p2.facingRight = p2.x < p1.x;
+
+    // --- KHOTSO STATE SWITCHING ---
+    if (!p1.grounded && p1.state !== 'attack') {
+      p1.state = 'jump';
+    } else if (p1.state === 'attack') {
       const attackTotalFrames = SPRITE_CONFIG.khotso.framesPerState.attack;
-      if (Math.floor(p.frameTimer) >= attackTotalFrames) {
-        p.attackLock = false;
-        if (p.grounded) p.state = 'idle';
-        p.frameTimer = 0;
+      if (Math.floor(p1.frameTimer) >= attackTotalFrames) {
+        p1.attackLock = false;
+        if (p1.grounded) p1.state = 'idle';
+        p1.frameTimer = 0;
       }
     } else {
-      if (p.landTimer > 0) {
-        p.state = 'land';
-        p.landTimer--;
-      } else if (p.crouching) {
-        p.state = 'crouch';
-        p.frameTimer = 0;
-      } else if (moveDir !== 0) {
-        p.state = 'walk';
+      if (p1.landTimer > 0) {
+        p1.state = 'land';
+        p1.landTimer--;
+      } else if (p1.crouching) {
+        p1.state = 'crouch';
+        p1.frameTimer = 0;
+      } else if (moveDirP1 !== 0) {
+        p1.state = 'walk';
       } else {
-        p.state = 'idle';
+        p1.state = 'idle';
       }
     }
 
-    const cfg = SPRITE_CONFIG;
-    if (p.state === 'walk' || p.state === 'jump' || p.state === 'attack') {
-      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-    } else if (p.state === 'crouch') {
-      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-    } else if (p.state === 'land') {
-      if (!p.landAnimFinished) {
-        p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-        if (Math.floor(p.frameTimer) >= SPRITE_CONFIG.khotso.framesPerState.land) {
-          p.frameTimer = SPRITE_CONFIG.khotso.framesPerState.land - 1;
-          p.landAnimFinished = true;
-        }
+    // --- THABO STATE SWITCHING ---
+    if (!p2.grounded && p2.state !== 'attack') {
+      p2.state = 'jump';
+    } else if (p2.state === 'attack') {
+      const attackTotalFrames = SPRITE_CONFIG.thabo.framesPerState.attack;
+      if (Math.floor(p2.frameTimer) >= attackTotalFrames) {
+        p2.attackLock = false;
+        if (p2.grounded) p2.state = 'idle';
+        p2.frameTimer = 0;
       }
-    } else if (p.state === 'idle') {
-      p.frameTimer = 0;
+    } else {
+      if (p2.landTimer > 0) {
+        p2.state = 'land';
+        p2.landTimer--;
+      } else if (p2.crouching) {
+        p2.state = 'crouch';
+        p2.frameTimer = 0;
+      } else if (moveDirP2 !== 0) {
+        p2.state = 'walk';
+      } else {
+        p2.state = 'idle';
+      }
     }
-    p.currentFrame = p.frameTimer;
+
+    // --- ANIMATION TIMERS ---
+    const advanceTimer = (char, maxFrames) => {
+      if (char.state === 'walk' || char.state === 'jump' || char.state === 'attack') {
+        char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+      } else if (char.state === 'crouch') {
+        char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+      } else if (char.state === 'land') {
+        if (!char.landAnimFinished) {
+          char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+          if (Math.floor(char.frameTimer) >= maxFrames) {
+            char.frameTimer = maxFrames - 1;
+            char.landAnimFinished = true;
+          }
+        }
+      } else if (char.state === 'idle') {
+        char.frameTimer = 0;
+      }
+      char.currentFrame = char.frameTimer;
+    };
+
+    advanceTimer(p1, SPRITE_CONFIG.khotso.framesPerState.land);
+    advanceTimer(p2, SPRITE_CONFIG.thabo.framesPerState.land);
   };
 
   // ---------- Game loop ----------
@@ -439,12 +504,13 @@ const HoKalla = () => {
 
     update(canvas, deltaTime);
 
-    opponent.current.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
+    
+    // Drawing order doesn't matter here since they are side-by-side
     drawCharacter(ctx, opponent.current, sprites.current.thabo);
     drawCharacter(ctx, player.current, sprites.current.khotso);
+    
     drawTitle(ctx, canvas);
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
@@ -471,6 +537,7 @@ const HoKalla = () => {
 
     const o = opponent.current;
     o.y = canvas.height * groundFrac;
+    o.vy = 0; o.grounded = true;
 
     camera.current.x = 0;
   };
@@ -481,7 +548,8 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'j', 'J'].includes(e.key)) e.preventDefault();
+      // Prevent default scrolling for all game keys
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', 'j', 'J'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown);
@@ -513,23 +581,23 @@ const HoKalla = () => {
           <button className="touch-btn left-btn"
             onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd}
             onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>
-            ◀ Move Left
+            ◀ P1 Left
           </button>
           <button className="touch-btn jump-btn"
             onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd}
             onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>
-            ▲ Jump
+            ▲ P1 Jump
           </button>
           <button className="touch-btn atk-btn"
             onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd}
             onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd}
             style={{background: '#d32f2f', color: 'white', border: '2px solid #fff'}}>
-            ⚔️ Attack
+            ⚔️ P1 Atk
           </button>
           <button className="touch-btn right-btn"
             onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd}
             onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>
-            ▶ Move Right
+            ▶ P1 Right
           </button>
         </div>
       )}
