@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './HoKalla.css';
 
+// 🛠️ IMPORTS MUST BE AT THE VERY TOP!
+import tAttack1 from './1.png';
+import tAttack2 from './2.png';
+import tAttack3 from './3.png';
+import tAttack4 from './4.png';
+import tAttack5 from './5.png';
+
 // ---- SPRITE CONFIGURATION ----
 const SPRITE_CONFIG = {
   khotso: {
@@ -32,13 +39,6 @@ const SPRITE_CONFIG = {
 
 const ARENA_PATH = '/images/arenas/arena1.png';
 const PLAYER_MAX_HEALTH = 100;
-
-// 🛠️ IMPORT ATTACK IMAGES DIRECTLY (must be in src folder!)
-import tAttack1 from './1.png';
-import tAttack2 from './2.png';
-import tAttack3 from './3.png';
-import tAttack4 from './4.png';
-import tAttack5 from './5.png';
 
 const HoKalla = () => {
   const canvasRef = useRef(null);
@@ -146,13 +146,18 @@ const HoKalla = () => {
 
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
-      // 🛠️ REPLACED: THESE ARE NOW IMPORTED FROM THE TOP OF THE FILE
+      // 🛠️ THESE ARE NOW IMPORTED FROM THE TOP OF THE FILE
       const importedImages = [tAttack1, tAttack2, tAttack3, tAttack4, tAttack5];
       
       for (let i = 0; i < count; i++) {
         const img = importedImages[i];
-        img.onload = onFrameLoad;
-        img.onerror = () => console.warn(`Failed to load imported attack frame ${i+1}`);
+        // Force them to fire the loading count
+        if (img.complete) {
+            onFrameLoad();
+        } else {
+            img.onload = onFrameLoad;
+            img.onerror = () => console.warn(`Failed to load imported attack frame ${i+1}`);
+        }
         arr.push(img);
       }
       return arr;
