@@ -146,6 +146,7 @@ const HoKalla = () => {
           ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
           : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
         
+        console.log(`Loading Thabo Attack Frame: ${src}`); // 🛠️ Check the console!
         img.src = src;
         img.onload = onFrameLoad;
         img.onerror = () => console.warn(`Missing Thabo ${prefix}${i}.png`);
@@ -258,12 +259,11 @@ const HoKalla = () => {
     }
 
     if (img && img.complete && img.naturalWidth > 0) {
-      // 🛠️ FIX: Allow attack frames to draw at their own unique size
       let dw = char.width; 
       let dh = char.height;
 
-      // If it's an attack frame, use the image's own natural size to prevent distortion
-      if (char.state === 'attack' && char.attackLock) {
+      // 🛠️ FIX: If the character is in the attack state, use the image's natural size!
+      if (char.state === 'attack') {
         dw = img.naturalWidth;
         dh = img.naturalHeight;
       }
