@@ -12,8 +12,8 @@ const SPRITE_CONFIG = {
       land: 7,
       crouch: 7,
       attack: 3,
-      block: 5,    // ← NEW
-      hit: 6,      // ← NEW
+      block: 5,    
+      hit: 6,      
     },
   },
   thabo: {
@@ -25,8 +25,8 @@ const SPRITE_CONFIG = {
       land: 3,
       crouch: 4,
       attack: 5,
-      block: 7,    // ← NEW
-      hit: 5,      // ← NEW
+      block: 7,    
+      hit: 5,      
     },
     nameSuffix: '-removebg-preview',
   },
@@ -54,7 +54,7 @@ const HoKalla = () => {
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
   const touchAttack = useRef(false);
-  const touchBlock = useRef(false);  // ← NEW
+  const touchBlock = useRef(false);  
 
   const sprites = useRef({
     khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [], block: [], hit: [] },
@@ -146,26 +146,59 @@ const HoKalla = () => {
       };
     };
 
-    // 🛠️ FIXED: Removed all dashes to match your actual filenames
-    const loadKhotsoFrames = (prefix, count, subfolder = '') => {
+    // -------------------- KHOTSO LOADERS --------------------
+    const loadKhotsoAttackFrames = () => {
       const arr = [];
-      const folder = subfolder ? `${subfolder}/` : '';
-      for (let i = 1; i <= count; i++) {
+      for (let i = 1; i <= SPRITE_CONFIG.khotso.framesPerState.attack; i++) {
         const img = new Image();
-        // Specifically remove dashes for the block and hit folders
-        let filename = prefix;
-        if (subfolder === 'pain') filename = `hit${i}`;       // hit1, hit2...
-        else if (subfolder === 'defense') filename = `block${i}`; // block1, block2...
-        else filename = `${prefix}${i}`;
-        
-        img.src = `${SPRITE_CONFIG.khotso.basePath}${folder}${filename}.png`;
+        img.src = `${SPRITE_CONFIG.khotso.basePath}Kattack${i}.png`;
         img.onload = onFrameLoad;
-        img.onerror = () => console.warn(`Missing Khotso ${folder}${filename}.png`);
+        img.onerror = () => console.warn(`Missing Khotso Kattack${i}.png`);
         arr.push(img);
       }
       return arr;
     };
 
+    const loadKhotsoFrames = (prefix, count) => {
+      const arr = [];
+      for (let i = 1; i <= count; i++) {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.khotso.basePath}${prefix}${i}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Khotso ${prefix}${i}.png`);
+        arr.push(img);
+      }
+      return arr;
+    };
+
+    // 🛠️ FIXED: Load exact filenames from your folder screenshot
+    const loadKhotsoDefenseFrames = () => {
+      const filenames = ['blockhold', 'guardraise', 'highblock', 'lowblock', 'midblock'];
+      const arr = [];
+      filenames.forEach(name => {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.khotso.basePath}defense/${name}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Khotso defense/${name}.png`);
+        arr.push(img);
+      });
+      return arr;
+    };
+
+    const loadKhotsoPainFrames = () => {
+      const filenames = ['heavyimpact', 'hitstart', 'knockedback', 'offbalance', 'regainingposture', 'staggerback'];
+      const arr = [];
+      filenames.forEach(name => {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.khotso.basePath}pain/${name}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Khotso pain/${name}.png`);
+        arr.push(img);
+      });
+      return arr;
+    };
+
+    // -------------------- THABO LOADERS --------------------
     const loadThaboAttackFrames = () => {
       const arr = [];
       for (let i = 1; i <= SPRITE_CONFIG.thabo.framesPerState.attack; i++) {
@@ -178,22 +211,42 @@ const HoKalla = () => {
       return arr;
     };
 
-    const loadThaboFrames = (prefix, count, subfolder = '') => {
+    const loadThaboFrames = (prefix, count) => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
-      const folder = subfolder ? `${subfolder}/` : '';
       for (let i = 1; i <= count; i++) {
         const img = new Image();
-        let filename = prefix;
-        if (subfolder === 'pain') filename = `hit${i}`;       // hit1, hit2...
-        else if (subfolder === 'defense') filename = `block${i}`; // block1, block2...
-        else filename = `${prefix}${i}`;
-        
-        img.src = `${SPRITE_CONFIG.thabo.basePath}${folder}${filename}${suffix}.png`;
+        img.src = `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
         img.onload = onFrameLoad;
-        img.onerror = () => console.warn(`Missing Thabo ${folder}${filename}.png`);
+        img.onerror = () => console.warn(`Missing Thabo ${prefix}${i}.png`);
         arr.push(img);
       }
+      return arr;
+    };
+
+    const loadThaboDefenseFrames = () => {
+      const filenames = ['counterfollowthrough', 'guardraise', 'heavyblockimpact', 'highblock', 'lightblockimpact', 'recoverfromblock', 'returntoguard'];
+      const arr = [];
+      filenames.forEach(name => {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.thabo.basePath}defense/${name}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Thabo defense/${name}.png`);
+        arr.push(img);
+      });
+      return arr;
+    };
+
+    const loadThaboPainFrames = () => {
+      const filenames = ['heavyhit', 'hitstart', 'knockedback', 'lowhit', 'staggerback'];
+      const arr = [];
+      filenames.forEach(name => {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.thabo.basePath}pain/${name}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Thabo pain/${name}.png`);
+        arr.push(img);
+      });
       return arr;
     };
 
@@ -213,32 +266,30 @@ const HoKalla = () => {
       }
     };
 
-    // Existing movement frames (unchanged)
-    sprites.current.khotso.attack = loadKhotsoFrames('Kattack', SPRITE_CONFIG.khotso.framesPerState.attack);
-    sprites.current.khotso.walk   = loadKhotsoFrames('walk', SPRITE_CONFIG.khotso.framesPerState.walk);
-    sprites.current.khotso.jump   = loadKhotsoFrames('jump', SPRITE_CONFIG.khotso.framesPerState.jump);
-    sprites.current.khotso.land   = loadKhotsoFrames('land', SPRITE_CONFIG.khotso.framesPerState.land);
-    sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
+    // --- LOAD ALL SPRITES ---
+    // Khotso
+    sprites.current.khotso.attack = loadKhotsoAttackFrames();
+    sprites.current.khotso.walk   = loadKhotsoFrames('walk', 5);
+    sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
+    sprites.current.khotso.land   = loadKhotsoFrames('land', 7);
+    sprites.current.khotso.crouch = loadKhotsoFrames('crouch', 7);
+    sprites.current.khotso.block  = loadKhotsoDefenseFrames();
+    sprites.current.khotso.hit    = loadKhotsoPainFrames();
 
-    // ★ NEW: Khotso block & hit frames from subfolders
-    sprites.current.khotso.block  = loadKhotsoFrames('', SPRITE_CONFIG.khotso.framesPerState.block, 'defense');
-    sprites.current.khotso.hit    = loadKhotsoFrames('', SPRITE_CONFIG.khotso.framesPerState.hit, 'pain');
-
-    // Existing Thabo frames (unchanged)
+    // Thabo
     sprites.current.thabo.attack = loadThaboAttackFrames();
-    sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
-    sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
-    sprites.current.thabo.land   = loadThaboFrames('land', SPRITE_CONFIG.thabo.framesPerState.land);
-    sprites.current.thabo.crouch = loadThaboFrames('crouch', SPRITE_CONFIG.thabo.framesPerState.crouch);
-
-    // ★ NEW: Thabo block & hit frames from subfolders
-    sprites.current.thabo.block  = loadThaboFrames('', SPRITE_CONFIG.thabo.framesPerState.block, 'defense');
-    sprites.current.thabo.hit    = loadThaboFrames('', SPRITE_CONFIG.thabo.framesPerState.hit, 'pain');
+    sprites.current.thabo.walk   = loadThaboFrames('walk', 3);
+    sprites.current.thabo.jump   = loadThaboFrames('jump', 6);
+    sprites.current.thabo.land   = loadThaboFrames('land', 3);
+    sprites.current.thabo.crouch = loadThaboFrames('crouch', 4);
+    sprites.current.thabo.block  = loadThaboDefenseFrames();
+    sprites.current.thabo.hit    = loadThaboPainFrames();
 
     totalFrames.current =
       Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
       Object.values(SPRITE_CONFIG.thabo.framesPerState).reduce((a,b)=>a+b,0);
 
+    // Fallback idle checker
     const checkIdle = setInterval(() => {
       if (sprites.current.khotso.walk[0]?.complete) {
         sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
@@ -282,7 +333,6 @@ const HoKalla = () => {
     if (distance < ATTACK_RANGE) {
       attacker.hitActive = false;
       
-      // Check if defender is blocking toward the attacker
       const isBlocked = defender.blocking && 
         ((attacker.facingRight && defender.x > attacker.x) || 
          (!attacker.facingRight && defender.x < attacker.x));
@@ -290,7 +340,6 @@ const HoKalla = () => {
       const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
       defender.health = Math.max(0, defender.health - damage);
       
-      // Hit stun (only if not blocked)
       if (!isBlocked) {
         defender.hitStunTimer = HIT_STUN_DURATION;
         defender.state = 'hit';
@@ -309,7 +358,6 @@ const HoKalla = () => {
     const p1 = player.current;
     const p2 = opponent.current;
 
-    // Don't interrupt hit stun or ongoing attack
     if (p2.hitStunTimer > 0 || p2.state === 'attack' || p2.state === 'land') return;
 
     aiDecisionTimer.current -= deltaTime;
@@ -336,7 +384,6 @@ const HoKalla = () => {
       aiDecisionTimer.current = 400 + Math.random() * 400;
     }
 
-    // Execute AI action
     if (p2.grounded && p2.state !== 'attack' && p2.state !== 'land' && p2.hitStunTimer <= 0) {
       const moveDir = p1.x < p2.x ? -1 : 1;
 
@@ -378,7 +425,6 @@ const HoKalla = () => {
       }
     }
 
-    // Always face player
     p2.facingRight = p2.x < p1.x;
   };
 
