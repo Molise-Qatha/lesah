@@ -33,6 +33,13 @@ const SPRITE_CONFIG = {
 const ARENA_PATH = '/images/arenas/arena1.png';
 const PLAYER_MAX_HEALTH = 100;
 
+// 🛠️ IMPORT ATTACK IMAGES DIRECTLY (must be in src folder!)
+import tAttack1 from './1.png';
+import tAttack2 from './2.png';
+import tAttack3 from './3.png';
+import tAttack4 from './4.png';
+import tAttack5 from './5.png';
+
 const HoKalla = () => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -139,17 +146,13 @@ const HoKalla = () => {
 
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
-      // 🛠️ DO NOT ADD SUFFIX FOR ATTACK FRAMES
-      for (let i = 1; i <= count; i++) {
-        const img = new Image(); 
-        const src = prefix === 'attack' 
-          ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
-          : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${SPRITE_CONFIG.thabo.nameSuffix}.png`;
-        
-        console.log(`Loading: ${src}`); // Check console!
-        img.src = src;
+      // 🛠️ REPLACED: THESE ARE NOW IMPORTED FROM THE TOP OF THE FILE
+      const importedImages = [tAttack1, tAttack2, tAttack3, tAttack4, tAttack5];
+      
+      for (let i = 0; i < count; i++) {
+        const img = importedImages[i];
         img.onload = onFrameLoad;
-        img.onerror = () => console.warn(`Missing Thabo ${prefix}${i}.png`);
+        img.onerror = () => console.warn(`Failed to load imported attack frame ${i+1}`);
         arr.push(img);
       }
       return arr;
@@ -254,12 +257,10 @@ const HoKalla = () => {
       img = frames[idx];
     }
 
-    // 🛠️ FIX: Attack frames are much larger, calculate their real size!
     if (img && img.complete && img.naturalWidth > 0) {
       let dw, dh;
       
       if (char.state === 'attack') {
-        // Use the image's perfect natural size
         dw = img.naturalWidth;
         dh = img.naturalHeight;
       } else {
@@ -268,9 +269,8 @@ const HoKalla = () => {
       }
 
       ctx.drawImage(img, -dw / 2, -dh, dw, dh);
-    } else if (char.state === 'attack') {
-      // 🛠️ NEW: If attack frames fail to load, draw a bright RED block so we know for sure it's the file!
-      ctx.fillStyle = '#ff0000'; 
+    } else {
+      ctx.fillStyle = char === player.current ? '#1565C0' : '#b71c1c';
       ctx.fillRect(-25, -50, 50, 80);
     }
     
