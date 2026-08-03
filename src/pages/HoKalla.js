@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './HoKalla.css';
 
-// 🛠️ IMPORTS MUST BE AT THE VERY TOP!
+// ---- SPRITE CONFIGURATION ----
+// 🛠️ ATTACK SPRITES LOADED DIRECTLY FROM YOUR SRC/PAGES FOLDER
 import tAttack1 from './1.png';
 import tAttack2 from './2.png';
 import tAttack3 from './3.png';
 import tAttack4 from './4.png';
 import tAttack5 from './5.png';
 
-// ---- SPRITE CONFIGURATION ----
 const SPRITE_CONFIG = {
   khotso: {
     basePath: '/images/characters/khotso/',
@@ -144,20 +144,30 @@ const HoKalla = () => {
       return arr;
     };
 
+    // 🛠️ NEW: Loads specifically from the imported variables at the top
+    const loadThaboAttackFrames = () => {
+      const arr = [tAttack1, tAttack2, tAttack3, tAttack4, tAttack5];
+      arr.forEach(img => {
+        // Mark them as "loaded" so the game knows they are ready
+        if (img.complete) {
+          onFrameLoad();
+        } else {
+          img.onload = onFrameLoad;
+          img.onerror = () => console.warn(`Failed to load an imported attack frame`);
+        }
+      });
+      return arr;
+    };
+
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
-      // 🛠️ THESE ARE NOW IMPORTED FROM THE TOP OF THE FILE
-      const importedImages = [tAttack1, tAttack2, tAttack3, tAttack4, tAttack5];
-      
-      for (let i = 0; i < count; i++) {
-        const img = importedImages[i];
-        // Force them to fire the loading count
-        if (img.complete) {
-            onFrameLoad();
-        } else {
-            img.onload = onFrameLoad;
-            img.onerror = () => console.warn(`Failed to load imported attack frame ${i+1}`);
-        }
+      const suffix = SPRITE_CONFIG.thabo.nameSuffix;
+      for (let i = 1; i <= count; i++) {
+        const img = new Image(); 
+        const src = `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+        img.src = src;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Thabo ${prefix}${i}.png`);
         arr.push(img);
       }
       return arr;
@@ -166,6 +176,7 @@ const HoKalla = () => {
     const onFrameLoad = () => {
       loadedCount.current++;
       
+      // Once everything is loaded, set the correct sizes
       if (loadedCount.current >= totalFrames.current) {
         if (sprites.current.khotso.walk[0]?.complete) {
           const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
@@ -180,13 +191,15 @@ const HoKalla = () => {
       }
     };
 
+    // Load Khotso Frames
     sprites.current.khotso.attack = loadKhotsoFrames('Kattack', SPRITE_CONFIG.khotso.framesPerState.attack);
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', SPRITE_CONFIG.khotso.framesPerState.walk);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', SPRITE_CONFIG.khotso.framesPerState.jump);
     sprites.current.khotso.land   = loadKhotsoFrames('land', SPRITE_CONFIG.khotso.framesPerState.land);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
 
-    sprites.current.thabo.attack = loadThaboFrames('Tattack', SPRITE_CONFIG.thabo.framesPerState.attack);
+    // Load Thabo Frames
+    sprites.current.thabo.attack = loadThaboAttackFrames(); // 🛠️ Uses the imports
     sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
     sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
     sprites.current.thabo.land   = loadThaboFrames('land', SPRITE_CONFIG.thabo.framesPerState.land);
@@ -266,6 +279,7 @@ const HoKalla = () => {
       let dw, dh;
       
       if (char.state === 'attack') {
+        // Draw attack frames at their own natural size
         dw = img.naturalWidth;
         dh = img.naturalHeight;
       } else {
@@ -275,6 +289,7 @@ const HoKalla = () => {
 
       ctx.drawImage(img, -dw / 2, -dh, dw, dh);
     } else {
+      // Fallback block if not loaded yet
       ctx.fillStyle = char === player.current ? '#1565C0' : '#b71c1c';
       ctx.fillRect(-25, -50, 50, 80);
     }
