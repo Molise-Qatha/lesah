@@ -2,13 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import './HoKalla.css';
 
 // ---- SPRITE CONFIGURATION ----
-// 🛠️ ATTACK SPRITES LOADED DIRECTLY FROM YOUR SRC/PAGES FOLDER
-import tAttack1 from './1.png';
-import tAttack2 from './2.png';
-import tAttack3 from './3.png';
-import tAttack4 from './4.png';
-import tAttack5 from './5.png';
-
 const SPRITE_CONFIG = {
   khotso: {
     basePath: '/images/characters/khotso/',
@@ -31,7 +24,7 @@ const SPRITE_CONFIG = {
       crouch: 4,
       attack: 5,
     },
-    nameSuffix: '-removebg-preview', 
+    nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
   targetHeight: 180, 
@@ -144,18 +137,16 @@ const HoKalla = () => {
       return arr;
     };
 
-    // 🛠️ NEW: Loads specifically from the imported variables at the top
+    // 🛠️ FIX: Loads 1.png, 2.png, 3.png... directly from public folder
     const loadThaboAttackFrames = () => {
-      const arr = [tAttack1, tAttack2, tAttack3, tAttack4, tAttack5];
-      arr.forEach(img => {
-        // Mark them as "loaded" so the game knows they are ready
-        if (img.complete) {
-          onFrameLoad();
-        } else {
-          img.onload = onFrameLoad;
-          img.onerror = () => console.warn(`Failed to load an imported attack frame`);
-        }
-      });
+      const arr = [];
+      for (let i = 1; i <= SPRITE_CONFIG.thabo.framesPerState.attack; i++) {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.thabo.basePath}${i}.png`; 
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Thabo Attack ${i}.png`);
+        arr.push(img);
+      }
       return arr;
     };
 
@@ -176,7 +167,6 @@ const HoKalla = () => {
     const onFrameLoad = () => {
       loadedCount.current++;
       
-      // Once everything is loaded, set the correct sizes
       if (loadedCount.current >= totalFrames.current) {
         if (sprites.current.khotso.walk[0]?.complete) {
           const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
@@ -199,7 +189,7 @@ const HoKalla = () => {
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
 
     // Load Thabo Frames
-    sprites.current.thabo.attack = loadThaboAttackFrames(); // 🛠️ Uses the imports
+    sprites.current.thabo.attack = loadThaboAttackFrames();
     sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
     sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
     sprites.current.thabo.land   = loadThaboFrames('land', SPRITE_CONFIG.thabo.framesPerState.land);
