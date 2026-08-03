@@ -3,21 +3,31 @@ import './HoKalla.css';
 
 // ---- SPRITE CONFIGURATION ----
 const SPRITE_CONFIG = {
-  basePath: '/images/characters/khotso/',
-  framesPerState: {
-    idle: 1,     // uses walk1.png
-    walk: 5,     // walk1.png ... walk5.png
-    jump: 7,     // jump1.png ... jump7.png
-    land: 7,     // land1.png ... land7.png
-    crouch: 7,   // crouch1.png ... crouch7.png
+  khotso: {
+    basePath: '/images/characters/khotso/',
+    framesPerState: {
+      idle: 1,
+      walk: 5,
+      jump: 7,
+      land: 7,
+      crouch: 7,
+    },
   },
-  animationSpeed: 10, // fps
+  thabo: {
+    basePath: '/images/characters/thabo/',
+    framesPerState: {
+      idle: 1,
+      walk: 3,
+      jump: 6,
+      land: 3,
+      crouch: 4,
+    },
+    nameSuffix: '-removebg-preview',
+  },
+  animationSpeed: 10,
 };
 
-// ---- ARENA BACKGROUND IMAGE ----
 const ARENA_PATH = '/images/arenas/arena1.png';
-
-// ---- HEALTH CONFIG ----
 const PLAYER_MAX_HEALTH = 100;
 
 const HoKalla = () => {
@@ -30,20 +40,18 @@ const HoKalla = () => {
   const touchJump = useRef(false);
   const jumpRequested = useRef(false);
 
+  // Sprites for both fighters
   const sprites = useRef({
-    idle: [],
-    walk: [],
-    jump: [],
-    land: [],
-    crouch: [],
+    khotso: { idle: [], walk: [], jump: [], land: [], crouch: [] },
+    thabo:  { idle: [], walk: [], jump: [], land: [], crouch: [] },
   });
 
   const arenaImage = useRef(null);
   const arenaLoaded = useRef(false);
-
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
 
+  // Player (Khotso)
   const player = useRef({
     x: 200,
     y: 0,
@@ -65,6 +73,21 @@ const HoKalla = () => {
     maxHealth: PLAYER_MAX_HEALTH,
   });
 
+  // Opponent (Thabo) – stands still for now
+  const opponent = useRef({
+    x: 600,
+    y: 0,
+    width: 150,
+    height: 200,
+    facingRight: false,   // faces left toward Khotso
+    state: 'idle',
+    currentFrame: 0,
+    frameTimer: 0,
+    grounded: true,
+    health: PLAYER_MAX_HEALTH,
+    maxHealth: PLAYER_MAX_HEALTH,
+  });
+
   const camera = useRef({ x: 0, y: 0 });
   const fpsState = useRef({
     lastTime: 0, fps: 0, frameCount: 0, fpsUpdateTime: 0,
@@ -75,51 +98,85 @@ const HoKalla = () => {
   useEffect(() => {
     const arenaImg = new Image();
     arenaImg.src = ARENA_PATH;
-    arenaImg.onload = () => {
-      arenaImage.current = arenaImg;
-      arenaLoaded.current = true;
-    };
-    arenaImg.onerror = () => console.warn('Arena image not found – using fallback');
+    arenaImg.onload = () => { arenaImage.current = arenaImg; arenaLoaded.current = true; };
+    arenaImg.onerror = () => console.warn('Arena image not found');
 
-    const loadFrames = (prefix, count) => {
+    // Load Khotso frames (simple names)
+    const loadKhotsoFrames = (prefix, count) => {
       const arr = [];
       for (let i = 1; i <= count; i++) {
         const img = new Image();
-        img.src = `${SPRITE_CONFIG.basePath}${prefix}${i}.png`;
-        img.onload = () => {
-          loadedCount.current++;
-          if (loadedCount.current >= totalFrames.current) {
-            if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
-              player.current.width = sprites.current.walk[0].naturalWidth;
-              player.current.height = sprites.current.walk[0].naturalHeight;
-            }
-          }
-        };
-        img.onerror = () => console.warn(`Failed to load ${prefix}${i}.png`);
+        img.src = `${SPRITE_CONFIG.khotso.basePath}${prefix}${i}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing ${prefix}${i}.png`);
         arr.push(img);
       }
       return arr;
     };
 
-    sprites.current.walk = loadFrames('walk', SPRITE_CONFIG.framesPerState.walk);
-    sprites.current.jump = loadFrames('jump', SPRITE_CONFIG.framesPerState.jump);
-    sprites.current.land = loadFrames('land', SPRITE_CONFIG.framesPerState.land);
-    sprites.current.crouch = loadFrames('crouch', SPRITE_CONFIG.framesPerState.crouch);
+    // Load Thabo frames (with suffix)
+    const loadThaboFrames = (prefix, count) => {
+      const arr = [];
+      const suffix = SPRITE_CONFIG.thabo.nameSuffix;
+      for (let i = 1; i <= count; i++) {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing ${prefix}${i}${suffix}.png`);
+        arr.push(img);
+      }
+      return arr;
+    };
+
+    const onFrameLoad = () => {
+      loadedCount.current++;
+      if (loadedCount.current >= totalFrames.current) {
+        // Set dimensions from first walk frames
+        if (sprites.current.khotso.walk[0]?.complete) {
+          player.current.width = sprites.current.khotso.walk[0].naturalWidth;
+          player.current.height = sprites.current.khotso.walk[0].naturalHeight;
+        }
+        if (sprites.current.thabo.walk[0]?.complete) {
+          opponent.current.width = sprites.current.thabo.walk[0].naturalWidth;
+          opponent.current.height = sprites.current.thabo.walk[0].naturalHeight;
+        }
+      }
+    };
+
+    // Khotso frames
+    sprites.current.khotso.walk   = loadKhotsoFrames('walk', SPRITE_CONFIG.khotso.framesPerState.walk);
+    sprites.current.khotso.jump   = loadKhotsoFrames('jump', SPRITE_CONFIG.khotso.framesPerState.jump);
+    sprites.current.khotso.land   = loadKhotsoFrames('land', SPRITE_CONFIG.khotso.framesPerState.land);
+    sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
+
+    // Thabo frames
+    sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
+    sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
+    sprites.current.thabo.land   = loadThaboFrames('land', SPRITE_CONFIG.thabo.framesPerState.land);
+    sprites.current.thabo.crouch = loadThaboFrames('crouch', SPRITE_CONFIG.thabo.framesPerState.crouch);
 
     totalFrames.current =
-      SPRITE_CONFIG.framesPerState.walk +
-      SPRITE_CONFIG.framesPerState.jump +
-      SPRITE_CONFIG.framesPerState.land +
-      SPRITE_CONFIG.framesPerState.crouch;
+      Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
+      Object.values(SPRITE_CONFIG.thabo.framesPerState).reduce((a,b)=>a+b,0);
 
-    const checkWalk = setInterval(() => {
-      if (sprites.current.walk[0] && sprites.current.walk[0].complete) {
-        sprites.current.idle = [sprites.current.walk[0]];
-        clearInterval(checkWalk);
-        if (!player.current.width) {
-          player.current.width = sprites.current.walk[0].naturalWidth;
-          player.current.height = sprites.current.walk[0].naturalHeight;
+    // Set idle frames
+    const checkIdle = setInterval(() => {
+      if (sprites.current.khotso.walk[0]?.complete) {
+        sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
+        if (player.current.width === 150) {
+          player.current.width = sprites.current.khotso.walk[0].naturalWidth;
+          player.current.height = sprites.current.khotso.walk[0].naturalHeight;
         }
+      }
+      if (sprites.current.thabo.walk[0]?.complete) {
+        sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
+        if (opponent.current.width === 150) {
+          opponent.current.width = sprites.current.thabo.walk[0].naturalWidth;
+          opponent.current.height = sprites.current.thabo.walk[0].naturalHeight;
+        }
+      }
+      if (sprites.current.khotso.idle.length && sprites.current.thabo.idle.length) {
+        clearInterval(checkIdle);
       }
     }, 50);
   }, []);
@@ -136,90 +193,76 @@ const HoKalla = () => {
   const drawBackground = (ctx, canvas) => {
     if (arenaLoaded.current && arenaImage.current) {
       const img = arenaImage.current;
-      const imgWidth = canvas.width;  // stretch to canvas width
-      const imgHeight = canvas.height;
-
-      // Camera offset for wrapping
+      const w = canvas.width, h = canvas.height;
       const camX = camera.current.x;
-      // Wrap position so background repeats infinitely
-      let drawX = -(camX % imgWidth);
-      if (drawX > 0) drawX -= imgWidth;
-
-      // Draw two copies of the arena side by side
-      ctx.drawImage(img, drawX, 0, imgWidth, imgHeight);
-      ctx.drawImage(img, drawX + imgWidth, 0, imgWidth, imgHeight);
+      let drawX = -(camX % w);
+      if (drawX > 0) drawX -= w;
+      ctx.drawImage(img, drawX, 0, w, h);
+      ctx.drawImage(img, drawX + w, 0, w, h);
     } else {
       ctx.fillStyle = '#2e7d32';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   };
 
-  const drawPlayer = (ctx, p) => {
+  const drawCharacter = (ctx, char, spriteSet) => {
     ctx.save();
-    // Player position adjusted by camera
-    const screenX = p.x - camera.current.x;
-    ctx.translate(screenX, p.y);
-    if (!p.facingRight) ctx.scale(-1, 1);
+    const screenX = char.x - camera.current.x;
+    ctx.translate(screenX, char.y);
+    if (!char.facingRight) ctx.scale(-1, 1);
 
-    const state = p.state;
-    const frames = sprites.current[state];
+    const frames = spriteSet[char.state];
     if (frames && frames.length > 0) {
-      let frameIndex = 0;
-      if (state === 'idle') {
-        frameIndex = 0;
-      } else {
-        frameIndex = Math.floor(p.currentFrame) % frames.length;
+      let idx = 0;
+      if (char.state === 'idle') idx = 0;
+      else idx = Math.floor(char.currentFrame) % frames.length;
+      const img = frames[idx];
+      if (img?.complete) {
+        const dw = char.width || img.naturalWidth;
+        const dh = char.height || img.naturalHeight;
+        ctx.drawImage(img, -dw / 2, -dh, dw, dh);
       }
-      const img = frames[frameIndex];
-      if (img && img.complete) {
-        const drawWidth = p.width || img.naturalWidth;
-        const drawHeight = p.height || img.naturalHeight;
-        ctx.drawImage(img, -drawWidth / 2, -drawHeight, drawWidth, drawHeight);
-      }
-    } else {
-      ctx.fillStyle = '#D32F2F'; ctx.fillRect(-15, -80, 30, 80);
-      ctx.fillStyle = '#FFC107'; ctx.beginPath(); ctx.arc(0, -90, 12, 0, Math.PI * 2); ctx.fill();
     }
     ctx.restore();
   };
 
-  const drawHUD = (ctx, canvas, p) => {
-    const barWidth = 200;
-    const barHeight = 20;
-    const x = 20;
-    const y = 20;
+  const drawHUD = (ctx, canvas, p, opponentChar) => {
+    const barW = 200, barH = 20;
 
+    // Khotso health (left)
+    const kx = 20, ky = 20;
     ctx.save();
-    ctx.font = 'bold 18px Arial, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.7)';
-    ctx.shadowBlur = 4;
-    ctx.fillText('Khotso', x, y - 5);
+    ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+    ctx.fillText('Khotso', kx, ky - 5);
     ctx.restore();
+    ctx.fillStyle = '#333'; ctx.fillRect(kx, ky, barW, barH);
+    const kFill = barW * (p.health / p.maxHealth);
+    const gradK = ctx.createLinearGradient(kx, ky, kx + barW, ky);
+    gradK.addColorStop(0, '#4caf50'); gradK.addColorStop(0.6, '#ffeb3b'); gradK.addColorStop(1, '#f44336');
+    ctx.fillStyle = gradK; ctx.fillRect(kx, ky, kFill, barH);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(kx, ky, barW, barH);
 
-    ctx.fillStyle = '#333333';
-    ctx.fillRect(x, y, barWidth, barHeight);
-
-    const healthPercent = p.health / p.maxHealth;
-    const fillWidth = barWidth * healthPercent;
-    const grad = ctx.createLinearGradient(x, y, x + barWidth, y);
-    grad.addColorStop(0, '#4caf50');
-    grad.addColorStop(0.6, '#ffeb3b');
-    grad.addColorStop(1, '#f44336');
-    ctx.fillStyle = grad;
-    ctx.fillRect(x, y, fillWidth, barHeight);
-
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x, y, barWidth, barHeight);
+    // Thabo health (right)
+    const tx = canvas.width - barW - 20, ty = 20;
+    ctx.save();
+    ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+    ctx.textAlign = 'right';
+    ctx.fillText('Thabo', canvas.width - 20, ty - 5);
+    ctx.restore();
+    ctx.fillStyle = '#333'; ctx.fillRect(tx, ty, barW, barH);
+    const tFill = barW * (opponentChar.health / opponentChar.maxHealth);
+    const gradT = ctx.createLinearGradient(tx, ty, tx + barW, ty);
+    gradT.addColorStop(0, '#4caf50'); gradT.addColorStop(0.6, '#ffeb3b'); gradT.addColorStop(1, '#f44336');
+    ctx.fillStyle = gradT; ctx.fillRect(tx, ty, tFill, barH);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(tx, ty, barW, barH);
   };
 
   const drawTitle = (ctx, canvas) => {
     ctx.save();
-    ctx.font = 'bold 36px Arial, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.7)';
-    ctx.shadowBlur = 6;
+    ctx.font = 'bold 36px Arial'; ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 6;
     ctx.textAlign = 'center';
     ctx.fillText('Ho Kalla (Prototype)', canvas.width / 2, 80);
     ctx.restore();
@@ -227,10 +270,8 @@ const HoKalla = () => {
 
   const drawFPS = (ctx, canvas, fps) => {
     ctx.save();
-    ctx.font = '16px monospace';
-    ctx.fillStyle = '#ffff00';
-    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-    ctx.shadowBlur = 3;
+    ctx.font = '16px monospace'; ctx.fillStyle = '#ff0';
+    ctx.shadowColor = '#000'; ctx.shadowBlur = 3;
     ctx.textAlign = 'left';
     ctx.fillText(`FPS: ${fps}`, 10, canvas.height - 10);
     ctx.restore();
@@ -271,12 +312,10 @@ const HoKalla = () => {
     p.x += p.vx;
     p.y += p.vy;
 
-    // World wrapping for player
-    const worldWidth = canvas.width; // arena width = canvas width
+    const worldWidth = canvas.width;
     if (p.x > worldWidth) p.x -= worldWidth;
     if (p.x < 0) p.x += worldWidth;
 
-    // Ground collision
     if (p.y > groundY) {
       p.y = groundY;
       p.vy = 0;
@@ -291,7 +330,6 @@ const HoKalla = () => {
       p.grounded = false;
     }
 
-    // Update camera to follow player
     camera.current.x = p.x - canvas.width / 2;
 
     if (moveDir > 0) p.facingRight = true;
@@ -321,8 +359,8 @@ const HoKalla = () => {
     } else if (p.state === 'land') {
       if (!p.landAnimFinished) {
         p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-        if (Math.floor(p.frameTimer) >= cfg.framesPerState.land) {
-          p.frameTimer = cfg.framesPerState.land - 1;
+        if (Math.floor(p.frameTimer) >= SPRITE_CONFIG.khotso.framesPerState.land) {
+          p.frameTimer = SPRITE_CONFIG.khotso.framesPerState.land - 1;
           p.landAnimFinished = true;
         }
       }
@@ -352,12 +390,16 @@ const HoKalla = () => {
 
     update(canvas, deltaTime);
 
+    // Thabo idle animation (just breathe)
+    opponent.current.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
-    drawPlayer(ctx, player.current);
+    drawCharacter(ctx, opponent.current, sprites.current.thabo);  // draw Thabo first (behind)
+    drawCharacter(ctx, player.current, sprites.current.khotso);   // then Khotso
     drawTitle(ctx, canvas);
     drawFPS(ctx, canvas, fs.fps);
-    drawHUD(ctx, canvas, player.current);
+    drawHUD(ctx, canvas, player.current, opponent.current);
 
     animFrameId.current = requestAnimationFrame(gameLoop);
   };
@@ -378,6 +420,9 @@ const HoKalla = () => {
     p.currentFrame = 0;
     p.crouching = false;
     camera.current.x = p.x - canvas.width / 2;
+
+    const o = opponent.current;
+    o.y = canvas.height * groundFrac;
   };
 
   useEffect(() => {
@@ -386,7 +431,7 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown);
