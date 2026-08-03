@@ -89,6 +89,7 @@ const HoKalla = () => {
     currentFrame: 0,
     frameTimer: 0,
     grounded: true,
+    attackLock: false, // 🛠️ Added to stop Thabo from spamming attacks
     health: PLAYER_MAX_HEALTH,
     maxHealth: PLAYER_MAX_HEALTH,
   });
@@ -131,7 +132,6 @@ const HoKalla = () => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
       for (let i = 1; i <= count; i++) {
-        // 🛠️ FIXED: Added 'const img = new Image();' here
         const img = new Image(); 
         const src = prefix === 'attack' 
           ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
@@ -239,13 +239,11 @@ const HoKalla = () => {
       else idx = Math.floor(char.currentFrame) % frames.length;
       const img = frames[idx];
       
-      // Safety Check: If the image failed to load, skip it
       if (img && img.complete && img.naturalWidth > 0) {
         const dw = char.width; 
         const dh = char.height;
         ctx.drawImage(img, -dw / 2, -dh, dw, dh);
       } else if (idx > 0) {
-        // If a frame is missing, try to render the previous valid frame
         const prevImg = frames[idx - 1];
         if (prevImg && prevImg.complete && prevImg.naturalWidth > 0) {
           const dw = char.width; 
@@ -306,12 +304,13 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // ---------- Physics & input ----------
+  // ---------- Physics & input (UPDATED FOR THABO AI) ----------
   const update = (canvas, deltaTime) => {
     const p = player.current;
+    const o = opponent.current; 
     const groundY = canvas.height * groundFrac;
 
-    // Attack Logic
+    // --- PLAYER (Khotso) INPUT ---
     const attackPressed = keys.current['j'] || keys.current['J'] || keys.current[' '] || touchAttack.current;
     if (attackPressed && !p.attackLock && p.grounded) {
       p.state = 'attack';
@@ -329,10 +328,8 @@ const HoKalla = () => {
     }
     p.vx = moveDir * p.speed;
 
-    // Jump
-    if (
-      (keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] || touchJump.current)
-    ) {
+    // Player Jump
+    if (keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] || touchJump.current) {
       if (p.grounded && !jumpRequested.current && !p.crouching && p.state !== 'attack') {
         p.vy = p.jumpForce;
         p.grounded = false;
@@ -348,75 +345,121 @@ const HoKalla = () => {
     p.x += p.vx;
     p.y += p.vy;
 
-    // Stage Boundaries
-    const boundaryBuffer = 50;
-    const stageLeft = boundaryBuffer;
-    const stageRight = canvas.width - boundaryBuffer - p.width;
-
-    if (p.x < stageLeft) p.x = stageLeft;
-    if (p.x > stageRight) p.x = stageRight;
-
-    // Floor collision
-    if (p.y > groundY) {
-      p.y = groundY;
-      p.vy = 0;
-      if (!p.grounded) {
-        p.landTimer = 15;
-        p.state = 'land';
-        p.frameTimer = 0;
-        p.landAnimFinished = false;
+    // --- ENEMY (Thabo) AI LOGIC ---
+    // Randomly attack if grounded and not already attacking
+    if (!o.attackLock && o.grounded) {
+      if (Math.random() < 0.012) { // ~1.2% chance per frame to attack
+        o.state = 'attack';
+        o.frameTimer = 0;
+        o.attackLock = true;
       }
-      p.grounded = true;
-    } else {
-      p.grounded = false;
     }
 
+    // Handle Thabo's attack timer to unlock him after the animation
+    if (o.state === 'attack') {
+      const attackTotalFrames = SPRITE_CONFIG.thabo.framesPerState.attack;
+      if (Math.floor(o.frameTimer) >= attackTotalFrames) {
+        o.attackLock = false;
+        if (o.grounded) o.state = 'idle';
+        o.frameTimer = 0;
+      }
+    }
+
+    // --- PHYSICS (Apply to BOTH characters) ---
+    const applyPhysics = (char) => {
+      char.vy += 0.6;
+      char.x += char.vx || 0; 
+      char.y += char.vy;
+
+      // Stage Boundaries
+      const boundaryBuffer = 50;
+      const stageLeft = boundaryBuffer;
+      const stageRight = canvas.width - boundaryBuffer - char.width;
+
+      if (char.x < stageLeft) char.x = stageLeft;
+      if (char.x > stageRight) char.x = stageRight;
+
+      // Floor collision
+      if (char.y > groundY) {
+        char.y = groundY;
+        char.vy = 0;
+        if (!char.grounded) {
+          char.landTimer = 15;
+          char.state = 'land';
+          char.frameTimer = 0;
+          char.landAnimFinished = false;
+        }
+        char.grounded = true;
+      } else {
+        char.grounded = false;
+      }
+    };
+
+    applyPhysics(p);
+    applyPhysics(o); 
+
+    // --- CAMERA & FACING ---
     camera.current.x = 0;
 
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
+    
+    // Make Thabo always face Khotso
+    if (o.x < p.x) o.facingRight = true;
+    else o.facingRight = false;
 
-    // State switching
-    if (!p.grounded && p.state !== 'attack') {
-      p.state = 'jump';
-    } else if (p.state === 'attack') {
-      const attackTotalFrames = SPRITE_CONFIG.khotso.framesPerState.attack;
-      if (Math.floor(p.frameTimer) >= attackTotalFrames) {
-        p.attackLock = false;
-        if (p.grounded) p.state = 'idle';
-        p.frameTimer = 0;
-      }
-    } else {
-      if (p.landTimer > 0) {
-        p.state = 'land';
-        p.landTimer--;
-      } else if (p.crouching) {
-        p.state = 'crouch';
-        p.frameTimer = 0;
-      } else if (moveDir !== 0) {
-        p.state = 'walk';
+    // --- STATE SWITCHING (Player & Enemy) ---
+    const updateState = (char, isPlayer) => {
+      // Don't change state if currently attacking
+      if (char.state === 'attack') return;
+
+      if (!char.grounded && char.state !== 'attack') {
+        char.state = 'jump';
       } else {
-        p.state = 'idle';
-      }
-    }
-
-    const cfg = SPRITE_CONFIG;
-    if (p.state === 'walk' || p.state === 'jump' || p.state === 'attack') {
-      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-    } else if (p.state === 'crouch') {
-      p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-    } else if (p.state === 'land') {
-      if (!p.landAnimFinished) {
-        p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
-        if (Math.floor(p.frameTimer) >= SPRITE_CONFIG.khotso.framesPerState.land) {
-          p.frameTimer = SPRITE_CONFIG.khotso.framesPerState.land - 1;
-          p.landAnimFinished = true;
+        if (char.landTimer > 0) {
+          char.state = 'land';
+          char.landTimer--;
+        } else if (char.crouching) {
+          char.state = 'crouch';
+          char.frameTimer = 0;
+        } else if ((char.vx && Math.abs(char.vx) > 0.1) || (char === p && moveDir !== 0)) {
+          char.state = 'walk';
+        } else {
+          char.state = 'idle';
         }
       }
-    } else if (p.state === 'idle') {
-      p.frameTimer = 0;
-    }
-    p.currentFrame = p.frameTimer;
+    };
+
+    updateState(p);
+    updateState(o);
+
+    // --- ANIMATION TIMERS ---
+    const getMaxLandFrames = (char) => {
+      return char === p ? SPRITE_CONFIG.khotso.framesPerState.land : SPRITE_CONFIG.thabo.framesPerState.land;
+    };
+
+    const updateTimer = (char, isPlayer) => {
+      if (char.state === 'walk' || char.state === 'jump' || char.state === 'attack') {
+        char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+      } else if (char.state === 'crouch') {
+        char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+      } else if (char.state === 'land') {
+        if (!char.landAnimFinished) {
+          char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+          const maxLand = getMaxLandFrames(char);
+          if (Math.floor(char.frameTimer) >= maxLand) {
+            char.frameTimer = maxLand - 1;
+            char.landAnimFinished = true;
+          }
+        }
+      } else if (char.state === 'idle') {
+        char.frameTimer = 0;
+      }
+      char.currentFrame = char.frameTimer;
+    };
+
+    updateTimer(p, true);
+    updateTimer(o, false);
   };
 
   // ---------- Game loop ----------
@@ -438,8 +481,6 @@ const HoKalla = () => {
     }
 
     update(canvas, deltaTime);
-
-    opponent.current.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
