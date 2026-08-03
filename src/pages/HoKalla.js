@@ -22,7 +22,7 @@ const SPRITE_CONFIG = {
       jump: 6,
       land: 3,
       crouch: 4,
-      attack: 5, // Thabo has 5 attack frames
+      attack: 5, // Thabo has 5 attack frames (Tattack1-5.png)
     },
     nameSuffix: '-removebg-preview',
   },
@@ -86,7 +86,7 @@ const HoKalla = () => {
     height: SPRITE_CONFIG.targetHeight,
     vx: 0,
     vy: 0,
-    speed: 0, // Static for now
+    speed: 0, 
     facingRight: false,
     state: 'idle',
     currentFrame: 0,
@@ -138,10 +138,10 @@ const HoKalla = () => {
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
       for (let i = 1; i <= count; i++) {
         const img = new Image();
-        const src =
-          prefix === 'attack'
-            ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png`
-            : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+        // 🛠️ FIX: If it's "attack", look for Tattack1.png. Otherwise look for e.g walk1-removebg-preview.png
+        const src = prefix === 'attack'
+          ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png`
+          : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
 
         img.src = src;
         img.onload = onFrameLoad;
@@ -154,6 +154,7 @@ const HoKalla = () => {
     const onFrameLoad = () => {
       loadedCount.current++;
       if (loadedCount.current >= totalFrames.current) {
+        // Set sizes
         if (sprites.current.khotso.walk[0]?.complete) {
           const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
           player.current.width = dims.width;
@@ -164,13 +165,9 @@ const HoKalla = () => {
           opponent.current.width = dims.width;
           opponent.current.height = dims.height;
         }
-        // Ensure they sit on the ground after load
-        const canvas = canvasRef.current;
-        if (canvas) {
-          const groundY = canvas.height * groundFrac;
-          player.current.y = groundY;
-          opponent.current.y = groundY;
-        }
+        // Set idle animations explicitly
+        sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
+        sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
       }
     };
 
@@ -191,36 +188,6 @@ const HoKalla = () => {
     totalFrames.current =
       Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a, b) => a + b, 0) +
       Object.values(SPRITE_CONFIG.thabo.framesPerState).reduce((a, b) => a + b, 0);
-
-    // Set idle frames (using the first walk frame)
-    const checkIdle = setInterval(() => {
-      let ready = true;
-      if (sprites.current.khotso.walk[0]?.complete) {
-        sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
-        if (player.current.width === 100) {
-          const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
-          player.current.width = dims.width;
-          player.current.height = dims.height;
-        }
-      } else {
-        ready = false;
-      }
-
-      if (sprites.current.thabo.walk[0]?.complete) {
-        sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
-        if (opponent.current.width === 100) {
-          const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
-          opponent.current.width = dims.width;
-          opponent.current.height = dims.height;
-        }
-      } else {
-        ready = false;
-      }
-
-      if (ready) {
-        clearInterval(checkIdle);
-      }
-    }, 100);
   }, []);
 
   // ---------- Touch handlers ----------
@@ -246,29 +213,29 @@ const HoKalla = () => {
   };
 
   const drawCharacter = (ctx, char, spriteSet) => {
+    const frames = spriteSet[char.state];
+    // 🛠️ FIX: Don't draw if frames aren't loaded yet (stops flickering)
+    if (!frames || frames.length === 0 || !frames[0]?.complete) return;
+
     ctx.save();
     ctx.translate(char.x, char.y);
     if (!char.facingRight) ctx.scale(-1, 1);
 
-    const frames = spriteSet[char.state];
-    if (frames && frames.length > 0) {
-      let idx = 0;
-      if (char.state === 'idle') idx = 0;
-      else idx = Math.floor(char.currentFrame) % frames.length;
+    let idx = 0;
+    if (char.state === 'idle') idx = 0;
+    else idx = Math.floor(char.currentFrame) % frames.length;
 
-      const img = frames[idx];
-      if (img && img.complete && img.naturalWidth > 0) {
-        const dw = char.width;
-        const dh = char.height;
-        ctx.drawImage(img, -dw / 2, -dh, dw, dh);
-      }
+    const img = frames[idx];
+    if (img && img.complete && img.naturalWidth > 0) {
+      const dw = char.width;
+      const dh = char.height;
+      ctx.drawImage(img, -dw / 2, -dh, dw, dh);
     }
     ctx.restore();
   };
 
   const drawHUD = (ctx, canvas, p, o) => {
-    const barW = 200,
-      barH = 20;
+    const barW = 200, barH = 20;
 
     // Khotso Health
     ctx.fillStyle = '#333';
@@ -364,23 +331,24 @@ const HoKalla = () => {
       jumpRequested.current = false;
     }
 
-    // 2. Thabo AI
-    if (!o.attackLock && o.grounded && o.state !== 'attack') {
-      // Random attack trigger (approx every 2-4 seconds)
-      if (Math.random() < 0.015) {
-        o.state = 'attack';
-        o.frameTimer = 0;
-        o.attackLock = true;
+    // 2. Thabo AI (Only if idle frame is loaded)
+    if (sprites.current.thabo.idle.length > 0) {
+      if (!o.attackLock && o.grounded && o.state !== 'attack') {
+        if (Math.random() < 0.015) {
+          o.state = 'attack';
+          o.frameTimer = 0;
+          o.attackLock = true;
+        }
       }
-    }
 
-    if (o.state === 'attack') {
-      const maxFrames = SPRITE_CONFIG.thabo.framesPerState.attack;
-      o.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
-      if (Math.floor(o.frameTimer) >= maxFrames) {
-        o.attackLock = false;
-        o.state = 'idle';
-        o.frameTimer = 0;
+      if (o.state === 'attack') {
+        const maxFrames = SPRITE_CONFIG.thabo.framesPerState.attack;
+        o.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+        if (Math.floor(o.frameTimer) >= maxFrames) {
+          o.attackLock = false;
+          o.state = 'idle';
+          o.frameTimer = 0;
+        }
       }
     }
 
@@ -419,7 +387,9 @@ const HoKalla = () => {
     else if (moveDir < 0) p.facingRight = false;
 
     // Face opponent
-    o.facingRight = o.x < p.x;
+    if (sprites.current.thabo.idle.length > 0) {
+      o.facingRight = o.x < p.x;
+    }
 
     const updateGameState = (char, isPlayer) => {
       if (char.state === 'attack') return;
@@ -440,7 +410,7 @@ const HoKalla = () => {
     };
 
     updateGameState(p);
-    updateGameState(o);
+    if (sprites.current.thabo.idle.length > 0) updateGameState(o);
 
     // Attack timer for Khotso
     if (p.state === 'attack') {
@@ -467,21 +437,23 @@ const HoKalla = () => {
     p.currentFrame = p.frameTimer;
 
     // Thabo Animations
-    if (o.state === 'walk' || o.state === 'jump') {
-      o.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
-    } else if (o.state === 'land') {
-      if (!o.landAnimFinished) {
+    if (sprites.current.thabo.idle.length > 0) {
+      if (o.state === 'walk' || o.state === 'jump') {
         o.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
-        if (Math.floor(o.frameTimer) >= SPRITE_CONFIG.thabo.framesPerState.land) {
-          o.landAnimFinished = true;
+      } else if (o.state === 'land') {
+        if (!o.landAnimFinished) {
+          o.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+          if (Math.floor(o.frameTimer) >= SPRITE_CONFIG.thabo.framesPerState.land) {
+            o.landAnimFinished = true;
+          }
         }
+      } else if (o.state === 'crouch') {
+        o.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
+      } else if (o.state !== 'attack') {
+        o.frameTimer = 0;
       }
-    } else if (o.state === 'crouch') {
-      o.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
-    } else if (o.state !== 'attack') {
-      o.frameTimer = 0;
+      o.currentFrame = o.frameTimer;
     }
-    o.currentFrame = o.frameTimer;
   };
 
   // ---------- Game loop ----------
