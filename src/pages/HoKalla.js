@@ -11,7 +11,7 @@ const SPRITE_CONFIG = {
       jump: 7,
       land: 7,
       crouch: 7,
-      attack: 3, // 🛠️ FIXED: Khotso has exactly 3 attack frames
+      attack: 3, // Khotso has exactly 3 attack frames
     },
   },
   thabo: {
@@ -22,7 +22,7 @@ const SPRITE_CONFIG = {
       jump: 6,
       land: 3,
       crouch: 4,
-      attack: 5, // 🛠️ Thabo has exactly 5 attack frames
+      attack: 5, // Thabo has exactly 5 attack frames
     },
     nameSuffix: '-removebg-preview', 
   },
@@ -131,6 +131,8 @@ const HoKalla = () => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
       for (let i = 1; i <= count; i++) {
+        // 🛠️ FIXED: Added 'const img = new Image();' here
+        const img = new Image(); 
         const src = prefix === 'attack' 
           ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
           : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
@@ -237,13 +239,13 @@ const HoKalla = () => {
       else idx = Math.floor(char.currentFrame) % frames.length;
       const img = frames[idx];
       
-      // 🛠️ SAFETY CHECK: If the image failed to load, don't draw anything and skip
+      // Safety Check: If the image failed to load, skip it
       if (img && img.complete && img.naturalWidth > 0) {
         const dw = char.width; 
         const dh = char.height;
         ctx.drawImage(img, -dw / 2, -dh, dw, dh);
       } else if (idx > 0) {
-        // If a frame is missing (like Kattack4), try to render the previous valid frame
+        // If a frame is missing, try to render the previous valid frame
         const prevImg = frames[idx - 1];
         if (prevImg && prevImg.complete && prevImg.naturalWidth > 0) {
           const dw = char.width; 
@@ -309,7 +311,7 @@ const HoKalla = () => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
 
-    // 🛠️ ATTACK LOGIC
+    // Attack Logic
     const attackPressed = keys.current['j'] || keys.current['J'] || keys.current[' '] || touchAttack.current;
     if (attackPressed && !p.attackLock && p.grounded) {
       p.state = 'attack';
@@ -378,7 +380,6 @@ const HoKalla = () => {
     if (!p.grounded && p.state !== 'attack') {
       p.state = 'jump';
     } else if (p.state === 'attack') {
-      // 🛠️ Uses the config to know exactly how many frames to play before returning to idle
       const attackTotalFrames = SPRITE_CONFIG.khotso.framesPerState.attack;
       if (Math.floor(p.frameTimer) >= attackTotalFrames) {
         p.attackLock = false;
