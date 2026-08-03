@@ -11,6 +11,7 @@ const SPRITE_CONFIG = {
       jump: 7,
       land: 7,
       crouch: 7,
+      attack: 5, // 🛠️ Added Attack state: Looks for Kattack1.png -> Kattack5.png
     },
   },
   thabo: {
@@ -21,11 +22,11 @@ const SPRITE_CONFIG = {
       jump: 6,
       land: 3,
       crouch: 4,
+      attack: 5, // 🛠️ Added Attack state: Looks for Tattack1.png -> Tattack5.png
     },
-    nameSuffix: '-removebg-preview',
+    nameSuffix: '-removebg-preview', // Used for walk/jump/land/crouch
   },
   animationSpeed: 10,
-  // 🛠️ Adjust this number to make both characters bigger or smaller!
   targetHeight: 180, 
 };
 
@@ -40,12 +41,13 @@ const HoKalla = () => {
   const touchMoveLeft = useRef(false);
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
+  const touchAttack = useRef(false); // 🛠️ Added Attack touch
   const jumpRequested = useRef(false);
 
   // Sprites for both fighters
   const sprites = useRef({
-    khotso: { idle: [], walk: [], jump: [], land: [], crouch: [] },
-    thabo:  { idle: [], walk: [], jump: [], land: [], crouch: [] },
+    khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [] },
+    thabo:  { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [] },
   });
 
   const arenaImage = useRef(null);
@@ -71,6 +73,7 @@ const HoKalla = () => {
     frameTimer: 0,
     landAnimFinished: false,
     crouching: false,
+    attackLock: false, // 🛠️ Keeps animation from restarting mid-swing
     health: PLAYER_MAX_HEALTH,
     maxHealth: PLAYER_MAX_HEALTH,
   });
@@ -129,9 +132,14 @@ const HoKalla = () => {
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
       for (let i = 1; i <= count; i++) {
         const img = new Image();
-        img.src = `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+        // 🛠️ Tweak: If it's the "attack" state, we don't use the suffix
+        const src = prefix === 'attack' 
+          ? `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}.png` 
+          : `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+        
+        img.src = src;
         img.onload = onFrameLoad;
-        img.onerror = () => console.warn(`Missing ${prefix}${i}${suffix}.png`);
+        img.onerror = () => console.warn(`Missing ${prefix}${i}.png`);
         arr.push(img);
       }
       return arr;
@@ -154,11 +162,15 @@ const HoKalla = () => {
       }
     };
 
+    // Load Khotso Frames
+    sprites.current.khotso.attack = loadKhotsoFrames('Kattack', SPRITE_CONFIG.khotso.framesPerState.attack);
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', SPRITE_CONFIG.khotso.framesPerState.walk);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', SPRITE_CONFIG.khotso.framesPerState.jump);
     sprites.current.khotso.land   = loadKhotsoFrames('land', SPRITE_CONFIG.khotso.framesPerState.land);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', SPRITE_CONFIG.khotso.framesPerState.crouch);
 
+    // Load Thabo Frames
+    sprites.current.thabo.attack = loadThaboFrames('Tattack', SPRITE_CONFIG.thabo.framesPerState.attack);
     sprites.current.thabo.walk   = loadThaboFrames('walk', SPRITE_CONFIG.thabo.framesPerState.walk);
     sprites.current.thabo.jump   = loadThaboFrames('jump', SPRITE_CONFIG.thabo.framesPerState.jump);
     sprites.current.thabo.land   = loadThaboFrames('land', SPRITE_CONFIG.thabo.framesPerState.land);
@@ -198,14 +210,14 @@ const HoKalla = () => {
   const handleTouchRightEnd   = (e) => { e.preventDefault(); touchMoveRight.current = false; };
   const handleTouchJumpStart  = (e) => { e.preventDefault(); touchJump.current = true; };
   const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
+  const handleTouchAttackStart = (e) => { e.preventDefault(); touchAttack.current = true; }; // 🛠️ Added Touch Attack
+  const handleTouchAttackEnd   = (e) => { e.preventDefault(); touchAttack.current = false; };
 
   // ---------- Drawing functions ----------
   const drawBackground = (ctx, canvas) => {
     if (arenaLoaded.current && arenaImage.current) {
       const img = arenaImage.current;
       const w = canvas.width, h = canvas.height;
-      
-      // 🛠️ FINAL FIX: Centered, stable camera with NO looping
       const camX = camera.current.x;
       ctx.drawImage(img, -camX, 0, w, h);
     } else {
@@ -227,7 +239,6 @@ const HoKalla = () => {
       else idx = Math.floor(char.currentFrame) % frames.length;
       const img = frames[idx];
       if (img?.complete) {
-        // Draw using our fixed, equalized width/height
         const dw = char.width; 
         const dh = char.height;
         ctx.drawImage(img, -dw / 2, -dh, dw, dh);
@@ -290,22 +301,30 @@ const HoKalla = () => {
     const p = player.current;
     const groundY = canvas.height * groundFrac;
 
+    // 🛠️ ATTACK LOGIC
+    const attackPressed = keys.current['j'] || keys.current['J'] || keys.current[' '] || touchAttack.current;
+    if (attackPressed && !p.attackLock && p.grounded) {
+      p.state = 'attack';
+      p.frameTimer = 0;
+      p.attackLock = true;
+    }
+
+    // Don't allow moving while attacking
     const crouchKey = keys.current['ArrowDown'] || keys.current['s'] || keys.current['S'];
-    p.crouching = crouchKey && p.grounded;
+    p.crouching = crouchKey && p.grounded && p.state !== 'attack';
 
     let moveDir = 0;
-    if (!p.crouching) {
+    if (!p.crouching && p.state !== 'attack') {
       if (keys.current['ArrowLeft'] || keys.current['a'] || keys.current['A'] || touchMoveLeft.current) moveDir -= 1;
       if (keys.current['ArrowRight'] || keys.current['d'] || keys.current['D'] || touchMoveRight.current) moveDir += 1;
     }
     p.vx = moveDir * p.speed;
 
+    // Jump
     if (
-      (keys.current[' '] || keys.current['Space'] ||
-       keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] ||
-       touchJump.current)
+      (keys.current['ArrowUp'] || keys.current['w'] || keys.current['W'] || touchJump.current)
     ) {
-      if (p.grounded && !jumpRequested.current && !p.crouching) {
+      if (p.grounded && !jumpRequested.current && !p.crouching && p.state !== 'attack') {
         p.vy = p.jumpForce;
         p.grounded = false;
         jumpRequested.current = true;
@@ -320,7 +339,7 @@ const HoKalla = () => {
     p.x += p.vx;
     p.y += p.vy;
 
-    // 🛠️ FINAL FIX: SOLID STAGE BOUNDARIES (No wrapping)
+    // Stage Boundaries
     const boundaryBuffer = 50;
     const stageLeft = boundaryBuffer;
     const stageRight = canvas.width - boundaryBuffer - p.width;
@@ -343,14 +362,21 @@ const HoKalla = () => {
       p.grounded = false;
     }
 
-    // 🛠️ FINAL FIX: Locked camera (No movement, completely stable)
+    // Lock camera in place
     camera.current.x = 0;
 
     if (moveDir > 0) p.facingRight = true;
     else if (moveDir < 0) p.facingRight = false;
 
-    if (!p.grounded) {
+    // State switching
+    if (!p.grounded && p.state !== 'attack') {
       p.state = 'jump';
+    } else if (p.state === 'attack') {
+      const attackTotalFrames = SPRITE_CONFIG.khotso.framesPerState.attack;
+      if (Math.floor(p.frameTimer) >= attackTotalFrames - 1) {
+        p.attackLock = false;
+        if (p.grounded) p.state = 'idle';
+      }
     } else {
       if (p.landTimer > 0) {
         p.state = 'land';
@@ -366,7 +392,7 @@ const HoKalla = () => {
     }
 
     const cfg = SPRITE_CONFIG;
-    if (p.state === 'walk' || p.state === 'jump') {
+    if (p.state === 'walk' || p.state === 'jump' || p.state === 'attack') {
       p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
     } else if (p.state === 'crouch') {
       p.frameTimer += (deltaTime / 1000) * cfg.animationSpeed;
@@ -404,7 +430,7 @@ const HoKalla = () => {
 
     update(canvas, deltaTime);
 
-    // Thabo idle animation
+    // Thabo idle / breathes
     opponent.current.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -433,6 +459,7 @@ const HoKalla = () => {
     p.frameTimer = 0;
     p.currentFrame = 0;
     p.crouching = false;
+    p.attackLock = false;
 
     const o = opponent.current;
     o.y = canvas.height * groundFrac;
@@ -446,7 +473,7 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'j', 'J'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown);
@@ -484,6 +511,12 @@ const HoKalla = () => {
             onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd}
             onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>
             ▲ Jump
+          </button>
+          <button className="touch-btn atk-btn" // 🛠️ Added Attack Button for mobile
+            onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd}
+            onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd}
+            style={{background: '#d32f2f', color: 'white', border: '2px solid #fff'}}>
+            ⚔️ Attack
           </button>
           <button className="touch-btn right-btn"
             onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd}
