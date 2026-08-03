@@ -11,7 +11,7 @@ const SPRITE_CONFIG = {
       jump: 7,
       land: 7,
       crouch: 7,
-      attack: 3, // Khotso has 3 attack frames
+      attack: 3,
     },
   },
   thabo: {
@@ -22,7 +22,7 @@ const SPRITE_CONFIG = {
       jump: 6,
       land: 3,
       crouch: 4,
-      attack: 5, // Thabo has 5 attack frames
+      attack: 5,
     },
     nameSuffix: '-removebg-preview', 
   },
@@ -243,11 +243,9 @@ const HoKalla = () => {
 
     const frames = spriteSet[char.state];
     
-    // 🛠️ FIXED: Handle missing attack frames by falling back to idle
     let img = null;
     let fallbackImg = null;
 
-    // Try to grab the idle frame just in case
     if (spriteSet.idle && spriteSet.idle.length > 0) {
       fallbackImg = spriteSet.idle[0];
     }
@@ -259,12 +257,11 @@ const HoKalla = () => {
       img = frames[idx];
     }
 
-    // 🛠️ SAFETY: If the frame isn't downloaded yet, use the idle frame instead
+    // Fallback to idle if attack frame isn't loaded yet
     if (!img || !img.complete || img.naturalWidth === 0) {
       img = fallbackImg;
     }
 
-    // Draw it
     if (img && img.complete && img.naturalWidth > 0) {
       const dw = char.width; 
       const dh = char.height;
@@ -303,6 +300,20 @@ const HoKalla = () => {
     gradT.addColorStop(0, '#4caf50'); gradT.addColorStop(0.6, '#ffeb3b'); gradT.addColorStop(1, '#f44336');
     ctx.fillStyle = gradT; ctx.fillRect(tx, ty, tFill, barH);
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(tx, ty, barW, barH);
+  };
+
+  // 🛠️ NEW: Draw Control Instructions so you know what to press
+  const drawControls = (ctx, canvas) => {
+    ctx.save();
+    ctx.font = '16px Arial';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.shadowColor = '#000';
+    ctx.shadowBlur = 4;
+    ctx.textAlign = 'left';
+    
+    ctx.fillText("Khotso: W (Jump), A/D (Move), J (Attack)", 20, canvas.height - 60);
+    ctx.fillText("Thabo:  ↑  (Jump), ←/→ (Move),  K  (Attack)", 20, canvas.height - 30);
+    ctx.restore();
   };
 
   const drawTitle = (ctx, canvas) => {
@@ -358,7 +369,8 @@ const HoKalla = () => {
     }
 
     // --- PLAYER 2: THABO CONTROLS ---
-    const attackPressedP2 = keys.current[' '] || keys.current['Space']; 
+    // 🛠️ CHANGED: Attack is now 'K' instead of Space to avoid browser scrolling
+    const attackPressedP2 = keys.current['k'] || keys.current['K']; 
     if (attackPressedP2 && !p2.attackLock && p2.grounded) {
       p2.state = 'attack';
       p2.frameTimer = 0;
@@ -524,11 +536,11 @@ const HoKalla = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground(ctx, canvas);
     
-    // Draw both characters
     drawCharacter(ctx, opponent.current, sprites.current.thabo);
     drawCharacter(ctx, player.current, sprites.current.khotso);
     
     drawTitle(ctx, canvas);
+    drawControls(ctx, canvas); // 🛠️ Draw the controls
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
 
@@ -565,8 +577,8 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      // Prevent default scrolling for all game keys
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', 'j', 'J'].includes(e.key)) e.preventDefault();
+      // Prevent scrolling for ALL keys
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', 'j', 'J', 'k', 'K'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown);
