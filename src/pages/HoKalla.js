@@ -22,7 +22,7 @@ const SPRITE_CONFIG = {
       jump: 6,
       land: 3,
       crouch: 4,
-      attack: 5, // Thabo has 5 attack frames (Tattack1-5.png)
+      attack: 5, // Thabo has 5 attack frames
     },
     nameSuffix: '-removebg-preview',
   },
@@ -165,7 +165,7 @@ const HoKalla = () => {
           opponent.current.width = dims.width;
           opponent.current.height = dims.height;
         }
-        // Set idle animations explicitly
+        // Set idle animations explicitly (Use the first walk frame as idle)
         sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
         sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
       }
@@ -213,24 +213,31 @@ const HoKalla = () => {
   };
 
   const drawCharacter = (ctx, char, spriteSet) => {
-    const frames = spriteSet[char.state];
-    // 🛠️ FIX: Don't draw if frames aren't loaded yet (stops flickering)
-    if (!frames || frames.length === 0 || !frames[0]?.complete) return;
-
     ctx.save();
     ctx.translate(char.x, char.y);
     if (!char.facingRight) ctx.scale(-1, 1);
 
-    let idx = 0;
-    if (char.state === 'idle') idx = 0;
-    else idx = Math.floor(char.currentFrame) % frames.length;
+    // 🛠️ FIX: Find which frame to use
+    let img = null;
+    const frames = spriteSet[char.state];
 
-    const img = frames[idx];
-    if (img && img.complete && img.naturalWidth > 0) {
+    if (frames && frames.length > 0) {
+      let idx = 0;
+      if (char.state === 'idle') idx = 0;
+      else idx = Math.floor(char.currentFrame) % frames.length;
+      img = frames[idx];
+    }
+
+    // 🛠️ FIX: If the image isn't loaded yet, draw a temporary block so he NEVER disappears
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      ctx.fillStyle = char === player.current ? '#1565C0' : '#b71c1c'; // Blue for Khotso, Red for Thabo
+      ctx.fillRect(-char.width / 2, -char.height, char.width, char.height);
+    } else {
       const dw = char.width;
       const dh = char.height;
       ctx.drawImage(img, -dw / 2, -dh, dw, dh);
     }
+
     ctx.restore();
   };
 
@@ -331,7 +338,7 @@ const HoKalla = () => {
       jumpRequested.current = false;
     }
 
-    // 2. Thabo AI (Only if idle frame is loaded)
+    // 2. Thabo AI
     if (sprites.current.thabo.idle.length > 0) {
       if (!o.attackLock && o.grounded && o.state !== 'attack') {
         if (Math.random() < 0.015) {
