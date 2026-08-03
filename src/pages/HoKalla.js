@@ -57,9 +57,6 @@ const HoKalla = () => {
   const loadedCount = useRef(0);
   const totalFrames = useRef(0);
 
-  // 🛠️ Removed focus state. We will just use a Hover overlay check
-  const [gameReady, setGameReady] = useState(false);
-
   // Player 1 (Khotso)
   const player = useRef({
     x: 200,
@@ -261,8 +258,16 @@ const HoKalla = () => {
     }
 
     if (img && img.complete && img.naturalWidth > 0) {
-      const dw = char.width; 
-      const dh = char.height;
+      // 🛠️ FIX: Allow attack frames to draw at their own unique size
+      let dw = char.width; 
+      let dh = char.height;
+
+      // If it's an attack frame, use the image's own natural size to prevent distortion
+      if (char.state === 'attack' && char.attackLock) {
+        dw = img.naturalWidth;
+        dh = img.naturalHeight;
+      }
+
       ctx.drawImage(img, -dw / 2, -dh, dw, dh);
     }
     
@@ -331,23 +336,6 @@ const HoKalla = () => {
     ctx.restore();
   };
 
-  // 🛠️ FIX: Overlay disappears when mouse enters the area
-  const drawFocusOverlay = (ctx, canvas) => {
-    if (!gameReady) {
-      ctx.save();
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 48px Arial';
-      ctx.textAlign = 'center';
-      ctx.shadowColor = '#000';
-      ctx.shadowBlur = 10;
-      ctx.fillText('⚔️ HOVER TO START ⚔️', canvas.width / 2, canvas.height / 2);
-      ctx.restore();
-    }
-  };
-
   // ---------- Physics & input ----------
   const update = (canvas, deltaTime) => {
     const p1 = player.current;   
@@ -383,7 +371,6 @@ const HoKalla = () => {
     }
 
     // --- PLAYER 2: THABO CONTROLS ---
-    // 🛠️ CHANGED TO 'L' KEY TO AVOID KEYBOARD CONFLICTS
     const attackPressedP2 = keys.current['l'] || keys.current['L']; 
     if (attackPressedP2 && !p2.attackLock && p2.grounded) {
       p2.state = 'attack';
@@ -557,9 +544,6 @@ const HoKalla = () => {
     drawFPS(ctx, canvas, fs.fps);
     drawHUD(ctx, canvas, player.current, opponent.current);
 
-    // 🛠️ Overlay checked on every frame
-    drawFocusOverlay(ctx, canvas);
-
     animFrameId.current = requestAnimationFrame(gameLoop);
   };
 
@@ -591,7 +575,6 @@ const HoKalla = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // 🛠️ FIX: Always capture keyboard input from the Window
     const keyDown = (e) => {
       keys.current[e.key] = true;
       if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', 'j', 'J', 'l', 'L'].includes(e.key)) e.preventDefault();
@@ -600,10 +583,6 @@ const HoKalla = () => {
     
     window.addEventListener('keydown', keyDown);
     window.addEventListener('keyup', keyUp);
-
-    // 🛠️ FIX: Turn off the overlay on mouse enter
-    const handleMouseEnter = () => setGameReady(true);
-    canvas.addEventListener('mouseenter', handleMouseEnter);
 
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -615,7 +594,6 @@ const HoKalla = () => {
     return () => {
       window.removeEventListener('keydown', keyDown);
       window.removeEventListener('keyup', keyUp);
-      canvas.removeEventListener('mouseenter', handleMouseEnter);
       window.removeEventListener('resize', handleResize);
       resizeObserver.disconnect();
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
