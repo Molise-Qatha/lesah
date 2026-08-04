@@ -8,9 +8,10 @@ const SPRITE_CONFIG = {
     framesPerState: {
       idle: 1,
       walk: 5,
-      jump: 7,
-      land: 7,
+      // 🛠️ FIX: Land reuses the last walk frame to prevent 404s
+      land: 5,   
       crouch: 7,
+      jump: 7,
       attack: 3,
       block: 5,    
       hit: 6,      
@@ -21,9 +22,9 @@ const SPRITE_CONFIG = {
     framesPerState: {
       idle: 1,
       walk: 3,
-      jump: 6,
       land: 3,
       crouch: 4,
+      jump: 6,
       attack: 5,
       block: 7,    
       hit: 5,      
@@ -31,8 +32,7 @@ const SPRITE_CONFIG = {
     nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
-  // 🛠️ This is the standard height for ALL sprites. 
-  // The code will automatically scale every PNG to this exact height.
+  // 🛠️ All PNGs will be scaled to this height automatically!
   targetHeight: 200, 
 };
 
@@ -46,30 +46,31 @@ const AI_ATTACK_RANGE = 70;
 const ROUND_INTRO_DURATION = 3000;
 const HIT_STUN_DURATION = 400;     
 
-// 🛠️ PLACEHOLDER SOUNDS (No .mp3 files needed!)
+// 🛠️ FIX: Placeholder sounds that will NOT crash the game
 const createPlaceholderSound = () => {
-  // Creates a silent, 100ms audio buffer as a placeholder
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const oscillator = audioCtx.createOscillator();
-  const gainNode = audioCtx.createGain();
-  gainNode.gain.value = 0; // Silent
-  oscillator.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
-  oscillator.start();
-  oscillator.stop(audioCtx.currentTime + 0.1);
+  let audioCtx = null;
   return {
     play: () => {
-      // Resumes audio context if it's suspended (required by modern browsers)
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      gain.gain.value = 0.01; // Barely audible placeholder sound
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.1);
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        // Resume context if it's blocked
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        // Play a tiny silent beep
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        gain.gain.value = 0.01; 
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } catch (e) {
+        // Silently ignore audio errors so the game never crashes
+      }
     },
-    currentTime: 0,
   };
 };
 
@@ -173,7 +174,6 @@ const HoKalla = () => {
     arenaImg.onload = () => { arenaImage.current = arenaImg; arenaLoaded.current = true; };
     arenaImg.onerror = () => console.warn('Arena image not found');
 
-    // 🛠️ DYNAMIC SIZING: Every PNG is automatically scaled to targetHeight!
     const getScaledDimensions = (img) => {
       if (!img || !img.complete || img.naturalWidth === 0) return { width: 100, height: SPRITE_CONFIG.targetHeight };
       const ratio = SPRITE_CONFIG.targetHeight / img.naturalHeight;
@@ -287,7 +287,6 @@ const HoKalla = () => {
     const onFrameLoad = () => {
       loadedCount.current++;
       if (loadedCount.current >= totalFrames.current) {
-        // Set the character sizes based on the first loaded Walk frame
         if (sprites.current.khotso.walk[0]?.complete) {
           const dims = getScaledDimensions(sprites.current.khotso.walk[0]);
           player.current.width = dims.width;
@@ -304,7 +303,7 @@ const HoKalla = () => {
     sprites.current.khotso.attack = loadKhotsoAttackFrames();
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
-    sprites.current.khotso.land   = loadKhotsoFrames('land', 7);
+    sprites.current.khotso.land   = loadKhotsoFrames('walk', 5); // 🛠️ Uses walk frames to avoid 404
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', 7);
     sprites.current.khotso.block  = loadKhotsoDefenseFrames();
     sprites.current.khotso.hit    = loadKhotsoPainFrames();
@@ -312,7 +311,7 @@ const HoKalla = () => {
     sprites.current.thabo.attack = loadThaboAttackFrames();
     sprites.current.thabo.walk   = loadThaboFrames('walk', 3);
     sprites.current.thabo.jump   = loadThaboFrames('jump', 6);
-    sprites.current.thabo.land   = loadThaboFrames('land', 3);
+    sprites.current.thabo.land   = loadThaboFrames('walk', 3); // 🛠️ Uses walk frames to avoid 404
     sprites.current.thabo.crouch = loadThaboFrames('crouch', 4);
     sprites.current.thabo.block  = loadThaboDefenseFrames();
     sprites.current.thabo.hit    = loadThaboPainFrames();
@@ -324,19 +323,9 @@ const HoKalla = () => {
     const checkIdle = setInterval(() => {
       if (sprites.current.khotso.walk[0]?.complete) {
         sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
-        if (player.current.width === 100) {
-          const dims = getScaledDimensions(sprites.current.khotso.walk[0]);
-          player.current.width = dims.width;
-          player.current.height = dims.height;
-        }
       }
       if (sprites.current.thabo.walk[0]?.complete) {
         sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
-        if (opponent.current.width === 100) {
-          const dims = getScaledDimensions(sprites.current.thabo.walk[0]);
-          opponent.current.width = dims.width;
-          opponent.current.height = dims.height;
-        }
       }
       if (sprites.current.khotso.idle.length && sprites.current.thabo.idle.length) {
         clearInterval(checkIdle);
@@ -356,11 +345,13 @@ const HoKalla = () => {
   const handleTouchBlockStart  = (e) => { e.preventDefault(); touchBlock.current = true; };
   const handleTouchBlockEnd    = (e) => { e.preventDefault(); touchBlock.current = false; };
 
-  // 🔉 Play sound helper
   const playSound = (sound) => {
-    if (sound) {
-      sound.currentTime = 0;
-      sound.play().catch(() => {});
+    if (sound && sound.play) {
+      try {
+        sound.play();
+      } catch (e) {
+        // Prevents the game from crashing if audio fails
+      }
     }
   };
 
@@ -503,7 +494,6 @@ const HoKalla = () => {
     }
 
     if (img && img.complete && img.naturalWidth > 0) {
-      // 🛠️ AUTO-SCALING: Every single PNG is drawn at the exact same height!
       const targetHeight = SPRITE_CONFIG.targetHeight;
       const targetWidth = (img.naturalWidth / img.naturalHeight) * targetHeight;
       ctx.drawImage(img, -targetWidth / 2, -targetHeight, targetWidth, targetHeight);
@@ -633,11 +623,9 @@ const HoKalla = () => {
     const p2 = opponent.current;
     const groundY = canvas.height * groundFrac;
 
-    // Hit stun timers
     if (p1.hitStunTimer > 0) p1.hitStunTimer -= deltaTime;
     if (p2.hitStunTimer > 0) p2.hitStunTimer -= deltaTime;
 
-    // --- PLAYER 1: KHOTSO (Human - ARROW KEYS) ---
     const isStunned1 = p1.hitStunTimer > 0;
     const blockPressed1 = (keys.current['k'] || keys.current['K'] || touchBlock.current) && p1.grounded && !isStunned1;
 
@@ -670,7 +658,6 @@ const HoKalla = () => {
       p1.blocking = false;
     }
 
-    // --- PLAYER 2: THABO (AI) ---
     const isStunned2 = p2.hitStunTimer > 0;
     if (!isStunned2) {
       updateAI(deltaTime);
@@ -679,7 +666,6 @@ const HoKalla = () => {
       p2.blocking = false;
     }
 
-    // --- APPLY PHYSICS ---
     const applyPhysics = (char) => {
       char.vy += 0.6;
       char.x += char.vx;
@@ -710,16 +696,13 @@ const HoKalla = () => {
     applyPhysics(p1);
     applyPhysics(p2);
 
-    // --- HIT DETECTION ---
     checkAttackHit(p1, p2);
     checkAttackHit(p2, p1);
 
-    // --- PLAYER FACING ---
     if (p1.vx > 0) p1.facingRight = true;
     else if (p1.vx < 0) p1.facingRight = false;
     else if (p1.state === 'idle' || p1.state === 'attack' || p1.state === 'block') p1.facingRight = p1.x < p2.x;
 
-    // --- STATE SWITCHING ---
     const updateState = (char, maxAttackFrames) => {
       if (char.hitStunTimer > 0) {
         if (char.state !== 'hit') { char.state = 'hit'; char.frameTimer = 0; }
@@ -758,7 +741,6 @@ const HoKalla = () => {
     updateState(p1, SPRITE_CONFIG.khotso.framesPerState.attack);
     updateState(p2, SPRITE_CONFIG.thabo.framesPerState.attack);
 
-    // --- ANIMATION TIMERS ---
     const advanceTimer = (char, maxLandFrames) => {
       if (char.state === 'walk' || char.state === 'jump' || char.state === 'attack' || char.state === 'hit') {
         char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
