@@ -48,7 +48,6 @@ const HoKalla = () => {
   const touchAttack = useRef(false);
   const touchBlock = useRef(false);  
 
-  // 🛠️ NEW: React State to force the Health Bars to update
   const [khotsoHealth, setKhotsoHealth] = useState(PLAYER_MAX_HEALTH);
   const [thaboHealth, setThaboHealth] = useState(PLAYER_MAX_HEALTH);
 
@@ -221,7 +220,6 @@ const HoKalla = () => {
       const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
       defender.health = Math.max(0, defender.health - damage);
 
-      // 🛠️ NEW: Update React State so the HTML HUD changes color!
       if (defender === player.current) {
         setKhotsoHealth(defender.health);
       } else {
@@ -483,7 +481,6 @@ const HoKalla = () => {
     p2.attackLock = false; p2.hitActive = false; p2.crouching = false; p2.blocking = false; p2.hitStunTimer = 0;
     p2.health = PLAYER_MAX_HEALTH; p2.frameTimer = 0; p2.currentFrame = 0;
 
-    // 🛠️ Reset the React State health bars too
     setKhotsoHealth(PLAYER_MAX_HEALTH);
     setThaboHealth(PLAYER_MAX_HEALTH);
 
@@ -549,7 +546,9 @@ const HoKalla = () => {
       window.removeEventListener('resize', handleResize); resizeObserver.disconnect();
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
     };
-  }, [khotsoHealth, thaboHealth]); // 🛠️ Watch for health changes
+  // 🛠️ FIX: Removed [khotsoHealth, thaboHealth] from here! 
+  // The game loop no longer restarts when the health bars move.
+  }, []); 
 
   const isTouchDevice = 'ontouchstart' in window;
 
@@ -557,7 +556,7 @@ const HoKalla = () => {
     <div className="ho-kalla-container" ref={containerRef}>
       <canvas ref={canvasRef} className="ho-kalla-canvas" />
       
-      {/* 🛠️ THE HTML HUD OVERLAY */}
+      {/* THE HTML HUD OVERLAY */}
       <div className="hud-overlay">
         
         {/* Center Timer */}
@@ -574,7 +573,6 @@ const HoKalla = () => {
           <div className="player-info">
             <div className="player-name">KHOTSO</div>
             <div className="health-bar-container">
-              {/* 🛠️ This now updates dynamically! */}
               <div 
                 className="health-bar-fill" 
                 id="khotso-health" 
@@ -597,7 +595,6 @@ const HoKalla = () => {
           <div className="player-info">
             <div className="player-name">THABO</div>
             <div className="health-bar-container">
-              {/* 🛠️ This now updates dynamically! */}
               <div 
                 className="health-bar-fill" 
                 id="thabo-health" 
