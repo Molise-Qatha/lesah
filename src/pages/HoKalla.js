@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './HoKalla.css';
 
 // ---- SPRITE CONFIGURATION ----
@@ -48,8 +48,12 @@ const HoKalla = () => {
   const touchAttack = useRef(false);
   const touchBlock = useRef(false);  
 
-  const [khotsoHealth, setKhotsoHealth] = useState(PLAYER_MAX_HEALTH);
-  const [thaboHealth, setThaboHealth] = useState(PLAYER_MAX_HEALTH);
+  // 🛠️ NEW: useRef for health values so React doesn't restart the game
+  const khotsoHealthRef = useRef(PLAYER_MAX_HEALTH);
+  const thaboHealthRef = useRef(PLAYER_MAX_HEALTH);
+  
+  // 🛠️ NEW: Force update to refresh the HTML UI manually
+  const [, forceUpdate] = useState(0);
 
   const sprites = useRef({
     khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [], block: [], hit: [] },
@@ -220,11 +224,14 @@ const HoKalla = () => {
       const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
       defender.health = Math.max(0, defender.health - damage);
 
+      // 🛠️ Update the Ref (not the state)
       if (defender === player.current) {
-        setKhotsoHealth(defender.health);
+        khotsoHealthRef.current = defender.health;
       } else {
-        setThaboHealth(defender.health);
+        thaboHealthRef.current = defender.health;
       }
+      // 🛠️ Force the HTML to update without restarting the game
+      forceUpdate(prev => prev + 1);
       
       if (isBlocked) { playSound(SOUNDS.block); } 
       else { playSound(SOUNDS.punch); playSound(SOUNDS.hit); }
@@ -476,13 +483,14 @@ const HoKalla = () => {
     p1.x = 200; p1.y = groundY; p1.vx = 0; p1.vy = 0; p1.grounded = true; p1.state = 'idle'; p1.facingRight = true;
     p1.attackLock = false; p1.hitActive = false; p1.crouching = false; p1.blocking = false; p1.hitStunTimer = 0;
     p1.health = PLAYER_MAX_HEALTH; p1.frameTimer = 0; p1.currentFrame = 0;
-    
     p2.x = 600; p2.y = groundY; p2.vx = 0; p2.vy = 0; p2.grounded = true; p2.state = 'idle'; p2.facingRight = false;
     p2.attackLock = false; p2.hitActive = false; p2.crouching = false; p2.blocking = false; p2.hitStunTimer = 0;
     p2.health = PLAYER_MAX_HEALTH; p2.frameTimer = 0; p2.currentFrame = 0;
 
-    setKhotsoHealth(PLAYER_MAX_HEALTH);
-    setThaboHealth(PLAYER_MAX_HEALTH);
+    // 🛠️ Reset the refs and force the UI to update
+    khotsoHealthRef.current = PLAYER_MAX_HEALTH;
+    thaboHealthRef.current = PLAYER_MAX_HEALTH;
+    forceUpdate(prev => prev + 1);
 
     aiDecisionTimer.current = 500; aiCurrentAction.current = 'idle'; winner.current = null;
     roundNumber.current = 1; roundState.current = 'intro'; roundIntroStart.current = Date.now();
@@ -546,8 +554,6 @@ const HoKalla = () => {
       window.removeEventListener('resize', handleResize); resizeObserver.disconnect();
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
     };
-  // 🛠️ FIX: Removed [khotsoHealth, thaboHealth] from here! 
-  // The game loop no longer restarts when the health bars move.
   }, []); 
 
   const isTouchDevice = 'ontouchstart' in window;
@@ -556,16 +562,12 @@ const HoKalla = () => {
     <div className="ho-kalla-container" ref={containerRef}>
       <canvas ref={canvasRef} className="ho-kalla-canvas" />
       
-      {/* THE HTML HUD OVERLAY */}
       <div className="hud-overlay">
-        
-        {/* Center Timer */}
         <div className="timer-container">
           <div className="timer-circle">99</div>
           <div className="round-label">ROUND 1</div>
         </div>
 
-        {/* Khotso (Left) */}
         <div className="player-hud left">
           <div className="portrait-frame">
             <img src="/images/ui/khotso-portrait.png" alt="Khotso" />
@@ -576,7 +578,7 @@ const HoKalla = () => {
               <div 
                 className="health-bar-fill" 
                 id="khotso-health" 
-                style={{width: `${(khotsoHealth / PLAYER_MAX_HEALTH) * 100}%`}}
+                style={{width: `${(khotsoHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
               ></div>
             </div>
             <div className="super-meter">
@@ -587,7 +589,6 @@ const HoKalla = () => {
           </div>
         </div>
 
-        {/* Thabo (Right) */}
         <div className="player-hud right">
           <div className="portrait-frame">
             <img src="/images/ui/thabo-portrait.png" alt="Thabo" />
@@ -598,7 +599,7 @@ const HoKalla = () => {
               <div 
                 className="health-bar-fill" 
                 id="thabo-health" 
-                style={{width: `${(thaboHealth / PLAYER_MAX_HEALTH) * 100}%`}}
+                style={{width: `${(thaboHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
               ></div>
             </div>
             <div className="super-meter">
@@ -608,10 +609,8 @@ const HoKalla = () => {
             </div>
           </div>
         </div>
-
       </div>
 
-      {/* Touch Controls for Mobile */}
       {isTouchDevice && (
         <div className="touch-controls">
           <button className="touch-btn left-btn" onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd} onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>◀</button>
