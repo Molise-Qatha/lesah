@@ -25,7 +25,6 @@ const PLAYER_MAX_HEALTH = 100;
 const ATTACK_DAMAGE = 10;           
 const BLOCKED_DAMAGE = 2;          
 const ATTACK_RANGE = 85;
-const COLLISION_BUMP = 0.5;
 const AI_AGGRO_RANGE = 300;
 const AI_ATTACK_RANGE = 80;
 const ROUND_INTRO_DURATION = 3000;
@@ -42,6 +41,8 @@ const HoKalla = () => {
   const containerRef = useRef(null);
   const animFrameId = useRef(null);
   const keys = useRef({});
+  
+  // 🛠️ FIX: Touch controls refs restored
   const touchMoveLeft = useRef(false);
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
@@ -193,6 +194,18 @@ const HoKalla = () => {
       if (sprites.current.khotso.idle.length && sprites.current.thabo.idle.length) clearInterval(checkIdle);
     }, 50);
   }, []);
+
+  // 🛠️ FIX: Touch handlers RESTORED
+  const handleTouchLeftStart  = (e) => { e.preventDefault(); touchMoveLeft.current = true; };
+  const handleTouchLeftEnd    = (e) => { e.preventDefault(); touchMoveLeft.current = false; };
+  const handleTouchRightStart = (e) => { e.preventDefault(); touchMoveRight.current = true; };
+  const handleTouchRightEnd   = (e) => { e.preventDefault(); touchMoveRight.current = false; };
+  const handleTouchJumpStart  = (e) => { e.preventDefault(); touchJump.current = true; };
+  const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
+  const handleTouchAttackStart = (e) => { e.preventDefault(); touchAttack.current = true; };
+  const handleTouchAttackEnd   = (e) => { e.preventDefault(); touchAttack.current = false; };
+  const handleTouchBlockStart  = (e) => { e.preventDefault(); touchBlock.current = true; };
+  const handleTouchBlockEnd    = (e) => { e.preventDefault(); touchBlock.current = false; };
 
   const playSound = (sound) => { if (sound && sound.play) { try { sound.play(); } catch (e) {} } };
 
@@ -489,7 +502,6 @@ const HoKalla = () => {
     drawTitle(ctx, canvas);
     drawFPS(ctx, canvas, fs.fps);
     
-    // Only draw canvas based intro/end overlays. Health bars are now HTML!
     if (roundState.current === 'intro') drawRoundIntro(ctx, canvas);
     else if (roundState.current === 'roundEnd') drawRoundEnd(ctx, canvas);
 
@@ -542,8 +554,7 @@ const HoKalla = () => {
         {/* Khotso (Left) */}
         <div className="player-hud left">
           <div className="portrait-frame">
-            {/* Replace src below with '/images/ui/khotso-portrait.png' when you have it */}
-            <img src="https://via.placeholder.com/80x80/003366/ffffff?text=K" alt="Khotso" />
+            <img src="/images/ui/khotso-portrait.png" alt="Khotso" />
           </div>
           <div className="player-info">
             <div className="player-name">KHOTSO</div>
@@ -565,8 +576,7 @@ const HoKalla = () => {
         {/* Thabo (Right) */}
         <div className="player-hud right">
           <div className="portrait-frame">
-            {/* Replace src below with '/images/ui/thabo-portrait.png' when you have it */}
-            <img src="https://via.placeholder.com/80x80/8b0000/ffffff?text=T" alt="Thabo" />
+            <img src="/images/ui/thabo-portrait.png" alt="Thabo" />
           </div>
           <div className="player-info">
             <div className="player-name">THABO</div>
