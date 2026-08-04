@@ -31,7 +31,9 @@ const SPRITE_CONFIG = {
     nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
-  targetHeight: 180,
+  // 🛠️ This is the standard height for ALL sprites. 
+  // The code will automatically scale every PNG to this exact height.
+  targetHeight: 200, 
 };
 
 const ARENA_PATH = '/images/arenas/arena1.png';
@@ -44,12 +46,38 @@ const AI_ATTACK_RANGE = 70;
 const ROUND_INTRO_DURATION = 3000;
 const HIT_STUN_DURATION = 400;     
 
-// 🔉 SOUND CONFIGURATION (Save your .mp3 files in the public folder!)
+// 🛠️ PLACEHOLDER SOUNDS (No .mp3 files needed!)
+const createPlaceholderSound = () => {
+  // Creates a silent, 100ms audio buffer as a placeholder
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = 0; // Silent
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime + 0.1);
+  return {
+    play: () => {
+      // Resumes audio context if it's suspended (required by modern browsers)
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.01; // Barely audible placeholder sound
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.1);
+    },
+    currentTime: 0,
+  };
+};
+
 const SOUNDS = {
-  punch: new Audio('/punch.mp3'),
-  block: new Audio('/block.mp3'),
-  hit: new Audio('/hit.mp3'),
-  ko: new Audio('/ko.mp3'),
+  punch: createPlaceholderSound(),
+  block: createPlaceholderSound(),
+  hit: createPlaceholderSound(),
+  ko: createPlaceholderSound(),
 };
 
 const HoKalla = () => {
@@ -82,7 +110,6 @@ const HoKalla = () => {
   const aiDecisionTimer = useRef(0);
   const aiCurrentAction = useRef('idle');
 
-  // 🛠️ ARROW KEY CONTROLS
   const player = useRef({
     x: 200,
     y: 0,
@@ -146,7 +173,8 @@ const HoKalla = () => {
     arenaImg.onload = () => { arenaImage.current = arenaImg; arenaLoaded.current = true; };
     arenaImg.onerror = () => console.warn('Arena image not found');
 
-    const scaleSpriteToTargetHeight = (img) => {
+    // 🛠️ DYNAMIC SIZING: Every PNG is automatically scaled to targetHeight!
+    const getScaledDimensions = (img) => {
       if (!img || !img.complete || img.naturalWidth === 0) return { width: 100, height: SPRITE_CONFIG.targetHeight };
       const ratio = SPRITE_CONFIG.targetHeight / img.naturalHeight;
       return {
@@ -155,7 +183,6 @@ const HoKalla = () => {
       };
     };
 
-    // -------------------- KHOTSO LOADERS --------------------
     const loadKhotsoAttackFrames = () => {
       const arr = [];
       for (let i = 1; i <= SPRITE_CONFIG.khotso.framesPerState.attack; i++) {
@@ -206,7 +233,6 @@ const HoKalla = () => {
       return arr;
     };
 
-    // -------------------- THABO LOADERS --------------------
     const loadThaboAttackFrames = () => {
       const arr = [];
       for (let i = 1; i <= SPRITE_CONFIG.thabo.framesPerState.attack; i++) {
@@ -261,20 +287,20 @@ const HoKalla = () => {
     const onFrameLoad = () => {
       loadedCount.current++;
       if (loadedCount.current >= totalFrames.current) {
+        // Set the character sizes based on the first loaded Walk frame
         if (sprites.current.khotso.walk[0]?.complete) {
-          const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
+          const dims = getScaledDimensions(sprites.current.khotso.walk[0]);
           player.current.width = dims.width;
           player.current.height = dims.height;
         }
         if (sprites.current.thabo.walk[0]?.complete) {
-          const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
+          const dims = getScaledDimensions(sprites.current.thabo.walk[0]);
           opponent.current.width = dims.width;
           opponent.current.height = dims.height;
         }
       }
     };
 
-    // --- LOAD ALL SPRITES ---
     sprites.current.khotso.attack = loadKhotsoAttackFrames();
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
@@ -299,7 +325,7 @@ const HoKalla = () => {
       if (sprites.current.khotso.walk[0]?.complete) {
         sprites.current.khotso.idle = [sprites.current.khotso.walk[0]];
         if (player.current.width === 100) {
-          const dims = scaleSpriteToTargetHeight(sprites.current.khotso.walk[0]);
+          const dims = getScaledDimensions(sprites.current.khotso.walk[0]);
           player.current.width = dims.width;
           player.current.height = dims.height;
         }
@@ -307,7 +333,7 @@ const HoKalla = () => {
       if (sprites.current.thabo.walk[0]?.complete) {
         sprites.current.thabo.idle = [sprites.current.thabo.walk[0]];
         if (opponent.current.width === 100) {
-          const dims = scaleSpriteToTargetHeight(sprites.current.thabo.walk[0]);
+          const dims = getScaledDimensions(sprites.current.thabo.walk[0]);
           opponent.current.width = dims.width;
           opponent.current.height = dims.height;
         }
@@ -353,7 +379,6 @@ const HoKalla = () => {
       const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
       defender.health = Math.max(0, defender.health - damage);
       
-      // 🔊 Trigger Sound Effects
       if (isBlocked) {
         playSound(SOUNDS.block);
       } else {
@@ -478,13 +503,10 @@ const HoKalla = () => {
     }
 
     if (img && img.complete && img.naturalWidth > 0) {
-      let dw = char.width;
-      let dh = char.height;
-      if (char.state === 'attack' || char.state === 'hit') {
-        dw = img.naturalWidth;
-        dh = img.naturalHeight;
-      }
-      ctx.drawImage(img, -dw / 2, -dh, dw, dh);
+      // 🛠️ AUTO-SCALING: Every single PNG is drawn at the exact same height!
+      const targetHeight = SPRITE_CONFIG.targetHeight;
+      const targetWidth = (img.naturalWidth / img.naturalHeight) * targetHeight;
+      ctx.drawImage(img, -targetWidth / 2, -targetHeight, targetWidth, targetHeight);
     } else {
       ctx.fillStyle = char === player.current ? '#1565C0' : '#b71c1c';
       ctx.fillRect(-25, -50, 50, 80);
@@ -632,13 +654,11 @@ const HoKalla = () => {
 
       let moveDirP1 = 0;
       if (!p1.blocking && p1.state !== 'attack') {
-        // 🛠️ MAP MOVEMENT TO ARROW KEYS
         if (keys.current['ArrowLeft']) moveDirP1 -= 1;
         if (keys.current['ArrowRight']) moveDirP1 += 1;
       }
       p1.vx = p1.blocking ? 0 : moveDirP1 * p1.speed;
 
-      // 🛠️ MAP JUMP TO UP ARROW
       if ((keys.current['ArrowUp']) && p1.grounded && !p1.blocking && p1.state !== 'attack') {
         p1.vy = p1.jumpForce;
         p1.grounded = false;
@@ -848,7 +868,6 @@ const HoKalla = () => {
 
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      // 🛠️ UPDATED: Only prevent default for game controls
       if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'j','J','k','K','r','R'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
