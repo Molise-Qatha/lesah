@@ -42,12 +42,15 @@ const HoKalla = () => {
   const animFrameId = useRef(null);
   const keys = useRef({});
   
-  // 🛠️ FIX: Touch controls refs restored
   const touchMoveLeft = useRef(false);
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
   const touchAttack = useRef(false);
   const touchBlock = useRef(false);  
+
+  // 🛠️ NEW: React State to force the Health Bars to update
+  const [khotsoHealth, setKhotsoHealth] = useState(PLAYER_MAX_HEALTH);
+  const [thaboHealth, setThaboHealth] = useState(PLAYER_MAX_HEALTH);
 
   const sprites = useRef({
     khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [], block: [], hit: [] },
@@ -195,7 +198,6 @@ const HoKalla = () => {
     }, 50);
   }, []);
 
-  // 🛠️ FIX: Touch handlers RESTORED
   const handleTouchLeftStart  = (e) => { e.preventDefault(); touchMoveLeft.current = true; };
   const handleTouchLeftEnd    = (e) => { e.preventDefault(); touchMoveLeft.current = false; };
   const handleTouchRightStart = (e) => { e.preventDefault(); touchMoveRight.current = true; };
@@ -218,6 +220,13 @@ const HoKalla = () => {
       const isBlocked = defender.blocking && ((attacker.facingRight && defender.x > attacker.x) || (!attacker.facingRight && defender.x < attacker.x));
       const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
       defender.health = Math.max(0, defender.health - damage);
+
+      // 🛠️ NEW: Update React State so the HTML HUD changes color!
+      if (defender === player.current) {
+        setKhotsoHealth(defender.health);
+      } else {
+        setThaboHealth(defender.health);
+      }
       
       if (isBlocked) { playSound(SOUNDS.block); } 
       else { playSound(SOUNDS.punch); playSound(SOUNDS.hit); }
@@ -469,9 +478,15 @@ const HoKalla = () => {
     p1.x = 200; p1.y = groundY; p1.vx = 0; p1.vy = 0; p1.grounded = true; p1.state = 'idle'; p1.facingRight = true;
     p1.attackLock = false; p1.hitActive = false; p1.crouching = false; p1.blocking = false; p1.hitStunTimer = 0;
     p1.health = PLAYER_MAX_HEALTH; p1.frameTimer = 0; p1.currentFrame = 0;
+    
     p2.x = 600; p2.y = groundY; p2.vx = 0; p2.vy = 0; p2.grounded = true; p2.state = 'idle'; p2.facingRight = false;
     p2.attackLock = false; p2.hitActive = false; p2.crouching = false; p2.blocking = false; p2.hitStunTimer = 0;
     p2.health = PLAYER_MAX_HEALTH; p2.frameTimer = 0; p2.currentFrame = 0;
+
+    // 🛠️ Reset the React State health bars too
+    setKhotsoHealth(PLAYER_MAX_HEALTH);
+    setThaboHealth(PLAYER_MAX_HEALTH);
+
     aiDecisionTimer.current = 500; aiCurrentAction.current = 'idle'; winner.current = null;
     roundNumber.current = 1; roundState.current = 'intro'; roundIntroStart.current = Date.now();
   };
@@ -534,7 +549,7 @@ const HoKalla = () => {
       window.removeEventListener('resize', handleResize); resizeObserver.disconnect();
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
     };
-  }, []);
+  }, [khotsoHealth, thaboHealth]); // 🛠️ Watch for health changes
 
   const isTouchDevice = 'ontouchstart' in window;
 
@@ -542,7 +557,7 @@ const HoKalla = () => {
     <div className="ho-kalla-container" ref={containerRef}>
       <canvas ref={canvasRef} className="ho-kalla-canvas" />
       
-      {/* 🛠️ THE NEW HTML HUD OVERLAY */}
+      {/* 🛠️ THE HTML HUD OVERLAY */}
       <div className="hud-overlay">
         
         {/* Center Timer */}
@@ -559,10 +574,11 @@ const HoKalla = () => {
           <div className="player-info">
             <div className="player-name">KHOTSO</div>
             <div className="health-bar-container">
+              {/* 🛠️ This now updates dynamically! */}
               <div 
                 className="health-bar-fill" 
                 id="khotso-health" 
-                style={{width: `${(player.current.health / player.current.maxHealth) * 100}%`}}
+                style={{width: `${(khotsoHealth / PLAYER_MAX_HEALTH) * 100}%`}}
               ></div>
             </div>
             <div className="super-meter">
@@ -581,10 +597,11 @@ const HoKalla = () => {
           <div className="player-info">
             <div className="player-name">THABO</div>
             <div className="health-bar-container">
+              {/* 🛠️ This now updates dynamically! */}
               <div 
                 className="health-bar-fill" 
                 id="thabo-health" 
-                style={{width: `${(opponent.current.health / opponent.current.maxHealth) * 100}%`}}
+                style={{width: `${(thaboHealth / PLAYER_MAX_HEALTH) * 100}%`}}
               ></div>
             </div>
             <div className="super-meter">
