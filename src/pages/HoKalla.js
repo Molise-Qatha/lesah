@@ -8,8 +8,7 @@ const SPRITE_CONFIG = {
     framesPerState: {
       idle: 1,
       walk: 5,
-      // 🛠️ FIX: Land reuses the last walk frame to prevent 404s
-      land: 5,   
+      land: 5,
       crouch: 7,
       jump: 7,
       attack: 3,
@@ -32,7 +31,6 @@ const SPRITE_CONFIG = {
     nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
-  // 🛠️ All PNGs will be scaled to this height automatically!
   targetHeight: 200, 
 };
 
@@ -40,9 +38,10 @@ const ARENA_PATH = '/images/arenas/arena1.png';
 const PLAYER_MAX_HEALTH = 100;
 const ATTACK_DAMAGE = 10;           
 const BLOCKED_DAMAGE = 2;          
-const ATTACK_RANGE = 80;
+const ATTACK_RANGE = 85;
+const COLLISION_BUMP = 0.5;
 const AI_AGGRO_RANGE = 300;
-const AI_ATTACK_RANGE = 70;
+const AI_ATTACK_RANGE = 80;
 const ROUND_INTRO_DURATION = 3000;
 const HIT_STUN_DURATION = 400;     
 
@@ -55,11 +54,9 @@ const createPlaceholderSound = () => {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        // Resume context if it's blocked
         if (audioCtx.state === 'suspended') {
           audioCtx.resume();
         }
-        // Play a tiny silent beep
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         gain.gain.value = 0.01; 
@@ -68,7 +65,7 @@ const createPlaceholderSound = () => {
         osc.start();
         osc.stop(audioCtx.currentTime + 0.05);
       } catch (e) {
-        // Silently ignore audio errors so the game never crashes
+        // Silently ignore audio errors
       }
     },
   };
@@ -303,7 +300,7 @@ const HoKalla = () => {
     sprites.current.khotso.attack = loadKhotsoAttackFrames();
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
-    sprites.current.khotso.land   = loadKhotsoFrames('walk', 5); // 🛠️ Uses walk frames to avoid 404
+    sprites.current.khotso.land   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', 7);
     sprites.current.khotso.block  = loadKhotsoDefenseFrames();
     sprites.current.khotso.hit    = loadKhotsoPainFrames();
@@ -311,7 +308,7 @@ const HoKalla = () => {
     sprites.current.thabo.attack = loadThaboAttackFrames();
     sprites.current.thabo.walk   = loadThaboFrames('walk', 3);
     sprites.current.thabo.jump   = loadThaboFrames('jump', 6);
-    sprites.current.thabo.land   = loadThaboFrames('walk', 3); // 🛠️ Uses walk frames to avoid 404
+    sprites.current.thabo.land   = loadThaboFrames('walk', 3);
     sprites.current.thabo.crouch = loadThaboFrames('crouch', 4);
     sprites.current.thabo.block  = loadThaboDefenseFrames();
     sprites.current.thabo.hit    = loadThaboPainFrames();
@@ -349,9 +346,7 @@ const HoKalla = () => {
     if (sound && sound.play) {
       try {
         sound.play();
-      } catch (e) {
-        // Prevents the game from crashing if audio fails
-      }
+      } catch (e) {}
     }
   };
 
@@ -360,7 +355,10 @@ const HoKalla = () => {
     if (!attacker.hitActive) return;
 
     const distance = Math.abs(attacker.x - defender.x);
-    if (distance < ATTACK_RANGE) {
+    const halfWidth = attacker.width / 2; // Adding a buffer to visual width
+
+    // 🛠️ FIX: Need to be close enough, but NOT inside the character
+    if (distance > halfWidth && distance < ATTACK_RANGE) {
       attacker.hitActive = false;
       
       const isBlocked = defender.blocking && 
@@ -369,6 +367,8 @@ const HoKalla = () => {
       
       const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
       defender.health = Math.max(0, defender.health - damage);
+      
+      console.log("HIT CONNECTED! Damage dealt:", damage); // 🛠️ Look for this in the browser console!
       
       if (isBlocked) {
         playSound(SOUNDS.block);
@@ -626,6 +626,7 @@ const HoKalla = () => {
     if (p1.hitStunTimer > 0) p1.hitStunTimer -= deltaTime;
     if (p2.hitStunTimer > 0) p2.hitStunTimer -= deltaTime;
 
+    // --- PLAYER 1: KHOTSO (Human - ARROW KEYS) ---
     const isStunned1 = p1.hitStunTimer > 0;
     const blockPressed1 = (keys.current['k'] || keys.current['K'] || touchBlock.current) && p1.grounded && !isStunned1;
 
@@ -658,6 +659,7 @@ const HoKalla = () => {
       p1.blocking = false;
     }
 
+    // --- PLAYER 2: THABO (AI) ---
     const isStunned2 = p2.hitStunTimer > 0;
     if (!isStunned2) {
       updateAI(deltaTime);
@@ -666,43 +668,65 @@ const HoKalla = () => {
       p2.blocking = false;
     }
 
-    const applyPhysics = (char) => {
-      char.vy += 0.6;
-      char.x += char.vx;
-      char.y += char.vy;
+    // --- APPLY PHYSICS + COLLISION CHECK ---
+    const applyPhysicsAndCollision = (char1, char2) => {
+      // 1. Apply gravity & movement
+      char1.vy += 0.6;
+      char1.x += char1.vx;
+      char1.y += char1.vy;
 
+      // 2. Stage Boundaries
       const boundaryBuffer = 50;
       const stageLeft = boundaryBuffer;
-      const stageRight = canvas.width - boundaryBuffer - char.width;
+      const stageRight = canvas.width - boundaryBuffer - char1.width;
+      if (char1.x < stageLeft) char1.x = stageLeft;
+      if (char1.x > stageRight) char1.x = stageRight;
 
-      if (char.x < stageLeft) char.x = stageLeft;
-      if (char.x > stageRight) char.x = stageRight;
+      // 3. 🛠️ SOLID CHARACTER COLLISION (The Fix!)
+      const dist = Math.abs(char1.x - char2.x);
+      const minDist = (char1.width / 2) + (char2.width / 2);
 
-      if (char.y > groundY) {
-        char.y = groundY;
-        char.vy = 0;
-        if (!char.grounded) {
-          char.landTimer = 15;
-          if (char.hitStunTimer <= 0) char.state = 'land';
-          char.frameTimer = 0;
-          char.landAnimFinished = false;
+      if (dist < minDist && char1.grounded && char2.grounded) {
+        // Push them apart based on who is moving
+        const overlap = minDist - dist;
+        if (char1.x < char2.x) {
+          char1.x -= overlap / 2;
+          char2.x += overlap / 2;
+        } else {
+          char1.x += overlap / 2;
+          char2.x -= overlap / 2;
         }
-        char.grounded = true;
+      }
+
+      // 4. Floor Collision
+      if (char1.y > groundY) {
+        char1.y = groundY;
+        char1.vy = 0;
+        if (!char1.grounded) {
+          char1.landTimer = 15;
+          if (char1.hitStunTimer <= 0) char1.state = 'land';
+          char1.frameTimer = 0;
+          char1.landAnimFinished = false;
+        }
+        char1.grounded = true;
       } else {
-        char.grounded = false;
+        char1.grounded = false;
       }
     };
 
-    applyPhysics(p1);
-    applyPhysics(p2);
+    applyPhysicsAndCollision(p1, p2);
+    applyPhysicsAndCollision(p2, p1);
 
+    // --- HIT DETECTION ---
     checkAttackHit(p1, p2);
     checkAttackHit(p2, p1);
 
+    // --- PLAYER FACING ---
     if (p1.vx > 0) p1.facingRight = true;
     else if (p1.vx < 0) p1.facingRight = false;
     else if (p1.state === 'idle' || p1.state === 'attack' || p1.state === 'block') p1.facingRight = p1.x < p2.x;
 
+    // --- STATE SWITCHING ---
     const updateState = (char, maxAttackFrames) => {
       if (char.hitStunTimer > 0) {
         if (char.state !== 'hit') { char.state = 'hit'; char.frameTimer = 0; }
