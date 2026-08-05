@@ -10,13 +10,17 @@ const SPRITE_CONFIG = {
       attack: 6,     // Reads from /attacks/horizontal_swing/
       kick: 6,       // Reads from /kicks/jumping_kick/
       power: 8,      // Reads from /powers/rivers_flow/
-      ultimate: 5,   // Reads from /powers/ancestors_wrath/ (You have 5 frames!)
+      ultimate: 5,   // Reads from /powers/ancestors_wrath/
       block: 5, hit: 6,
     },
   },
-  thabo: { /* (Kept for compatibility, AI uses old logic) */
+  thabo: {
     basePath: '/images/characters/thabo/',
-    framesPerState: { idle: 1, walk: 3, land: 3, crouch: 4, jump: 6, attack: 5, block: 7, hit: 5, kick: 6, power: 8, ultimate: 5 },
+    framesPerState: {
+      idle: 1, walk: 3, land: 3, crouch: 4, jump: 6, 
+      attack: 5,     // Reads from Tattack1.png etc
+      block: 7, hit: 5,
+    },
     nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
@@ -56,7 +60,7 @@ const HoKalla = () => {
 
   const khotsoHealthRef = useRef(PLAYER_MAX_HEALTH);
   const thaboHealthRef = useRef(PLAYER_MAX_HEALTH);
-  const powerMeterRef = useRef(0); // 0 to 100
+  const powerMeterRef = useRef(0); 
   const [, forceUpdate] = useState(0);
 
   const sprites = useRef({
@@ -107,17 +111,7 @@ const HoKalla = () => {
       return { width: Math.floor(img.naturalWidth * ratio), height: SPRITE_CONFIG.targetHeight };
     };
 
-    const loadKhotsoFrames = (prefix, count) => {
-      const arr = [];
-      for (let i = 1; i <= count; i++) {
-        const img = new Image();
-        img.src = `${SPRITE_CONFIG.khotso.basePath}${prefix}${i}.png`;
-        img.onload = onFrameLoad;
-        arr.push(img);
-      }
-      return arr;
-    };
-
+    // ------------- KHOTSO LOADERS -------------
     const loadKhotsoSubFolderFrames = (subfolder, count) => {
       const arr = [];
       for (let i = 1; i <= count; i++) {
@@ -130,12 +124,37 @@ const HoKalla = () => {
       return arr;
     };
 
+    const loadKhotsoFrames = (prefix, count) => {
+      const arr = [];
+      for (let i = 1; i <= count; i++) {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.khotso.basePath}${prefix}${i}.png`;
+        img.onload = onFrameLoad;
+        arr.push(img);
+      }
+      return arr;
+    };
+
+    // ------------- THABO LOADERS (Fixed) -------------
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
       for (let i = 1; i <= count; i++) {
         const img = new Image();
+        // 🛠️ FIXED: Correctly formats the file names for walk, jump, block, etc.
         img.src = `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
+        img.onload = onFrameLoad;
+        arr.push(img);
+      }
+      return arr;
+    };
+
+    const loadThaboAttackFrames = () => {
+      const arr = [];
+      // 🛠️ FIXED: Correctly formats the attack files (Tattack1.png, Tattack2.png)
+      for (let i = 1; i <= SPRITE_CONFIG.thabo.framesPerState.attack; i++) {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.thabo.basePath}Tattack${i}.png`;
         img.onload = onFrameLoad;
         arr.push(img);
       }
@@ -156,26 +175,24 @@ const HoKalla = () => {
       }
     };
 
-    // Khotso Loads
+    // --- LOAD KHOTSO FRAMES ---
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
     sprites.current.khotso.land   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', 7);
     sprites.current.khotso.block  = loadKhotsoSubFolderFrames('defense', 5);
     sprites.current.khotso.hit    = loadKhotsoSubFolderFrames('pain', 6);
-    
-    // 🛠️ NEW: Attack & Power Moves
     sprites.current.khotso.attack = loadKhotsoSubFolderFrames('attacks/horizontal_swing', 6);
     sprites.current.khotso.kick   = loadKhotsoSubFolderFrames('kicks/jumping_kick', 6);
     sprites.current.khotso.power  = loadKhotsoSubFolderFrames('powers/rivers_flow', 8);
-    sprites.current.khotso.ultimate = loadKhotsoSubFolderFrames('powers/ancestors_wrath', 5); // Noted: 5 frames!
+    sprites.current.khotso.ultimate = loadKhotsoSubFolderFrames('powers/ancestors_wrath', 5);
 
-    // Thabo Loads
+    // --- LOAD THABO FRAMES (BASIC MOVESET) ---
     sprites.current.thabo.walk   = loadThaboFrames('walk', 3);
     sprites.current.thabo.jump   = loadThaboFrames('jump', 6);
     sprites.current.thabo.land   = loadThaboFrames('walk', 3);
     sprites.current.thabo.crouch = loadThaboFrames('crouch', 4);
-    sprites.current.thabo.attack = loadThaboFrames('Tattack', 5);
+    sprites.current.thabo.attack = loadThaboAttackFrames(); // Corrected!
     sprites.current.thabo.block  = loadThaboFrames('block', 7);
     sprites.current.thabo.hit    = loadThaboFrames('hit', 5);
 
@@ -214,7 +231,6 @@ const HoKalla = () => {
       const damage = isBlocked ? 2 : damageVal;
       defender.health = Math.max(0, defender.health - damage);
 
-      // Earn Power Meter on successful hit
       if (!isBlocked) {
         if (defender === opponent.current) powerMeterRef.current = Math.min(100, powerMeterRef.current + 15);
         if (defender === player.current) powerMeterRef.current = Math.max(0, powerMeterRef.current - 10);
@@ -363,19 +379,15 @@ const HoKalla = () => {
     if (!isStunned1) {
       p1.blocking = blockPressed1;
 
-      // 🛠️ ATTACK LOGIC
       if (p1.grounded) {
-        // Basic Attack (J)
         if ((keys.current['j'] || keys.current['J'] || touchAttack.current) && !p1.attackLock && !p1.blocking) {
           p1.state = 'attack'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
         }
-        // Power Move (U) - Only if meter is full
         if ((keys.current['u'] || keys.current['U']) && !p1.attackLock && !p1.blocking && powerMeterRef.current >= 100) {
-          powerMeterRef.current = 0; // Reset meter
+          powerMeterRef.current = 0; 
           p1.state = 'power'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
         }
       } else {
-        // Aerial Kick (K)
         if ((keys.current['k'] || keys.current['K'] || touchKick.current) && !p1.attackLock) {
           p1.state = 'kick'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
         }
@@ -597,7 +609,6 @@ const HoKalla = () => {
                 style={{width: `${(khotsoHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
               ></div>
             </div>
-            {/* 🛠️ Power Meter Dots based on powerMeterRef */}
             <div className="super-meter">
               <div className={`super-dot ${powerMeterRef.current >= 33 ? 'filled' : ''}`}></div>
               <div className={`super-dot ${powerMeterRef.current >= 66 ? 'filled' : ''}`}></div>
