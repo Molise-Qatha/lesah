@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './HoKalla.css';
 
 // ---- SPRITE CONFIGURATION ----
@@ -6,14 +6,17 @@ const SPRITE_CONFIG = {
   khotso: {
     basePath: '/images/characters/khotso/',
     framesPerState: {
-      idle: 1, walk: 5, land: 5, crouch: 7, jump: 7, attack: 3, block: 5, hit: 6,
+      idle: 1, walk: 5, land: 5, crouch: 7, jump: 7, 
+      attack: 6,     // Reads from /attacks/horizontal_swing/
+      kick: 6,       // Reads from /kicks/jumping_kick/
+      power: 8,      // Reads from /powers/rivers_flow/
+      ultimate: 5,   // Reads from /powers/ancestors_wrath/ (You have 5 frames!)
+      block: 5, hit: 6,
     },
   },
-  thabo: {
+  thabo: { /* (Kept for compatibility, AI uses old logic) */
     basePath: '/images/characters/thabo/',
-    framesPerState: {
-      idle: 1, walk: 3, land: 3, crouch: 4, jump: 6, attack: 5, block: 7, hit: 5,
-    },
+    framesPerState: { idle: 1, walk: 3, land: 3, crouch: 4, jump: 6, attack: 5, block: 7, hit: 5, kick: 6, power: 8, ultimate: 5 },
     nameSuffix: '-removebg-preview',
   },
   animationSpeed: 10,
@@ -23,10 +26,13 @@ const SPRITE_CONFIG = {
 const ARENA_PATH = '/images/arenas/arena1.png';
 const PLAYER_MAX_HEALTH = 100;
 const ATTACK_DAMAGE = 10;           
-const BLOCKED_DAMAGE = 2;          
+const KICK_DAMAGE = 12;
+const POWER_DAMAGE = 30;
+const ULTIMATE_DAMAGE = 50;
 const ATTACK_RANGE = 85;
+const KICK_RANGE = 100;
+const POWER_RANGE = 150;
 const AI_AGGRO_RANGE = 300;
-const AI_ATTACK_RANGE = 80;
 const ROUND_INTRO_DURATION = 3000;
 const HIT_STUN_DURATION = 400;     
 
@@ -46,17 +52,15 @@ const HoKalla = () => {
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
   const touchAttack = useRef(false);
-  const touchBlock = useRef(false);  
+  const touchKick = useRef(false);
 
-  // 🛠️ NEW: useRef for health values so React doesn't restart the game
   const khotsoHealthRef = useRef(PLAYER_MAX_HEALTH);
   const thaboHealthRef = useRef(PLAYER_MAX_HEALTH);
-  
-  // 🛠️ NEW: Force update to refresh the HTML UI manually
+  const powerMeterRef = useRef(0); // 0 to 100
   const [, forceUpdate] = useState(0);
 
   const sprites = useRef({
-    khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [], block: [], hit: [] },
+    khotso: { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [], kick: [], power: [], ultimate: [], block: [], hit: [] },
     thabo:  { idle: [], walk: [], jump: [], land: [], crouch: [], attack: [], block: [], hit: [] },
   });
 
@@ -114,13 +118,16 @@ const HoKalla = () => {
       return arr;
     };
 
-    const loadKhotsoDirectoryFrames = (dir, filenames) => {
-      return filenames.map(name => {
+    const loadKhotsoSubFolderFrames = (subfolder, count) => {
+      const arr = [];
+      for (let i = 1; i <= count; i++) {
         const img = new Image();
-        img.src = `${SPRITE_CONFIG.khotso.basePath}${dir}/${name}.png`;
+        img.src = `${SPRITE_CONFIG.khotso.basePath}${subfolder}/${i}.png`;
         img.onload = onFrameLoad;
-        return img;
-      });
+        img.onerror = () => console.warn(`Missing Khotso ${subfolder}/${i}.png`);
+        arr.push(img);
+      }
+      return arr;
     };
 
     const loadThaboFrames = (prefix, count) => {
@@ -133,26 +140,6 @@ const HoKalla = () => {
         arr.push(img);
       }
       return arr;
-    };
-
-    const loadThaboAttackFrames = () => {
-      const arr = [];
-      for (let i = 1; i <= SPRITE_CONFIG.thabo.framesPerState.attack; i++) {
-        const img = new Image();
-        img.src = `${SPRITE_CONFIG.thabo.basePath}${i}.png`;
-        img.onload = onFrameLoad;
-        arr.push(img);
-      }
-      return arr;
-    };
-
-    const loadThaboDirectoryFrames = (dir, filenames) => {
-      return filenames.map(name => {
-        const img = new Image();
-        img.src = `${SPRITE_CONFIG.thabo.basePath}${dir}/${name}.png`;
-        img.onload = onFrameLoad;
-        return img;
-      });
     };
 
     const onFrameLoad = () => {
@@ -169,26 +156,28 @@ const HoKalla = () => {
       }
     };
 
-    const kDefense = ['blockhold', 'guardraise', 'highblock', 'lowblock', 'midblock'];
-    const kPain = ['heavyimpact', 'hitstart', 'knockedback', 'offbalance', 'regainingposture', 'staggerback'];
-    const tDefense = ['counterfollowthrough', 'guardraise', 'heavyblockimpact', 'highblock', 'lightblockimpact', 'recoverfromblock', 'returntoguard'];
-    const tPain = ['heavyhit', 'hitstart', 'knockedback', 'lowhit', 'staggerback'];
-
+    // Khotso Loads
     sprites.current.khotso.walk   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
     sprites.current.khotso.land   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', 7);
-    sprites.current.khotso.attack = loadKhotsoFrames('Kattack', 3);
-    sprites.current.khotso.block  = loadKhotsoDirectoryFrames('defense', kDefense);
-    sprites.current.khotso.hit    = loadKhotsoDirectoryFrames('pain', kPain);
+    sprites.current.khotso.block  = loadKhotsoSubFolderFrames('defense', 5);
+    sprites.current.khotso.hit    = loadKhotsoSubFolderFrames('pain', 6);
+    
+    // 🛠️ NEW: Attack & Power Moves
+    sprites.current.khotso.attack = loadKhotsoSubFolderFrames('attacks/horizontal_swing', 6);
+    sprites.current.khotso.kick   = loadKhotsoSubFolderFrames('kicks/jumping_kick', 6);
+    sprites.current.khotso.power  = loadKhotsoSubFolderFrames('powers/rivers_flow', 8);
+    sprites.current.khotso.ultimate = loadKhotsoSubFolderFrames('powers/ancestors_wrath', 5); // Noted: 5 frames!
 
+    // Thabo Loads
     sprites.current.thabo.walk   = loadThaboFrames('walk', 3);
     sprites.current.thabo.jump   = loadThaboFrames('jump', 6);
     sprites.current.thabo.land   = loadThaboFrames('walk', 3);
     sprites.current.thabo.crouch = loadThaboFrames('crouch', 4);
-    sprites.current.thabo.attack = loadThaboAttackFrames();
-    sprites.current.thabo.block  = loadThaboDirectoryFrames('defense', tDefense);
-    sprites.current.thabo.hit    = loadThaboDirectoryFrames('pain', tPain);
+    sprites.current.thabo.attack = loadThaboFrames('Tattack', 5);
+    sprites.current.thabo.block  = loadThaboFrames('block', 7);
+    sprites.current.thabo.hit    = loadThaboFrames('hit', 5);
 
     totalFrames.current =
       Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
@@ -201,6 +190,7 @@ const HoKalla = () => {
     }, 50);
   }, []);
 
+  // ---------- Touch handlers ----------
   const handleTouchLeftStart  = (e) => { e.preventDefault(); touchMoveLeft.current = true; };
   const handleTouchLeftEnd    = (e) => { e.preventDefault(); touchMoveLeft.current = false; };
   const handleTouchRightStart = (e) => { e.preventDefault(); touchMoveRight.current = true; };
@@ -209,28 +199,29 @@ const HoKalla = () => {
   const handleTouchJumpEnd    = (e) => { e.preventDefault(); touchJump.current = false; };
   const handleTouchAttackStart = (e) => { e.preventDefault(); touchAttack.current = true; };
   const handleTouchAttackEnd   = (e) => { e.preventDefault(); touchAttack.current = false; };
-  const handleTouchBlockStart  = (e) => { e.preventDefault(); touchBlock.current = true; };
-  const handleTouchBlockEnd    = (e) => { e.preventDefault(); touchBlock.current = false; };
+  const handleTouchKickStart   = (e) => { e.preventDefault(); touchKick.current = true; };
+  const handleTouchKickEnd     = (e) => { e.preventDefault(); touchKick.current = false; };
 
   const playSound = (sound) => { if (sound && sound.play) { try { sound.play(); } catch (e) {} } };
 
-  const checkAttackHit = (attacker, defender) => {
+  const checkAttackHit = (attacker, defender, damageVal) => {
     if (!attacker.hitActive) return;
     const distance = Math.abs(attacker.x - defender.x);
     const halfWidth = attacker.width / 2;
     if (distance > halfWidth && distance < ATTACK_RANGE) {
       attacker.hitActive = false;
       const isBlocked = defender.blocking && ((attacker.facingRight && defender.x > attacker.x) || (!attacker.facingRight && defender.x < attacker.x));
-      const damage = isBlocked ? BLOCKED_DAMAGE : ATTACK_DAMAGE;
+      const damage = isBlocked ? 2 : damageVal;
       defender.health = Math.max(0, defender.health - damage);
 
-      // 🛠️ Update the Ref (not the state)
-      if (defender === player.current) {
-        khotsoHealthRef.current = defender.health;
-      } else {
-        thaboHealthRef.current = defender.health;
+      // Earn Power Meter on successful hit
+      if (!isBlocked) {
+        if (defender === opponent.current) powerMeterRef.current = Math.min(100, powerMeterRef.current + 15);
+        if (defender === player.current) powerMeterRef.current = Math.max(0, powerMeterRef.current - 10);
       }
-      // 🛠️ Force the HTML to update without restarting the game
+
+      if (defender === player.current) khotsoHealthRef.current = defender.health;
+      else thaboHealthRef.current = defender.health;
       forceUpdate(prev => prev + 1);
       
       if (isBlocked) { playSound(SOUNDS.block); } 
@@ -255,16 +246,10 @@ const HoKalla = () => {
     aiDecisionTimer.current -= deltaTime;
     if (aiDecisionTimer.current <= 0 && p2.grounded && p2.state !== 'attack') {
       const distance = Math.abs(p1.x - p2.x);
-      if (distance < AI_ATTACK_RANGE) {
+      if (distance < AI_AGGRO_RANGE) {
         const r = Math.random();
         if (r < 0.45) aiCurrentAction.current = 'attack';
         else if (r < 0.75) aiCurrentAction.current = 'block';
-        else if (r < 0.9) aiCurrentAction.current = 'jump';
-        else aiCurrentAction.current = 'idle';
-      } else if (distance < AI_AGGRO_RANGE) {
-        const r = Math.random();
-        if (r < 0.5) aiCurrentAction.current = 'chase';
-        else if (r < 0.7) aiCurrentAction.current = 'block';
         else if (r < 0.9) aiCurrentAction.current = 'jump';
         else aiCurrentAction.current = 'idle';
       } else {
@@ -373,19 +358,37 @@ const HoKalla = () => {
     if (p2.hitStunTimer > 0) p2.hitStunTimer -= deltaTime;
 
     const isStunned1 = p1.hitStunTimer > 0;
-    const blockPressed1 = (keys.current['k'] || keys.current['K'] || touchBlock.current) && p1.grounded && !isStunned1;
+    const blockPressed1 = (keys.current['k'] || keys.current['K'] || touchKick.current) && p1.grounded && !isStunned1;
+    
     if (!isStunned1) {
       p1.blocking = blockPressed1;
-      if ((keys.current['j'] || keys.current['J'] || touchAttack.current) && !p1.attackLock && p1.grounded && !p1.blocking) {
-        p1.state = 'attack'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
+
+      // 🛠️ ATTACK LOGIC
+      if (p1.grounded) {
+        // Basic Attack (J)
+        if ((keys.current['j'] || keys.current['J'] || touchAttack.current) && !p1.attackLock && !p1.blocking) {
+          p1.state = 'attack'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
+        }
+        // Power Move (U) - Only if meter is full
+        if ((keys.current['u'] || keys.current['U']) && !p1.attackLock && !p1.blocking && powerMeterRef.current >= 100) {
+          powerMeterRef.current = 0; // Reset meter
+          p1.state = 'power'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
+        }
+      } else {
+        // Aerial Kick (K)
+        if ((keys.current['k'] || keys.current['K'] || touchKick.current) && !p1.attackLock) {
+          p1.state = 'kick'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
+        }
       }
+
       let moveDirP1 = 0;
-      if (!p1.blocking && p1.state !== 'attack') {
+      if (!p1.blocking && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power') {
         if (keys.current['ArrowLeft']) moveDirP1 -= 1;
         if (keys.current['ArrowRight']) moveDirP1 += 1;
       }
       p1.vx = p1.blocking ? 0 : moveDirP1 * p1.speed;
-      if (keys.current['ArrowUp'] && p1.grounded && !p1.blocking && p1.state !== 'attack') {
+      
+      if (keys.current['ArrowUp'] && p1.grounded && !p1.blocking && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power') {
         p1.vy = p1.jumpForce; p1.grounded = false; p1.frameTimer = 0; p1.state = 'jump';
       }
     } else { p1.vx = 0; p1.blocking = false; }
@@ -418,22 +421,35 @@ const HoKalla = () => {
     applyPhysicsAndCollision(p1, p2);
     applyPhysicsAndCollision(p2, p1);
 
-    checkAttackHit(p1, p2);
-    checkAttackHit(p2, p1);
+    // Hit Detection
+    if (p1.state === 'power') checkAttackHit(p1, p2, POWER_DAMAGE);
+    else if (p1.state === 'kick') checkAttackHit(p1, p2, KICK_DAMAGE);
+    else checkAttackHit(p1, p2, ATTACK_DAMAGE);
+    checkAttackHit(p2, p1, ATTACK_DAMAGE);
 
     if (p1.vx > 0) p1.facingRight = true;
     else if (p1.vx < 0) p1.facingRight = false;
-    else if (p1.state === 'idle' || p1.state === 'attack' || p1.state === 'block') p1.facingRight = p1.x < p2.x;
+    else if (p1.state === 'idle' || p1.state === 'attack' || p1.state === 'kick' || p1.state === 'block' || p1.state === 'power') p1.facingRight = p1.x < p2.x;
 
-    const updateState = (char, maxAttackFrames) => {
+    const updateState = (char, maxAttackFrames, maxKickFrames, maxPowerFrames) => {
       if (char.hitStunTimer > 0) {
         if (char.state !== 'hit') { char.state = 'hit'; char.frameTimer = 0; }
       } else if (char.state === 'hit') {
         char.state = char.grounded ? 'idle' : 'jump'; char.frameTimer = 0;
-      } else if (!char.grounded && char.state !== 'attack') {
+      } else if (!char.grounded && char.state !== 'attack' && char.state !== 'kick' && char.state !== 'power') {
         char.state = 'jump';
       } else if (char.state === 'attack') {
         if (Math.floor(char.frameTimer) >= maxAttackFrames) {
+          char.attackLock = false; char.hitActive = false;
+          char.state = char.grounded ? 'idle' : 'jump'; char.frameTimer = 0;
+        }
+      } else if (char.state === 'kick') {
+        if (Math.floor(char.frameTimer) >= maxKickFrames) {
+          char.attackLock = false; char.hitActive = false;
+          char.state = char.grounded ? 'idle' : 'jump'; char.frameTimer = 0;
+        }
+      } else if (char.state === 'power') {
+        if (Math.floor(char.frameTimer) >= maxPowerFrames) {
           char.attackLock = false; char.hitActive = false;
           char.state = char.grounded ? 'idle' : 'jump'; char.frameTimer = 0;
         }
@@ -452,11 +468,11 @@ const HoKalla = () => {
       }
     };
 
-    updateState(p1, SPRITE_CONFIG.khotso.framesPerState.attack);
-    updateState(p2, SPRITE_CONFIG.thabo.framesPerState.attack);
+    updateState(p1, SPRITE_CONFIG.khotso.framesPerState.attack, SPRITE_CONFIG.khotso.framesPerState.kick, SPRITE_CONFIG.khotso.framesPerState.power);
+    updateState(p2, SPRITE_CONFIG.thabo.framesPerState.attack, SPRITE_CONFIG.thabo.framesPerState.kick, SPRITE_CONFIG.thabo.framesPerState.power);
 
     const advanceTimer = (char, maxLandFrames) => {
-      if (char.state === 'walk' || char.state === 'jump' || char.state === 'attack' || char.state === 'hit') {
+      if (char.state === 'walk' || char.state === 'jump' || char.state === 'attack' || char.state === 'kick' || char.state === 'power' || char.state === 'hit') {
         char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
       } else if (char.state === 'block') {
         char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed * 0.3;
@@ -487,9 +503,9 @@ const HoKalla = () => {
     p2.attackLock = false; p2.hitActive = false; p2.crouching = false; p2.blocking = false; p2.hitStunTimer = 0;
     p2.health = PLAYER_MAX_HEALTH; p2.frameTimer = 0; p2.currentFrame = 0;
 
-    // 🛠️ Reset the refs and force the UI to update
     khotsoHealthRef.current = PLAYER_MAX_HEALTH;
     thaboHealthRef.current = PLAYER_MAX_HEALTH;
+    powerMeterRef.current = 0;
     forceUpdate(prev => prev + 1);
 
     aiDecisionTimer.current = 500; aiCurrentAction.current = 'idle'; winner.current = null;
@@ -541,7 +557,7 @@ const HoKalla = () => {
     roundIntroStart.current = Date.now(); roundState.current = 'intro';
     const keyDown = (e) => {
       keys.current[e.key] = true;
-      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'j','J','k','K','r','R'].includes(e.key)) e.preventDefault();
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ', 'j','J','k','K','u','U','r','R'].includes(e.key)) e.preventDefault();
     };
     const keyUp = (e) => { keys.current[e.key] = false; };
     window.addEventListener('keydown', keyDown); window.addEventListener('keyup', keyUp);
@@ -581,10 +597,11 @@ const HoKalla = () => {
                 style={{width: `${(khotsoHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
               ></div>
             </div>
+            {/* 🛠️ Power Meter Dots based on powerMeterRef */}
             <div className="super-meter">
-              <div className="super-dot filled"></div>
-              <div className="super-dot filled"></div>
-              <div className="super-dot"></div>
+              <div className={`super-dot ${powerMeterRef.current >= 33 ? 'filled' : ''}`}></div>
+              <div className={`super-dot ${powerMeterRef.current >= 66 ? 'filled' : ''}`}></div>
+              <div className={`super-dot ${powerMeterRef.current >= 100 ? 'filled' : ''}`}></div>
             </div>
           </div>
         </div>
@@ -604,7 +621,7 @@ const HoKalla = () => {
             </div>
             <div className="super-meter">
               <div className="super-dot filled"></div>
-              <div className="super-dot"></div>
+              <div className="super-dot filled"></div>
               <div className="super-dot"></div>
             </div>
           </div>
@@ -616,7 +633,7 @@ const HoKalla = () => {
           <button className="touch-btn left-btn" onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd} onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>◀</button>
           <button className="touch-btn jump-btn" onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd} onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>▲</button>
           <button className="touch-btn atk-btn" onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd} onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd} style={{background: '#d32f2f', color: 'white', border: '2px solid #fff'}}>⚔️</button>
-          <button className="touch-btn" onTouchStart={handleTouchBlockStart} onTouchEnd={handleTouchBlockEnd} onTouchCancel={handleTouchBlockEnd} onMouseDown={handleTouchBlockStart} onMouseUp={handleTouchBlockEnd} onMouseLeave={handleTouchBlockEnd} style={{background: '#1565C0', color: 'white', border: '2px solid #fff'}}>🛡️</button>
+          <button className="touch-btn" onTouchStart={handleTouchKickStart} onTouchEnd={handleTouchKickEnd} onTouchCancel={handleTouchKickEnd} onMouseDown={handleTouchKickStart} onMouseUp={handleTouchKickEnd} onMouseLeave={handleTouchKickEnd} style={{background: '#ff9800', color: 'white', border: '2px solid #fff'}}>🦶 Kick</button>
           <button className="touch-btn right-btn" onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd} onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>▶</button>
         </div>
       )}
