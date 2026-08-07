@@ -19,7 +19,8 @@ const SPRITE_CONFIG = {
     framesPerState: {
       idle: 1, walk: 3, land: 3, crouch: 4, jump: 6, 
       attack: 5,     // Reads from Tattack1.png etc
-      block: 7, hit: 5,
+      block: 1,      // 🛠️ Temporarily set to 1 to stop 404s
+      hit: 1,        // 🛠️ Temporarily set to 1 to stop 404s
     },
     nameSuffix: '-removebg-preview',
   },
@@ -33,7 +34,7 @@ const ATTACK_DAMAGE = 10;
 const KICK_DAMAGE = 12;
 const POWER_DAMAGE = 30;
 const ULTIMATE_DAMAGE = 50;
-const ATTACK_RANGE = 85;
+const ATTACK_RANGE = 90; // 🛠️ Increased range
 const KICK_RANGE = 100;
 const POWER_RANGE = 150;
 const AI_AGGRO_RANGE = 300;
@@ -135,7 +136,6 @@ const HoKalla = () => {
       return arr;
     };
 
-    // 🛠️ CORRECTED LOADERS FOR DEFENSE/PAIN USING THEIR ACTUAL FILENAMES
     const loadKhotsoDefenseFrames = () => {
       const filenames = ['blockhold', 'guardraise', 'highblock', 'lowblock', 'midblock'];
       const arr = [];
@@ -162,7 +162,7 @@ const HoKalla = () => {
       return arr;
     };
 
-    // ------------- THABO LOADERS -------------
+    // ------------- THABO LOADERS (Fixed for 404s) -------------
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
@@ -170,6 +170,7 @@ const HoKalla = () => {
         const img = new Image();
         img.src = `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
         img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Thabo ${prefix}${i}${suffix}.png`);
         arr.push(img);
       }
       return arr;
@@ -205,8 +206,8 @@ const HoKalla = () => {
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
     sprites.current.khotso.land   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', 7);
-    sprites.current.khotso.block  = loadKhotsoDefenseFrames();  // 🛠️ Fixed loader
-    sprites.current.khotso.hit    = loadKhotsoPainFrames();      // 🛠️ Fixed loader
+    sprites.current.khotso.block  = loadKhotsoDefenseFrames(); 
+    sprites.current.khotso.hit    = loadKhotsoPainFrames();      
     sprites.current.khotso.attack = loadKhotsoSubFolderFrames('attacks/horizontal_swing', 6);
     sprites.current.khotso.kick   = loadKhotsoSubFolderFrames('kicks/jumping_kick', 6);
     sprites.current.khotso.power  = loadKhotsoSubFolderFrames('powers/rivers_flow', 8);
@@ -218,8 +219,8 @@ const HoKalla = () => {
     sprites.current.thabo.land   = loadThaboFrames('walk', 3);
     sprites.current.thabo.crouch = loadThaboFrames('crouch', 4);
     sprites.current.thabo.attack = loadThaboAttackFrames();
-    sprites.current.thabo.block  = loadThaboFrames('block', 7);
-    sprites.current.thabo.hit    = loadThaboFrames('hit', 5);
+    sprites.current.thabo.block  = loadThaboFrames('block', SPRITE_CONFIG.thabo.framesPerState.block);
+    sprites.current.thabo.hit    = loadThaboFrames('hit', SPRITE_CONFIG.thabo.framesPerState.hit);
 
     totalFrames.current =
       Object.values(SPRITE_CONFIG.khotso.framesPerState).reduce((a,b)=>a+b,0) +
@@ -246,11 +247,12 @@ const HoKalla = () => {
 
   const playSound = (sound) => { if (sound && sound.play) { try { sound.play(); } catch (e) {} } };
 
-  const checkAttackHit = (attacker, defender, damageVal) => {
+  // 🛠️ FIXED HITBOX: ACTIVE FOR LONGER, WORKS ON GROUND
+  const checkAttackHit = (attacker, defender, damageVal, range) => {
     if (!attacker.hitActive) return;
     const distance = Math.abs(attacker.x - defender.x);
     const halfWidth = attacker.width / 2;
-    if (distance > halfWidth && distance < ATTACK_RANGE) {
+    if (distance > halfWidth && distance < range) {
       attacker.hitActive = false;
       const isBlocked = defender.blocking && ((attacker.facingRight && defender.x > attacker.x) || (!attacker.facingRight && defender.x < attacker.x));
       const damage = isBlocked ? 2 : damageVal;
@@ -404,7 +406,11 @@ const HoKalla = () => {
     if (!isStunned1) {
       p1.blocking = blockPressed1;
 
-      if (p1.grounded) {
+      // 🛠️ FIXED: Crouching now works with Down Arrow
+      const crouchPressed = keys.current['ArrowDown'];
+      p1.crouching = crouchPressed && p1.grounded && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power';
+
+      if (p1.grounded && !p1.crouching) {
         if ((keys.current['j'] || keys.current['J'] || touchAttack.current) && !p1.attackLock && !p1.blocking) {
           p1.state = 'attack'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
         }
@@ -412,23 +418,23 @@ const HoKalla = () => {
           powerMeterRef.current = 0; 
           p1.state = 'power'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
         }
-      } else {
+      } else if (!p1.grounded) {
         if ((keys.current['k'] || keys.current['K'] || touchKick.current) && !p1.attackLock) {
           p1.state = 'kick'; p1.frameTimer = 0; p1.attackLock = true; p1.hitActive = true;
         }
       }
 
       let moveDirP1 = 0;
-      if (!p1.blocking && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power') {
+      if (!p1.crouching && !p1.blocking && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power') {
         if (keys.current['ArrowLeft']) moveDirP1 -= 1;
         if (keys.current['ArrowRight']) moveDirP1 += 1;
       }
-      p1.vx = p1.blocking ? 0 : moveDirP1 * p1.speed;
+      p1.vx = (p1.crouching || p1.blocking) ? 0 : moveDirP1 * p1.speed;
       
-      if (keys.current['ArrowUp'] && p1.grounded && !p1.blocking && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power') {
+      if (keys.current['ArrowUp'] && p1.grounded && !p1.crouching && !p1.blocking && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power') {
         p1.vy = p1.jumpForce; p1.grounded = false; p1.frameTimer = 0; p1.state = 'jump';
       }
-    } else { p1.vx = 0; p1.blocking = false; }
+    } else { p1.vx = 0; p1.blocking = false; p1.crouching = false; }
 
     const isStunned2 = p2.hitStunTimer > 0;
     if (!isStunned2) updateAI(deltaTime);
@@ -458,15 +464,16 @@ const HoKalla = () => {
     applyPhysicsAndCollision(p1, p2);
     applyPhysicsAndCollision(p2, p1);
 
-    // Hit Detection
-    if (p1.state === 'power') checkAttackHit(p1, p2, POWER_DAMAGE);
-    else if (p1.state === 'kick') checkAttackHit(p1, p2, KICK_DAMAGE);
-    else checkAttackHit(p1, p2, ATTACK_DAMAGE);
-    checkAttackHit(p2, p1, ATTACK_DAMAGE);
+    // 🛠️ FIXED: Passes RANGE argument properly
+    if (p1.state === 'power') checkAttackHit(p1, p2, POWER_DAMAGE, POWER_RANGE);
+    else if (p1.state === 'kick') checkAttackHit(p1, p2, KICK_DAMAGE, KICK_RANGE);
+    else checkAttackHit(p1, p2, ATTACK_DAMAGE, ATTACK_RANGE);
+    
+    checkAttackHit(p2, p1, ATTACK_DAMAGE, ATTACK_RANGE);
 
     if (p1.vx > 0) p1.facingRight = true;
     else if (p1.vx < 0) p1.facingRight = false;
-    else if (p1.state === 'idle' || p1.state === 'attack' || p1.state === 'kick' || p1.state === 'block' || p1.state === 'power') p1.facingRight = p1.x < p2.x;
+    else if (p1.state === 'idle' || p1.state === 'attack' || p1.state === 'kick' || p1.state === 'block' || p1.state === 'power' || p1.state === 'crouch') p1.facingRight = p1.x < p2.x;
 
     const updateState = (char, maxAttackFrames, maxKickFrames, maxPowerFrames) => {
       if (char.hitStunTimer > 0) {
@@ -495,6 +502,8 @@ const HoKalla = () => {
       } else if (char.grounded) {
         if (char.landTimer > 0) {
           char.state = 'land'; char.landTimer--;
+        } else if (char.crouching) {
+          char.state = 'crouch';
         } else if (char.blocking) {
           char.state = 'block'; char.frameTimer = 0;
         } else if (Math.abs(char.vx) > 0.1) {
@@ -518,7 +527,7 @@ const HoKalla = () => {
           char.frameTimer += (deltaTime / 1000) * SPRITE_CONFIG.animationSpeed;
           if (Math.floor(char.frameTimer) >= maxLandFrames) { char.frameTimer = maxLandFrames - 1; char.landAnimFinished = true; }
         }
-      } else if (char.state === 'idle') {
+      } else if (char.state === 'idle' || char.state === 'crouch') {
         char.frameTimer = 0;
       }
       char.currentFrame = char.frameTimer;
