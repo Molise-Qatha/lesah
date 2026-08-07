@@ -135,13 +135,39 @@ const HoKalla = () => {
       return arr;
     };
 
-    // ------------- THABO LOADERS (Fixed) -------------
+    // 🛠️ CORRECTED LOADERS FOR DEFENSE/PAIN USING THEIR ACTUAL FILENAMES
+    const loadKhotsoDefenseFrames = () => {
+      const filenames = ['blockhold', 'guardraise', 'highblock', 'lowblock', 'midblock'];
+      const arr = [];
+      filenames.forEach(name => {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.khotso.basePath}defense/${name}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Khotso defense/${name}.png`);
+        arr.push(img);
+      });
+      return arr;
+    };
+
+    const loadKhotsoPainFrames = () => {
+      const filenames = ['heavyimpact', 'hitstart', 'knockedback', 'offbalance', 'regainingposture', 'staggerback'];
+      const arr = [];
+      filenames.forEach(name => {
+        const img = new Image();
+        img.src = `${SPRITE_CONFIG.khotso.basePath}pain/${name}.png`;
+        img.onload = onFrameLoad;
+        img.onerror = () => console.warn(`Missing Khotso pain/${name}.png`);
+        arr.push(img);
+      });
+      return arr;
+    };
+
+    // ------------- THABO LOADERS -------------
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
       for (let i = 1; i <= count; i++) {
         const img = new Image();
-        // 🛠️ FIXED: Correctly formats the file names for walk, jump, block, etc.
         img.src = `${SPRITE_CONFIG.thabo.basePath}${prefix}${i}${suffix}.png`;
         img.onload = onFrameLoad;
         arr.push(img);
@@ -151,7 +177,6 @@ const HoKalla = () => {
 
     const loadThaboAttackFrames = () => {
       const arr = [];
-      // 🛠️ FIXED: Correctly formats the attack files (Tattack1.png, Tattack2.png)
       for (let i = 1; i <= SPRITE_CONFIG.thabo.framesPerState.attack; i++) {
         const img = new Image();
         img.src = `${SPRITE_CONFIG.thabo.basePath}Tattack${i}.png`;
@@ -180,19 +205,19 @@ const HoKalla = () => {
     sprites.current.khotso.jump   = loadKhotsoFrames('jump', 7);
     sprites.current.khotso.land   = loadKhotsoFrames('walk', 5);
     sprites.current.khotso.crouch = loadKhotsoFrames('crouch', 7);
-    sprites.current.khotso.block  = loadKhotsoSubFolderFrames('defense', 5);
-    sprites.current.khotso.hit    = loadKhotsoSubFolderFrames('pain', 6);
+    sprites.current.khotso.block  = loadKhotsoDefenseFrames();  // 🛠️ Fixed loader
+    sprites.current.khotso.hit    = loadKhotsoPainFrames();      // 🛠️ Fixed loader
     sprites.current.khotso.attack = loadKhotsoSubFolderFrames('attacks/horizontal_swing', 6);
     sprites.current.khotso.kick   = loadKhotsoSubFolderFrames('kicks/jumping_kick', 6);
     sprites.current.khotso.power  = loadKhotsoSubFolderFrames('powers/rivers_flow', 8);
     sprites.current.khotso.ultimate = loadKhotsoSubFolderFrames('powers/ancestors_wrath', 5);
 
-    // --- LOAD THABO FRAMES (BASIC MOVESET) ---
+    // --- LOAD THABO FRAMES ---
     sprites.current.thabo.walk   = loadThaboFrames('walk', 3);
     sprites.current.thabo.jump   = loadThaboFrames('jump', 6);
     sprites.current.thabo.land   = loadThaboFrames('walk', 3);
     sprites.current.thabo.crouch = loadThaboFrames('crouch', 4);
-    sprites.current.thabo.attack = loadThaboAttackFrames(); // Corrected!
+    sprites.current.thabo.attack = loadThaboAttackFrames();
     sprites.current.thabo.block  = loadThaboFrames('block', 7);
     sprites.current.thabo.hit    = loadThaboFrames('hit', 5);
 
