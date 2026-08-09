@@ -4,51 +4,32 @@ import './Hero.css';
 
 // Import background images
 import nulCampus from '../assets/images/nul-campus.jpg';
-import heroAccommodation from '../assets/images/hero-accommodation.jpg';
-import heroEats from '../assets/images/hero-eats.jpg';
-import heroTech from '../assets/images/hero-tech.jpg';
-import heroDelivery from '../assets/images/hero-delivery.jpg';
+import heroMarketplace from '../assets/images/hero-accommodation.jpg';  // reuse until you have marketplace image
+import heroStudentZone from '../assets/images/hero-eats.jpg';           // reuse
 
 const slides = [
   {
     image: nulCampus,
-    title: 'Your all‑in‑one student support platform',
-    headline: 'Everything students need — in one place.',
-    subtitle: 'Find accommodation, student loans, and delivery services across Lesotho — fast, simple, and reliable.',
-    buttonText: 'Explore Services',
-    link: null,
-    linkType: 'scroll',
+    headline: 'Everything a Student Needs — One Marketplace',
+    subtitle: 'Accommodation, food, delivery, tutoring, tech, and more. All from trusted vendors near your campus.',
+    buttonText: 'Explore Marketplace',
+    link: '/marketplace',
+    linkType: 'page',
   },
   {
-    image: heroAccommodation,
-    headline: '🏠 Find Your Perfect Student Home',
-    subtitle: 'Browse verified listings near your campus.',
-    buttonText: 'Explore Listings',
+    image: heroMarketplace,
+    headline: '🏠 Find Student Accommodation',
+    subtitle: 'Verified listings near NUL — now part of our marketplace.',
+    buttonText: 'Browse Accommodation',
     link: '/accommodation',
     linkType: 'page',
   },
   {
-    image: heroEats,
-    headline: '🍕 Delicious Food, Delivered',
-    subtitle: 'Order from student‑friendly vendors around campus.',
-    buttonText: 'Order Now',
-    link: '/eats',
-    linkType: 'page',
-  },
-  {
-    image: heroTech,
-    headline: '💻 Tech Support for Students',
-    subtitle: 'Repair, buy, or upgrade your devices with trusted partners.',
-    buttonText: 'Get Support',
-    link: '/tech',
-    linkType: 'page',
-  },
-  {
-    image: heroDelivery,
-    headline: '🚚 Fast & Reliable Delivery',
-    subtitle: 'Moving your stuff? We’ve got drivers ready to help.',
-    buttonText: 'Request Delivery',
-    link: '/delivery',
+    image: heroStudentZone,
+    headline: '🎮 Games, Puzzles & More',
+    subtitle: 'Take a break with Basotho games like Ho Kalla and Morabaraba.',
+    buttonText: 'Visit Student Zone',
+    link: '/student-zone',
     linkType: 'page',
   },
 ];
@@ -72,24 +53,20 @@ function Hero() {
 
   const currentSlide = slides[current];
 
-  const scrollToServices = () => {
-    const section = document.getElementById('services-section');
-    if (section) section.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const renderButton = () => {
-    const btnStyle = 'hero-refined-cta';
-
     if (currentSlide.linkType === 'scroll') {
       return (
-        <button onClick={scrollToServices} className={btnStyle}>
+        <button onClick={() => {
+          const section = document.getElementById('services-section');
+          if (section) section.scrollIntoView({ behavior: 'smooth' });
+        }} className="hero-refined-cta">
           {currentSlide.buttonText}
         </button>
       );
     }
 
     return (
-      <Link to={currentSlide.link} className={btnStyle}>
+      <Link to={currentSlide.link} className="hero-refined-cta">
         {currentSlide.buttonText}
       </Link>
     );
@@ -105,17 +82,20 @@ function Hero() {
       <div className="hero-refined-grid">
         <div className="hero-refined-text">
           <p className="hero-refined-label">
-            {currentSlide.title || 'Your all‑in‑one student support platform'}
+            Lesotho's Student Marketplace
           </p>
           <h1 className="hero-refined-headline">{currentSlide.headline}</h1>
           <p className="hero-refined-subtitle">{currentSlide.subtitle}</p>
 
+          {/* Updated service badges — now marketplace categories */}
           <div className="hero-refined-trust">
             <span>🏠 Accommodation</span>
-            <span>💰 Student Loans</span>
+            <span>🍔 Food & Eats</span>
             <span>🚚 Delivery</span>
-            <span>🍕 Eats</span>
             <span>💻 Tech</span>
+            <span>📚 Textbooks</span>
+            <span>💇 Beauty</span>
+            <span>🎓 Tutoring</span>
           </div>
 
           <div className="hero-refined-action">
@@ -130,16 +110,18 @@ function Hero() {
             </a>
           </div>
 
-          {/* 🎓 Student Zone promo */}
+          {/* Become a vendor CTA */}
           <div className="hero-student-zone-cta">
-            <p>🧠 Need a study break?</p>
-            <Link
-              to="/student-zone"
+            <p>🛒 Got a service to offer?</p>
+            <a
+              href="https://wa.me/26656613551?text=Hello%20LeSAH%2C%20I%20want%20to%20become%20a%20vendor%20on%20the%20marketplace."
+              target="_blank"
+              rel="noopener noreferrer"
               className="hero-refined-cta"
               style={{ background: '#e9c46a', color: '#111827' }}
             >
-              Visit Student Zone
-            </Link>
+              Become a Vendor
+            </a>
           </div>
         </div>
 
