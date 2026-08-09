@@ -1,0 +1,320 @@
+.provider-profile-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Back Navigation */
+.provider-back-nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 20px 0;
+}
+
+.back-link {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #1b5e20;
+}
+
+/* Not Found */
+.provider-not-found {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.provider-not-found h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.provider-not-found p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Profile Header */
+.provider-header {
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  color: white;
+  padding: 50px 20px;
+}
+
+.provider-header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.provider-image-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.provider-profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.provider-image-placeholder {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.provider-image-container.no-image .provider-profile-image {
+  display: none;
+}
+
+.provider-image-container.no-image .provider-image-placeholder {
+  display: flex;
+}
+
+.provider-header-info {
+  flex: 1;
+}
+
+.provider-badge {
+  display: inline-block;
+  background: #e9c46a;
+  color: #111827;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.provider-header-info h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.provider-education {
+  font-size: 1.05rem;
+  opacity: 0.95;
+  margin-bottom: 10px;
+}
+
+.provider-bio {
+  font-size: 1rem;
+  opacity: 0.85;
+  line-height: 1.5;
+}
+
+/* Services Section */
+.provider-services {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 20px;
+}
+
+.provider-services h2 {
+  text-align: center;
+  color: #1b5e20;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+.provider-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 25px;
+}
+
+/* Service Card */
+.provider-service-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.provider-service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.service-card-image {
+  position: relative;
+  height: 200px;
+  background: #e8f5e9;
+  overflow: hidden;
+}
+
+.service-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.service-card-icon {
+  position: absolute;
+  bottom: -20px;
+  right: 20px;
+  font-size: 3rem;
+  background: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.service-card-icon-only {
+  height: 120px;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+}
+
+.service-card-content {
+  padding: 25px;
+}
+
+.service-card-content h3 {
+  color: #1b5e20;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.service-card-content p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.whatsapp-contact-btn {
+  width: 100%;
+  background: #25D366;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.whatsapp-contact-btn:hover {
+  background: #1da851;
+}
+
+.whatsapp-contact-btn:active {
+  transform: scale(0.97);
+}
+
+/* Trust Section */
+.provider-trust {
+  max-width: 700px;
+  margin: 0 auto 50px;
+  padding: 30px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  text-align: center;
+}
+
+.trust-item span {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.trust-item p {
+  color: #555;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .provider-header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .provider-image-container {
+    width: 120px;
+    height: 120px;
+  }
+
+  .provider-header-info h1 {
+    font-size: 1.6rem;
+  }
+
+  .provider-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card-image {
+    height: 180px;
+  }
+
+  .provider-trust {
+    gap: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .provider-header {
+    padding: 35px 15px;
+  }
+
+  .provider-image-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .provider-header-info h1 {
+    font-size: 1.4rem;
+  }
+
+  .provider-services {
+    padding: 30px 15px;
+  }
+
+  .provider-services h2 {
+    font-size: 1.5rem;
+  }
+
+  .service-card-content {
+    padding: 20px;
+  }
+}
