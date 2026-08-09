@@ -8,11 +8,11 @@ export const maseeisoData = {
   
   food: {
     images: [
-      { src: "/images/maseeiso/food/meal-1.jpg", alt: "Meal 1" },
-      { src: "/images/maseeiso/food/meal-2.jpg", alt: "Meal 2" },
-      { src: "/images/maseeiso/food/meal-3.jpg", alt: "Meal 3" },
-      { src: "/images/maseeiso/food/meal-4.jpg", alt: "Meal 4" },
-      { src: "/images/maseeiso/food/meal-5.jpg", alt: "Meal 5" },
+      { src: "/images/maseeiso/food/1.png", alt: "Monday meal" },
+      { src: "/images/maseeiso/food/2.png", alt: "Tuesday meal" },
+      { src: "/images/maseeiso/food/3.png", alt: "Wednesday meal" },
+      { src: "/images/maseeiso/food/4.png", alt: "Thursday meal" },
+      { src: "/images/maseeiso/food/5.png", alt: "Friday meal" },
     ],
     menuImage: "/images/maseeiso/food/food-menu.jpg",
     weeklyMenu: [
@@ -32,10 +32,11 @@ export const maseeisoData = {
 
   laundry: {
     images: [
-      { src: "/images/maseeiso/laundry/laundry-1.jpg", alt: "Laundry service 1" },
-      { src: "/images/maseeiso/laundry/laundry-2.jpg", alt: "Laundry service 2" },
-      { src: "/images/maseeiso/laundry/laundry-3.jpg", alt: "Laundry service 3" },
-      { src: "/images/maseeiso/laundry/laundry-4.jpg", alt: "Laundry service 4" },
+      { src: "/images/maseeiso/laundry/1.png", alt: "Laundry service 1" },
+      { src: "/images/maseeiso/laundry/2.png", alt: "Laundry service 2" },
+      { src: "/images/maseeiso/laundry/3.png", alt: "Laundry service 3" },
+      { src: "/images/maseeiso/laundry/4.png", alt: "Laundry service 4" },
+      { src: "/images/maseeiso/laundry/5.png", alt: "Laundry service 5" },
     ],
     menuImage: "/images/maseeiso/laundry/laundry-menu.jpg",
     prices: [
