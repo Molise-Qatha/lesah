@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { providers } from '../data/providers';
 import './Marketplace.css';
 
 const categories = [
@@ -61,24 +62,10 @@ const categories = [
   },
 ];
 
-const vendors = [
-  // Add your first vendor here
-  // {
-  //   name: 'Vendor Name',
-  //   category: 'Food & Eats',
-  //   desc: 'Description of services',
-  //   image: '/images/vendors/vendor1.jpg',
-  //   whatsapp: '266xxxxxxxx',
-  //   services: ['Service 1', 'Service 2'],
-  // },
-];
+// Map Maseeiso's services to category names for the card display
+const maseeisoCategory = 'Food & Eats • Laundry';
 
 function Marketplace() {
-  const openWhatsApp = (number, vendorName) => {
-    const message = `Hello, I'm interested in your services on LeSAH Marketplace${vendorName ? ` (${vendorName})` : ''}. Can you tell me more?`;
-    window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, '_blank');
-  };
-
   const becomeVendor = () => {
     const message = `Hello LeSAH, I want to list my business on the Marketplace. Here are my details:\n\nBusiness Name:\nCategory:\nServices:\nContact Number:`;
     window.open(`https://wa.me/26656613551?text=${encodeURIComponent(message)}`, '_blank');
@@ -117,38 +104,40 @@ function Marketplace() {
       {/* Vendors Section */}
       <section className="marketplace-section">
         <h2>Featured Vendors</h2>
-        {vendors.length > 0 ? (
-          <div className="marketplace-vendors">
-            {vendors.map((vendor, idx) => (
-              <div key={idx} className="vendor-card">
-                {vendor.image && <img src={vendor.image} alt={vendor.name} className="vendor-image" />}
-                <div className="vendor-info">
-                  <span className="vendor-category">{vendor.category}</span>
-                  <h3>{vendor.name}</h3>
-                  <p>{vendor.desc}</p>
-                  <div className="vendor-services">
-                    {vendor.services.map((s, i) => (
-                      <span key={i} className="service-tag">{s}</span>
-                    ))}
-                  </div>
-                  <button
-                    className="vendor-contact-btn"
-                    onClick={() => openWhatsApp(vendor.whatsapp, vendor.name)}
-                  >
-                    💬 Chat on WhatsApp
-                  </button>
-                </div>
+        <div className="marketplace-vendors">
+          {/* Maseeiso Thaanyane */}
+          <div className="vendor-card">
+            {providers.maseeiso.profileImage ? (
+              <img 
+                src={providers.maseeiso.profileImage} 
+                alt={providers.maseeiso.name} 
+                className="vendor-image"
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+            ) : (
+              <div className="vendor-image-placeholder">
+                <span>{providers.maseeiso.name.charAt(0)}</span>
               </div>
-            ))}
+            )}
+            <div className="vendor-info">
+              <span className="vendor-category">{maseeisoCategory}</span>
+              <h3>{providers.maseeiso.name}</h3>
+              <p>{providers.maseeiso.bio}</p>
+              <p className="vendor-education">🎓 {providers.maseeiso.education}</p>
+              <div className="vendor-services">
+                {providers.maseeiso.services.map((s, i) => (
+                  <span key={i} className="service-tag">{s.icon} {s.name}</span>
+                ))}
+              </div>
+              <Link 
+                to={`/provider/${providers.maseeiso.id}`} 
+                className="vendor-profile-link"
+              >
+                View Full Profile →
+              </Link>
+            </div>
           </div>
-        ) : (
-          <div className="empty-vendors">
-            <p>🛍️ Vendors are coming soon! Interested in listing your services?</p>
-            <button className="vendor-cta-btn" onClick={becomeVendor}>
-              Become Our First Vendor
-            </button>
-          </div>
-        )}
+        </div>
       </section>
 
       {/* Student Zone Promo */}
