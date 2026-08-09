@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
-import logo from '../assets/images/logo.png';   // 👈 Replace with your new logo file
+import logo from '../assets/images/logo.png';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,7 +46,6 @@ function Header() {
         <nav className="navbar">
           <Link to="/" className="logo">
             <img src={logo} alt="LeSAH Logo" className="logo-image" />
-            {/* The text is already in the new logo, so we remove the span */}
           </Link>
 
           <div className="nav-actions">
@@ -66,15 +65,32 @@ function Header() {
 
           <div className={`nav-content ${isMenuOpen ? 'active' : ''}`}>
             <ul className="nav-links">
-              <li><Link to="/accommodation" onClick={() => setIsMenuOpen(false)}>Accommodation</Link></li>
-              <li><Link to="/loans" onClick={() => setIsMenuOpen(false)}>Loans</Link></li>
-              <li><Link to="/delivery" onClick={() => setIsMenuOpen(false)}>Delivery</Link></li>
-              <li><Link to="/eats" onClick={() => setIsMenuOpen(false)}>Eats</Link></li>
-              <li><Link to="/tech" onClick={() => setIsMenuOpen(false)}>Tech</Link></li>
-              <li><Link to="/student-zone" onClick={() => setIsMenuOpen(false)}>🎓 Student Zone</Link></li>
-              <li><Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link></li>
+              <li>
+                <Link to="/marketplace" onClick={() => setIsMenuOpen(false)}>
+                  🛒 Marketplace
+                </Link>
+              </li>
+              <li>
+                <Link to="/accommodation" onClick={() => setIsMenuOpen(false)}>
+                  🏠 Accommodation
+                </Link>
+              </li>
+              <li>
+                <Link to="/student-zone" onClick={() => setIsMenuOpen(false)}>
+                  🎓 Student Zone
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
+                  Contact
+                </Link>
+              </li>
               {user?.role === 'admin' && (
-                <li><Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link></li>
+                <li>
+                  <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                    Admin
+                  </Link>
+                </li>
               )}
             </ul>
 

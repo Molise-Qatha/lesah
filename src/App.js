@@ -25,6 +25,7 @@ import WordSearchGame from './pages/WordSearchGame';
 import MorabarabaGame from './pages/MorabarabaGame';
 import SudokuGame from './pages/SudokuGame';
 import CampusMap from './pages/CampusMap';   // ✅ new
+import Marketplace from './pages/Marketplace';
 import HoKalla from './pages/HoKalla';
 import './App.css';
 
@@ -85,6 +86,7 @@ function App() {
           <Route path="/tech" element={<Tech />} />
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/learn-more" element={<LearnMore />} />
+          <Route path="/marketplace" element={<Marketplace />} />
 
           {/* Student Zone – hub */}
           <Route path="/student-zone" element={<StudentZone />} />
