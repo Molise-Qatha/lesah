@@ -1,320 +1,316 @@
-.provider-profile-page {
+.provider-storefront {
   min-height: 100vh;
-  background: #f5f7fa;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #fafafa;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #1a1a1a;
 }
 
-/* Back Navigation */
-.provider-back-nav {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 20px 20px 0;
-}
-
-.back-link {
-  color: #2e7d32;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 0.2s;
-}
-
-.back-link:hover {
-  color: #1b5e20;
-}
-
-/* Not Found */
-.provider-not-found {
-  text-align: center;
-  padding: 80px 20px;
-}
-
-.provider-not-found h2 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.provider-not-found p {
-  color: #666;
-  margin-bottom: 20px;
-}
-
-/* Profile Header */
-.provider-header {
-  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+/* ── Header ── */
+.storefront-header {
+  background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 100%);
   color: white;
-  padding: 50px 20px;
+  padding: 40px 20px;
 }
 
-.provider-header-content {
+.storefront-header-inner {
   max-width: 900px;
   margin: 0 auto;
   display: flex;
+  gap: 24px;
   align-items: center;
-  gap: 30px;
 }
 
-.provider-image-container {
-  position: relative;
-  width: 140px;
-  height: 140px;
+.storefront-avatar {
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  overflow: hidden;
-  border: 4px solid rgba(255, 255, 255, 0.4);
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.3);
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.15);
 }
 
-.provider-profile-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.provider-image-placeholder {
-  display: none;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  font-weight: 700;
-  color: white;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.provider-image-container.no-image .provider-profile-image {
-  display: none;
-}
-
-.provider-image-container.no-image .provider-image-placeholder {
-  display: flex;
-}
-
-.provider-header-info {
-  flex: 1;
-}
-
-.provider-badge {
-  display: inline-block;
-  background: #e9c46a;
-  color: #111827;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.provider-header-info h1 {
-  font-size: 2rem;
-  margin-bottom: 8px;
-}
-
-.provider-education {
-  font-size: 1.05rem;
-  opacity: 0.95;
-  margin-bottom: 10px;
-}
-
-.provider-bio {
-  font-size: 1rem;
-  opacity: 0.85;
-  line-height: 1.5;
-}
-
-/* Services Section */
-.provider-services {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 50px 20px;
-}
-
-.provider-services h2 {
-  text-align: center;
-  color: #1b5e20;
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-}
-
-.provider-services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 25px;
-}
-
-/* Service Card */
-.provider-service-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-
-.provider-service-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.service-card-image {
-  position: relative;
-  height: 200px;
-  background: #e8f5e9;
-  overflow: hidden;
-}
-
-.service-card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.service-card-icon {
-  position: absolute;
-  bottom: -20px;
-  right: 20px;
-  font-size: 3rem;
-  background: white;
-  width: 60px;
-  height: 60px;
+.storefront-avatar-placeholder {
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
+  background: rgba(255,255,255,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  font-size: 2.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  border: 3px solid rgba(255,255,255,0.3);
 }
 
-.service-card-icon-only {
-  height: 120px;
-  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
+.storefront-header-text h1 {
+  font-size: 1.8rem;
+  margin: 0 0 4px;
 }
 
-.service-card-content {
-  padding: 25px;
-}
-
-.service-card-content h3 {
-  color: #1b5e20;
-  font-size: 1.3rem;
-  margin-bottom: 10px;
-}
-
-.service-card-content p {
-  color: #555;
+.storefront-edu {
   font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 20px;
+  opacity: 0.9;
+  margin: 0 0 2px;
 }
 
-.whatsapp-contact-btn {
-  width: 100%;
+.storefront-loc {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin: 0 0 8px;
+}
+
+.storefront-bio {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin: 0 0 16px;
+  line-height: 1.4;
+}
+
+.storefront-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: #25D366;
   color: white;
   border: none;
-  padding: 12px 20px;
+  padding: 10px 22px;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s;
 }
 
-.whatsapp-contact-btn:hover {
+.storefront-whatsapp-btn:hover {
   background: #1da851;
 }
 
-.whatsapp-contact-btn:active {
-  transform: scale(0.97);
-}
-
-/* Trust Section */
-.provider-trust {
-  max-width: 700px;
-  margin: 0 auto 50px;
-  padding: 30px 20px;
+/* ── Nav ── */
+.storefront-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
+  gap: 0;
+  padding: 0 20px;
 }
 
-.trust-item {
-  text-align: center;
+.storefront-nav-btn {
+  background: none;
+  border: none;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
 }
 
-.trust-item span {
-  font-size: 2rem;
-  display: block;
-  margin-bottom: 5px;
+.storefront-nav-btn.active {
+  color: #2e7d32;
+  border-bottom-color: #2e7d32;
+  font-weight: 600;
 }
 
-.trust-item p {
-  color: #555;
-  font-size: 0.9rem;
+/* ── Sections ── */
+.storefront-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px 50px;
+}
+
+.storefront-section-header h2 {
+  font-size: 1.8rem;
+  color: #1b5e20;
+  margin: 0 0 6px;
+}
+
+.storefront-section-header p {
+  color: #666;
+  font-size: 1.05rem;
+  margin: 0 0 20px;
+}
+
+.storefront-subsection {
+  margin-top: 36px;
+}
+
+.storefront-subsection h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 0 0 12px;
+}
+
+/* ── Menu List ── */
+.storefront-menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-day {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.menu-meal {
+  color: #2e7d32;
   font-weight: 500;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .provider-header-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-
-  .provider-image-container {
-    width: 120px;
-    height: 120px;
-  }
-
-  .provider-header-info h1 {
-    font-size: 1.6rem;
-  }
-
-  .provider-services-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .service-card-image {
-    height: 180px;
-  }
-
-  .provider-trust {
-    gap: 25px;
-  }
+/* ── Pricing Row ── */
+.storefront-pricing-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-@media (max-width: 480px) {
-  .provider-header {
-    padding: 35px 15px;
+.pricing-block {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 18px 12px;
+}
+
+.pricing-price {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1b5e20;
+}
+
+.pricing-detail {
+  display: block;
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* ── Checklist ── */
+.storefront-checklist {
+  list-style: none;
+  padding: 0;
+}
+
+.storefront-checklist li {
+  padding: 8px 0;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* ── Menu Poster ── */
+.storefront-menu-poster {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #f0f0f0;
+}
+
+.menu-poster-img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.menu-poster-hint {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+.menu-poster-placeholder::before {
+  content: '📋 Menu image coming soon';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #999;
+  font-size: 1rem;
+}
+
+/* ── CTA ── */
+.storefront-cta {
+  text-align: center;
+  padding: 36px 0 10px;
+}
+
+.storefront-cta p {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0 0 14px;
+  font-weight: 500;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .storefront-header-inner {
+    flex-direction: column;
+    text-align: center;
   }
 
-  .provider-image-container {
-    width: 100px;
-    height: 100px;
+  .storefront-avatar,
+  .storefront-avatar-placeholder {
+    width: 80px;
+    height: 80px;
   }
 
-  .provider-header-info h1 {
-    font-size: 1.4rem;
-  }
-
-  .provider-services {
-    padding: 30px 15px;
-  }
-
-  .provider-services h2 {
+  .storefront-header-text h1 {
     font-size: 1.5rem;
   }
 
-  .service-card-content {
-    padding: 20px;
+  .storefront-nav-btn {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+
+  .storefront-section {
+    padding: 30px 16px;
+  }
+
+  .pricing-block {
+    min-width: 90px;
+    padding: 14px 10px;
+  }
+
+  .pricing-price {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .storefront-pricing-row {
+    gap: 8px;
+  }
+  
+  .pricing-block {
+    flex: 0 0 calc(50% - 8px);
+    min-width: 0;
   }
 }
