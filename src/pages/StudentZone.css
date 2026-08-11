@@ -1,0 +1,449 @@
+/* ═══════════ RESET & BASE ═══════════ */
+.sz-new {
+  min-height: 100vh;
+  background: #fafafa;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ═══════════ HERO (PRESERVED) ═══════════ */
+.sz-hero {
+  position: relative;
+  padding: 70px 20px 60px;
+  color: white;
+  text-align: center;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sz-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.sz-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+}
+
+.sz-hero h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.sz-hero-subtitle {
+  font-size: 1.15rem;
+  opacity: 0.9;
+  margin: 0 0 6px;
+}
+
+.sz-hero-desc {
+  font-size: 0.95rem;
+  opacity: 0.75;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.sz-hero-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.sz-btn-primary {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.sz-btn-primary:hover {
+  background: #1b5e20;
+}
+
+.sz-btn-secondary {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 12px 26px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.sz-btn-secondary:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ═══════════ SECTIONS ═══════════ */
+.sz-section {
+  padding: 44px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.sz-section-alt {
+  background: #f0f4f0;
+  max-width: none;
+  padding: 44px 20px;
+}
+
+.sz-section-intro {
+  margin-bottom: 28px;
+}
+
+.sz-section-intro h2 {
+  font-size: 1.6rem;
+  color: #1b5e20;
+  margin: 0 0 6px;
+}
+
+.sz-section-intro p {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ═══════════ QUICK DISCOVERY ═══════════ */
+.sz-discovery {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.sz-discovery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  padding: 12px 8px;
+  transition: transform 0.2s;
+}
+
+.sz-discovery-item:hover {
+  transform: translateY(-3px);
+}
+
+.sz-discovery-icon {
+  font-size: 2.4rem;
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.sz-discovery-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ═══════════ GAME SHELF ═══════════ */
+.sz-game-shelf {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 0 12px;
+}
+
+.sz-game-shelf::-webkit-scrollbar {
+  display: none;
+}
+
+.sz-game-item {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 20px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.25s;
+}
+
+.sz-game-item:hover {
+  transform: translateY(-5px);
+}
+
+.sz-game-image-wrap {
+  position: relative;
+  aspect-ratio: 16/10;
+  background: #e8e8e8;
+  overflow: hidden;
+}
+
+.sz-game-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sz-game-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, var(--game-color, '#2e7d32'), #e0e0e0);
+}
+
+.sz-game-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.sz-game-meta {
+  padding: 16px;
+}
+
+.sz-game-meta h3 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+}
+
+.sz-game-meta p {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.sz-game-play {
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ═══════════ RESOURCES ═══════════ */
+.sz-resources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sz-resource-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.sz-resource-row:last-child {
+  border-bottom: none;
+}
+
+.sz-resource-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 50px;
+  text-align: center;
+}
+
+.sz-resource-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sz-resource-info h3 {
+  margin: 0 0 3px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sz-resource-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.sz-coming-tag {
+  display: inline-block;
+  background: #fff3e0;
+  color: #e65100;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.sz-resource-action {
+  flex-shrink: 0;
+}
+
+.sz-resource-btn {
+  display: inline-block;
+  background: #2e7d32;
+  color: white;
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.sz-resource-btn:hover {
+  background: #1b5e20;
+}
+
+.sz-resource-btn.disabled {
+  background: #e0e0e0;
+  color: #999;
+  cursor: default;
+}
+
+/* ═══════════ DAILY MOTIVATION ═══════════ */
+.sz-motivation {
+  max-width: none;
+  background: linear-gradient(145deg, #1b5e20, #2e7d32);
+  padding: 50px 20px;
+}
+
+.sz-motivation-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  color: white;
+}
+
+.sz-motivation-label {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.sz-motivation-quote {
+  font-size: 1.5rem;
+  font-style: italic;
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+.sz-motivation-translation {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin: 0 0 24px;
+}
+
+.sz-motivation-refresh {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 8px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.sz-motivation-refresh:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ═══════════ FOOTER ═══════════ */
+.sz-footer {
+  text-align: center;
+  padding: 40px 20px;
+  background: #1a1a1a;
+  color: #aaa;
+}
+
+.sz-footer h3 {
+  color: white;
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.sz-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 768px) {
+  .sz-hero h1 {
+    font-size: 1.7rem;
+  }
+
+  .sz-game-item {
+    flex: 0 0 210px;
+  }
+
+  .sz-resource-row {
+    flex-wrap: wrap;
+  }
+
+  .sz-resource-action {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .sz-motivation-quote {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sz-section {
+    padding: 32px 16px;
+  }
+
+  .sz-hero {
+    padding: 50px 16px 40px;
+    min-height: 280px;
+  }
+
+  .sz-game-item {
+    flex: 0 0 180px;
+  }
+
+  .sz-discovery {
+    gap: 16px;
+  }
+
+  .sz-discovery-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 2rem;
+  }
+}

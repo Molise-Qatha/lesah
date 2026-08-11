@@ -1,129 +1,151 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './StudentZonePage.css';
+import './StudentZone.css';
 
-const quickAccess = [
-  { icon: '🎮', title: 'Games', desc: 'Play now', available: true, link: '#games' },
-  { icon: '📢', title: 'Campus Notices', desc: 'Coming Soon', available: false },
-  { icon: '📚', title: 'Past Papers', desc: 'Coming Soon', available: false },
-  { icon: '📅', title: 'Exam Timetable', desc: 'Coming Soon', available: false },
-  { icon: '🗺️', title: 'Campus Map', desc: 'Explore NUL', available: true, link: '/student-zone/campus-map' },
-  { icon: '💬', title: 'Daily Motivation', desc: 'Coming Soon', available: false },
-];
-
+// ── DATA ──────────────────────────────────
 const games = [
   {
+    id: 'morabaraba',
+    name: 'Morabaraba',
+    desc: 'Traditional Basotho board game',
     icon: '🕹️',
-    title: 'Morabaraba',
-    desc: 'Traditional Basotho board game. Challenge a friend or the computer.',
+    image: '/images/student-zone/game-morabaraba.jpg',
     link: '/student-zone/morabaraba',
-    img: '/images/student-zone/game-morabaraba.jpg',
-    available: true,
+    badge: '🇱🇸 Heritage',
+    color: '#8B4513',
   },
   {
-    icon: '🎭',
-    title: 'Lilotho',
-    desc: 'Sesotho riddle game. Test your wit with proverbs.',
-    link: '/student-zone/lilotho',
-    img: '/images/student-zone/game-lilotho.jpg',
-    available: true,
-  },
-  {
-    icon: '🔍',
-    title: 'Word Search',
-    desc: 'Find hidden student‑themed words.',
-    link: '/student-zone/word-search',
-    img: '/images/student-zone/game-wordsearch.jpg',
-    available: true,
-  },
-  {
-    icon: '🔤',
-    title: 'Word Scramble',
-    desc: 'Unscramble student‑themed words as fast as you can.',
-    link: '/student-zone/word-scramble',
-    img: '/images/student-zone/game-wordscramble.jpg',
-    available: true,
-  },
-  {
-    icon: '🧩',
-    title: 'Sudoku',
-    desc: 'Challenge your logic skills.',
-    link: '/student-zone/sudoku',
-    img: null,
-    available: true,
-  },
-  // ----- NEW: Ho Kalla game card -----
-  {
-    icon: '⚔️',   // crossed swords to represent stick fighting
-    title: 'Ho Kalla',
-    desc: 'Traditional Basotho stick fighting game. 🇱🇸 Basotho Heritage',
+    id: 'hokalla',
+    name: 'Ho Kalla',
+    desc: 'Stick fighting game',
+    icon: '⚔️',
+    image: '/images/student-zone/game-hokalla.jpg',
     link: '/student-zone/hokalla',
-    img: null,   // placeholder – will add later
+    badge: '🥊 Fighting',
+    color: '#C62828',
+  },
+  {
+    id: 'lilotho',
+    name: 'Lilotho',
+    desc: 'Sesotho riddle challenge',
+    icon: '🎭',
+    image: '/images/student-zone/game-lilotho.jpg',
+    link: '/student-zone/lilotho',
+    badge: '🧠 Riddles',
+    color: '#6A1B9A',
+  },
+  {
+    id: 'wordsearch',
+    name: 'Word Search',
+    desc: 'Find hidden words',
+    icon: '🔍',
+    image: '/images/student-zone/game-wordsearch.jpg',
+    link: '/student-zone/word-search',
+    badge: '📖 Words',
+    color: '#1565C0',
+  },
+  {
+    id: 'wordscramble',
+    name: 'Word Scramble',
+    desc: 'Unscramble as fast as you can',
+    icon: '🔤',
+    image: '/images/student-zone/game-wordscramble.jpg',
+    link: '/student-zone/word-scramble',
+    badge: '⏱️ Speed',
+    color: '#2E7D32',
+  },
+  {
+    id: 'sudoku',
+    name: 'Sudoku',
+    desc: 'Challenge your logic',
+    icon: '🧩',
+    image: null,
+    link: '/student-zone/sudoku',
+    badge: '🔢 Logic',
+    color: '#F57C00',
+  },
+];
+
+const campusFeatures = [
+  {
+    id: 'map',
+    icon: '🗺️',
+    title: 'Campus Map',
+    desc: 'Find lecture halls, residences, and services around NUL campus.',
+    link: '/student-zone/campus-map',
     available: true,
-  },
-];
-
-const notices = [
-  { title: 'Registration Dates', date: 'Coming Soon' },
-  { title: 'Faculty Announcements', date: 'Coming Soon' },
-  { title: 'SRC Elections', date: 'Coming Soon' },
-  { title: 'Library Updates', date: 'Coming Soon' },
-];
-
-const quickLinks = [
-  { icon: '🏠', title: 'Accommodation', path: '/accommodation' },
-  { icon: '💰', title: 'Student Loans', path: '/loans' },
-  { icon: '🚚', title: 'Delivery Services', path: '/delivery' },
-  { icon: '📅', title: 'Campus Events', path: null, comingSoon: true },
-  { icon: '📆', title: 'Academic Calendar', path: null, comingSoon: true },
-];
-
-// ----- FULL‑BLEED BACKGROUND IMAGES FOR HIGHLIGHTS -----
-const highlights = [
-  {
-    id: 'meme',
-    title: "Today's Meme",
-    emoji: '😂',
-    bgImg: '/images/student-zone/highlight-meme.jpg',
-    quote: "When you realise the assignment was due yesterday.",
-    badge: 'Updated Daily',
+    cta: 'Explore Campus',
   },
   {
-    id: 'motivation',
-    title: "Today's Motivation",
-    emoji: '💡',
-    bgImg: '/images/student-zone/highlight-motivation.jpg',
-    quote: "Small progress is still progress.",
+    id: 'notices',
+    icon: '📢',
+    title: 'Campus Notices',
+    desc: 'Stay updated with announcements, events, and deadlines around campus.',
+    link: null,
+    available: false,
+    cta: 'Coming Soon',
   },
   {
-    id: 'notice',
-    title: "Campus Notice",
-    emoji: '📢',
-    bgImg: null,
-    quote: "Coming Soon.",
-    badge: 'Notice',
-    button: 'More',
+    id: 'papers',
+    icon: '📚',
+    title: 'Past Papers',
+    desc: 'Prepare for exams using previous examination papers.',
+    link: null,
+    available: false,
+    cta: 'Coming Soon',
+  },
+  {
+    id: 'timetable',
+    icon: '📅',
+    title: 'Exam Timetable',
+    desc: 'Keep track of your upcoming examination schedule.',
+    link: null,
+    available: false,
+    cta: 'Coming Soon',
   },
 ];
 
+const dailyQuotes = [
+  {
+    sesotho: '"Molapo o tlatsoa ke melatsoana."',
+    english: 'Small consistent actions create great achievements.',
+  },
+  {
+    sesotho: '"Lefu ha le jwetse."',
+    english: 'Death does not announce its arrival — make each day count.',
+  },
+  {
+    sesotho: '"Motho ke motho ka batho."',
+    english: 'A person is a person through other people.',
+  },
+];
+
+// ── COMPONENT ────────────────────────────
 function StudentZone() {
   const [heroImgFailed, setHeroImgFailed] = useState(false);
-  const recentGames = [];
+  const [quoteIndex, setQuoteIndex] = useState(0);
 
   const scrollToGames = () => {
-    const el = document.getElementById('games-section');
+    const el = document.getElementById('sz-games');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const heroStyle = heroImgFailed ? {} : {
-    backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/images/student-zone/hero-bg.jpg')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+  const refreshQuote = () => {
+    setQuoteIndex((prev) => (prev + 1) % dailyQuotes.length);
   };
 
+  const heroStyle = heroImgFailed
+    ? {}
+    : {
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/images/student-zone/hero-bg.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      };
+
   return (
-    <div className="student-zone-page">
-      <div className="sz-hero" style={heroStyle}>
+    <div className="sz-new">
+      {/* ═══════════ HERO (PRESERVED) ═══════════ */}
+      <section className="sz-hero" style={heroStyle}>
         <img
           src="/images/student-zone/hero-bg.jpg"
           alt=""
@@ -142,143 +164,129 @@ function StudentZone() {
             <button className="sz-btn-primary" onClick={scrollToGames}>
               Explore Student Zone
             </button>
-            <Link to="/student-zone" className="sz-btn-secondary" onClick={scrollToGames}>
+            <button className="sz-btn-secondary" onClick={scrollToGames}>
               Play Games
-            </Link>
+            </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Quick Access Grid */}
+      {/* ═══════════ QUICK DISCOVERY ═══════════ */}
       <section className="sz-section">
-        <h2 className="sz-section-title">Quick Access</h2>
-        <div className="sz-quick-grid">
-          {quickAccess.map((item, idx) => (
-            <div key={idx} className={`sz-quick-card ${!item.available ? 'coming-soon' : ''}`}>
-              <span className="sz-quick-icon">{item.icon}</span>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
-              {item.available && item.link ? (
-                <Link to={item.link} className="sz-play-btn">Open</Link>
-              ) : !item.available && (
-                <span className="sz-badge">Coming Soon</span>
-              )}
-            </div>
-          ))}
+        <div className="sz-discovery">
+          <div className="sz-discovery-item" onClick={scrollToGames}>
+            <span className="sz-discovery-icon">🎮</span>
+            <span className="sz-discovery-label">Play</span>
+          </div>
+          <Link to="/student-zone/campus-map" className="sz-discovery-item">
+            <span className="sz-discovery-icon">🗺️</span>
+            <span className="sz-discovery-label">Campus</span>
+          </Link>
+          <div className="sz-discovery-item" onClick={refreshQuote}>
+            <span className="sz-discovery-icon">💡</span>
+            <span className="sz-discovery-label">Motivate</span>
+          </div>
+          <Link to="/marketplace" className="sz-discovery-item">
+            <span className="sz-discovery-icon">🛒</span>
+            <span className="sz-discovery-label">Market</span>
+          </Link>
         </div>
       </section>
 
-      {/* Games Section */}
-      <section className="sz-section" id="games-section">
-        <h2 className="sz-section-title">🎮 Games</h2>
-        <div className="sz-games-grid">
-          {games.map((game, idx) => (
-            <div key={idx} className={`sz-game-card ${!game.available ? 'disabled' : ''}`}>
-              <div className="sz-game-image">
-                {game.img ? (
-                  <img src={game.img} alt={game.title} className="game-card-img"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                ) : null}
-                <span className="sz-game-icon">{game.icon}</span>
-              </div>
-              <h3>{game.title}</h3>
-              <p>{game.desc}</p>
-              {game.available ? (
-                <Link to={game.link} className="sz-game-btn">Play Now</Link>
-              ) : (
-                <span className="sz-badge">Coming Soon</span>
-              )}
-            </div>
-          ))}
+      {/* ═══════════ GAMES — HORIZONTAL SHELF ═══════════ */}
+      <section className="sz-section" id="sz-games">
+        <div className="sz-section-intro">
+          <h2>🎮 Games</h2>
+          <p>Swipe to discover Basotho and classic student games.</p>
         </div>
-      </section>
 
-      {/* Daily Highlights – full‑bleed images */}
-      <section className="sz-section">
-        <h2 className="sz-section-title">✨ Daily Highlights</h2>
-        <div className="sz-highlights-grid">
-          {highlights.map(card => (
-            <div
-              key={card.id}
-              className="sz-highlight-card"
-              style={card.bgImg ? {
-                backgroundImage: `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url(${card.bgImg})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              } : {}}
+        <div className="sz-game-shelf">
+          {games.map((game) => (
+            <Link
+              key={game.id}
+              to={game.link}
+              className="sz-game-item"
+              style={{ '--game-color': game.color }}
             >
-              <div className="sz-highlight-overlay" />
-              <div className="sz-highlight-content">
-                {card.badge && <span className="sz-badge highlight-badge">{card.badge}</span>}
-                <p className="sz-highlight-quote">"{card.quote}"</p>
-                <button className="sz-highlight-btn">{card.button}</button>
+              <div className="sz-game-image-wrap">
+                {game.image ? (
+                  <img
+                    src={game.image}
+                    alt={game.name}
+                    className="sz-game-image"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="sz-game-fallback">
+                    <span>{game.icon}</span>
+                  </div>
+                )}
+                <span className="sz-game-badge">{game.badge}</span>
+              </div>
+              <div className="sz-game-meta">
+                <h3>{game.name}</h3>
+                <p>{game.desc}</p>
+                <span className="sz-game-play">Play Now →</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════ CAMPUS RESOURCES ═══════════ */}
+      <section className="sz-section sz-section-alt">
+        <div className="sz-section-intro">
+          <h2>🏫 Campus Resources</h2>
+          <p>Tools and services to help you navigate student life.</p>
+        </div>
+
+        <div className="sz-resources-list">
+          {campusFeatures.map((feature) => (
+            <div key={feature.id} className="sz-resource-row">
+              <span className="sz-resource-icon">{feature.icon}</span>
+              <div className="sz-resource-info">
+                <h3>
+                  {feature.title}
+                  {!feature.available && (
+                    <span className="sz-coming-tag">Coming Soon</span>
+                  )}
+                </h3>
+                <p>{feature.desc}</p>
+              </div>
+              <div className="sz-resource-action">
+                {feature.available ? (
+                  <Link to={feature.link} className="sz-resource-btn">
+                    {feature.cta}
+                  </Link>
+                ) : (
+                  <span className="sz-resource-btn disabled">{feature.cta}</span>
+                )}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Daily Basotho Motivation */}
-      <section className="sz-section">
-        <h2 className="sz-section-title">Today's Motivation</h2>
-        <div className="sz-motivation-card">
-          <p className="sz-quote">"Molapo o tlatsoa ke melatsoana."</p>
-          <p className="sz-quote-translation">Small consistent actions create great achievements.</p>
-          <button className="sz-refresh-icon" aria-label="Refresh quote" onClick={() => {}}>🔄</button>
+      {/* ═══════════ DAILY MOTIVATION ═══════════ */}
+      <section className="sz-section sz-motivation">
+        <div className="sz-motivation-inner">
+          <span className="sz-motivation-label">Today's Motivation</span>
+          <blockquote className="sz-motivation-quote">
+            {dailyQuotes[quoteIndex].sesotho}
+          </blockquote>
+          <p className="sz-motivation-translation">
+            {dailyQuotes[quoteIndex].english}
+          </p>
+          <button className="sz-motivation-refresh" onClick={refreshQuote}>
+            🔄 New Quote
+          </button>
         </div>
       </section>
 
-      {/* Campus Notices */}
-      <section className="sz-section">
-        <h2 className="sz-section-title">Campus Notices</h2>
-        <div className="sz-notices-grid">
-          {notices.map((notice, idx) => (
-            <div key={idx} className="sz-notice-card">
-              <h4>{notice.title}</h4>
-              <p>{notice.date}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Continue Playing */}
-      <section className="sz-section">
-        <h2 className="sz-section-title">Continue Playing</h2>
-        {recentGames.length > 0 ? (
-          <div className="sz-recent-grid">
-            {recentGames.map((game, idx) => (
-              <div key={idx} className="sz-recent-card">{game.title}</div>
-            ))}
-          </div>
-        ) : (
-          <div className="sz-empty-state">
-            <p>You haven't played any games yet.</p>
-            <Link to="/student-zone/morabaraba" className="sz-btn-primary">Start with Morabaraba</Link>
-            <Link to="/student-zone/lilotho" className="sz-btn-secondary">or Lilotho</Link>
-          </div>
-        )}
-      </section>
-
-      {/* Quick Links */}
-      <section className="sz-section">
-        <h2 className="sz-section-title">Quick Links</h2>
-        <div className="sz-links-grid">
-          {quickLinks.map((link, idx) => (
-            <div key={idx} className={`sz-link-card ${link.comingSoon ? 'coming-soon' : ''}`}>
-              <span className="sz-link-icon">{link.icon}</span>
-              <span className="sz-link-title">{link.title}</span>
-              {link.path ? (
-                <Link to={link.path} className="sz-link-arrow">→</Link>
-              ) : (
-                <span className="sz-badge">Coming Soon</span>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
+      {/* ═══════════ FOOTER ═══════════ */}
       <footer className="sz-footer">
         <h3>LeSAH Student Zone</h3>
         <p>Home isn't just where you sleep. It's where you belong.</p>
