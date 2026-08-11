@@ -1,0 +1,58 @@
+.hscroller-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.hscroller-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 4px 0 8px;
+}
+
+.hscroller-track::-webkit-scrollbar {
+  display: none;
+}
+
+.hscroller-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: #333;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s;
+}
+
+.hscroller-arrow:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.hscroller-left {
+  left: -14px;
+}
+
+.hscroller-right {
+  right: -14px;
+}
+
+@media (min-width: 768px) {
+  .hscroller-arrow {
+    display: flex;
+  }
+}
