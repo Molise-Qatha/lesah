@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import Newsletter from './components/Newsletter';
+import LandingPage from './pages/LandingPage';
 import Footer from './components/Footer';
 import Accommodation from './pages/Accommodation';
 import Loans from './pages/Loans';
@@ -24,7 +22,7 @@ import WordScrambleGame from './pages/WordScrambleGame';
 import WordSearchGame from './pages/WordSearchGame';
 import MorabarabaGame from './pages/MorabarabaGame';
 import SudokuGame from './pages/SudokuGame';
-import CampusMap from './pages/CampusMap';   // ✅ new
+import CampusMap from './pages/CampusMap';
 import Marketplace from './pages/Marketplace';
 import ProviderProfile from './pages/ProviderProfile';
 import HoKalla from './pages/HoKalla';
@@ -52,7 +50,7 @@ function AdminRoute({ children }) {
 }
 
 function App() {
-  // 🔁 Record site visit once per browser session
+  // Record site visit once per browser session
   useEffect(() => {
     const alreadyVisited = sessionStorage.getItem('visit_recorded');
     if (!alreadyVisited) {
@@ -68,17 +66,8 @@ function App() {
       <div className="App">
         <Header />
         <Routes>
-          {/* Home Page – GameSection removed */}
-          <Route
-            path="/"
-            element={
-              <>
-                <Hero />
-                <Services />
-                <Newsletter />
-              </>
-            }
-          />
+          {/* Home Page — NEW animated landing page */}
+          <Route path="/" element={<LandingPage />} />
 
           {/* Service Pages */}
           <Route path="/accommodation" element={<Accommodation />} />
@@ -90,7 +79,7 @@ function App() {
           <Route path="/provider/:providerId" element={<ProviderProfile />} />
           <Route path="/marketplace" element={<Marketplace />} />
 
-          {/* Student Zone – hub */}
+          {/* Student Zone — hub */}
           <Route path="/student-zone" element={<StudentZone />} />
 
           {/* Individual game pages */}
@@ -99,9 +88,8 @@ function App() {
           <Route path="/student-zone/word-search" element={<WordSearchGame />} />
           <Route path="/student-zone/morabaraba" element={<MorabarabaGame />} />
           <Route path="/student-zone/sudoku" element={<SudokuGame />} />
-          <Route path="/student-zone/campus-map" element={<CampusMap />} />   {/* ✅ new */}
+          <Route path="/student-zone/campus-map" element={<CampusMap />} />
           <Route path="/student-zone/hokalla" element={<HoKalla />} />
-
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
