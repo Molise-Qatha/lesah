@@ -25,7 +25,10 @@ import SudokuGame from './pages/SudokuGame';
 import CampusMap from './pages/CampusMap';
 import Marketplace from './pages/Marketplace';
 import ProviderProfile from './pages/ProviderProfile';
-import HoKalla from './pages/HoKalla';
+
+// 🛠️ 1. REPLACE the old HoKalla import with the new Entry Screen import
+import HoKallaEntry from './pages/HoKallaEntry'; 
+
 import './App.css';
 
 // Protected route wrapper for admin-only pages
@@ -89,7 +92,9 @@ function App() {
           <Route path="/student-zone/morabaraba" element={<MorabarabaGame />} />
           <Route path="/student-zone/sudoku" element={<SudokuGame />} />
           <Route path="/student-zone/campus-map" element={<CampusMap />} />
-          <Route path="/student-zone/hokalla" element={<HoKalla />} />
+
+          {/* 🛠️ 2. UPDATED ROUTE: Point to the New Cinematic Entry Screen */}
+          <Route path="/student-zone/hokalla" element={<HoKallaEntry />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
