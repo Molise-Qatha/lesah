@@ -19,7 +19,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/ho-kalla-entry-bg.jpg'); /* Ensure you save your image here */
+  /* 🛠️ REMOVED hardcoded string. It now reads the style prop from React */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

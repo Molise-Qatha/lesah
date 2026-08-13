@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './HoKallaEntry.css';
 import HoKalla from './HoKalla'; // Import your actual game
 
+// 🛠️ FIX: Import the image directly so React knows exactly where it is!
+import entryBg from './ho-kalla-entry-bg.jpg'; 
+
 // Helper to generate a random number for particle positioning
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
@@ -40,8 +43,8 @@ const HoKallaEntry = () => {
   // Otherwise, render the Cinematic Entry Screen
   return (
     <div className="ho-kalla-entry-container">
-      {/* The Image */}
-      <div className="entry-background"></div>
+      {/* 🛠️ FIX: The CSS class now sets the background to the imported image variable */}
+      <div className="entry-background" style={{ backgroundImage: `url(${entryBg})` }}></div>
       
       {/* Dark Gradient Edge Overlay */}
       <div className="entry-overlay"></div>
