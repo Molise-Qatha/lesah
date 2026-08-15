@@ -1,0 +1,595 @@
+/* ═══════════════ BASE ═══════════════ */
+.about-page {
+  background: #fafafa;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+.about-label {
+  display: inline-block;
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 16px;
+}
+
+.about-section {
+  padding: 80px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ═══════════════ HERO ═══════════════ */
+.about-hero {
+  position: relative;
+  background: linear-gradient(160deg, #0a1f0a 0%, #0d3b0f 30%, #1b5e20 60%, #2e7d32 100%);
+  color: white;
+  padding: 100px 20px 80px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.about-hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.about-hero-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.05;
+}
+
+.about-hero-shape-1 {
+  width: 500px;
+  height: 500px;
+  background: white;
+  top: -150px;
+  right: -100px;
+  animation: aboutFloat 20s infinite ease-in-out;
+}
+
+.about-hero-shape-2 {
+  width: 300px;
+  height: 300px;
+  background: #e9c46a;
+  bottom: -80px;
+  left: -60px;
+  animation: aboutFloat 25s infinite ease-in-out reverse;
+}
+
+@keyframes aboutFloat {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(20px, -15px); }
+  66% { transform: translate(-10px, 10px); }
+}
+
+.about-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.about-hero h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 0 0 16px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.about-hero-highlight {
+  color: #e9c46a;
+}
+
+.about-hero p {
+  font-size: 1.05rem;
+  opacity: 0.85;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ═══════════════ STORY ═══════════════ */
+.about-story {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-story.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-story h2 {
+  font-size: 2rem;
+  margin: 0 0 20px;
+  line-height: 1.3;
+}
+
+.about-story-body p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0 0 14px;
+}
+
+/* ═══════════════ VISION / ECOSYSTEM ═══════════════ */
+.about-vision-section {
+  max-width: none;
+  background: #f0f4f0;
+  padding: 80px 20px;
+}
+
+.about-vision {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(35px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-vision.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-vision h2 {
+  font-size: 2rem;
+  margin: 0 0 10px;
+}
+
+.about-vision-intro {
+  color: #666;
+  font-size: 1rem;
+  margin: 0 auto 40px;
+  max-width: 500px;
+}
+
+.about-ecosystem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.about-ecosystem-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1b5e20;
+  color: white;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  z-index: 2;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.about-ecosystem-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.about-pillar {
+  text-align: center;
+  padding: 24px;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 3;
+}
+
+.about-vision.visible .about-pillar {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.about-pillar-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.about-pillar h3 {
+  font-size: 1.1rem;
+  margin: 0 0 6px;
+  color: var(--pillar-color, #2e7d32);
+}
+
+.about-pillar p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ═══════════════ BELIEF ═══════════════ */
+.about-belief-section {
+  background: linear-gradient(145deg, #1b5e20, #2e7d32);
+  max-width: none;
+  text-align: center;
+  color: white;
+}
+
+.about-belief {
+  max-width: 700px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-belief.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-belief h2 {
+  font-size: 2.2rem;
+  margin: 0 0 14px;
+}
+
+.about-belief p {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin: 0 0 28px;
+}
+
+.about-belief-words {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.about-belief-word {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 8px 18px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-belief.visible .about-belief-word {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════ BUILT IN LESOTHO ═══════════════ */
+.about-built {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-built.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-built h2 {
+  font-size: 2rem;
+  margin: 0 0 14px;
+}
+
+.about-built p {
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0 0 12px;
+  max-width: 650px;
+}
+
+/* ═══════════════ JOURNEY ═══════════════ */
+.about-journey-section {
+  max-width: none;
+  background: #f0f4f0;
+  padding: 80px 20px;
+}
+
+.about-journey {
+  max-width: 700px;
+  margin: 0 auto;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.about-journey.visible {
+  opacity: 1;
+}
+
+.about-journey h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin: 0 0 30px;
+}
+
+.about-timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.about-timeline-line {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #c8e6c9;
+}
+
+.about-timeline-step {
+  position: relative;
+  padding: 18px 0;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-journey.visible .about-timeline-step {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.about-timeline-dot {
+  position: absolute;
+  left: -27px;
+  top: 28px;
+  width: 12px;
+  height: 12px;
+  background: #2e7d32;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.about-timeline-phase {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.about-timeline-content h4 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: #1a1a1a;
+}
+
+.about-timeline-content p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* ═══════════════ FOUNDER ═══════════════ */
+.about-founder-section {
+  text-align: center;
+}
+
+.about-founder {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-founder.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-founder-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.about-founder-image {
+  width: 120px;
+  height: 120px;
+}
+
+.about-founder-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1b5e20, #2e7d32);
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 2px;
+}
+
+.about-founder-info h2 {
+  font-size: 1.5rem;
+  margin: 0 0 4px;
+}
+
+.about-founder-role {
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0 0 10px;
+}
+
+.about-founder-bio {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/* ═══════════════ CLOSING ═══════════════ */
+.about-closing {
+  background: #0d1f0d;
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.about-closing-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.about-closing h2 {
+  font-size: 2.2rem;
+  margin: 0 0 8px;
+}
+
+.about-closing-sub {
+  font-size: 1.1rem;
+  opacity: 0.7;
+  margin: 0 0 28px;
+}
+
+.about-closing-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.about-cta-btn {
+  display: inline-block;
+  background: #e9c46a;
+  color: #111827;
+  text-decoration: none;
+  padding: 12px 26px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.25s;
+}
+
+.about-cta-btn:hover {
+  transform: translateY(-2px);
+  background: #f0d080;
+}
+
+.about-cta-secondary {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.about-cta-secondary:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media (max-width: 768px) {
+  .about-hero {
+    padding: 70px 16px 60px;
+  }
+
+  .about-hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .about-section {
+    padding: 56px 16px;
+  }
+
+  .about-story h2,
+  .about-vision h2,
+  .about-built h2 {
+    font-size: 1.5rem;
+  }
+
+  .about-ecosystem {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .about-ecosystem-center {
+    display: none;
+  }
+
+  .about-ecosystem-lines {
+    display: none;
+  }
+
+  .about-belief h2 {
+    font-size: 1.6rem;
+  }
+
+  .about-timeline {
+    padding-left: 24px;
+  }
+
+  .about-closing h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .about-belief-words {
+    gap: 8px;
+  }
+
+  .about-belief-word {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+}
+
+/* ═══════════════ REDUCED MOTION ═══════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .about-story,
+  .about-vision,
+  .about-belief,
+  .about-built,
+  .about-journey,
+  .about-founder,
+  .about-pillar,
+  .about-belief-word,
+  .about-timeline-step {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .about-hero-shape {
+    animation: none !important;
+  }
+}
