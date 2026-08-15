@@ -24,6 +24,8 @@ import MorabarabaGame from './pages/MorabarabaGame';
 import SudokuGame from './pages/SudokuGame';
 import CampusMap from './pages/CampusMap';
 import Marketplace from './pages/Marketplace';
+import CommunitySafety from './pages/CommunitySafety';
+import VendorGuidelines from './pages/VendorGuidelines';
 import ProviderProfile from './pages/ProviderProfile';
 
 // 🛠️ 1. REPLACE the old HoKalla import with the new Entry Screen import
@@ -98,11 +100,16 @@ function App() {
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/support" element={<Support />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/community-safety" element={<CommunitySafety />} />
+          <Route path="/vendor-guidelines" element={<VendorGuidelines />} />
+
+
 
           {/* Admin Dashboard (Protected) */}
           <Route

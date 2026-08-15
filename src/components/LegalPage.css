@@ -1,0 +1,151 @@
+.legal-page {
+  min-height: 100vh;
+  background: #fafafa;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #1a1a1a;
+}
+
+.legal-header {
+  background: linear-gradient(160deg, #0d3b0f, #1b5e20);
+  color: white;
+  padding: 50px 20px 40px;
+}
+
+.legal-header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.legal-header h1 {
+  font-size: 2.2rem;
+  margin: 0 0 10px;
+}
+
+.legal-admin-notice {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+.legal-body {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  padding: 40px 20px 60px;
+  align-items: start;
+}
+
+/* Table of Contents */
+.legal-toc {
+  position: sticky;
+  top: 20px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.legal-toc h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999;
+  margin: 0 0 12px;
+}
+
+.legal-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legal-toc a {
+  display: block;
+  padding: 7px 0;
+  color: #555;
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: color 0.2s;
+}
+
+.legal-toc a:hover {
+  color: #2e7d32;
+}
+
+/* Main content */
+.legal-content {
+  max-width: 700px;
+}
+
+.legal-section {
+  padding: 28px 0;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.legal-section:first-child {
+  padding-top: 0;
+}
+
+.legal-section h2 {
+  font-size: 1.25rem;
+  color: #1b5e20;
+  margin: 0 0 14px;
+}
+
+.legal-section p {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.7;
+  margin: 0 0 12px;
+}
+
+.legal-list {
+  padding-left: 20px;
+  margin: 0 0 12px;
+}
+
+.legal-list li {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+
+.legal-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.legal-footer p {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0 0 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .legal-body {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 20px 16px 50px;
+  }
+
+  .legal-toc {
+    display: none;
+  }
+
+  .legal-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .legal-section h2 {
+    font-size: 1.1rem;
+  }
+}
