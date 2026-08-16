@@ -6,21 +6,21 @@ function Footer() {
   const navigate = useNavigate();
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const scrollToGame = () => {
-    const gameSection = document.getElementById('game-section');
+    const gameSection = document.getElementById('sz-games');
     if (gameSection) {
       gameSection.scrollIntoView({ behavior: 'smooth' });
     } else {
-      navigate('/');
+      navigate('/student-zone');
       setTimeout(() => {
-        const gameSection = document.getElementById('game-section');
+        const gameSection = document.getElementById('sz-games');
         if (gameSection) {
           gameSection.scrollIntoView({ behavior: 'smooth' });
         }
-      }, 100);
+      }, 300);
     }
   };
 
@@ -28,47 +28,51 @@ function Footer() {
     <footer className="footer">
       <div className="container">
         <div className="footer-grid">
+          {/* Brand */}
           <div className="footer-section">
             <h3>LeSAH</h3>
             <p>
-              LeSAH‑Academic Luminary is dedicated to simplifying the student experience
-              through innovative digital solutions and traditional mentorship.
+              Lesotho Students Assistance Hub — connecting students with opportunities,
+              services, knowledge and community.
             </p>
           </div>
 
+          {/* Explore */}
           <div className="footer-section">
-            <h3>SERVICES</h3>
+            <h3>EXPLORE</h3>
             <ul>
+              <li><Link to="/marketplace" onClick={scrollToTop}>Marketplace</Link></li>
+              <li><Link to="/student-zone" onClick={scrollToTop}>Student Zone</Link></li>
               <li><Link to="/accommodation" onClick={scrollToTop}>Accommodation</Link></li>
-              <li><Link to="/eats" onClick={scrollToTop}>LeSAH Eats</Link></li>
-              <li><Link to="/tech" onClick={scrollToTop}>LeSAH Tech</Link></li>
-              <li><Link to="/loans" onClick={scrollToTop}>Student Loans</Link></li>
-              <li><Link to="/delivery" onClick={scrollToTop}>Asset Delivery</Link></li>
+              <li><Link to="/provider/maseeiso" onClick={scrollToTop}>Maseeiso Thaanyane</Link></li>
+              <li><Link to="/about" onClick={scrollToTop}>About LeSAH</Link></li>
             </ul>
           </div>
 
+          {/* Legal & Support */}
           <div className="footer-section">
-            <h3>QUICK LINKS</h3>
+            <h3>LEGAL & SUPPORT</h3>
             <ul>
               <li><Link to="/contact" onClick={scrollToTop}>Contact Us</Link></li>
-              <li><Link to="/learn-more" onClick={scrollToTop}>About Us</Link></li>
               <li><Link to="/privacy" onClick={scrollToTop}>Privacy Policy</Link></li>
-              <li><Link to="/terms" onClick={scrollToTop}>Terms of Service</Link></li>
-              <li><Link to="/support" onClick={scrollToTop}>Support</Link></li>
+              <li><Link to="/terms" onClick={scrollToTop}>Terms of Use</Link></li>
+              <li><Link to="/community-safety" onClick={scrollToTop}>Community & Safety</Link></li>
+              <li><Link to="/vendor-guidelines" onClick={scrollToTop}>Vendor Guidelines</Link></li>
             </ul>
           </div>
 
+          {/* Student Zone CTA */}
           <div className="footer-section">
-            <h3>THE GAME</h3>
-            <p>Join our weekly Lilotho challenge and win prizes for your student profile.</p>
+            <h3>STUDENT ZONE</h3>
+            <p>Play Basotho games like Ho Kalla, Lilotho and Morabaraba.</p>
             <button onClick={scrollToGame} className="game-link-btn">
-              Play Lilotho →
+              Play Games →
             </button>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; 2026 LeSAH. All rights reserved.</p>
+          <p>&copy; 2026 LeSAH — Lesotho Students Assistance Hub. All rights reserved.</p>
         </div>
       </div>
     </footer>
