@@ -20,6 +20,7 @@ import StudentZone from './pages/StudentZone';
 import LilothoGame from './pages/LilothoGame';
 import WordScrambleGame from './pages/WordScrambleGame';
 import WordSearchGame from './pages/WordSearchGame';
+import About from './pages/About';
 import MorabarabaGame from './pages/MorabarabaGame';
 import SudokuGame from './pages/SudokuGame';
 import CampusMap from './pages/CampusMap';
@@ -105,6 +106,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/community-safety" element={<CommunitySafety />} />
           <Route path="/vendor-guidelines" element={<VendorGuidelines />} />
