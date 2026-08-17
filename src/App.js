@@ -16,6 +16,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import LearnMore from './pages/LearnMore';
 import Eats from './pages/Eats';
 import Tech from './pages/Tech';
+import FinancialLiteracy from './pages/FinancialLiteracy';
 import StudentZone from './pages/StudentZone';
 import LilothoGame from './pages/LilothoGame';
 import WordScrambleGame from './pages/WordScrambleGame';
@@ -74,6 +75,8 @@ function App() {
         <Routes>
           {/* Home Page — NEW animated landing page */}
           <Route path="/" element={<LandingPage />} />
+          
+
 
           {/* Service Pages */}
           <Route path="/accommodation" element={<Accommodation />} />
@@ -84,6 +87,8 @@ function App() {
           <Route path="/learn-more" element={<LearnMore />} />
           <Route path="/provider/:providerId" element={<ProviderProfile />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/financial-literacy" element={<FinancialLiteracy />} />
+
 
           {/* Student Zone — hub */}
           <Route path="/student-zone" element={<StudentZone />} />
