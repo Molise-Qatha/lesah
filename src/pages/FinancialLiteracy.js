@@ -1,232 +1,265 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './FinancialLiteracy.css';
-import { financialLiteracyData } from '../data/financialLiteracy';
-
-const EDUCATION_LEVELS = [
-  { id: 'primary', label: 'Primary School', icon: '🎒' },
-  { id: 'high_school', label: 'High School', icon: '📚' },
-  { id: 'university', label: 'University', icon: '🎓' },
-];
+import { curriculumData } from '../data/financialLiteracyCurriculum';
 
 function FinancialLiteracy() {
-  const [level, setLevel] = useState(() => localStorage.getItem('fl_level') || 'high_school');
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isThinking, setIsThinking] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
-  const chatEndRef = useRef(null);
+  const [gradeId, setGradeId] = useState(() => localStorage.getItem('fl_grade') || 'grade4');
+  const [language, setLanguage] = useState(() => localStorage.getItem('fl_language') || 'english');
+  const [view, setView] = useState('learn'); // 'learn' | 'quiz'
+  const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [quizQuestions, setQuizQuestions] = useState([]);
+
+  const ui = curriculumData.ui[language];
+  const gradeData = curriculumData.grades[gradeId];
+  const modules = gradeData?.modules || [];
+  const currentModule = modules[currentModuleIndex];
 
   useEffect(() => {
-    localStorage.setItem('fl_level', level);
-  }, [level]);
+    localStorage.setItem('fl_grade', gradeId);
+  }, [gradeId]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isThinking]);
+    localStorage.setItem('fl_language', language);
+  }, [language]);
 
-  const findTopic = (question) => {
-    const normalized = question.toLowerCase();
-    let bestTopic = null;
-    let bestScore = 0;
-
-    for (const [topicId, topicData] of Object.entries(financialLiteracyData.topics)) {
-      let score = 0;
-      for (const keyword of topicData.keywords) {
-        const kw = keyword.toLowerCase();
-        if (normalized.includes(kw)) {
-          score += kw.length;
+  useEffect(() => {
+    // Collect all quiz questions from all modules
+    if (modules.length > 0) {
+      const allQuestions = [];
+      modules.forEach((mod) => {
+        if (mod.quiz) {
+          mod.quiz.forEach((q) => {
+            allQuestions.push({ ...q, moduleTitle: mod.title });
+          });
         }
-        // Check word fragments
-        const words = normalized.split(' ');
-        for (const word of words) {
-          if (word.length > 3 && (kw.includes(word) || word.includes(kw))) {
-            score += 2;
-          }
-        }
-      }
-      if (score > bestScore) {
-        bestScore = score;
-        bestTopic = topicId;
-      }
+      });
+      setQuizQuestions(allQuestions);
     }
+  }, [gradeId]);
 
-    return bestScore > 3 ? bestTopic : null;
+  const handleGradeChange = (newGrade) => {
+    setGradeId(newGrade);
+    setView('learn');
+    setCurrentModuleIndex(0);
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowResult(false);
+    setSelectedOption(null);
   };
 
-  const getAnswer = (question) => {
-    const topicId = findTopic(question);
-    
-    if (!topicId) {
-      return {
-        found: false,
-        text: financialLiteracyData.fallbackResponse,
-        related: null,
-      };
+  const handleLanguageChange = (newLang) => {
+    setLanguage(newLang);
+    setSelectedOption(null);
+  };
+
+  const startQuiz = () => {
+    setView('quiz');
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowResult(false);
+    setSelectedOption(null);
+  };
+
+  const handleAnswer = (index) => {
+    if (selectedOption !== null) return;
+    setSelectedOption(index);
+    if (index === quizQuestions[currentQuestionIndex].correctIndex) {
+      setScore((prev) => prev + 1);
     }
+  };
 
-    const topicData = financialLiteracyData.topics[topicId];
-    const levelData = topicData.levels[level] || topicData.levels.primary;
-    
-    let text = `**${levelData.title}**\n\n${levelData.explanation}`;
-    if (levelData.example) {
-      text += `\n\n**Example:** ${levelData.example}`;
+  const nextQuestion = () => {
+    setSelectedOption(null);
+    if (currentQuestionIndex < quizQuestions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    } else {
+      setShowResult(true);
     }
-
-    const relatedTopicId = levelData.related;
-    const relatedTitle = relatedTopicId && financialLiteracyData.topics[relatedTopicId]
-      ? financialLiteracyData.topics[relatedTopicId].levels[level]?.title || relatedTopicId.replace(/_/g, ' ')
-      : null;
-
-    return {
-      found: true,
-      text,
-      related: relatedTitle ? relatedTitle.toLowerCase() : null,
-      relatedId: relatedTopicId,
-    };
   };
 
-  const handleSend = (e) => {
-    e.preventDefault();
-    if (!input.trim() || isThinking) return;
-
-    const question = input.trim();
-    setInput('');
-    setHasStarted(true);
-
-    setMessages((prev) => [...prev, { type: 'user', text: question }]);
-    setIsThinking(true);
-
-    setTimeout(() => {
-      const answer = getAnswer(question);
-      setMessages((prev) => [
-        ...prev,
-        {
-          type: 'assistant',
-          text: answer.text,
-          related: answer.related,
-          relatedId: answer.relatedId,
-        },
-      ]);
-      setIsThinking(false);
-    }, 600);
+  const retryQuiz = () => {
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowResult(false);
+    setSelectedOption(null);
   };
 
-  const handleSuggestedQuestion = (question) => {
-    setMessages((prev) => [...prev, { type: 'user', text: question }]);
-    setHasStarted(true);
-    setIsThinking(true);
-
-    setTimeout(() => {
-      const answer = getAnswer(question);
-      setMessages((prev) => [
-        ...prev,
-        {
-          type: 'assistant',
-          text: answer.text,
-          related: answer.related,
-          relatedId: answer.relatedId,
-        },
-      ]);
-      setIsThinking(false);
-    }, 600);
+  const backToLearning = () => {
+    setView('learn');
+    setSelectedOption(null);
   };
 
-  const handleLevelChange = (newLevel) => {
-    setLevel(newLevel);
-    setMessages([]);
-    setHasStarted(false);
-    setInput('');
-  };
+  const phaseData = gradeData ? curriculumData.phases[gradeData.phase] : null;
 
   return (
     <div className="fl-page">
       {/* Hero */}
       <section className="fl-hero">
-        <h1>💰 Learn Money. Build Your Future.</h1>
-        <p>
-          LeSAH's financial literacy assistant helps you understand money, saving,
-          budgeting and financial decisions at every stage of your education.
-        </p>
-        <span className="fl-dev-badge">In Development</span>
+        <h1>{ui.heroTitle}</h1>
+        <p>{ui.heroSubtitle}</p>
+        <span className="fl-dev-badge">{ui.inDevelopment}</span>
       </section>
 
-      {/* Level Selector */}
-      <div className="fl-level-bar">
-        {EDUCATION_LEVELS.map((l) => (
+      {/* Controls */}
+      <div className="fl-controls">
+        <div className="fl-language-bar">
+          <span className="fl-control-label">{ui.languageLabel}</span>
           <button
-            key={l.id}
-            className={`fl-level-btn ${level === l.id ? 'active' : ''}`}
-            onClick={() => handleLevelChange(l.id)}
+            className={`fl-lang-btn ${language === 'english' ? 'active' : ''}`}
+            onClick={() => handleLanguageChange('english')}
           >
-            <span>{l.icon}</span>
-            <span>{l.label}</span>
+            {ui.english}
           </button>
-        ))}
+          <button
+            className={`fl-lang-btn ${language === 'sesotho' ? 'active' : ''}`}
+            onClick={() => handleLanguageChange('sesotho')}
+          >
+            {ui.sesotho}
+          </button>
+        </div>
+
+        <div className="fl-grade-bar">
+          <span className="fl-control-label">{ui.chooseGrade}</span>
+          <select
+            className="fl-grade-select"
+            value={gradeId}
+            onChange={(e) => handleGradeChange(e.target.value)}
+          >
+            {curriculumData.gradeOptions.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.label[language]}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Chat Area */}
-      <div className="fl-chat">
-        {!hasStarted ? (
-          <div className="fl-welcome">
-            <span className="fl-welcome-icon">💡</span>
-            <h2>Ask me anything about money</h2>
-            <p>Choose your education level above, then try one of these:</p>
-            <div className="fl-suggestions">
-              {financialLiteracyData.suggestedQuestions.map((q, i) => (
-                <button key={i} onClick={() => handleSuggestedQuestion(q)}>
-                  {q}
+      {/* Phase Indicator */}
+      {phaseData && (
+        <div className="fl-phase-indicator">
+          <span className="fl-phase-icon">{gradeData.icon}</span>
+          <span className="fl-phase-name">{ui.phaseLabel} {phaseData.title[language]}</span>
+          <span className="fl-phase-grades">{gradeData.label[language]} — {gradeData.age[language]}</span>
+        </div>
+      )}
+
+      {/* Content Area */}
+      {view === 'learn' ? (
+        <div className="fl-learn-area">
+          {/* Module Selector */}
+          {modules.length > 0 && (
+            <div className="fl-module-tabs">
+              {modules.map((mod, i) => (
+                <button
+                  key={mod.id}
+                  className={`fl-module-tab ${i === currentModuleIndex ? 'active' : ''}`}
+                  onClick={() => setCurrentModuleIndex(i)}
+                >
+                  {mod.title[language]}
                 </button>
               ))}
             </div>
-          </div>
-        ) : (
-          <div className="fl-messages">
-            {messages.map((msg, i) => (
-              <div key={i} className={`fl-msg fl-msg-${msg.type}`}>
-                <div className="fl-msg-content">
-                  {msg.text.split('\n').map((line, j) => (
-                    <React.Fragment key={j}>
-                      {line}
-                      {j < msg.text.split('\n').length - 1 && <br />}
-                    </React.Fragment>
-                  ))}
-                  {msg.related && (
-                    <button
-                      className="fl-related"
-                      onClick={() => handleSuggestedQuestion(`What is ${msg.related}?`)}
-                    >
-                      Learn about: {msg.related} →
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-            {isThinking && (
-              <div className="fl-msg fl-msg-assistant">
-                <div className="fl-msg-content">
-                  <div className="fl-typing">
-                    <span></span><span></span><span></span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
-        )}
+          )}
 
-        {/* Input */}
-        <form className="fl-input-bar" onSubmit={handleSend}>
-          <input
-            type="text"
-            placeholder="Ask about saving, budgeting, interest, loans..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button type="submit" disabled={isThinking || !input.trim()}>
-            Send
-          </button>
-        </form>
-      </div>
+          {/* Current Module */}
+          {currentModule && (
+            <div className="fl-module-content">
+              <h2>{currentModule.title[language]}</h2>
+              <p className="fl-module-explanation">{currentModule.explanation[language]}</p>
+              <div className="fl-module-example">
+                <strong>{language === 'sesotho' ? 'Mohlala:' : 'Example:'}</strong> {currentModule.example[language]}
+              </div>
+              <button className="fl-quiz-btn" onClick={startQuiz}>
+                📝 {ui.takeQuiz}
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="fl-quiz-area">
+          {!showResult ? (
+            quizQuestions.length > 0 && currentQuestionIndex < quizQuestions.length ? (
+              <div className="fl-quiz-question">
+                <span className="fl-quiz-progress">
+                  {currentQuestionIndex + 1} / {quizQuestions.length}
+                </span>
+                <h3>{quizQuestions[currentQuestionIndex].question[language]}</h3>
+                <div className="fl-quiz-options">
+                  {quizQuestions[currentQuestionIndex].options[language].map((opt, i) => (
+                    <button
+                      key={i}
+                      className={`fl-quiz-option ${
+                        selectedOption !== null
+                          ? i === quizQuestions[currentQuestionIndex].correctIndex
+                            ? 'correct'
+                            : i === selectedOption
+                            ? 'wrong'
+                            : ''
+                          : ''
+                      }`}
+                      onClick={() => handleAnswer(i)}
+                      disabled={selectedOption !== null}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+                {selectedOption !== null && (
+                  <div className="fl-quiz-feedback">
+                    {selectedOption === quizQuestions[currentQuestionIndex].correctIndex ? (
+                      <span className="fl-quiz-correct">{ui.quizCorrect}</span>
+                    ) : (
+                      <span className="fl-quiz-wrong">
+                        {ui.quizWrong}{' '}
+                        <strong>
+                          {quizQuestions[currentQuestionIndex].options[language][quizQuestions[currentQuestionIndex].correctIndex]}
+                        </strong>
+                      </span>
+                    )}
+                    <button className="fl-quiz-next" onClick={nextQuestion}>
+                      {currentQuestionIndex < quizQuestions.length - 1 ? ui.quizNext : ui.quizFinish}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="fl-quiz-empty">
+                <p>{ui.chooseGrade}</p>
+                <button onClick={backToLearning}>← {ui.quizBack}</button>
+              </div>
+            )
+          ) : (
+            <div className="fl-quiz-result">
+              <span className="fl-result-icon">{score >= quizQuestions.length / 2 ? '🎉' : '📚'}</span>
+              <h2>{ui.quizScore}</h2>
+              <p className="fl-result-score">
+                {score} / {quizQuestions.length}
+              </p>
+              <p className="fl-result-message">
+                {score === quizQuestions.length
+                  ? '🌟 Perfect score!'
+                  : score >= quizQuestions.length * 0.7
+                  ? '👏 Great job!'
+                  : score >= quizQuestions.length * 0.5
+                  ? '👍 Keep learning!'
+                  : '💪 Practice more and try again!'}
+              </p>
+              <div className="fl-result-actions">
+                <button className="fl-quiz-btn" onClick={retryQuiz}>
+                  🔄 {ui.quizRetry}
+                </button>
+                <button className="fl-quiz-btn fl-quiz-btn-secondary" onClick={backToLearning}>
+                  ← {ui.quizBack}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
