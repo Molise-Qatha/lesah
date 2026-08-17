@@ -81,6 +81,16 @@ function Header() {
                 </Link>
               </li>
               <li>
+                <Link to="/financial-literacy" onClick={() => setIsMenuOpen(false)}>
+                  💰 Financial Literacy
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" onClick={() => setIsMenuOpen(false)}>
+                  About
+                </Link>
+              </li>
+              <li>
                 <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
                   Contact
                 </Link>
