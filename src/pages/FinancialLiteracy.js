@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FinancialLiteracy.css';
 import { curriculumData } from '../data/financialLiteracyCurriculum';
 
@@ -39,7 +39,7 @@ function FinancialLiteracy() {
       });
       setQuizQuestions(allQuestions);
     }
-  }, [gradeId]);
+  }, [gradeId, modules]);
 
   const handleGradeChange = (newGrade) => {
     setGradeId(newGrade);
@@ -104,25 +104,29 @@ function FinancialLiteracy() {
         <span className="fl-dev-badge">{ui.inDevelopment}</span>
       </section>
 
-      {/* Controls */}
-      <div className="fl-controls">
-        <div className="fl-language-bar">
+      {/* Controls - Wrapped inside fl-level-bar so it matches your CSS */}
+      <div className="fl-level-bar">
+        {/* Language */}
+        <div className="fl-control-group">
           <span className="fl-control-label">{ui.languageLabel}</span>
-          <button
-            className={`fl-lang-btn ${language === 'english' ? 'active' : ''}`}
-            onClick={() => handleLanguageChange('english')}
-          >
-            {ui.english}
-          </button>
-          <button
-            className={`fl-lang-btn ${language === 'sesotho' ? 'active' : ''}`}
-            onClick={() => handleLanguageChange('sesotho')}
-          >
-            {ui.sesotho}
-          </button>
+          <div className="fl-level-buttons">
+            <button
+              className={`fl-level-btn ${language === 'english' ? 'active' : ''}`}
+              onClick={() => handleLanguageChange('english')}
+            >
+              {ui.english}
+            </button>
+            <button
+              className={`fl-level-btn ${language === 'sesotho' ? 'active' : ''}`}
+              onClick={() => handleLanguageChange('sesotho')}
+            >
+              {ui.sesotho}
+            </button>
+          </div>
         </div>
 
-        <div className="fl-grade-bar">
+        {/* Grade */}
+        <div className="fl-control-group">
           <span className="fl-control-label">{ui.chooseGrade}</span>
           <select
             className="fl-grade-select"

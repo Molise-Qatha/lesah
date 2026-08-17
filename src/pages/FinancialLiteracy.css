@@ -1,7 +1,11 @@
+/* src/pages/FinancialLiteracy.css */
+
 .fl-page {
   min-height: 100vh;
   background: #f5f7f5;
   font-family: 'Segoe UI', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Hero */
@@ -254,26 +258,6 @@
   cursor: not-allowed;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .fl-hero h1 {
-    font-size: 1.6rem;
-  }
-
-  .fl-chat {
-    border-radius: 12px;
-    margin: 0 12px 50px;
-  }
-
-  .fl-msg-content {
-    max-width: 90%;
-  }
-
-  .fl-level-btn {
-    padding: 8px 14px;
-    font-size: 0.8rem;
-  }
-}
 /* Grade selector */
 .fl-grade-select {
   padding: 8px 16px;
@@ -560,7 +544,30 @@
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+  .fl-hero {
+    padding: 40px 20px;
+  }
+  .fl-hero h1 {
+    font-size: 1.8rem;
+  }
+}
+
 @media (max-width: 600px) {
+  .fl-chat {
+    border-radius: 12px;
+    margin: 0 12px 50px;
+  }
+
+  .fl-msg-content {
+    max-width: 90%;
+  }
+
+  .fl-level-btn {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+  
   .fl-module-tabs {
     flex-wrap: nowrap;
   }
