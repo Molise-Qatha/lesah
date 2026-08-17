@@ -85,14 +85,6 @@ export const curriculumData = {
               },
               correctIndex: 0,
             },
-            {
-              question: { english: 'What is a M20 note made of?', sesotho: 'Chelete ea M20 e entsoe ka eng?' },
-              options: {
-                english: ['Paper', 'Metal', 'Wood'],
-                sesotho: ['Pampiri', 'Tšepe', 'Lehong'],
-              },
-              correctIndex: 0,
-            },
           ],
         },
         {
@@ -103,8 +95,8 @@ export const curriculumData = {
             sesotho: 'Ho boloka ho bolela ho boloka chelete bakeng sa hamorao. Piggy bank ke sejana se khethehileng sa ho boloka chelete.',
           },
           example: {
-            english: 'If your grandmother gives you M5, you can put M2 in your piggy bank and keep M3 for sweets.',
-            sesotho: 'Haeba nkhono a u fa M5, u ka kenya M2 ka piggy bank ea hau \'me u boloke M3 bakeng sa lipompong.',
+            english: 'If your grandmother gives you M5, put M2 in your piggy bank.',
+            sesotho: 'Haeba nkhono a u fa M5, kenya M2 ka piggy bank.',
           },
           quiz: [
             {
@@ -135,8 +127,8 @@ export const curriculumData = {
             sesotho: 'U ke ke ua reka ntho e \'ngoe le e \'ngoe eo u e batlang. U tlameha ho khetha se bohlokoa ka ho fetisisa.',
           },
           example: {
-            english: 'You have M10. You can buy a sweet (M5) OR a packet of chips (M10). Choose one.',
-            sesotho: 'U na le M10. U ka reka pompong (M5) KAPA pakete ea chips (M10). Khetha e le \'ngoe.',
+            english: 'You have M10. You can buy a sweet OR a packet of chips. Choose one.',
+            sesotho: 'U na le M10. U ka reka pompong KAPA pakete ea chips. Khetha e le \'ngoe.',
           },
           quiz: [
             {
@@ -153,8 +145,8 @@ export const curriculumData = {
           id: 'g2_bank_basics',
           title: { english: 'What is a Bank?', sesotho: 'Banka ke Eng?' },
           explanation: {
-            english: 'A bank is a safe place to keep your money. People put money in banks to keep it safe.',
-            sesotho: 'Banka ke sebaka se sireletsehileng sa ho boloka chelete. Batho ba kenya chelete libankeng ho e boloka e sireletsehile.',
+            english: 'A bank is a safe place to keep your money.',
+            sesotho: 'Banka ke sebaka se sireletsehileng sa ho boloka chelete.',
           },
           example: {
             english: 'Your parents may have a bank account. They put money there to keep it safe.',
@@ -185,12 +177,12 @@ export const curriculumData = {
           id: 'g3_allowance',
           title: { english: 'Allowance and Pocket Money', sesotho: 'Chelete ea Pokotho' },
           explanation: {
-            english: 'Allowance is money given to you regularly, usually by parents or family. You can learn to manage it.',
-            sesotho: 'Chelete ea pokotho ke chelete eo u e fuoang khafetsa, hangata ke batsoali kapa lelapa. U ka ithuta ho e sebelisa ka nepo.',
+            english: 'Allowance is money given to you regularly, usually by parents or family.',
+            sesotho: 'Chelete ea pokotho ke chelete eo u e fuoang khafetsa, hangata ke batsoali kapa lelapa.',
           },
           example: {
-            english: 'If you get M20 per week, you could spend M10 on snacks, save M5, and give M5 to church.',
-            sesotho: 'Haeba u fumana M20 ka beke, u ka sebelisa M10 lipompong, u boloka M5, \'me u fana ka M5 kerekeng.',
+            english: 'If you get M20 per week, spend M10 on snacks, save M5, and give M5 to church.',
+            sesotho: 'Haeba u fumana M20 ka beke, sebelisa M10 lipompong, boloka M5, \'me u fane ka M5 kerekeng.',
           },
           quiz: [
             {
@@ -198,6 +190,28 @@ export const curriculumData = {
               options: {
                 english: ['Money given regularly', 'Money you steal', 'Money you find'],
                 sesotho: ['Chelete e fuoang khafetsa', 'Chelete eo u e utsoang', 'Chelete eo u e fumanang'],
+              },
+              correctIndex: 0,
+            },
+          ],
+        },
+        {
+          id: 'g3_earning',
+          title: { english: 'Earning Money', sesotho: 'Ho Fumana Chelete' },
+          explanation: {
+            english: 'You can earn money by doing small jobs for your family or neighbours.',
+            sesotho: 'U ka fumana chelete ka ho etsetsa lelapa kapa baahelani mesebetsi e menyenyane.',
+          },
+          example: {
+            english: 'If you help wash dishes and earn M5, that is earning money.',
+            sesotho: 'Haeba u thusa ho hlatsoa lijana \'me u fumana M5, ke ho fumana chelete.',
+          },
+          quiz: [
+            {
+              question: { english: 'How can you earn money?', sesotho: 'U ka fumana chelete joang?' },
+              options: {
+                english: ['Doing small jobs', 'Waiting', 'Sleeping'],
+                sesotho: ['Ka ho etsa mesebetsi e menyenyane', 'Ka ho leta', 'Ka ho robala'],
               },
               correctIndex: 0,
             },
@@ -221,8 +235,8 @@ export const curriculumData = {
             sesotho: 'Litlhoko ke lintho tseo u tlamehang ho ba le tsona ho phela. Litakatso ke lintho tseo u ka ratang ho ba le tsona empa u ka phela ntle le tsona.',
           },
           example: {
-            english: 'Food and shelter are needs. A new toy or fancy shoes are wants.',
-            sesotho: 'Lijo le bolulo ke litlhoko. Ntho e ncha ea ho bapala kapa lieta tse turang ke litakatso.',
+            english: 'Food and shelter are needs. A new toy is a want.',
+            sesotho: 'Lijo le bolulo ke litlhoko. Ntho e ncha ea ho bapala ke takatso.',
           },
           quiz: [
             {
@@ -233,22 +247,14 @@ export const curriculumData = {
               },
               correctIndex: 0,
             },
-            {
-              question: { english: 'Is a new toy a need or a want?', sesotho: 'Na ntho e ncha ea ho bapala ke tlhoko kapa takatso?' },
-              options: {
-                english: ['Want', 'Need', 'Neither'],
-                sesotho: ['Takatso', 'Tlhoko', 'Ha se letho'],
-              },
-              correctIndex: 0,
-            },
           ],
         },
         {
           id: 'g4_simple_budget',
           title: { english: 'Simple Budget', sesotho: 'Tekanyetso e Bonolo' },
           explanation: {
-            english: 'A budget is a plan for your money. You decide how much to spend, save, and give before you get the money.',
-            sesotho: 'Tekanyetso ke moralo oa chelete ea hau. U etsa qeto ea hore na u sebelise bokae, u boloke bokae, le ho fana bokae pele u fumana chelete.',
+            english: 'A budget is a plan for your money. You decide how much to spend, save, and give.',
+            sesotho: 'Tekanyetso ke moralo oa chelete ea hau. U etsa qeto ea hore na u sebelise bokae, u boloke bokae, le ho fana bokae.',
           },
           example: {
             english: 'M50 budget: M20 spending, M20 saving, M10 giving.',
@@ -279,27 +285,41 @@ export const curriculumData = {
           id: 'g5_goals',
           title: { english: 'Setting Savings Goals', sesotho: 'Ho Beha Lipakane tsa Poloko' },
           explanation: {
-            english: 'A savings goal is a specific thing you are saving for. Having a goal makes saving easier and more exciting.',
-            sesotho: 'Pakane ea poloko ke ntho e itseng eo u e bolokelang. Ho ba le pakane ho etsa hore ho boloka ho be bonolo le ho be monate.',
+            english: 'A savings goal is a specific thing you are saving for.',
+            sesotho: 'Pakane ea poloko ke ntho e itseng eo u e bolokelang.',
           },
           example: {
-            english: 'Goal: Save M100 for new school shoes. If you save M20 per week, you will reach your goal in 5 weeks.',
-            sesotho: 'Pakane: Boloka M100 bakeng sa lieta tse ncha tsa sekolo. Haeba u boloka M20 ka beke, u tla fihlela pakane ka libeke tse 5.',
+            english: 'Goal: Save M100 for new school shoes. Save M20 per week = 5 weeks.',
+            sesotho: 'Pakane: Boloka M100 bakeng sa lieta tse ncha tsa sekolo. Boloka M20 ka beke = libeke tse 5.',
           },
           quiz: [
-            {
-              question: { english: 'What is a savings goal?', sesotho: 'Pakane ea poloko ke eng?' },
-              options: {
-                english: ['A specific thing you are saving for', 'A type of bank', 'A loan'],
-                sesotho: ['Ntho e itseng eo u e bolokelang', 'Mofuta oa banka', 'Kalimo'],
-              },
-              correctIndex: 0,
-            },
             {
               question: { english: 'If you save M20 per week and need M100, how many weeks?', sesotho: 'Haeba u boloka M20 ka beke \'me u hloka M100, ke libeke tse kae?' },
               options: {
                 english: ['5 weeks', '10 weeks', '2 weeks'],
                 sesotho: ['Libeke tse 5', 'Libeke tse 10', 'Libeke tse 2'],
+              },
+              correctIndex: 0,
+            },
+          ],
+        },
+        {
+          id: 'g5_banking',
+          title: { english: 'Bank Accounts', sesotho: 'Liakhaonto tsa Banka' },
+          explanation: {
+            english: 'A bank account helps you keep your money safe and track how much you have.',
+            sesotho: 'Akhaonto ea banka e u thusa ho boloka chelete e sireletsehile le ho tseba hore na u na le bokae.',
+          },
+          example: {
+            english: 'Some banks allow children to open savings accounts with as little as M50.',
+            sesotho: 'Libanka tse ling li lumella bana ho bula liakhaonto tsa poloko ka chelete e nyane joaloka M50.',
+          },
+          quiz: [
+            {
+              question: { english: 'What is a bank account for?', sesotho: 'Akhaonto ea banka e etsetsa eng?' },
+              options: {
+                english: ['Keeping money safe', 'Spending money', 'Losing money'],
+                sesotho: ['Ho boloka chelete e sireletsehile', 'Ho sebelisa chelete', 'Ho lahleheloa ke chelete'],
               },
               correctIndex: 0,
             },
@@ -316,22 +336,44 @@ export const curriculumData = {
       phase: 'exploration',
       modules: [
         {
-          id: 'g6_banking',
-          title: { english: 'Bank Accounts for Kids', sesotho: 'Liakhaonto tsa Banka tsa Bana' },
+          id: 'g6_interest',
+          title: { english: 'What is Interest?', sesotho: 'Phaello ke Eng?' },
           explanation: {
-            english: 'Many banks offer savings accounts for children. Opening an account helps you learn how banking works.',
-            sesotho: 'Libanka tse ngata li fana ka liakhaonto tsa poloko tsa bana. Ho bula akhaonto ho u thusa ho ithuta hore na banka e sebetsa joang.',
+            english: 'Interest is extra money you earn when you keep money in a savings account. It is a reward for saving.',
+            sesotho: 'Phaello ke chelete e eketsehileng eo u e fumanang ha u boloka chelete akhaontong ea poloko. Ke moputso oa ho boloka.',
           },
           example: {
-            english: 'Some banks allow children to open savings accounts with as little as M50.',
-            sesotho: 'Libanka tse ling li lumella bana ho bula liakhaonto tsa poloko ka chelete e nyane joaloka M50.',
+            english: 'If you save M100 at 5% interest, after one year you will have M105.',
+            sesotho: 'Haeba u boloka M100 ka phaello ea 5%, kamora selemo u tla ba le M105.',
           },
           quiz: [
             {
-              question: { english: 'What can you open at a bank to save money?', sesotho: 'U ka bula eng bankeng ho boloka chelete?' },
+              question: { english: 'What is interest?', sesotho: 'Phaello ke eng?' },
               options: {
-                english: ['Savings account', 'A game', 'A shop'],
-                sesotho: ['Akhaonto ea poloko', 'Papali', 'Lebenkele'],
+                english: ['Extra money for saving', 'Money you lose', 'A type of loan'],
+                sesotho: ['Chelete e eketsehileng ea poloko', 'Chelete eo u e lahlang', 'Mofuta oa kalimo'],
+              },
+              correctIndex: 0,
+            },
+          ],
+        },
+        {
+          id: 'g6_spending_habits',
+          title: { english: 'Smart Spending Habits', sesotho: 'Mekhoa e Bohlale ea Tšebeliso' },
+          explanation: {
+            english: 'Smart spending means thinking before you buy and comparing prices.',
+            sesotho: 'Ho sebelisa chelete ka bohlale ho bolela ho nahana pele u reka le ho bapisa litheko.',
+          },
+          example: {
+            english: 'Before buying something, ask: "Do I need this? Can I find it cheaper?"',
+            sesotho: 'Pele u reka ntho, ipotse: "Na ke e hloka? Nka e fumana ka theko e tlase?"',
+          },
+          quiz: [
+            {
+              question: { english: 'What should you do before buying something?', sesotho: 'U lokela ho etsa eng pele u reka ntho?' },
+              options: {
+                english: ['Think and compare prices', 'Buy immediately', 'Don\'t think'],
+                sesotho: ['Nahana le ho bapisa litheko', 'Reka hang-hang', 'Se nahane'],
               },
               correctIndex: 0,
             },
@@ -351,8 +393,8 @@ export const curriculumData = {
           id: 'g7_income',
           title: { english: 'Understanding Income', sesotho: 'Ho Utloisisa Moputso' },
           explanation: {
-            english: 'Income is money you receive regularly. It can come from allowance, gifts, or small jobs you do for others.',
-            sesotho: 'Moputso ke chelete eo u e fumanang khafetsa. E ka tsoa ho chelete ea pokotho, limpho, kapa mesebetsi e menyenyane eo u e etsetsang ba bang.',
+            english: 'Income is money you receive regularly from allowance, gifts, or small jobs.',
+            sesotho: 'Moputso ke chelete eo u e fumanang khafetsa ho tsoa ho chelete ea pokotho, limpho, kapa mesebetsi e menyenyane.',
           },
           example: {
             english: 'If you help your neighbour and earn M30, that is income.',
@@ -370,51 +412,11 @@ export const curriculumData = {
           ],
         },
         {
-          id: 'g7_interest_intro',
-          title: { english: 'Introduction to Interest', sesotho: 'Kenyelletso ea Phaello' },
+          id: 'g7_budgeting',
+          title: { english: 'Introduction to Budgeting', sesotho: 'Kenyelletso ea Tekanyetso' },
           explanation: {
-            english: 'Interest is extra money you earn when you keep money in a savings account. It is a reward for saving.',
-            sesotho: 'Phaello ke chelete e eketsehileng eo u e fumanang ha u boloka chelete akhaontong ea poloko. Ke moputso oa ho boloka.',
-          },
-          example: {
-            english: 'If you save M100 at 5% interest, after one year you will have M105. The M5 is interest.',
-            sesotho: 'Haeba u boloka M100 ka phaello ea 5%, kamora selemo u tla ba le M105. M5 ke phaello.',
-          },
-          quiz: [
-            {
-              question: { english: 'What is interest?', sesotho: 'Phaello ke eng?' },
-              options: {
-                english: ['Extra money for saving', 'Money you lose', 'A type of loan'],
-                sesotho: ['Chelete e eketsehileng ea poloko', 'Chelete eo u e lahlang', 'Mofuta oa kalimo'],
-              },
-              correctIndex: 0,
-            },
-            {
-              question: { english: 'If you save M100 at 5% interest for 1 year, how much do you have?', sesotho: 'Haeba u boloka M100 ka phaello ea 5% bakeng sa selemo se le seng, u na le bokae?' },
-              options: {
-                english: ['M105', 'M100', 'M95'],
-                sesotho: ['M105', 'M100', 'M95'],
-              },
-              correctIndex: 0,
-            },
-          ],
-        },
-      ],
-    },
-
-    // ═══════════ GRADE 8 ═══════════
-    grade8: {
-      label: { english: 'Grade 8', sesotho: 'Kereiti 8' },
-      age: { english: 'Age 13-14', sesotho: 'Lilemo tse 13-14' },
-      icon: '📈',
-      phase: 'development',
-      modules: [
-        {
-          id: 'g8_budgeting',
-          title: { english: 'Creating a Budget', sesotho: 'Ho Theha Tekanyetso' },
-          explanation: {
-            english: 'A budget helps you plan your income and expenses. It prevents overspending and helps you save.',
-            sesotho: 'Tekanyetso e u thusa ho rera chelete e kenang le e tsoang. E thibela ho sebelisa chelete ho feta tekano le ho thusa ho boloka.',
+            english: 'A budget helps you plan how to use your income. It prevents overspending.',
+            sesotho: 'Tekanyetso e u thusa ho rera hore na u sebelise moputso oa hau joang. E thibela ho sebelisa chelete ho feta tekano.',
           },
           example: {
             english: 'Monthly income M300: M100 transport, M80 food, M50 airtime, M40 savings, M30 entertainment.',
@@ -434,6 +436,60 @@ export const curriculumData = {
       ],
     },
 
+    // ═══════════ GRADE 8 ═══════════
+    grade8: {
+      label: { english: 'Grade 8', sesotho: 'Kereiti 8' },
+      age: { english: 'Age 13-14', sesotho: 'Lilemo tse 13-14' },
+      icon: '📈',
+      phase: 'development',
+      modules: [
+        {
+          id: 'g8_budgeting',
+          title: { english: 'Creating a Budget', sesotho: 'Ho Theha Tekanyetso' },
+          explanation: {
+            english: 'A budget is a detailed plan for your income and expenses. It helps you achieve financial goals.',
+            sesotho: 'Tekanyetso ke moralo o qaqileng oa chelete e kenang le e tsoang. E u thusa ho fihlela lipakane tsa lichelete.',
+          },
+          example: {
+            english: 'Monthly income M300: M100 transport, M80 food, M50 airtime, M40 savings, M30 entertainment.',
+            sesotho: 'Chelete e kenang ka khoeli M300: M100 lipalangoang, M80 lijo, M50 airtime, M40 poloko, M30 boithabiso.',
+          },
+          quiz: [
+            {
+              question: { english: 'What does a budget help you do?', sesotho: 'Tekanyetso e u thusa ho etsa eng?' },
+              options: {
+                english: ['Plan income and expenses', 'Spend more money', 'Lose money'],
+                sesotho: ['Rera chelete e kenang le e tsoang', 'Sebelisa chelete e ngata', 'Lahleheloa ke chelete'],
+              },
+              correctIndex: 0,
+            },
+          ],
+        },
+        {
+          id: 'g8_saving_goals',
+          title: { english: 'Setting Savings Goals', sesotho: 'Ho Beha Lipakane tsa Poloko' },
+          explanation: {
+            english: 'A savings goal is a specific target you are saving toward. It makes saving purposeful.',
+            sesotho: 'Pakane ea poloko ke sepheo se itseng seo u se bolokelang. E etsa hore ho boloka ho be le morero.',
+          },
+          example: {
+            english: 'Goal: Save M500 for a school trip. Save M50 per week = 10 weeks.',
+            sesotho: 'Pakane: Boloka M500 bakeng sa leeto la sekolo. Boloka M50 ka beke = libeke tse 10.',
+          },
+          quiz: [
+            {
+              question: { english: 'If you need M500 and save M50 per week, how many weeks?', sesotho: 'Haeba u hloka M500 \'me u boloka M50 ka beke, ke libeke tse kae?' },
+              options: {
+                english: ['10 weeks', '5 weeks', '20 weeks'],
+                sesotho: ['Libeke tse 10', 'Libeke tse 5', 'Libeke tse 20'],
+              },
+              correctIndex: 0,
+            },
+          ],
+        },
+      ],
+    },
+
     // ═══════════ GRADE 9 ═══════════
     grade9: {
       label: { english: 'Grade 9', sesotho: 'Kereiti 9' },
@@ -445,12 +501,12 @@ export const curriculumData = {
           id: 'g9_debt',
           title: { english: 'Understanding Debt', sesotho: 'Ho Utloisisa Sekoloto' },
           explanation: {
-            english: 'Debt is money you owe to someone. Borrowing money means you must pay it back, usually with interest.',
-            sesotho: 'Sekoloto ke chelete eo u e kolotang motho. Ho alima chelete ho bolela hore u tlameha ho e khutlisa, hangata le phaello.',
+            english: 'Debt is money you owe to someone. Borrowing means you must pay it back, usually with interest.',
+            sesotho: 'Sekoloto ke chelete eo u e kolotang motho. Ho alima ho bolela hore u tlameha ho e khutlisa, hangata le phaello.',
           },
           example: {
-            english: 'If you borrow M100 and agree to pay back M110, the extra M10 is interest. The total debt is M110.',
-            sesotho: 'Haeba u alima M100 \'me u lumela ho khutlisa M110, M10 e eketsehileng ke phaello. Sekoloto kaofela ke M110.',
+            english: 'If you borrow M100 and agree to pay back M110, the extra M10 is interest.',
+            sesotho: 'Haeba u alima M100 \'me u lumela ho khutlisa M110, M10 e eketsehileng ke phaello.',
           },
           quiz: [
             {
@@ -461,11 +517,25 @@ export const curriculumData = {
               },
               correctIndex: 0,
             },
+          ],
+        },
+        {
+          id: 'g9_interest',
+          title: { english: 'How Interest Works', sesotho: 'Phaello e Sebetsa Joang' },
+          explanation: {
+            english: 'Interest is the cost of borrowing or the reward for saving. It is expressed as a percentage.',
+            sesotho: 'Phaello ke theko ea ho alima kapa moputso oa ho boloka. E hlalosoa e le peresente.',
+          },
+          example: {
+            english: 'Borrow M1,000 at 10% = repay M1,100. Save M1,000 at 5% = receive M1,050.',
+            sesotho: 'Alima M1,000 ka 10% = khutlisa M1,100. Boloka M1,000 ka 5% = fumana M1,050.',
+          },
+          quiz: [
             {
-              question: { english: 'If you borrow M100 and pay back M110, what is M10?', sesotho: 'Haeba u alima M100 \'me u khutlisa M110, M10 ke eng?' },
+              question: { english: 'If you borrow M1,000 at 10% interest, how much do you repay?', sesotho: 'Haeba u alima M1,000 ka phaello ea 10%, u khutlisa bokae?' },
               options: {
-                english: ['Interest', 'Gift', 'Salary'],
-                sesotho: ['Phaello', 'Mpho', 'Moputso'],
+                english: ['M1,100', 'M1,000', 'M900'],
+                sesotho: ['M1,100', 'M1,000', 'M900'],
               },
               correctIndex: 0,
             },
@@ -494,18 +564,32 @@ export const curriculumData = {
           },
           quiz: [
             {
-              question: { english: 'What is compound interest?', sesotho: 'Phaello e kopaneng ke eng?' },
-              options: {
-                english: ['Interest on interest', 'Simple interest only', 'No interest'],
-                sesotho: ['Phaello holim\'a phaello', 'Phaello e bonolo feela', 'Ha ho phaello'],
-              },
-              correctIndex: 0,
-            },
-            {
               question: { english: 'M1,000 at 10% compound interest. How much after Year 2?', sesotho: 'M1,000 ka phaello e kopaneng ea 10%. Ke bokae kamora Selemo 2?' },
               options: {
                 english: ['M1,210', 'M1,100', 'M1,200'],
                 sesotho: ['M1,210', 'M1,100', 'M1,200'],
+              },
+              correctIndex: 0,
+            },
+          ],
+        },
+        {
+          id: 'g10_budgeting',
+          title: { english: 'Advanced Budgeting', sesotho: 'Tekanyetso e Tsoetseng Pele' },
+          explanation: {
+            english: 'Advanced budgeting involves categorizing expenses, tracking spending, and adjusting your plan monthly.',
+            sesotho: 'Tekanyetso e tsoetseng pele e kenyelletsa ho arola litšenyehelo, ho latela tšebeliso, le ho fetola moralo khoeli le khoeli.',
+          },
+          example: {
+            english: 'Track every expense for one month. Categorize: needs, wants, savings. Adjust next month.',
+            sesotho: 'Latela tšebeliso eohle khoeli e le \'ngoe. Arola: litlhoko, litakatso, poloko. Fetola khoeli e latelang.',
+          },
+          quiz: [
+            {
+              question: { english: 'What should you do at the end of each month?', sesotho: 'U lokela ho etsa eng qetellong ea khoeli e \'ngoe le e \'ngoe?' },
+              options: {
+                english: ['Review and adjust your budget', 'Forget about your spending', 'Spend more'],
+                sesotho: ['Hlahloba le ho fetola tekanyetso', 'Lebala tšebeliso ea hau', 'Sebelisa chelete e ngata'],
               },
               correctIndex: 0,
             },
@@ -621,12 +705,12 @@ export const curriculumData = {
           id: 'uni2_investing',
           title: { english: 'Introduction to Investing', sesotho: 'Kenyelletso ea Matsete' },
           explanation: {
-            english: 'Investing is committing money to assets with the expectation of earning returns. Even small amounts can grow significantly over time.',
-            sesotho: 'Matsete ke ho kenya chelete matlotlong ka tebello ea ho fumana phaello. Le chelete e nyane e ka hola haholo ha nako e ntse e ea.',
+            english: 'Investing is committing money to assets with the expectation of earning returns.',
+            sesotho: 'Matsete ke ho kenya chelete matlotlong ka tebello ea ho fumana phaello.',
           },
           example: {
-            english: 'Invest M500 monthly at 7% annual return for 10 years. You would accumulate approximately M87,000.',
-            sesotho: 'Kenya M500 khoeli le khoeli ka phaello ea 7% ka selemo bakeng sa lilemo tse 10. U tla bokella hoo e ka bang M87,000.',
+            english: 'Invest M500 monthly at 7% annual return for 10 years = approximately M87,000.',
+            sesotho: 'Kenya M500 khoeli le khoeli ka phaello ea 7% ka selemo bakeng sa lilemo tse 10 = M87,000.',
           },
           quiz: [
             {
@@ -653,8 +737,8 @@ export const curriculumData = {
           id: 'uni3_debt_management',
           title: { english: 'Managing Student Debt', sesotho: 'Ho Laola Likoloto tsa Moithuti' },
           explanation: {
-            english: 'Student loans and debt require careful management. Understanding repayment terms, interest rates, and total cost is essential.',
-            sesotho: 'Likoloto tsa moithuti li hloka taolo e hlokolosi. Ho utloisisa lipehelo tsa ho khutlisa, phaello le kakaretso ea litšenyehelo ho bohlokoa.',
+            english: 'Student loans require careful management. Understanding repayment terms and interest rates is essential.',
+            sesotho: 'Likoloto tsa moithuti li hloka taolo e hlokolosi. Ho utloisisa lipehelo tsa ho khutlisa le phaello ho bohlokoa.',
           },
           example: {
             english: 'M15,000 loan at 10% annual interest over 3 years = total repayment of approximately M18,000.',
@@ -689,8 +773,8 @@ export const curriculumData = {
             sesotho: 'Boikemelo ba lichelete bo bolela ho ba le lisebelisoa tse lekaneng tsa ho iphelisa ntle le ho itšetleha ka ba bang.',
           },
           example: {
-            english: 'Building an emergency fund (3-6 months of expenses), investing consistently, and avoiding high-interest debt.',
-            sesotho: 'Ho haha letlole la tšohanyetso (likhoeli tse 3-6 tsa litšenyehelo), ho kenya matsete khafetsa le ho qoba likoloto tse nang le phaello e phahameng.',
+            english: 'Building an emergency fund (3-6 months of expenses) is a pillar of financial independence.',
+            sesotho: 'Ho haha letlole la tšohanyetso (likhoeli tse 3-6 tsa litšenyehelo) ke litšiea tsa boikemelo ba lichelete.',
           },
           quiz: [
             {

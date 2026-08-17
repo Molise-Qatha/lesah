@@ -23,12 +23,6 @@ function useInView(threshold = 0.15) {
   return [ref, inView];
 }
 
-const LEVELS = [
-  { id: 'primary', icon: '🎒', label: { english: 'Primary School', sesotho: 'Sekolo sa Mathomo' } },
-  { id: 'high_school', icon: '📚', label: { english: 'High School', sesotho: 'Sekolo se Phahameng' } },
-  { id: 'university', icon: '🎓', label: { english: 'University', sesotho: 'Univesithi' } },
-];
-
 const TOPICS = [
   { id: 'saving', icon: '💰', label: { english: 'Saving', sesotho: 'Ho Boloka' } },
   { id: 'budgeting', icon: '📊', label: { english: 'Budgeting', sesotho: 'Tekanyetso' } },
@@ -41,32 +35,13 @@ const TOPICS = [
 ];
 
 const QUICK_QUESTIONS = {
-  english: [
-    'What is saving?',
-    'How does a budget work?',
-    'What is interest?',
-    'What is a loan?',
-    'Needs vs wants?',
-  ],
-  sesotho: [
-    'Ho boloka ke eng?',
-    'Tekanyetso e sebetsa joang?',
-    'Phaello ke eng?',
-    'Kalimo ke eng?',
-    'Litlhoko le litakatso?',
-  ],
+  english: ['What is saving?', 'How does a budget work?', 'What is interest?', 'What is a loan?', 'Needs vs wants?'],
+  sesotho: ['Ho boloka ke eng?', 'Tekanyetso e sebetsa joang?', 'Phaello ke eng?', 'Kalimo ke eng?', 'Litlhoko le litakatso?'],
 };
 
-const CONTINUE_LEARNING = [
-  { label: { english: 'Budgeting', sesotho: 'Tekanyetso' }, topic: 'budgeting' },
-  { label: { english: 'Interest', sesotho: 'Phaello' }, topic: 'interest' },
-  { label: { english: 'Needs & Wants', sesotho: 'Litlhoko le Litakatso' }, topic: 'needs_vs_wants' },
-];
-
 function FinancialLiteracy() {
-  const [level, setLevel] = useState(() => localStorage.getItem('fl_level') || 'high_school');
-  const [language, setLanguage] = useState(() => localStorage.getItem('fl_language') || 'english');
   const [gradeId, setGradeId] = useState(() => localStorage.getItem('fl_grade') || 'grade4');
+  const [language, setLanguage] = useState(() => localStorage.getItem('fl_language') || 'english');
   const [activeTopic, setActiveTopic] = useState('saving');
   const [view, setView] = useState('learn');
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
@@ -89,28 +64,12 @@ function FinancialLiteracy() {
   const phaseData = gradeData ? curriculumData.phases[gradeData.phase] : null;
 
   useEffect(() => {
-    const levelGradeMap = {
-      primary: 'grade4',
-      high_school: 'grade8',
-      university: 'uni_1',
-    };
-    const mappedGrade = levelGradeMap[level];
-    if (mappedGrade) {
-      setGradeId(mappedGrade);
-    }
-  }, [level]);
-
-  useEffect(() => {
-    localStorage.setItem('fl_level', level);
-  }, [level]);
+    localStorage.setItem('fl_grade', gradeId);
+  }, [gradeId]);
 
   useEffect(() => {
     localStorage.setItem('fl_language', language);
   }, [language]);
-
-  useEffect(() => {
-    localStorage.setItem('fl_grade', gradeId);
-  }, [gradeId]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -127,23 +86,23 @@ function FinancialLiteracy() {
         }
       });
       setQuizQuestions(allQuestions);
+      setCurrentModuleIndex(0);
+      setView('learn');
+      setSelectedOption(null);
     }
-  }, [gradeId, modules]);
+  }, [gradeId]);
 
   const getResponse = (question) => {
     const q = question.toLowerCase();
-    
+
     for (const mod of modules) {
-      const titleEn = mod.title?.english?.toLowerCase() || '';
-      const titleSt = mod.title?.sesotho?.toLowerCase() || '';
-      const explanation = mod.explanation?.[language] || mod.explanation?.english || '';
-      const example = mod.example?.[language] || mod.example?.english || '';
-      
-      if (titleEn && q.includes(titleEn) || titleSt && q.includes(titleSt)) {
+      const titleEn = (mod.title?.english || '').toLowerCase();
+      const titleSt = (mod.title?.sesotho || '').toLowerCase();
+      if ((titleEn && q.includes(titleEn)) || (titleSt && q.includes(titleSt))) {
+        const explanation = mod.explanation?.[language] || mod.explanation?.english || '';
+        const example = mod.example?.[language] || mod.example?.english || '';
         let text = `**${mod.title?.[language] || mod.title?.english}**\n\n${explanation}`;
-        if (example) {
-          text += `\n\n${language === 'sesotho' ? 'Mohlala' : 'Example'}: ${example}`;
-        }
+        if (example) text += `\n\n${language === 'sesotho' ? 'Mohlala' : 'Example'}: ${example}`;
         return { type: 'assistant', text, time: 'Now', related: null };
       }
     }
@@ -162,9 +121,9 @@ function FinancialLiteracy() {
     for (const match of fallbackMatches) {
       if (match.keywords.some((kw) => q.includes(kw))) {
         for (const [gId, gData] of Object.entries(curriculumData.grades)) {
-          const mod = gData.modules?.find((m) => 
-            m.id?.includes(match.topic) || 
-            m.title?.english?.toLowerCase().includes(match.topic.replace(/_/g, ' '))
+          const mod = gData.modules?.find((m) =>
+            m.id?.includes(match.topic) ||
+            (m.title?.english?.toLowerCase() || '').includes(match.topic.replace(/_/g, ' '))
           );
           if (mod) {
             const explanation = mod.explanation?.[language] || mod.explanation?.english || '';
@@ -188,11 +147,9 @@ function FinancialLiteracy() {
   const handleSendMessage = (question) => {
     const text = question || chatInput.trim();
     if (!text || isTyping) return;
-    
     setChatInput('');
     setChatMessages((prev) => [...prev, { type: 'user', text, time: 'Now' }]);
     setIsTyping(true);
-
     setTimeout(() => {
       const response = getResponse(text);
       setChatMessages((prev) => [...prev, response]);
@@ -200,20 +157,14 @@ function FinancialLiteracy() {
     }, 800);
   };
 
-  const handleQuickQuestion = (q) => {
-    handleSendMessage(q);
-  };
-
   const handleTopicClick = (topicId) => {
     setActiveTopic(topicId);
     setView('learn');
-    const modIndex = modules.findIndex((m) => 
-      m.id?.includes(topicId) || 
-      m.title?.english?.toLowerCase().includes(topicId.replace(/_/g, ' '))
+    const modIndex = modules.findIndex((m) =>
+      m.id?.includes(topicId) ||
+      (m.title?.english?.toLowerCase() || '').includes(topicId.replace(/_/g, ' '))
     );
-    if (modIndex >= 0) {
-      setCurrentModuleIndex(modIndex);
-    }
+    if (modIndex >= 0) setCurrentModuleIndex(modIndex);
   };
 
   const startQuiz = () => {
@@ -254,12 +205,6 @@ function FinancialLiteracy() {
   };
 
   const progressPercent = Math.min(100, Math.round((modules.length > 0 ? (currentModuleIndex + 1) / modules.length : 0) * 100));
-  const progressMessage = progressPercent > 70 
-    ? (language === 'sesotho' ? 'Mosebetsi o motle! 🎉' : 'Great job! 🎉') 
-    : (language === 'sesotho' ? 'Tsoela pele!' : 'Keep going!');
-  const progressDetail = language === 'sesotho' 
-    ? 'U ntse u haha mekhoa e metle ea chelete.' 
-    : "You're building strong money habits.";
 
   return (
     <div className="fl-redesign">
@@ -304,11 +249,11 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* LEVEL SELECTOR */}
+      {/* GRADE SELECTOR */}
       <section id="flr-learning" className="flr-section">
         <div className="flr-section-intro">
-          <h2>{language === 'sesotho' ? 'U ithutela mang?' : 'Who are you learning for?'}</h2>
-          <p>{language === 'sesotho' ? 'Khetha boemo ba hau hore LeSAH e hlalose ka botebo bo nepahetseng.' : 'Choose your level so LeSAH can explain financial concepts at the right depth.'}</p>
+          <h2>{ui.chooseGrade}</h2>
+          <p>{language === 'sesotho' ? 'Khetha kereiti ea hau hore re hlalose ka botebo bo nepahetseng.' : 'Select your grade so lessons match your level.'}</p>
         </div>
 
         <div className="flr-lang-toggle">
@@ -320,17 +265,18 @@ function FinancialLiteracy() {
           </button>
         </div>
 
-        <div className="flr-level-selector">
-          {LEVELS.map((lvl) => (
-            <button
-              key={lvl.id}
-              className={`flr-level-btn ${level === lvl.id ? 'active' : ''}`}
-              onClick={() => setLevel(lvl.id)}
-            >
-              <span className="flr-level-icon">{lvl.icon}</span>
-              <span className="flr-level-label">{lvl.label[language]}</span>
-            </button>
-          ))}
+        <div className="flr-grade-selector">
+          <select
+            className="flr-grade-select"
+            value={gradeId}
+            onChange={(e) => setGradeId(e.target.value)}
+          >
+            {curriculumData.gradeOptions.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.label[language]}
+              </option>
+            ))}
+          </select>
         </div>
 
         {gradeData && (
@@ -359,10 +305,10 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* MAIN WORKSPACE */}
+      {/* WORKSPACE */}
       <section className="flr-workspace">
         <div className="flr-workspace-grid">
-          {/* LEFT — LESSON OR QUIZ */}
+          {/* LEFT */}
           <div className="flr-lesson">
             {view === 'learn' ? (
               currentModule ? (
@@ -375,10 +321,6 @@ function FinancialLiteracy() {
                   <div className="flr-lesson-example">
                     <strong>{language === 'sesotho' ? 'Mohlala' : 'Example'}</strong>
                     <p>{currentModule.example?.[language] || currentModule.example?.english}</p>
-                  </div>
-                  <div className="flr-lesson-why">
-                    <strong>{language === 'sesotho' ? 'Hobaneng ho le bohlokoa' : 'Why it matters'}</strong>
-                    <p>{language === 'sesotho' ? 'Ho utloisisa taba ena ho u thusa ho etsa liqeto tse nepahetseng tsa lichelete.' : 'Understanding this helps you make better financial decisions.'}</p>
                   </div>
                   <button className="flr-try-question-btn" onClick={startQuiz}>
                     📝 {language === 'sesotho' ? 'Nka Quiz' : 'Try a Quiz'} →
@@ -427,7 +369,7 @@ function FinancialLiteracy() {
                             </span>
                           )}
                           <button className="flr-quiz-next" onClick={nextQuestion}>
-                            {currentQuestionIndex < quizQuestions.length - 1 
+                            {currentQuestionIndex < quizQuestions.length - 1
                               ? (language === 'sesotho' ? 'Potso e latelang →' : 'Next Question →')
                               : (language === 'sesotho' ? 'Qetella Quiz' : 'Finish Quiz')}
                           </button>
@@ -443,12 +385,8 @@ function FinancialLiteracy() {
                     <h3>{language === 'sesotho' ? 'Lintlha tsa hau' : 'Your Score'}</h3>
                     <p className="flr-result-score">{score} / {quizQuestions.length}</p>
                     <div className="flr-result-actions">
-                      <button className="flr-try-question-btn" onClick={retryQuiz}>
-                        🔄 {language === 'sesotho' ? 'Leka Hape' : 'Try Again'}
-                      </button>
-                      <button className="flr-try-question-btn" onClick={backToLearning}>
-                        ← {language === 'sesotho' ? 'Khutlela Thutong' : 'Back to Learning'}
-                      </button>
+                      <button className="flr-try-question-btn" onClick={retryQuiz}>🔄 {ui.quizRetry}</button>
+                      <button className="flr-try-question-btn" onClick={backToLearning}>← {ui.quizBack}</button>
                     </div>
                   </div>
                 )}
@@ -456,20 +394,20 @@ function FinancialLiteracy() {
             )}
           </div>
 
-          {/* RIGHT — AI CHAT */}
+          {/* RIGHT — CHAT */}
           <div id="flr-chat" className="flr-chat-panel">
             <div className="flr-chat-header">
               <span className="flr-chat-avatar">🤖</span>
               <div>
                 <h3>{language === 'sesotho' ? 'Botsa LeSAH' : 'Ask LeSAH'}</h3>
-                <p>{language === 'sesotho' ? 'Na u na le potso ka chelete? Botsa ka puo ea hau.' : 'Have a question about money? Ask in your own words.'}</p>
+                <p>{language === 'sesotho' ? 'Na u na le potso ka chelete?' : 'Have a question about money?'}</p>
               </div>
             </div>
             <div className="flr-chat-messages">
               {chatMessages.length === 0 ? (
                 <div className="flr-chat-empty">
                   <span>💬</span>
-                  <p>{language === 'sesotho' ? 'Botsa potso e le \'ngoe ho qala!' : 'Ask a question to get started!'}</p>
+                  <p>{language === 'sesotho' ? 'Botsa potso ho qala!' : 'Ask a question to get started!'}</p>
                 </div>
               ) : (
                 chatMessages.map((msg, i) => (
@@ -481,16 +419,6 @@ function FinancialLiteracy() {
                           {j < msg.text.split('\n').length - 1 && <br />}
                         </React.Fragment>
                       ))}
-                      {msg.related && (
-                        <button
-                          className="flr-chat-related"
-                          onClick={() => handleQuickQuestion(
-                            language === 'sesotho' ? `${msg.related} ke eng?` : `What is ${msg.related.toLowerCase()}?`
-                          )}
-                        >
-                          {language === 'sesotho' ? 'Ithute ka:' : 'Learn about:'} {msg.related} →
-                        </button>
-                      )}
                       <span className="flr-chat-time">{msg.time}</span>
                     </div>
                   </div>
@@ -505,13 +433,7 @@ function FinancialLiteracy() {
               )}
               <div ref={chatEndRef} />
             </div>
-            <form
-              className="flr-chat-input"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendMessage();
-              }}
-            >
+            <form className="flr-chat-input" onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
               <input
                 type="text"
                 placeholder={ui.inputPlaceholder}
@@ -530,7 +452,7 @@ function FinancialLiteracy() {
       <section className="flr-quick-section">
         <div className="flr-quick-pills">
           {QUICK_QUESTIONS[language].map((q, i) => (
-            <button key={i} className="flr-quick-pill" onClick={() => handleQuickQuestion(q)}>
+            <button key={i} className="flr-quick-pill" onClick={() => handleSendMessage(q)}>
               {q}
             </button>
           ))}
@@ -545,10 +467,8 @@ function FinancialLiteracy() {
             <div className="flr-progress-fill" style={{ width: `${progressPercent}%` }} />
           </div>
           <p className="flr-progress-percent">{progressPercent}%</p>
-          <p className="flr-progress-message">{progressMessage}</p>
-          <p className="flr-progress-detail">{progressDetail}</p>
           <p className="flr-progress-topics">
-            {currentModuleIndex + 1} {language === 'sesotho' ? 'ho tsoa ho' : 'of'} {modules.length} {language === 'sesotho' ? 'lihloho' : 'topics'}
+            {currentModuleIndex + 1} / {modules.length} {language === 'sesotho' ? 'lihloho' : 'topics'}
           </p>
         </div>
       </section>
@@ -568,29 +488,12 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* CONTINUE LEARNING */}
-      <section className="flr-continue-section">
-        <h3>{language === 'sesotho' ? 'Tsoela Pele ho Ithuta' : 'Continue Learning'}</h3>
-        <div className="flr-continue-list">
-          {CONTINUE_LEARNING.map((item, i) => (
-            <button
-              key={i}
-              className="flr-continue-item"
-              onClick={() => handleTopicClick(item.topic)}
-            >
-              <span>{item.label[language]}</span>
-              <span className="flr-continue-arrow">→</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* OFFLINE NOTICE */}
       <div className="flr-offline-notice">
         <span>📶</span>
         <p>
           {language === 'sesotho'
-            ? 'Lithuto tsohle li sebetsa ntle le inthanete. Ithute neng kapa neng, kae kapa kae.'
+            ? 'Lithuto tsohle li sebetsa ntle le inthanete.'
             : 'All lessons work offline. Learn anytime, anywhere.'}
         </p>
       </div>
