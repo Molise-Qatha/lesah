@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './FinancialLiteracy.css';
 import { curriculumData } from '../data/financialLiteracyCurriculum';
 import { getConversationalResponse, getRandomResponse } from '../data/conversationalAI';
+import { financialLibrary } from '../data/financialLibrary';
 import { getActivitiesForGrade, getCharacterForGrade } from '../data/activityEngine';
 import InteractiveActivity from '../components/InteractiveActivity';
 
@@ -27,10 +28,10 @@ function useInView(threshold = 0.15) {
 }
 
 const TOPICS = [
+  { id: 'money', icon: '🪙', label: { english: 'Money', sesotho: 'Chelete' } },
   { id: 'saving', icon: '💰', label: { english: 'Saving', sesotho: 'Ho Boloka' } },
   { id: 'budgeting', icon: '📊', label: { english: 'Budgeting', sesotho: 'Tekanyetso' } },
-  { id: 'spending', icon: '🛒', label: { english: 'Spending', sesotho: 'Tšebeliso' } },
-  { id: 'needs_vs_wants', icon: '⚖️', label: { english: 'Needs & Wants', sesotho: 'Litlhoko le Litakatso' } },
+  { id: 'needs_wants', icon: '⚖️', label: { english: 'Needs & Wants', sesotho: 'Litlhoko le Litakatso' } },
   { id: 'interest', icon: '📈', label: { english: 'Interest', sesotho: 'Phaello' } },
   { id: 'loans', icon: '🏦', label: { english: 'Loans', sesotho: 'Likoloto' } },
   { id: 'investing', icon: '🌱', label: { english: 'Investing', sesotho: 'Matsete' } },
@@ -52,7 +53,7 @@ const BADGES = [
 function FinancialLiteracy() {
   const [gradeId, setGradeId] = useState(() => localStorage.getItem('fl_grade') || 'grade1');
   const [language, setLanguage] = useState(() => localStorage.getItem('fl_language') || 'english');
-  const [mode, setMode] = useState('play'); // 'play' | 'learn' | 'quiz'
+  const [mode, setMode] = useState('play');
   const [activityIndex, setActivityIndex] = useState(0);
   const [completedActivities, setCompletedActivities] = useState(() => {
     try {
@@ -118,21 +119,28 @@ function FinancialLiteracy() {
       });
       setQuizQuestions(allQuestions);
     }
-  }, [gradeId]);
+  }, [gradeId, modules]);
 
   useEffect(() => {
-    // Reset activity index when grade changes
     setActivityIndex(0);
     setMode('play');
+    setSelectedOption(null);
   }, [gradeId]);
+
+  const getCurrentLevel = () => {
+    if (gradeId.startsWith('uni_')) return 'university';
+    const gradeNum = parseInt(gradeId.replace('grade', '')) || 1;
+    if (gradeNum <= 3) return 'primary';
+    if (gradeNum <= 9) return 'high_school';
+    return 'university';
+  };
 
   const handleActivityComplete = () => {
     const newCompleted = [...completedActivities];
-    if (!newCompleted.includes(currentActivity?.id)) {
-      newCompleted.push(currentActivity?.id);
+    if (currentActivity?.id && !newCompleted.includes(currentActivity.id)) {
+      newCompleted.push(currentActivity.id);
       setCompletedActivities(newCompleted);
       
-      // Check for new badges
       const count = newCompleted.length;
       const newBadges = BADGES.filter(
         (badge) => count >= badge.threshold && !earnedBadges.includes(badge.id)
@@ -142,20 +150,32 @@ function FinancialLiteracy() {
       }
     }
     
-    // Move to next activity or show completion
     if (activityIndex < activities.length - 1) {
       setActivityIndex((prev) => prev + 1);
     } else {
       setMode('learn');
     }
+    setSelectedOption(null);
   };
 
   const getResponse = (question) => {
+    // 1. Conversational layer
     const conversational = getConversationalResponse(question, language);
     if (conversational) {
       return { type: 'assistant', text: conversational, time: 'Now', related: null };
     }
 
+    // 2. Financial library
+    const libraryAnswer = financialLibrary.getAnswer(question, getCurrentLevel(), language);
+    if (libraryAnswer) {
+      let text = `**${libraryAnswer.title}**\n\n${libraryAnswer.explanation}`;
+      if (libraryAnswer.example) {
+        text += `\n\n${language === 'sesotho' ? 'Mohlala' : 'Example'}: ${libraryAnswer.example}`;
+      }
+      return { type: 'assistant', text, time: 'Now', related: null };
+    }
+
+    // 3. Curriculum modules
     const q = question.toLowerCase();
     for (const mod of modules) {
       const titleEn = (mod.title?.english || '').toLowerCase();
@@ -169,39 +189,13 @@ function FinancialLiteracy() {
       }
     }
 
-    const fallbackMatches = [
-      { keywords: ['save', 'saving', 'boloka', 'poloko'], topic: 'saving' },
-      { keywords: ['budget', 'budgeting', 'tekanyetso'], topic: 'budgeting' },
-      { keywords: ['interest', 'phaello'], topic: 'interest' },
-      { keywords: ['loan', 'borrow', 'kalimo', 'sekoloto'], topic: 'loans' },
-      { keywords: ['spend', 'spending', 'tšebeliso'], topic: 'spending' },
-      { keywords: ['invest', 'investing', 'matsete'], topic: 'investing' },
-      { keywords: ['need', 'want', 'tlhoko', 'takatso'], topic: 'needs_vs_wants' },
-      { keywords: ['income', 'earn', 'moputso'], topic: 'income' },
-    ];
-
-    for (const match of fallbackMatches) {
-      if (match.keywords.some((kw) => q.includes(kw))) {
-        for (const [gId, gData] of Object.entries(curriculumData.grades)) {
-          const mod = gData.modules?.find((m) =>
-            m.id?.includes(match.topic) ||
-            (m.title?.english?.toLowerCase() || '').includes(match.topic.replace(/_/g, ' '))
-          );
-          if (mod) {
-            const explanation = mod.explanation?.[language] || mod.explanation?.english || '';
-            let text = `**${mod.title?.[language] || mod.title?.english}**\n\n${explanation}`;
-            return { type: 'assistant', text, time: 'Now', related: null };
-          }
-        }
-      }
-    }
-
+    // 4. Fallback
     return {
       type: 'assistant',
       text: getRandomResponse(
         language === 'sesotho'
-          ? ['Ke ntse ke ithuta! 🤔 Mpotse ka ho boloka, tekanyetso, phaello, likoloto, kapa matsete.']
-          : ['I\'m still learning! 🤔 Ask me about saving, budgeting, interest, loans, or investing.']
+          ? ["Ke ntse ke ithuta! 🤔 Mpotse ka ho boloka, tekanyetso, phaello, likoloto, kapa matsete."]
+          : ["I'm still learning! 🤔 Ask me about saving, budgeting, interest, loans, or investing."]
       ),
       time: 'Now',
       related: null,
@@ -232,7 +226,7 @@ function FinancialLiteracy() {
   const handleAnswer = (index) => {
     if (selectedOption !== null) return;
     setSelectedOption(index);
-    if (index === quizQuestions[currentQuestionIndex].correctIndex) {
+    if (index === quizQuestions[currentQuestionIndex]?.correctIndex) {
       setScore((prev) => prev + 1);
     }
   };
@@ -348,22 +342,13 @@ function FinancialLiteracy() {
 
       {/* MODE TABS */}
       <section className="flr-mode-tabs">
-        <button
-          className={`flr-mode-tab ${mode === 'play' ? 'active' : ''}`}
-          onClick={() => setMode('play')}
-        >
+        <button className={`flr-mode-tab ${mode === 'play' ? 'active' : ''}`} onClick={() => setMode('play')}>
           🎮 {language === 'sesotho' ? 'Bapala' : 'Play'}
         </button>
-        <button
-          className={`flr-mode-tab ${mode === 'learn' ? 'active' : ''}`}
-          onClick={() => setMode('learn')}
-        >
+        <button className={`flr-mode-tab ${mode === 'learn' ? 'active' : ''}`} onClick={() => setMode('learn')}>
           📖 {language === 'sesotho' ? 'Ithute' : 'Learn'}
         </button>
-        <button
-          className={`flr-mode-tab ${mode === 'quiz' ? 'active' : ''}`}
-          onClick={startQuiz}
-        >
+        <button className={`flr-mode-tab ${mode === 'quiz' ? 'active' : ''}`} onClick={startQuiz}>
           📝 {language === 'sesotho' ? 'Quiz' : 'Quiz'}
         </button>
       </section>
@@ -377,10 +362,10 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* MAIN CONTENT AREA */}
+      {/* MAIN WORKSPACE */}
       <section className="flr-workspace">
         <div className="flr-workspace-grid">
-          {/* LEFT — ACTIVITY / LESSON / QUIZ */}
+          {/* LEFT PANEL */}
           <div className="flr-lesson">
             {mode === 'play' && currentActivity && (
               <InteractiveActivity
@@ -415,6 +400,10 @@ function FinancialLiteracy() {
                   📝 {language === 'sesotho' ? 'Nka Quiz' : 'Try a Quiz'} →
                 </button>
               </>
+            )}
+
+            {mode === 'learn' && !currentModule && (
+              <p className="flr-lesson-text">Loading lessons...</p>
             )}
 
             {mode === 'quiz' && (
@@ -482,7 +471,7 @@ function FinancialLiteracy() {
             )}
           </div>
 
-          {/* RIGHT — AI CHAT */}
+          {/* RIGHT PANEL — CHAT */}
           <div id="flr-chat" className="flr-chat-panel">
             <div className="flr-chat-header">
               <span className="flr-chat-avatar">🤖</span>
