@@ -3,6 +3,7 @@ import './FinancialLiteracy.css';
 import { curriculumData } from '../data/financialLiteracyCurriculum';
 import { getConversationalResponse, getRandomResponse } from '../data/conversationalAI';
 import { financialLibrary } from '../data/financialLibrary';
+import { calculationEngine } from '../data/calculationEngine';
 import { getActivitiesForGrade, getCharacterForGrade } from '../data/activityEngine';
 import InteractiveActivity from '../components/InteractiveActivity';
 
@@ -165,7 +166,18 @@ function FinancialLiteracy() {
       return { type: 'assistant', text: conversational, time: 'Now', related: null };
     }
 
-    // 2. Financial library
+    // 2. Calculation Engine
+    const calculation = calculationEngine.solve(question, language);
+    if (calculation) {
+      return {
+        type: 'assistant',
+        text: calculation.explanation[language] || calculation.explanation.english,
+        time: 'Now',
+        related: null,
+      };
+    }
+
+    // 3. Financial library
     const libraryAnswer = financialLibrary.getAnswer(question, getCurrentLevel(), language);
     if (libraryAnswer) {
       let text = `**${libraryAnswer.title}**\n\n${libraryAnswer.explanation}`;
@@ -175,7 +187,7 @@ function FinancialLiteracy() {
       return { type: 'assistant', text, time: 'Now', related: null };
     }
 
-    // 3. Curriculum modules
+    // 4. Curriculum modules
     const q = question.toLowerCase();
     for (const mod of modules) {
       const titleEn = (mod.title?.english || '').toLowerCase();
@@ -189,7 +201,7 @@ function FinancialLiteracy() {
       }
     }
 
-    // 4. Fallback
+    // 5. Fallback
     return {
       type: 'assistant',
       text: getRandomResponse(
