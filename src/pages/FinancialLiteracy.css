@@ -1077,3 +1077,138 @@
     font-size: 0.75rem;
   }
 }
+/* Mode Tabs */
+.flr-mode-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 20px 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.flr-mode-tab {
+  padding: 10px 24px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: #bbb;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.25s;
+}
+
+.flr-mode-tab:hover {
+  border-color: rgba(46, 125, 50, 0.4);
+  color: white;
+}
+
+.flr-mode-tab.active {
+  background: #2e7d32;
+  border-color: #2e7d32;
+  color: white;
+  box-shadow: 0 0 15px rgba(46, 125, 50, 0.3);
+}
+
+/* Character Greeting */
+.flr-character-greeting {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  max-width: 600px;
+  margin: 10px auto;
+  color: white;
+}
+
+.flr-greeting-emoji {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.flr-character-greeting h3 {
+  margin: 0 0 2px;
+  font-size: 1rem;
+}
+
+.flr-character-greeting p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* No Activity */
+.flr-no-activity {
+  text-align: center;
+  padding: 40px;
+}
+
+.flr-no-activity span {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.flr-no-activity p {
+  color: #bbb;
+  margin: 0 0 16px;
+}
+
+/* Badges */
+.flr-badges-section {
+  padding: 30px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.flr-badges-section h3 {
+  color: white;
+  font-size: 1.1rem;
+  margin: 0 0 14px;
+}
+
+.flr-badges {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.flr-badge-earned {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  background: rgba(233, 196, 106, 0.08);
+  border: 1px solid rgba(233, 196, 106, 0.25);
+  border-radius: 12px;
+}
+
+.flr-badge-icon {
+  font-size: 1.8rem;
+}
+
+.flr-badge-title {
+  color: #e9c46a;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .flr-mode-tabs {
+    flex-wrap: wrap;
+  }
+
+  .flr-mode-tab {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+
+  .flr-character-greeting {
+    padding: 12px 16px;
+  }
+}

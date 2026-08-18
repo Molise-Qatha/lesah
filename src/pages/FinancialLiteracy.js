@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import './FinancialLiteracy.css';
 import { curriculumData } from '../data/financialLiteracyCurriculum';
 import { getConversationalResponse, getRandomResponse } from '../data/conversationalAI';
+import { getActivitiesForGrade, getCharacterForGrade } from '../data/activityEngine';
+import InteractiveActivity from '../components/InteractiveActivity';
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null);
@@ -40,11 +42,28 @@ const QUICK_QUESTIONS = {
   sesotho: ['Ho boloka ke eng?', 'Tekanyetso e sebetsa joang?', 'Phaello ke eng?', 'Kalimo ke eng?', 'Litlhoko le litakatso?'],
 };
 
+const BADGES = [
+  { id: 'first_coin', icon: '🪙', title: { english: 'First Coin', sesotho: 'Chelete ea Pele' }, threshold: 1 },
+  { id: 'saver_star', icon: '⭐', title: { english: 'Saver Star', sesotho: 'Naleli ea Mopoloki' }, threshold: 3 },
+  { id: 'budget_boss', icon: '📊', title: { english: 'Budget Boss', sesotho: 'Mookameli oa Tekanyetso' }, threshold: 5 },
+  { id: 'money_master', icon: '👑', title: { english: 'Money Master', sesotho: 'Setsebi sa Chelete' }, threshold: 10 },
+];
+
 function FinancialLiteracy() {
-  const [gradeId, setGradeId] = useState(() => localStorage.getItem('fl_grade') || 'grade4');
+  const [gradeId, setGradeId] = useState(() => localStorage.getItem('fl_grade') || 'grade1');
   const [language, setLanguage] = useState(() => localStorage.getItem('fl_language') || 'english');
-  const [activeTopic, setActiveTopic] = useState('saving');
-  const [view, setView] = useState('learn');
+  const [mode, setMode] = useState('play'); // 'play' | 'learn' | 'quiz'
+  const [activityIndex, setActivityIndex] = useState(0);
+  const [completedActivities, setCompletedActivities] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('fl_completed_activities') || '[]');
+    } catch { return []; }
+  });
+  const [earnedBadges, setEarnedBadges] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('fl_badges') || '[]');
+    } catch { return []; }
+  });
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -63,6 +82,9 @@ function FinancialLiteracy() {
   const modules = gradeData?.modules || [];
   const currentModule = modules[currentModuleIndex];
   const phaseData = gradeData ? curriculumData.phases[gradeData.phase] : null;
+  const activities = getActivitiesForGrade(gradeId);
+  const currentActivity = activities[activityIndex];
+  const character = getCharacterForGrade(gradeId, language);
 
   useEffect(() => {
     localStorage.setItem('fl_grade', gradeId);
@@ -71,6 +93,14 @@ function FinancialLiteracy() {
   useEffect(() => {
     localStorage.setItem('fl_language', language);
   }, [language]);
+
+  useEffect(() => {
+    localStorage.setItem('fl_completed_activities', JSON.stringify(completedActivities));
+  }, [completedActivities]);
+
+  useEffect(() => {
+    localStorage.setItem('fl_badges', JSON.stringify(earnedBadges));
+  }, [earnedBadges]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -87,22 +117,46 @@ function FinancialLiteracy() {
         }
       });
       setQuizQuestions(allQuestions);
-      setCurrentModuleIndex(0);
-      setView('learn');
-      setSelectedOption(null);
     }
   }, [gradeId]);
 
+  useEffect(() => {
+    // Reset activity index when grade changes
+    setActivityIndex(0);
+    setMode('play');
+  }, [gradeId]);
+
+  const handleActivityComplete = () => {
+    const newCompleted = [...completedActivities];
+    if (!newCompleted.includes(currentActivity?.id)) {
+      newCompleted.push(currentActivity?.id);
+      setCompletedActivities(newCompleted);
+      
+      // Check for new badges
+      const count = newCompleted.length;
+      const newBadges = BADGES.filter(
+        (badge) => count >= badge.threshold && !earnedBadges.includes(badge.id)
+      );
+      if (newBadges.length > 0) {
+        setEarnedBadges((prev) => [...prev, ...newBadges.map((b) => b.id)]);
+      }
+    }
+    
+    // Move to next activity or show completion
+    if (activityIndex < activities.length - 1) {
+      setActivityIndex((prev) => prev + 1);
+    } else {
+      setMode('learn');
+    }
+  };
+
   const getResponse = (question) => {
-    // FIRST: Check conversational responses
     const conversational = getConversationalResponse(question, language);
     if (conversational) {
       return { type: 'assistant', text: conversational, time: 'Now', related: null };
     }
 
-    // THEN: Search curriculum
     const q = question.toLowerCase();
-
     for (const mod of modules) {
       const titleEn = (mod.title?.english || '').toLowerCase();
       const titleSt = (mod.title?.sesotho || '').toLowerCase();
@@ -135,9 +189,7 @@ function FinancialLiteracy() {
           );
           if (mod) {
             const explanation = mod.explanation?.[language] || mod.explanation?.english || '';
-            const example = mod.example?.[language] || mod.example?.english || '';
             let text = `**${mod.title?.[language] || mod.title?.english}**\n\n${explanation}`;
-            if (example) text += `\n\n${language === 'sesotho' ? 'Mohlala' : 'Example'}: ${example}`;
             return { type: 'assistant', text, time: 'Now', related: null };
           }
         }
@@ -148,8 +200,8 @@ function FinancialLiteracy() {
       type: 'assistant',
       text: getRandomResponse(
         language === 'sesotho'
-          ? ["Ke ntse ke ithuta! 🤔 Mpotse ka ho boloka, tekanyetso, phaello, likoloto, kapa matsete."]
-          : ["I'm still learning! 🤔 Ask me about saving, budgeting, interest, loans, or investing."]
+          ? ['Ke ntse ke ithuta! 🤔 Mpotse ka ho boloka, tekanyetso, phaello, likoloto, kapa matsete.']
+          : ['I\'m still learning! 🤔 Ask me about saving, budgeting, interest, loans, or investing.']
       ),
       time: 'Now',
       related: null,
@@ -169,18 +221,8 @@ function FinancialLiteracy() {
     }, 700);
   };
 
-  const handleTopicClick = (topicId) => {
-    setActiveTopic(topicId);
-    setView('learn');
-    const modIndex = modules.findIndex((m) =>
-      m.id?.includes(topicId) ||
-      (m.title?.english?.toLowerCase() || '').includes(topicId.replace(/_/g, ' '))
-    );
-    if (modIndex >= 0) setCurrentModuleIndex(modIndex);
-  };
-
   const startQuiz = () => {
-    setView('quiz');
+    setMode('quiz');
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowResult(false);
@@ -211,12 +253,15 @@ function FinancialLiteracy() {
     setSelectedOption(null);
   };
 
-  const backToLearning = () => {
-    setView('learn');
+  const backToPlay = () => {
+    setMode('play');
     setSelectedOption(null);
   };
 
-  const progressPercent = Math.min(100, Math.round((modules.length > 0 ? (currentModuleIndex + 1) / modules.length : 0) * 100));
+  const progressPercent = Math.min(
+    100,
+    Math.round((completedActivities.length / Math.max(activities.length, 1)) * 100)
+  );
 
   return (
     <div className="fl-redesign">
@@ -252,7 +297,7 @@ function FinancialLiteracy() {
 
           <div className="flr-hero-character">
             <div className="flr-character-circle">
-              <span className="flr-character-icon">🧑🏾‍🏫</span>
+              <span className="flr-character-icon">{character.emoji}</span>
               <div className="flr-character-glow" />
             </div>
             <div className="flr-character-ring flr-ring-1" />
@@ -301,47 +346,78 @@ function FinancialLiteracy() {
         )}
       </section>
 
-      {/* TOPIC NAVIGATION */}
-      <section className="flr-topics-section">
-        <div className="flr-topics-scroll">
-          {TOPICS.map((topic) => (
-            <button
-              key={topic.id}
-              className={`flr-topic-btn ${activeTopic === topic.id ? 'active' : ''}`}
-              onClick={() => handleTopicClick(topic.id)}
-            >
-              <span>{topic.icon}</span>
-              <span>{topic.label[language]}</span>
-            </button>
-          ))}
+      {/* MODE TABS */}
+      <section className="flr-mode-tabs">
+        <button
+          className={`flr-mode-tab ${mode === 'play' ? 'active' : ''}`}
+          onClick={() => setMode('play')}
+        >
+          🎮 {language === 'sesotho' ? 'Bapala' : 'Play'}
+        </button>
+        <button
+          className={`flr-mode-tab ${mode === 'learn' ? 'active' : ''}`}
+          onClick={() => setMode('learn')}
+        >
+          📖 {language === 'sesotho' ? 'Ithute' : 'Learn'}
+        </button>
+        <button
+          className={`flr-mode-tab ${mode === 'quiz' ? 'active' : ''}`}
+          onClick={startQuiz}
+        >
+          📝 {language === 'sesotho' ? 'Quiz' : 'Quiz'}
+        </button>
+      </section>
+
+      {/* CHARACTER GREETING */}
+      <section className="flr-character-greeting" style={{ background: character.background }}>
+        <span className="flr-greeting-emoji">{character.emoji}</span>
+        <div>
+          <h3>{character.name}</h3>
+          <p>{character.greeting}</p>
         </div>
       </section>
 
-      {/* WORKSPACE */}
+      {/* MAIN CONTENT AREA */}
       <section className="flr-workspace">
         <div className="flr-workspace-grid">
-          {/* LEFT */}
+          {/* LEFT — ACTIVITY / LESSON / QUIZ */}
           <div className="flr-lesson">
-            {view === 'learn' ? (
-              currentModule ? (
-                <>
-                  <span className="flr-lesson-icon">{gradeData?.icon || '💰'}</span>
-                  <h3>{currentModule.title?.[language] || currentModule.title?.english}</h3>
-                  <p className="flr-lesson-text">
-                    {currentModule.explanation?.[language] || currentModule.explanation?.english}
-                  </p>
-                  <div className="flr-lesson-example">
-                    <strong>{language === 'sesotho' ? 'Mohlala' : 'Example'}</strong>
-                    <p>{currentModule.example?.[language] || currentModule.example?.english}</p>
-                  </div>
-                  <button className="flr-try-question-btn" onClick={startQuiz}>
-                    📝 {language === 'sesotho' ? 'Nka Quiz' : 'Try a Quiz'} →
-                  </button>
-                </>
-              ) : (
-                <p className="flr-lesson-text">Loading lessons...</p>
-              )
-            ) : (
+            {mode === 'play' && currentActivity && (
+              <InteractiveActivity
+                activity={currentActivity}
+                language={language}
+                onComplete={handleActivityComplete}
+              />
+            )}
+
+            {mode === 'play' && !currentActivity && (
+              <div className="flr-no-activity">
+                <span>🎉</span>
+                <p>{language === 'sesotho' ? 'Ha ho mesebetsi e meng!' : 'No more activities!'}</p>
+                <button className="flr-try-question-btn" onClick={() => setMode('learn')}>
+                  {language === 'sesotho' ? 'Ithute →' : 'Learn →'}
+                </button>
+              </div>
+            )}
+
+            {mode === 'learn' && currentModule && (
+              <>
+                <span className="flr-lesson-icon">{gradeData?.icon || '💰'}</span>
+                <h3>{currentModule.title?.[language] || currentModule.title?.english}</h3>
+                <p className="flr-lesson-text">
+                  {currentModule.explanation?.[language] || currentModule.explanation?.english}
+                </p>
+                <div className="flr-lesson-example">
+                  <strong>{language === 'sesotho' ? 'Mohlala' : 'Example'}</strong>
+                  <p>{currentModule.example?.[language] || currentModule.example?.english}</p>
+                </div>
+                <button className="flr-try-question-btn" onClick={startQuiz}>
+                  📝 {language === 'sesotho' ? 'Nka Quiz' : 'Try a Quiz'} →
+                </button>
+              </>
+            )}
+
+            {mode === 'quiz' && (
               <div className="flr-quiz-view">
                 {!showResult ? (
                   quizQuestions.length > 0 && currentQuestionIndex < quizQuestions.length ? (
@@ -398,7 +474,7 @@ function FinancialLiteracy() {
                     <p className="flr-result-score">{score} / {quizQuestions.length}</p>
                     <div className="flr-result-actions">
                       <button className="flr-try-question-btn" onClick={retryQuiz}>🔄 {ui.quizRetry}</button>
-                      <button className="flr-try-question-btn" onClick={backToLearning}>← {ui.quizBack}</button>
+                      <button className="flr-try-question-btn" onClick={backToPlay}>← {language === 'sesotho' ? 'Khutlela' : 'Back'}</button>
                     </div>
                   </div>
                 )}
@@ -406,7 +482,7 @@ function FinancialLiteracy() {
             )}
           </div>
 
-          {/* RIGHT — CHAT */}
+          {/* RIGHT — AI CHAT */}
           <div id="flr-chat" className="flr-chat-panel">
             <div className="flr-chat-header">
               <span className="flr-chat-avatar">🤖</span>
@@ -460,6 +536,21 @@ function FinancialLiteracy() {
         </div>
       </section>
 
+      {/* BADGES */}
+      {earnedBadges.length > 0 && (
+        <section className="flr-badges-section">
+          <h3>{language === 'sesotho' ? 'Libadge tsa hau' : 'Your Badges'}</h3>
+          <div className="flr-badges">
+            {BADGES.filter((b) => earnedBadges.includes(b.id)).map((badge) => (
+              <div key={badge.id} className="flr-badge-earned">
+                <span className="flr-badge-icon">{badge.icon}</span>
+                <span className="flr-badge-title">{badge.title[language]}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* QUICK QUESTIONS */}
       <section className="flr-quick-section">
         <div className="flr-quick-pills">
@@ -480,7 +571,7 @@ function FinancialLiteracy() {
           </div>
           <p className="flr-progress-percent">{progressPercent}%</p>
           <p className="flr-progress-topics">
-            {currentModuleIndex + 1} / {modules.length} {language === 'sesotho' ? 'lihloho' : 'topics'}
+            {completedActivities.length} / {activities.length} {language === 'sesotho' ? 'mesebetsi' : 'activities'} {language === 'sesotho' ? 'e felile' : 'completed'}
           </p>
         </div>
       </section>
