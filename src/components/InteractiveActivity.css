@@ -1,0 +1,204 @@
+.ia-activity {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(46, 125, 50, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.ia-character {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ia-character-emoji {
+  font-size: 2.5rem;
+  animation: iaIdle 2s infinite ease-in-out;
+}
+
+@keyframes iaIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.ia-character-name {
+  font-weight: 700;
+  color: #e9c46a;
+  font-size: 1rem;
+}
+
+.ia-prompt {
+  margin-bottom: 20px;
+}
+
+.ia-prompt p {
+  color: #ddd;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Shopping */
+.ia-shopping-items {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ia-shopping-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  min-width: 100px;
+}
+
+.ia-shopping-item:hover:not(:disabled) {
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.1);
+  transform: translateY(-3px);
+}
+
+.ia-shopping-item.correct {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.15);
+}
+
+.ia-shopping-item.wrong {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.1);
+  animation: iaShake 0.4s;
+}
+
+@keyframes iaShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.ia-item-emoji {
+  font-size: 2rem;
+}
+
+.ia-item-name {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.ia-item-price {
+  color: #e9c46a;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Options */
+.ia-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.ia-option {
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.25s;
+  text-align: center;
+}
+
+.ia-option:hover:not(:disabled) {
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.1);
+}
+
+.ia-option.correct {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.15);
+  color: #81c784;
+  font-weight: 600;
+}
+
+.ia-option.wrong {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.1);
+  color: #ef9a9a;
+}
+
+/* Coins */
+.ia-coins {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ia-coin {
+  font-size: 2.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ia-coin:hover {
+  transform: scale(1.2);
+}
+
+/* Feedback */
+.ia-feedback {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.ia-feedback.correct span {
+  color: #81c784;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.ia-feedback.wrong span {
+  color: #ef9a9a;
+  font-weight: 600;
+}
+
+.ia-explanation {
+  color: #aaa;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ia-next-btn {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.ia-next-btn:hover {
+  background: #388e3c;
+}
