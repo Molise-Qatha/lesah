@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './FinancialLiteracy.css';
 import { curriculumData } from '../data/financialLiteracyCurriculum';
+import { getConversationalResponse, getRandomResponse } from '../data/conversationalAI';
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null);
@@ -93,6 +94,13 @@ function FinancialLiteracy() {
   }, [gradeId]);
 
   const getResponse = (question) => {
+    // FIRST: Check conversational responses
+    const conversational = getConversationalResponse(question, language);
+    if (conversational) {
+      return { type: 'assistant', text: conversational, time: 'Now', related: null };
+    }
+
+    // THEN: Search curriculum
     const q = question.toLowerCase();
 
     for (const mod of modules) {
@@ -138,7 +146,11 @@ function FinancialLiteracy() {
 
     return {
       type: 'assistant',
-      text: curriculumData.fallbackResponse[language] || curriculumData.fallbackResponse.english,
+      text: getRandomResponse(
+        language === 'sesotho'
+          ? ["Ke ntse ke ithuta! 🤔 Mpotse ka ho boloka, tekanyetso, phaello, likoloto, kapa matsete."]
+          : ["I'm still learning! 🤔 Ask me about saving, budgeting, interest, loans, or investing."]
+      ),
       time: 'Now',
       related: null,
     };
@@ -154,7 +166,7 @@ function FinancialLiteracy() {
       const response = getResponse(text);
       setChatMessages((prev) => [...prev, response]);
       setIsTyping(false);
-    }, 800);
+    }, 700);
   };
 
   const handleTopicClick = (topicId) => {
