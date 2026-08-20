@@ -178,9 +178,9 @@ function FinancialLiteracy() {
       return { type: 'assistant', text: conversational, time: 'Now', related: null };
     }
 
-    // 3. Intent-based topic detection
+    // 3. Intent-based topic detection (VERY PERMISSIVE)
     const intent = detectFinancialIntent(question, language);
-    if (intent.confidence > 0.4 && intent.topic) {
+    if (intent.topic && intent.confidence > 0.1) {
       const answer = getTopicAnswer(intent.topic, intent.intent, getCurrentLevel(), language);
       if (answer) {
         let text = `**${answer.title}**\n\n`;
@@ -208,13 +208,13 @@ function FinancialLiteracy() {
       return { type: 'assistant', text, time: 'Now', related: null };
     }
 
-    // 5. Intelligent fallback
-    if (intent.topic && intent.confidence > 0.2) {
+    // 5. Intelligent fallback with topic suggestion
+    if (intent.topic) {
       return {
         type: 'assistant',
         text: language === 'sesotho'
-          ? `Ke nahana hore u botsa ka ${intent.topic.replace(/_/g, ' ')}. Na u batla ho tseba hore na ke eng, hobaneng e le bohlokoa, kapa mokhoa oa ho e etsa?`
-          : `I think you're asking about ${intent.topic.replace(/_/g, ' ')}. Would you like to know what it is, why it matters, or how to do it?`,
+          ? `Ke nahana hore u botsa ka ${intent.topic.replace(/_/g, ' ')}. A re ke u hlalosele ka taba ena.`
+          : `I think you're asking about ${intent.topic.replace(/_/g, ' ')}. Let me explain that for you.`,
         time: 'Now',
         related: null,
       };
