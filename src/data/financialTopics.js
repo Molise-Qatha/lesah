@@ -1,11 +1,18 @@
-// Financial Topic Knowledge Library
+// Financial Topic Knowledge Library with Enhanced Keyword Matching
 export const financialTopics = {
   money_basics: {
     id: 'money_basics',
     icon: '🪙',
-    synonyms: {
-      english: ['money', 'cash', 'maloti', 'lisente', 'currency', 'coins', 'notes', 'chelete', 'buy', 'sell', 'price', 'change', 'count money'],
-      sesotho: ['chelete', 'maloti', 'lisente', 'tšepe', 'pampiri', 'reka', 'rekisa', 'theko', 'balana'],
+    keywords: {
+      english: [
+        'money', 'cash', 'maloti', 'lisente', 'currency', 'coins', 'notes',
+        'buy', 'buying', 'sell', 'selling', 'price', 'prices', 'change',
+        'count money', 'counting money', 'how much money', 'chelete',
+      ],
+      sesotho: [
+        'chelete', 'maloti', 'lisente', 'tšepe', 'pampiri', 'reka', 'rekisa',
+        'theko', 'balana', 'ho bala chelete',
+      ],
     },
     definitions: {
       primary: {
@@ -13,8 +20,8 @@ export const financialTopics = {
         sesotho: 'Chelete ke seo re se sebelisang ho reka lintho. Lesotho, re sebelisa Maloti le Lisente.',
       },
       high_school: {
-        english: 'Money is a medium of exchange used to buy goods and services. The Loti (plural: Maloti) is divided into 100 Lisente.',
-        sesotho: 'Chelete ke mokhoa oa ho fapanyetsana o sebelisetsoang ho reka thepa le litšebeletso. Loti (bongata: Maloti) e arotsoe ka Lisente tse 100.',
+        english: 'Money is a medium of exchange used to buy goods and services. The Loti is divided into 100 Lisente.',
+        sesotho: 'Chelete ke mokhoa oa ho fapanyetsana o sebelisetsoang ho reka thepa le litšebeletso. Loti e arotsoe ka Lisente tse 100.',
       },
       university: {
         english: 'Money serves as a medium of exchange, store of value, and unit of account. The Lesotho Loti (LSL) is pegged to the South African Rand (ZAR).',
@@ -30,9 +37,17 @@ export const financialTopics = {
   saving: {
     id: 'saving',
     icon: '💰',
-    synonyms: {
-      english: ['save', 'saving', 'savings', 'put money aside', 'keep money', 'store money', 'set aside', 'boloka', 'poloko'],
-      sesotho: ['boloka', 'ho boloka', 'poloko', 'chelete e bolokiloeng', 'behella ka thoko'],
+    keywords: {
+      english: [
+        'save', 'saving', 'savings', 'put money aside', 'keep money',
+        'store money', 'set aside', 'save money', 'saving money',
+        'how much should i save', 'where to save', 'where should i keep',
+        'boloka', 'poloko',
+      ],
+      sesotho: [
+        'boloka', 'ho boloka', 'poloko', 'chelete e bolokiloeng',
+        'behella ka thoko', 'ke boloka', 'ho boloka chelete',
+      ],
     },
     definitions: {
       primary: {
@@ -49,10 +64,6 @@ export const financialTopics = {
       },
     },
     intents: {
-      definition: {
-        english: 'Saving means keeping some of your money for later instead of spending it all right away.',
-        sesotho: 'Ho boloka ho bolela ho boloka karolo ea chelete ea hau bakeng sa hamorao.',
-      },
       why: {
         english: 'Saving helps you prepare for the future, handle emergencies, and reach your goals. It gives you peace of mind.',
         sesotho: 'Ho boloka ho u thusa ho itokisetsa bokamoso, ho sebetsana le maemo a tšohanyetso le ho fihlela lipakane tsa hau.',
@@ -60,6 +71,10 @@ export const financialTopics = {
       how_to: {
         english: 'Start by saving a small amount regularly. Even M5 or M10 from every M100 you receive builds up over time. Use a piggy bank or savings account.',
         sesotho: 'Qala ka ho boloka chelete e nyane khafetsa. Le M5 kapa M10 ho tsoa ho M100 e \'ngoe le e \'ngoe eo u e fumanang ea eketseha ha nako e ntse e ea.',
+      },
+      where: {
+        english: 'You can save money in a piggy bank, a bank savings account, or a mobile money account. A bank account is safer and may earn interest.',
+        sesotho: 'U ka boloka chelete ka piggy bank, akhaontong ea poloko bankeng, kapa akhaontong ea mobile money. Akhaonto ea banka e sireletsehile haholoanyane \'me e ka fumana phaello.',
       },
     },
     examples: [
@@ -71,9 +86,16 @@ export const financialTopics = {
   budgeting: {
     id: 'budgeting',
     icon: '📊',
-    synonyms: {
-      english: ['budget', 'budgeting', 'spending plan', 'money plan', 'plan spending', 'track expenses', 'tekanyetso', 'moralo'],
-      sesotho: ['tekanyetso', 'moralo oa chelete', 'ho rera chelete', 'ho latela tšebeliso'],
+    keywords: {
+      english: [
+        'budget', 'budgeting', 'spending plan', 'money plan', 'plan spending',
+        'track expenses', 'track spending', 'how to budget', 'make a budget',
+        'tekanyetso', 'moralo',
+      ],
+      sesotho: [
+        'tekanyetso', 'moralo oa chelete', 'ho rera chelete',
+        'ho latela tšebeliso', 'ho etsa tekanyetso',
+      ],
     },
     definitions: {
       primary: {
@@ -100,9 +122,16 @@ export const financialTopics = {
   needs_wants: {
     id: 'needs_wants',
     icon: '⚖️',
-    synonyms: {
-      english: ['need', 'want', 'needs', 'wants', 'essential', 'non-essential', 'tlhoko', 'takatso', 'difference between'],
-      sesotho: ['tlhoko', 'takatso', 'litlhoko', 'litakatso', 'bohlokoa', 'phapang'],
+    keywords: {
+      english: [
+        'need', 'needs', 'want', 'wants', 'essential', 'non-essential',
+        'must have', 'nice to have', 'difference between need and want',
+        'tlhoko', 'takatso',
+      ],
+      sesotho: [
+        'tlhoko', 'takatso', 'litlhoko', 'litakatso', 'bohlokoa',
+        'phapang pakeng tsa',
+      ],
     },
     definitions: {
       primary: {
@@ -123,9 +152,16 @@ export const financialTopics = {
   interest: {
     id: 'interest',
     icon: '📈',
-    synonyms: {
-      english: ['interest', 'interest rate', 'returns', 'percentage growth', 'phaello', 'tswala'],
-      sesotho: ['phaello', 'tswala', 'peresente', 'chelete e eketsehileng'],
+    keywords: {
+      english: [
+        'interest', 'interest rate', 'returns', 'percentage growth',
+        'earn interest', 'interest earned', 'interest charged',
+        'phaello', 'tswala',
+      ],
+      sesotho: [
+        'phaello', 'tswala', 'peresente', 'chelete e eketsehileng',
+        'ho fumana phaello',
+      ],
     },
     definitions: {
       primary: {
@@ -146,9 +182,16 @@ export const financialTopics = {
   loans: {
     id: 'loans',
     icon: '🏦',
-    synonyms: {
-      english: ['loan', 'borrow', 'borrowing', 'debt', 'lend', 'repayment', 'kalimo', 'sekoloto', 'mokitlane'],
-      sesotho: ['kalimo', 'sekoloto', 'mokitlane', 'ho alima', 'tefo'],
+    keywords: {
+      english: [
+        'loan', 'loans', 'borrow', 'borrowing', 'debt', 'lend',
+        'repayment', 'repay', 'borrowed money', 'student loan',
+        'kalimo', 'sekoloto',
+      ],
+      sesotho: [
+        'kalimo', 'sekoloto', 'mokitlane', 'ho alima', 'tefo',
+        'ho khutlisa',
+      ],
     },
     definitions: {
       primary: {
@@ -169,9 +212,15 @@ export const financialTopics = {
   investing: {
     id: 'investing',
     icon: '🌱',
-    synonyms: {
-      english: ['invest', 'investing', 'investment', 'grow money', 'stocks', 'bonds', 'matsete'],
-      sesotho: ['matsete', 'ho kenya chelete', 'ho holisa chelete', 'li-stock', 'li-bond'],
+    keywords: {
+      english: [
+        'invest', 'investing', 'investment', 'grow money', 'stocks',
+        'bonds', 'matsete', 'make money grow',
+      ],
+      sesotho: [
+        'matsete', 'ho kenya chelete', 'ho holisa chelete',
+        'li-stock', 'li-bond',
+      ],
     },
     definitions: {
       primary: {
@@ -192,9 +241,14 @@ export const financialTopics = {
   income: {
     id: 'income',
     icon: '💵',
-    synonyms: {
-      english: ['income', 'earn', 'earning', 'salary', 'wage', 'revenue', 'moputso', 'make money'],
-      sesotho: ['moputso', 'chelete e kenang', 'ho fumana', 'ho kenya chelete'],
+    keywords: {
+      english: [
+        'income', 'earn', 'earning', 'salary', 'wage', 'revenue',
+        'make money', 'moputso', 'earn money',
+      ],
+      sesotho: [
+        'moputso', 'chelete e kenang', 'ho fumana', 'ho kenya chelete',
+      ],
     },
     definitions: {
       primary: {
@@ -215,9 +269,14 @@ export const financialTopics = {
   spending: {
     id: 'spending',
     icon: '🛒',
-    synonyms: {
-      english: ['spend', 'spending', 'buy', 'purchase', 'spending habits', 'tšebeliso', 'sebelisa'],
-      sesotho: ['tšebeliso', 'ho sebelisa', 'ho reka', 'ho sebelisa chelete'],
+    keywords: {
+      english: [
+        'spend', 'spending', 'buy', 'purchase', 'spending habits',
+        'impulse buying', 'compare prices', 'discount',
+      ],
+      sesotho: [
+        'tšebeliso', 'ho sebelisa', 'ho reka', 'ho sebelisa chelete',
+      ],
     },
     definitions: {
       primary: {
@@ -236,7 +295,7 @@ export const financialTopics = {
   },
 };
 
-// Intent detection helper
+// Enhanced intent detection with partial matching
 export const detectFinancialIntent = (question, language = 'english') => {
   const q = question.toLowerCase().trim();
   const lang = language === 'sesotho' ? 'sesotho' : 'english';
@@ -246,21 +305,39 @@ export const detectFinancialIntent = (question, language = 'english') => {
 
   for (const [topicId, topicData] of Object.entries(financialTopics)) {
     let score = 0;
-    const allSynonyms = [
-      ...(topicData.synonyms?.english || []),
-      ...(topicData.synonyms?.sesotho || []),
+    const allKeywords = [
+      ...(topicData.keywords?.english || []),
+      ...(topicData.keywords?.sesotho || []),
     ];
     
-    for (const synonym of allSynonyms) {
-      const syn = synonym.toLowerCase();
-      if (q.includes(syn)) {
-        score += syn.length;
+    for (const keyword of allKeywords) {
+      const kw = keyword.toLowerCase();
+      
+      // Exact phrase match (highest score)
+      if (q.includes(kw)) {
+        score += kw.length * 2;
       }
-      // Partial word matching
+      
+      // Single word match
       const words = q.split(' ');
       for (const word of words) {
-        if (word.length > 3 && (syn.includes(word) || word.includes(syn))) {
-          score += 2;
+        if (word.length > 2 && kw === word) {
+          score += word.length * 1.5;
+        }
+        // Partial match (e.g., "saving" in "savings")
+        if (word.length > 3 && kw.length > 3) {
+          if (kw.includes(word) || word.includes(kw)) {
+            score += 1.5;
+          }
+        }
+      }
+      
+      // Check if multiple words from the keyword appear
+      const keywordWords = kw.split(' ');
+      if (keywordWords.length > 1) {
+        const allPresent = keywordWords.every((w) => q.includes(w));
+        if (allPresent) {
+          score += keywordWords.length * 3;
         }
       }
     }
@@ -272,18 +349,18 @@ export const detectFinancialIntent = (question, language = 'english') => {
   }
 
   // Determine intent
-  let intent = 'general_question';
-  if (/what is|what's|what are|definition|define|ke eng|ho bolela/.test(q)) intent = 'definition';
-  else if (/why|hobaneng|ke hobane/.test(q)) intent = 'why';
-  else if (/how|joang|kamoo|how to|how can|how do/.test(q)) intent = 'how_to';
-  else if (/example|mohlala|show me|give me/.test(q)) intent = 'example';
+  let intent = 'definition';
+  if (/what is|what's|what are|define|definition|ke eng|ho bolela eng/.test(q)) intent = 'definition';
+  else if (/why|hobaneng|ke hobane|why should|why is/.test(q)) intent = 'why';
+  else if (/how|joang|kamoo|how to|how can|how do|how should|how much should/.test(q)) intent = 'how_to';
+  else if (/where|kae|where should|where to/.test(q)) intent = 'where';
+  else if (/example|mohlala|show me|give me an example/.test(q)) intent = 'example';
   else if (/difference|compare|phapang|bapisa/.test(q)) intent = 'comparison';
-  else if (/\d+/.test(q) && /save|interest|percent|spend|budget|profit|how much|bokae/.test(q)) intent = 'calculation';
 
   return {
     topic: bestTopic,
     intent,
-    confidence: bestScore > 5 ? Math.min(0.95, bestScore / 30) : 0.3,
+    confidence: bestScore > 5 ? Math.min(0.95, bestScore / 25) : 0.25,
   };
 };
 
@@ -302,6 +379,7 @@ export const getTopicAnswer = (topicId, intent, level, language = 'english') => 
 
   return {
     title: topic.id.replace(/_/g, ' ').toUpperCase(),
+    icon: topic.icon,
     definition,
     intentResponse,
     example,
