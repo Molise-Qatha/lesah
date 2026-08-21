@@ -4,7 +4,6 @@ import { curriculumData } from '../data/financialLiteracyCurriculum';
 import { getConversationalResponse, getRandomResponse } from '../data/conversationalAI';
 import { financialLibrary } from '../data/financialLibrary';
 import { calculationEngine } from '../data/calculationEngine';
-import { detectFinancialIntent, getTopicAnswer } from '../data/financialTopics';
 import { getActivitiesForGrade, getCharacterForGrade } from '../data/activityEngine';
 import InteractiveActivity from '../components/InteractiveActivity';
 
@@ -178,27 +177,7 @@ function FinancialLiteracy() {
       return { type: 'assistant', text: conversational, time: 'Now', related: null };
     }
 
-    // 3. Intent-based topic detection (VERY PERMISSIVE)
-    const intent = detectFinancialIntent(question, language);
-    if (intent.topic && intent.confidence > 0.1) {
-      const answer = getTopicAnswer(intent.topic, intent.intent, getCurrentLevel(), language);
-      if (answer) {
-        let text = `**${answer.title}**\n\n`;
-        if (intent.intent === 'definition' && answer.definition) {
-          text += answer.definition;
-        } else if (answer.intentResponse) {
-          text += answer.intentResponse;
-        } else if (answer.definition) {
-          text += answer.definition;
-        }
-        if (answer.example && intent.intent !== 'definition') {
-          text += `\n\n${language === 'sesotho' ? 'Mohlala' : 'Example'}: ${answer.example}`;
-        }
-        return { type: 'assistant', text, time: 'Now', related: null };
-      }
-    }
-
-    // 4. Financial library fallback
+    // 3. Financial library
     const libraryAnswer = financialLibrary.getAnswer(question, getCurrentLevel(), language);
     if (libraryAnswer) {
       let text = `**${libraryAnswer.title}**\n\n${libraryAnswer.explanation}`;
@@ -208,25 +187,27 @@ function FinancialLiteracy() {
       return { type: 'assistant', text, time: 'Now', related: null };
     }
 
-    // 5. Intelligent fallback with topic suggestion
-    if (intent.topic) {
-      return {
-        type: 'assistant',
-        text: language === 'sesotho'
-          ? `Ke nahana hore u botsa ka ${intent.topic.replace(/_/g, ' ')}. A re ke u hlalosele ka taba ena.`
-          : `I think you're asking about ${intent.topic.replace(/_/g, ' ')}. Let me explain that for you.`,
-        time: 'Now',
-        related: null,
-      };
+    // 4. Curriculum modules
+    const q = question.toLowerCase();
+    for (const mod of modules) {
+      const titleEn = (mod.title?.english || '').toLowerCase();
+      const titleSt = (mod.title?.sesotho || '').toLowerCase();
+      if ((titleEn && q.includes(titleEn)) || (titleSt && q.includes(titleSt))) {
+        const explanation = mod.explanation?.[language] || mod.explanation?.english || '';
+        const example = mod.example?.[language] || mod.example?.english || '';
+        let text = `**${mod.title?.[language] || mod.title?.english}**\n\n${explanation}`;
+        if (example) text += `\n\n${language === 'sesotho' ? 'Mohlala' : 'Example'}: ${example}`;
+        return { type: 'assistant', text, time: 'Now', related: null };
+      }
     }
 
-    // 6. Final fallback
+    // 5. Fallback
     return {
       type: 'assistant',
       text: getRandomResponse(
         language === 'sesotho'
-          ? ["Ha ke utloisise potso ea hau hantle. Na u botsa ka ho boloka, tekanyetso, phaello, likoloto, kapa chelete?"]
-          : ["I want to make sure I understand. Are you asking about saving, budgeting, interest, loans, money, or something else?"]
+          ? ["Ke ntse ke ithuta! 🤔 Mpotse ka ho boloka, tekanyetso, phaello, likoloto, kapa matsete."]
+          : ["I'm still learning! 🤔 Ask me about saving, budgeting, interest, loans, or investing."]
       ),
       time: 'Now',
       related: null,
