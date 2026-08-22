@@ -1,0 +1,1435 @@
+{
+  "10": {
+    "saving": 4
+  },
+  "20": {
+    "saving": 4
+  },
+  "hi": {
+    "greeting": 2
+  },
+  "hello": {
+    "greeting": 8
+  },
+  "what": {
+    "greeting": 17,
+    "saving": 22,
+    "money": 39,
+    "budgeting": 16,
+    "interest": 30,
+    "loans": 32,
+    "income": 24,
+    "banking": 24,
+    "needs_wants": 24
+  },
+  "is": {
+    "greeting": 17,
+    "saving": 30,
+    "money": 45,
+    "budgeting": 16,
+    "interest": 30,
+    "loans": 43,
+    "income": 26,
+    "banking": 22,
+    "needs_wants": 37
+  },
+  "how": {
+    "greeting": 17,
+    "saving": 105,
+    "money": 23,
+    "budgeting": 49,
+    "interest": 34,
+    "loans": 28,
+    "income": 33,
+    "banking": 31,
+    "needs_wants": 14
+  },
+  "do": {
+    "greeting": 17,
+    "saving": 23,
+    "money": 14,
+    "budgeting": 13,
+    "interest": 12,
+    "loans": 15,
+    "income": 14,
+    "banking": 17,
+    "needs_wants": 16
+  },
+  "i": {
+    "greeting": 34,
+    "saving": 74,
+    "money": 25,
+    "budgeting": 26,
+    "interest": 24,
+    "loans": 28,
+    "income": 23,
+    "banking": 26,
+    "needs_wants": 46
+  },
+  "tell": {
+    "greeting": 17,
+    "saving": 15,
+    "money": 12,
+    "budgeting": 13,
+    "interest": 10,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 12
+  },
+  "me": {
+    "greeting": 34,
+    "saving": 41,
+    "money": 24,
+    "budgeting": 26,
+    "interest": 20,
+    "loans": 22,
+    "income": 18,
+    "banking": 24,
+    "needs_wants": 24
+  },
+  "about": {
+    "greeting": 34,
+    "saving": 30,
+    "money": 24,
+    "budgeting": 26,
+    "interest": 20,
+    "loans": 22,
+    "income": 18,
+    "banking": 24,
+    "needs_wants": 24
+  },
+  "help": {
+    "greeting": 17,
+    "saving": 22,
+    "money": 12,
+    "budgeting": 13,
+    "interest": 10,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 12
+  },
+  "understand": {
+    "greeting": 17,
+    "saving": 15,
+    "money": 12,
+    "budgeting": 13,
+    "interest": 10,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 12
+  },
+  "can": {
+    "greeting": 17,
+    "saving": 26,
+    "money": 15,
+    "budgeting": 13,
+    "interest": 10,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 19
+  },
+  "you": {
+    "greeting": 25,
+    "saving": 17,
+    "money": 12,
+    "budgeting": 13,
+    "interest": 10,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 12
+  },
+  "explain": {
+    "greeting": 17,
+    "saving": 15,
+    "money": 14,
+    "budgeting": 13,
+    "interest": 12,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 12
+  },
+  "want": {
+    "greeting": 17,
+    "saving": 22,
+    "money": 12,
+    "budgeting": 13,
+    "interest": 10,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 46
+  },
+  "to": {
+    "greeting": 18,
+    "saving": 120,
+    "money": 12,
+    "budgeting": 51,
+    "interest": 16,
+    "loans": 24,
+    "income": 40,
+    "banking": 32,
+    "needs_wants": 14
+  },
+  "know": {
+    "greeting": 17,
+    "saving": 15,
+    "money": 12,
+    "budgeting": 13,
+    "interest": 10,
+    "loans": 11,
+    "income": 9,
+    "banking": 12,
+    "needs_wants": 14
+  },
+  "hey": {
+    "greeting": 1
+  },
+  "lumela": {
+    "greeting": 7
+  },
+  "lumelang": {
+    "greeting": 7
+  },
+  "khotsong": {
+    "greeting": 7
+  },
+  "le": {
+    "greeting": 14,
+    "money": 5,
+    "needs_wants": 2
+  },
+  "kae": {
+    "greeting": 7,
+    "money": 3
+  },
+  "u": {
+    "greeting": 7
+  },
+  "phela": {
+    "greeting": 14
+  },
+  "joang": {
+    "greeting": 21,
+    "saving": 13,
+    "banking": 2,
+    "income": 4,
+    "interest": 2
+  },
+  "ho": {
+    "greeting": 7,
+    "saving": 40,
+    "budgeting": 11,
+    "interest": 13,
+    "loans": 15,
+    "income": 9,
+    "money": 1,
+    "banking": 6
+  },
+  "ausi": {
+    "greeting": 7
+  },
+  "abuti": {
+    "greeting": 7
+  },
+  "ntate": {
+    "greeting": 7
+  },
+  "mme": {
+    "greeting": 1
+  },
+  "howzit": {
+    "greeting": 1
+  },
+  "sharp": {
+    "greeting": 7
+  },
+  "whats": {
+    "greeting": 1
+  },
+  "up": {
+    "greeting": 1
+  },
+  "good": {
+    "greeting": 16,
+    "interest": 2,
+    "loans": 8,
+    "saving": 2
+  },
+  "morning": {
+    "greeting": 7
+  },
+  "evening": {
+    "greeting": 7
+  },
+  "goodbye": {
+    "greeting": 7
+  },
+  "bye": {
+    "greeting": 1
+  },
+  "thank": {
+    "greeting": 7
+  },
+  "kea": {
+    "greeting": 7
+  },
+  "leboha": {
+    "greeting": 7
+  },
+  "saving": {
+    "saving": 171
+  },
+  "save": {
+    "saving": 179,
+    "budgeting": 2
+  },
+  "why": {
+    "saving": 13,
+    "money": 2
+  },
+  "where": {
+    "saving": 11,
+    "banking": 2
+  },
+  "tips": {
+    "saving": 16,
+    "budgeting": 8,
+    "banking": 2
+  },
+  "much": {
+    "saving": 11,
+    "money": 11,
+    "interest": 9
+  },
+  "money": {
+    "saving": 132,
+    "money": 50,
+    "budgeting": 34,
+    "income": 49,
+    "banking": 26,
+    "loans": 5,
+    "interest": 2
+  },
+  "boloka": {
+    "saving": 73
+  },
+  "ke": {
+    "saving": 33,
+    "money": 40,
+    "interest": 11,
+    "needs_wants": 4,
+    "income": 9,
+    "loans": 6,
+    "budgeting": 2
+  },
+  "poloko": {
+    "saving": 16,
+    "interest": 2,
+    "banking": 2
+  },
+  "nka": {
+    "saving": 14
+  },
+  "batla": {
+    "saving": 10
+  },
+  "goal": {
+    "saving": 16
+  },
+  "savings": {
+    "saving": 13,
+    "interest": 19,
+    "banking": 6
+  },
+  "put": {
+    "saving": 11
+  },
+  "aside": {
+    "saving": 9
+  },
+  "keep": {
+    "saving": 11,
+    "banking": 11
+  },
+  "store": {
+    "saving": 7
+  },
+  "are": {
+    "money": 1,
+    "saving": 2,
+    "needs_wants": 2
+  },
+  "maloti": {
+    "money": 25
+  },
+  "lisente": {
+    "money": 26
+  },
+  "chelete": {
+    "money": 44,
+    "income": 22,
+    "saving": 32,
+    "interest": 2,
+    "loans": 6,
+    "budgeting": 8,
+    "banking": 4
+  },
+  "currency": {
+    "money": 18
+  },
+  "coins": {
+    "money": 9
+  },
+  "and": {
+    "money": 7,
+    "needs_wants": 16,
+    "banking": 2,
+    "budgeting": 2
+  },
+  "notes": {
+    "money": 9
+  },
+  "count": {
+    "money": 7
+  },
+  "does": {
+    "money": 3,
+    "interest": 1,
+    "banking": 2
+  },
+  "it": {
+    "money": 1,
+    "loans": 2
+  },
+  "cost": {
+    "money": 1
+  },
+  "price": {
+    "money": 7
+  },
+  "cash": {
+    "money": 9,
+    "income": 2
+  },
+  "t?epe": {
+    "money": 12
+  },
+  "pampiri": {
+    "money": 12
+  },
+  "lesotho": {
+    "money": 32
+  },
+  "buying": {
+    "money": 9
+  },
+  "things": {
+    "money": 7,
+    "needs_wants": 25,
+    "income": 2
+  },
+  "buy": {
+    "money": 3
+  },
+  "a": {
+    "budgeting": 17,
+    "loans": 23,
+    "banking": 16,
+    "needs_wants": 25,
+    "saving": 19,
+    "income": 6
+  },
+  "budget": {
+    "budgeting": 89,
+    "saving": 2
+  },
+  "make": {
+    "budgeting": 12,
+    "income": 22
+  },
+  "spending": {
+    "budgeting": 32,
+    "saving": 4
+  },
+  "plan": {
+    "budgeting": 29,
+    "loans": 2,
+    "saving": 2
+  },
+  "track": {
+    "budgeting": 9
+  },
+  "expenses": {
+    "budgeting": 15
+  },
+  "monthly": {
+    "budgeting": 9,
+    "saving": 2
+  },
+  "student": {
+    "budgeting": 9,
+    "loans": 15,
+    "income": 13,
+    "saving": 16,
+    "banking": 2
+  },
+  "manage": {
+    "budgeting": 13
+  },
+  "tekanyetso": {
+    "budgeting": 21
+  },
+  "moralo": {
+    "budgeting": 11
+  },
+  "etsa": {
+    "budgeting": 11
+  },
+  "my": {
+    "budgeting": 32,
+    "saving": 8,
+    "interest": 4,
+    "loans": 2
+  },
+  "divide": {
+    "budgeting": 9
+  },
+  "spend": {
+    "budgeting": 9,
+    "saving": 2
+  },
+  "less": {
+    "budgeting": 11
+  },
+  "interest": {
+    "interest": 161
+  },
+  "rate": {
+    "interest": 30
+  },
+  "work": {
+    "interest": 1,
+    "banking": 5,
+    "income": 2,
+    "loans": 4
+  },
+  "earn": {
+    "interest": 15,
+    "income": 34
+  },
+  "compound": {
+    "interest": 16
+  },
+  "simple": {
+    "interest": 15
+  },
+  "phaello": {
+    "interest": 38
+  },
+  "tswala": {
+    "interest": 13
+  },
+  "fumana": {
+    "interest": 9,
+    "income": 13
+  },
+  "on": {
+    "interest": 26,
+    "saving": 2
+  },
+  "loans": {
+    "interest": 7,
+    "loans": 10
+  },
+  "calculate": {
+    "interest": 15
+  },
+  "loan": {
+    "loans": 67,
+    "interest": 4
+  },
+  "borrowing": {
+    "loans": 28
+  },
+  "debt": {
+    "loans": 40
+  },
+  "kalimo": {
+    "loans": 16
+  },
+  "sekoloto": {
+    "loans": 13
+  },
+  "alima": {
+    "loans": 13
+  },
+  "pay": {
+    "loans": 11,
+    "saving": 2
+  },
+  "back": {
+    "loans": 9
+  },
+  "repay": {
+    "loans": 9
+  },
+  "mokitlane": {
+    "loans": 7
+  },
+  "borrow": {
+    "loans": 4
+  },
+  "bad": {
+    "loans": 9
+  },
+  "repayment": {
+    "loans": 13,
+    "interest": 2
+  },
+  "income": {
+    "income": 38,
+    "saving": 4,
+    "budgeting": 2
+  },
+  "salary": {
+    "income": 17,
+    "saving": 2
+  },
+  "moputso": {
+    "income": 15
+  },
+  "e": {
+    "income": 11,
+    "saving": 2,
+    "interest": 6,
+    "banking": 2
+  },
+  "kenang": {
+    "income": 11
+  },
+  "part": {
+    "income": 9
+  },
+  "time": {
+    "income": 9
+  },
+  "job": {
+    "income": 7
+  },
+  "ways": {
+    "income": 14,
+    "saving": 8
+  },
+  "earning": {
+    "income": 14
+  },
+  "as": {
+    "income": 9,
+    "saving": 6
+  },
+  "side": {
+    "income": 11
+  },
+  "hustle": {
+    "income": 9
+  },
+  "bank": {
+    "banking": 55,
+    "interest": 6,
+    "loans": 2
+  },
+  "account": {
+    "banking": 36,
+    "interest": 4,
+    "saving": 2
+  },
+  "open": {
+    "banking": 14
+  },
+  "mobile": {
+    "banking": 22
+  },
+  "banking": {
+    "banking": 17
+  },
+  "atm": {
+    "banking": 7
+  },
+  "deposit": {
+    "banking": 11
+  },
+  "withdraw": {
+    "banking": 11
+  },
+  "banka": {
+    "banking": 13,
+    "interest": 2,
+    "loans": 2
+  },
+  "akhaonto": {
+    "banking": 13
+  },
+  "ecocash": {
+    "banking": 11
+  },
+  "mpesa": {
+    "banking": 11
+  },
+  "card": {
+    "banking": 15
+  },
+  "banks": {
+    "banking": 3
+  },
+  "safe": {
+    "banking": 9
+  },
+  "need": {
+    "needs_wants": 43,
+    "saving": 6,
+    "loans": 2,
+    "banking": 2,
+    "money": 2
+  },
+  "vs": {
+    "needs_wants": 14,
+    "saving": 2,
+    "income": 2
+  },
+  "needs": {
+    "needs_wants": 19
+  },
+  "wants": {
+    "needs_wants": 17
+  },
+  "tlhoko": {
+    "needs_wants": 15
+  },
+  "takatso": {
+    "needs_wants": 13
+  },
+  "litlhoko": {
+    "needs_wants": 13
+  },
+  "litakatso": {
+    "needs_wants": 11
+  },
+  "essential": {
+    "needs_wants": 16
+  },
+  "non": {
+    "needs_wants": 7
+  },
+  "must": {
+    "needs_wants": 7
+  },
+  "have": {
+    "needs_wants": 7
+  },
+  "live": {
+    "needs_wants": 7
+  },
+  "without": {
+    "needs_wants": 7
+  },
+  "difference": {
+    "needs_wants": 9,
+    "banking": 2
+  },
+  "between": {
+    "needs_wants": 9,
+    "banking": 2
+  },
+  "food": {
+    "needs_wants": 7,
+    "saving": 2,
+    "budgeting": 4
+  },
+  "eng": {
+    "money": 35,
+    "interest": 11,
+    "saving": 2,
+    "income": 5,
+    "loans": 6
+  },
+  "ea": {
+    "money": 11,
+    "saving": 6,
+    "interest": 8,
+    "loans": 2,
+    "needs_wants": 4,
+    "budgeting": 2,
+    "banking": 4
+  },
+  "in": {
+    "money": 5,
+    "banking": 2,
+    "income": 1
+  },
+  "loti": {
+    "money": 7
+  },
+  "bala": {
+    "money": 1,
+    "interest": 4
+  },
+  "m1": {
+    "money": 5
+  },
+  "tse": {
+    "money": 3
+  },
+  "best": {
+    "saving": 8
+  },
+  "way": {
+    "saving": 4
+  },
+  "every": {
+    "saving": 22
+  },
+  "month": {
+    "saving": 18
+  },
+  "for": {
+    "saving": 45,
+    "loans": 8,
+    "budgeting": 18,
+    "banking": 4,
+    "money": 6,
+    "interest": 3
+  },
+  "students": {
+    "saving": 12,
+    "budgeting": 4,
+    "income": 4,
+    "money": 2,
+    "loans": 2,
+    "banking": 2
+  },
+  "more": {
+    "saving": 2,
+    "budgeting": 2,
+    "income": 2
+  },
+  "should": {
+    "saving": 12,
+    "loans": 2
+  },
+  "each": {
+    "saving": 8
+  },
+  "hard": {
+    "saving": 2
+  },
+  "start": {
+    "saving": 7,
+    "budgeting": 2
+  },
+  "from": {
+    "saving": 14,
+    "loans": 6,
+    "banking": 2,
+    "income": 2
+  },
+  "allowance": {
+    "saving": 6,
+    "income": 2
+  },
+  "get": {
+    "saving": 2,
+    "income": 6,
+    "loans": 4
+  },
+  "m100": {
+    "saving": 6,
+    "money": 2
+  },
+  "mokhoa": {
+    "saving": 6
+  },
+  "oa": {
+    "saving": 6,
+    "budgeting": 4
+  },
+  "bohlokoa": {
+    "saving": 4,
+    "needs_wants": 2
+  },
+  "qala": {
+    "saving": 2
+  },
+  "hloka": {
+    "saving": 2
+  },
+  "challenge": {
+    "saving": 2
+  },
+  "school": {
+    "saving": 8,
+    "loans": 2,
+    "budgeting": 2
+  },
+  "university": {
+    "saving": 6,
+    "budgeting": 2
+  },
+  "when": {
+    "saving": 2
+  },
+  "with": {
+    "saving": 6,
+    "money": 2
+  },
+  "little": {
+    "saving": 2
+  },
+  "no": {
+    "saving": 2
+  },
+  "habits": {
+    "saving": 5
+  },
+  "build": {
+    "saving": 4
+  },
+  "habit": {
+    "saving": 4
+  },
+  "important": {
+    "saving": 2
+  },
+  "importance": {
+    "saving": 4
+  },
+  "of": {
+    "saving": 10,
+    "loans": 2,
+    "needs_wants": 4,
+    "money": 6,
+    "income": 2
+  },
+  "reasons": {
+    "saving": 2
+  },
+  "or": {
+    "saving": 2,
+    "needs_wants": 8
+  },
+  "consistently": {
+    "saving": 4
+  },
+  "small": {
+    "saving": 8,
+    "loans": 2
+  },
+  "amounts": {
+    "saving": 2
+  },
+  "week": {
+    "saving": 8
+  },
+  "the": {
+    "saving": 2,
+    "interest": 2,
+    "money": 4
+  },
+  "future": {
+    "saving": 4
+  },
+  "emergencies": {
+    "saving": 2
+  },
+  "emergency": {
+    "saving": 4
+  },
+  "fund": {
+    "saving": 2
+  },
+  "reach": {
+    "saving": 4
+  },
+  "percentage": {
+    "saving": 2
+  },
+  "percent": {
+    "saving": 8
+  },
+  "half": {
+    "saving": 4
+  },
+  "fast": {
+    "saving": 2
+  },
+  "quickly": {
+    "saving": 2
+  },
+  "day": {
+    "saving": 4,
+    "greeting": 1
+  },
+  "daily": {
+    "saving": 2
+  },
+  "weekly": {
+    "saving": 2,
+    "budgeting": 2
+  },
+  "m50": {
+    "saving": 2,
+    "money": 2
+  },
+  "m200": {
+    "saving": 4
+  },
+  "phone": {
+    "saving": 2
+  },
+  "laptop": {
+    "saving": 2
+  },
+  "clothes": {
+    "saving": 2
+  },
+  "transport": {
+    "saving": 2,
+    "budgeting": 4
+  },
+  "bokae": {
+    "saving": 2
+  },
+  "bolokiloeng": {
+    "saving": 2
+  },
+  "o": {
+    "saving": 2
+  },
+  "motle": {
+    "saving": 2
+  },
+  "nthuse": {
+    "saving": 2
+  },
+  "ka": {
+    "saving": 2,
+    "interest": 2
+  },
+  "hobaneng": {
+    "saving": 2
+  },
+  "lokela": {
+    "saving": 2
+  },
+  "formula": {
+    "interest": 6
+  },
+  "rates": {
+    "interest": 2
+  },
+  "works": {
+    "interest": 8,
+    "saving": 2
+  },
+  "kopaneng": {
+    "interest": 2
+  },
+  "bonolo": {
+    "interest": 2
+  },
+  "will": {
+    "interest": 2
+  },
+  "calculator": {
+    "interest": 2
+  },
+  "high": {
+    "interest": 2,
+    "saving": 2,
+    "budgeting": 2
+  },
+  "explained": {
+    "interest": 8,
+    "loans": 8,
+    "banking": 6,
+    "income": 2,
+    "money": 5
+  },
+  "apr": {
+    "interest": 2
+  },
+  "annual": {
+    "interest": 2
+  },
+  "apply": {
+    "loans": 2
+  },
+  "happens": {
+    "loans": 2
+  },
+  "if": {
+    "loans": 2,
+    "needs_wants": 2
+  },
+  "not": {
+    "loans": 2
+  },
+  "family": {
+    "loans": 2
+  },
+  "friends": {
+    "loans": 2
+  },
+  "worth": {
+    "loans": 2
+  },
+  "moithuti": {
+    "loans": 4
+  },
+  "sa": {
+    "loans": 2
+  },
+  "avoid": {
+    "loans": 2
+  },
+  "free": {
+    "loans": 2
+  },
+  "getting": {
+    "loans": 2
+  },
+  "out": {
+    "loans": 2
+  },
+  "fees": {
+    "loans": 2
+  },
+  "personal": {
+    "loans": 2
+  },
+  "basic": {
+    "needs_wants": 2
+  },
+  "examples": {
+    "needs_wants": 4
+  },
+  "something": {
+    "needs_wants": 2,
+    "saving": 2
+  },
+  "education": {
+    "needs_wants": 2
+  },
+  "airtime": {
+    "needs_wants": 4
+  },
+  "data": {
+    "needs_wants": 2
+  },
+  "tsa": {
+    "needs_wants": 4
+  },
+  "mehlala": {
+    "needs_wants": 4
+  },
+  "na": {
+    "needs_wants": 4
+  },
+  "thuto": {
+    "needs_wants": 2
+  },
+  "kapa": {
+    "needs_wants": 2
+  },
+  "called": {
+    "money": 4
+  },
+  "some": {
+    "saving": 6
+  },
+  "beginners": {
+    "saving": 2,
+    "budgeting": 2,
+    "interest": 2
+  },
+  "basics": {
+    "saving": 2,
+    "money": 2,
+    "budgeting": 2
+  },
+  "learn": {
+    "saving": 2,
+    "interest": 1
+  },
+  "teach": {
+    "saving": 2
+  },
+  "benefits": {
+    "saving": 2
+  },
+  "helps": {
+    "saving": 2
+  },
+  "strategies": {
+    "saving": 2
+  },
+  "even": {
+    "saving": 4
+  },
+  "m5": {
+    "saving": 2
+  },
+  "m10": {
+    "saving": 2,
+    "money": 2
+  },
+  "create": {
+    "budgeting": 2
+  },
+  "making": {
+    "budgeting": 2
+  },
+  "budgeting": {
+    "budgeting": 18
+  },
+  "stick": {
+    "budgeting": 2
+  },
+  "planning": {
+    "budgeting": 4
+  },
+  "management": {
+    "budgeting": 2
+  },
+  "financial": {
+    "budgeting": 2
+  },
+  "splitting": {
+    "budgeting": 2
+  },
+  "allocate": {
+    "budgeting": 2
+  },
+  "rent": {
+    "budgeting": 2
+  },
+  "control": {
+    "budgeting": 4
+  },
+  "reduce": {
+    "budgeting": 4
+  },
+  "cut": {
+    "budgeting": 4
+  },
+  "down": {
+    "budgeting": 2
+  },
+  "opening": {
+    "banking": 2
+  },
+  "requirements": {
+    "banking": 2
+  },
+  "use": {
+    "banking": 2,
+    "money": 2
+  },
+  "services": {
+    "banking": 2
+  },
+  "checking": {
+    "banking": 2
+  },
+  "using": {
+    "banking": 2
+  },
+  "an": {
+    "banking": 4
+  },
+  "debit": {
+    "banking": 4
+  },
+  "sebetsa": {
+    "banking": 2,
+    "interest": 2
+  },
+  "kenya": {
+    "banking": 2
+  },
+  "bankeng": {
+    "banking": 4
+  },
+  "nt?a": {
+    "banking": 2
+  },
+  "place": {
+    "banking": 2
+  },
+  "sources": {
+    "income": 4
+  },
+  "wage": {
+    "income": 8
+  },
+  "extra": {
+    "income": 4
+  },
+  "business": {
+    "income": 2
+  },
+  "selling": {
+    "income": 2,
+    "money": 2
+  },
+  "pocket": {
+    "income": 2,
+    "saving": 2
+  },
+  "potential": {
+    "income": 2
+  },
+  "repaying": {
+    "loans": 2
+  },
+  "ideas": {
+    "saving": 4
+  },
+  "primary": {
+    "saving": 2
+  },
+  "enough": {
+    "saving": 2
+  },
+  "smart": {
+    "saving": 2
+  },
+  "wise": {
+    "saving": 2
+  },
+  "before": {
+    "saving": 2
+  },
+  "yourself": {
+    "saving": 2
+  },
+  "first": {
+    "saving": 2
+  },
+  "automatic": {
+    "saving": 2
+  },
+  "m500": {
+    "saving": 2
+  },
+  "goals": {
+    "saving": 2
+  },
+  "tracker": {
+    "saving": 2
+  },
+  "method": {
+    "saving": 4
+  },
+  "m20": {
+    "money": 2
+  },
+  "counting": {
+    "money": 2
+  },
+  "value": {
+    "money": 2
+  },
+  "we": {
+    "money": 2
+  },
+  "purpose": {
+    "money": 2
+  },
+  "kids": {
+    "money": 2
+  },
+  "rera": {
+    "budgeting": 2
+  },
+  "tracking": {
+    "budgeting": 2
+  },
+  "earned": {
+    "interest": 2
+  },
+  "paid": {
+    "interest": 2
+  },
+  "calculation": {
+    "interest": 2
+  },
+  "risks": {
+    "loans": 2
+  },
+  "machine": {
+    "banking": 2
+  },
+  "bula": {
+    "banking": 2
+  },
+  "phapang": {
+    "needs_wants": 2
+  },
+  "pakeng": {
+    "needs_wants": 2
+  },
+  "non-essential": {
+    "needs_wants": 2
+  },
+  "this": {
+    "needs_wants": 4
+  },
+  "sawubona": {
+    "greeting": 1
+  },
+  "there": {
+    "greeting": 2
+  },
+  "see": {
+    "greeting": 1
+  },
+  "now": {
+    "saving": 2,
+    "budgeting": 3,
+    "interest": 1,
+    "loans": 3,
+    "income": 1,
+    "banking": 2,
+    "needs_wants": 2
+  },
+  "begin": {
+    "saving": 1
+  },
+  "today": {
+    "saving": 1,
+    "budgeting": 1,
+    "interest": 1,
+    "loans": 1,
+    "income": 2,
+    "banking": 2,
+    "needs_wants": 2
+  },
+  "tomorrow": {
+    "saving": 1
+  },
+  "talk": {
+    "money": 1
+  },
+  "matters": {
+    "money": 1
+  },
+  "coming": {
+    "income": 1
+  }
+}

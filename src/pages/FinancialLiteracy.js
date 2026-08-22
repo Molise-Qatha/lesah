@@ -5,6 +5,7 @@ import { getConversationalResponse, getRandomResponse } from '../data/conversati
 import { financialLibrary } from '../data/financialLibrary';
 import { calculationEngine } from '../data/calculationEngine';
 import { getActivitiesForGrade, getCharacterForGrade } from '../data/activityEngine';
+import { getAIResponse } from '../data/mlClassifier';
 import InteractiveActivity from '../components/InteractiveActivity';
 
 function useInView(threshold = 0.15) {
@@ -160,7 +161,13 @@ function FinancialLiteracy() {
   };
 
   const getResponse = (question) => {
-    // 1. Calculation Engine FIRST
+    // 1. ML-powered AI (uses trained model + rich knowledge base)
+    const mlResponse = getAIResponse(question, gradeId, language);
+    if (mlResponse && !mlResponse.includes('still loading')) {
+      return { type: 'assistant', text: mlResponse, time: 'Now', related: null };
+    }
+
+    // 2. Calculation Engine
     const calculation = calculationEngine.solve(question, language);
     if (calculation) {
       return {
@@ -171,13 +178,13 @@ function FinancialLiteracy() {
       };
     }
 
-    // 2. Conversational layer
+    // 3. Conversational layer
     const conversational = getConversationalResponse(question, language);
     if (conversational) {
       return { type: 'assistant', text: conversational, time: 'Now', related: null };
     }
 
-    // 3. Financial library
+    // 4. Financial library fallback
     const libraryAnswer = financialLibrary.getAnswer(question, getCurrentLevel(), language);
     if (libraryAnswer) {
       let text = `**${libraryAnswer.title}**\n\n${libraryAnswer.explanation}`;
@@ -187,21 +194,7 @@ function FinancialLiteracy() {
       return { type: 'assistant', text, time: 'Now', related: null };
     }
 
-    // 4. Curriculum modules
-    const q = question.toLowerCase();
-    for (const mod of modules) {
-      const titleEn = (mod.title?.english || '').toLowerCase();
-      const titleSt = (mod.title?.sesotho || '').toLowerCase();
-      if ((titleEn && q.includes(titleEn)) || (titleSt && q.includes(titleSt))) {
-        const explanation = mod.explanation?.[language] || mod.explanation?.english || '';
-        const example = mod.example?.[language] || mod.example?.english || '';
-        let text = `**${mod.title?.[language] || mod.title?.english}**\n\n${explanation}`;
-        if (example) text += `\n\n${language === 'sesotho' ? 'Mohlala' : 'Example'}: ${example}`;
-        return { type: 'assistant', text, time: 'Now', related: null };
-      }
-    }
-
-    // 5. Fallback
+    // 5. Final fallback
     return {
       type: 'assistant',
       text: getRandomResponse(
@@ -606,3 +599,73 @@ function FinancialLiteracy() {
 }
 
 export default FinancialLiteracy;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

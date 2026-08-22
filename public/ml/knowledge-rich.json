@@ -1,0 +1,3318 @@
+{
+  "saving": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "Saving means keeping some money for later instead of spending it all now.",
+          "sesotho": "Ho boloka ho bolela ho boloka chelete bakeng sa hamorao."
+        },
+        {
+          "english": "When you save, you put money away so you can use it another day.",
+          "sesotho": "Ha u boloka, u beha chelete ka thoko hore u e sebelise ka letsatsi le leng."
+        },
+        {
+          "english": "Saving is like keeping a seed instead of eating it — you keep it for the future.",
+          "sesotho": "Ho boloka ho tshwana le ho boloka peo ho e-na le ho e ja."
+        },
+        {
+          "english": "Saving means you do not spend all your money today.",
+          "sesotho": "Ho boloka ho bolela hore ha o sebedise chelete yohle kajeno."
+        },
+        {
+          "english": "Saving is when you put money in a safe place and do not touch it.",
+          "sesotho": "Ho boloka ke ha o beha chelete sebakeng se sireletsehileng."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Saving is setting aside a portion of your income for future use.",
+          "sesotho": "Ho boloka ke ho behella karolo ya moputso wa hao ka thoko."
+        },
+        {
+          "english": "Saving means deliberately keeping some money for later needs.",
+          "sesotho": "Ho boloka ho bolela ho boloka chelete ka boomo bakeng sa ditlhoko tsa hamorao."
+        },
+        {
+          "english": "Saving is the habit of putting money aside regularly.",
+          "sesotho": "Ho boloka ke tlwaelo ya ho behella chelete ka thoko kgafetsa."
+        },
+        {
+          "english": "When you save, you delay spending today so you have money tomorrow.",
+          "sesotho": "Ha o boloka, o liehisa tshebediso kajeno hore o be le chelete hosane."
+        },
+        {
+          "english": "Saving is the foundation of financial health.",
+          "sesotho": "Ho boloka ke motheo wa bophelo bo botle ba lichelete."
+        }
+      ],
+      "university": [
+        {
+          "english": "Saving is the deliberate allocation of income toward future goals.",
+          "sesotho": "Ho boloka ke ho arola moputso ka boomo ho ya dipakaneng tsa bokamoso."
+        },
+        {
+          "english": "Saving means prioritizing financial security over immediate spending.",
+          "sesotho": "Ho boloka ho bolela ho beha tshireletso ya lichelete pele."
+        },
+        {
+          "english": "Saving is a financial discipline providing liquidity for emergencies.",
+          "sesotho": "Ho boloka ke taeo ya lichelete e fanang ka chelete ya tshohanyetso."
+        },
+        {
+          "english": "Saving involves allocating a percentage of income to build reserves.",
+          "sesotho": "Ho boloka ho kenyelletsa ho arola peresente ya moputso ho haha pokello."
+        },
+        {
+          "english": "Saving builds financial assets through regular contributions.",
+          "sesotho": "Ho boloka ho haha matlotlo a lichelete ka ho kenya chelete kgafetsa."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "If you get M10 and keep M3 for later, you saved M3.",
+          "sesotho": "Haeba o fumana M10 mme o boloka M3, o bolokile M3."
+        },
+        {
+          "english": "Your grandmother gives you M5. You put M2 in your piggy bank.",
+          "sesotho": "Nkhono o fa M5. O kenya M2 ka piggy bank."
+        },
+        {
+          "english": "A toy costs M50. Saving M10 per week means you will have it in 5 weeks.",
+          "sesotho": "Sebapadiswa se bitsa M50. Ho boloka M10 ka beke ho bolela hore o tla ba le sona ka dibeke tse 5."
+        },
+        {
+          "english": "Instead of spending all your M20, you keep M5.",
+          "sesotho": "Ho e-na le ho sebedisa M20 yohle, o boloka M5."
+        },
+        {
+          "english": "You have M100 and keep M30 for later.",
+          "sesotho": "O na le M100 mme o boloka M30 bakeng sa hamorao."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "You earn M500 and save M100 monthly. After one year, you have M1,200.",
+          "sesotho": "O fumana M500 mme o boloka M100 ka kgwedi. Kamora selemo, o na le M1,200."
+        },
+        {
+          "english": "Your allowance is M300. Set aside M50 before spending anything.",
+          "sesotho": "Chelete ya hao ke M300. Behella M50 ka thoko pele o sebedisa letho."
+        },
+        {
+          "english": "You need M2,000 for a laptop. Saving M200 monthly means 10 months.",
+          "sesotho": "O hloka M2,000 bakeng sa laptop. Ho boloka M200 ka kgwedi ho bolela dikgwedi tse 10."
+        },
+        {
+          "english": "Keep M50 from M200 instead of spending it all.",
+          "sesotho": "Boloka M50 ho tswa ho M200 ho e-na le ho e sebedisa yohle."
+        },
+        {
+          "english": "A M1,000 gift: save 30 percent (M300) and spend the rest.",
+          "sesotho": "Mpho ya M1,000: boloka 30% (M300) mme o sebedise tse setseng."
+        }
+      ],
+      "university": [
+        {
+          "english": "Bursary M2,500: follow 50/30/20 rule, save M500 monthly.",
+          "sesotho": "Bursary ya M2,500: latela molao wa 50/30/20, boloka M500 ka kgwedi."
+        },
+        {
+          "english": "Freelance income M1,500: allocate M300 to savings first.",
+          "sesotho": "Moputso wa freelance M1,500: arola M300 polokong pele."
+        },
+        {
+          "english": "Save M200 monthly for emergency fund = M2,400 per year.",
+          "sesotho": "Boloka M200 ka kgwedi bakeng sa tshohanyetso = M2,400 ka selemo."
+        },
+        {
+          "english": "Invest M500 monthly at 7 percent = approximately M87,000 in 10 years.",
+          "sesotho": "Kenya M500 ka kgwedi ka 7% = M87,000 ka dilemo tse 10."
+        },
+        {
+          "english": "Income M3,500: M2,000 fixed, M500 savings, M1,000 variable.",
+          "sesotho": "Moputso M3,500: M2,000 e sa fetoheng, M500 poloko, M1,000 e fetohang."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "You need lots of money to save — FALSE! Even M1 counts.",
+          "sesotho": "O hloka chelete e ngata ho boloka — HA SE NNETE! Le M1 e a balwa."
+        },
+        {
+          "english": "Saving is only for rich people — FALSE! Everyone can save.",
+          "sesotho": "Ho boloka ke ha barui feela — HA SE NNETE! Bohle ba ka boloka."
+        },
+        {
+          "english": "Saving means no fun — FALSE! You can save and spend wisely.",
+          "sesotho": "Ho boloka ho bolela ho se thabe — HA SE NNETE! O ka boloka le ho sebedisa ka bohlale."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Only people with jobs can save — FALSE! Students can too.",
+          "sesotho": "Ke batho ba nang le mesebetsi feela ba ka bolokang — HA SE NNETE! Baithuti le bona ba ka boloka."
+        },
+        {
+          "english": "You need M100+ to start — FALSE! M10 regularly adds up.",
+          "sesotho": "O hloka M100+ ho qala — HA SE NNETE! M10 kgafetsa ea eketswa."
+        },
+        {
+          "english": "Saving means never spending on yourself — FALSE! It means balance.",
+          "sesotho": "Ho boloka ho bolela ho se ithekele letho — HA SE NNETE! Ho bolela ho lekalekanya."
+        }
+      ],
+      "university": [
+        {
+          "english": "Saving equals investing — FALSE! Different risk levels.",
+          "sesotho": "Ho boloka ho tshwana le matsete — HA SE NNETE! Di na le dikotsi tse fapaneng."
+        },
+        {
+          "english": "Save what is left after spending — FALSE! Pay yourself first.",
+          "sesotho": "Boloka se setseng kamora ho sebedisa — HA SE NNETE! Itefe pele."
+        },
+        {
+          "english": "Inflation makes saving pointless — FALSE! Interest offsets it.",
+          "sesotho": "Inflation e etsa hore ho boloka ho se thuse — HA SE NNETE! Phaello ea e lekanya."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Would you like to learn how to start saving?",
+        "sesotho": "Na o ka rata ho ithuta ho qala ho boloka?"
+      },
+      {
+        "english": "Do you know what a piggy bank is?",
+        "sesotho": "Na o tseba hore na piggy bank ke eng?"
+      },
+      {
+        "english": "Want to learn about saving goals?",
+        "sesotho": "Na o batla ho ithuta ka dipakane tsa poloko?"
+      },
+      {
+        "english": "Would you like to know where to keep savings?",
+        "sesotho": "Na o ka rata ho tseba moo o bolokang poloko?"
+      },
+      {
+        "english": "Should we talk about budgeting too?",
+        "sesotho": "Na re bue le ka tekanyetso?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Put money in a piggy bank every time you get some.",
+          "sesotho": "Kenya chelete ka piggy bank nako le nako ha o e fumana."
+        },
+        {
+          "english": "Ask your parents to help you open a savings jar.",
+          "sesotho": "Kopa batswadi ho o thusa ho bula jar ya poloko."
+        },
+        {
+          "english": "Start with M1 or M2. Even small amounts count!",
+          "sesotho": "Qala ka M1 kapa M2. Le tjhelete e nyane e a balwa!"
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Set a savings goal, then save a fixed amount each month.",
+          "sesotho": "Beha pakane ya poloko, ebe o boloka tjhelete e behilweng kgwedi le kgwedi."
+        },
+        {
+          "english": "Open a bank savings account and deposit regularly.",
+          "sesotho": "Bula akhaonto ya poloko bankeng mme o kene kgafetsa."
+        },
+        {
+          "english": "Use the 50/30/20 rule: save 20 percent of income.",
+          "sesotho": "Sebedisa molao wa 50/30/20: boloka 20% ya moputso."
+        }
+      ],
+      "university": [
+        {
+          "english": "Automate your savings through a standing order.",
+          "sesotho": "Etsa hore poloko e itsamaele ka standing order."
+        },
+        {
+          "english": "Build an emergency fund with 3-6 months of expenses.",
+          "sesotho": "Haha letlole la tshohanyetso ka dikgwedi tse 3-6."
+        },
+        {
+          "english": "Track expenses and identify areas to reduce spending.",
+          "sesotho": "Latela ditshenyehelo mme o bone moo o ka fokotsang."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "Saving helps you buy things you really want later.",
+          "sesotho": "Ho boloka ho o thusa ho reka dintho tseo o di batlang hamorao."
+        },
+        {
+          "english": "Saving keeps your money safe for the future.",
+          "sesotho": "Ho boloka ho boloka chelete e sireletsehile bakeng sa bokamoso."
+        },
+        {
+          "english": "When you save, you always have money for emergencies.",
+          "sesotho": "Ha o boloka, o dula o na le chelete ya tshohanyetso."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Saving builds financial security and peace of mind.",
+          "sesotho": "Ho boloka ho haha tshireletso ya lichelete le kgotso."
+        },
+        {
+          "english": "Saving helps you achieve goals like buying a laptop.",
+          "sesotho": "Ho boloka ho thusa ho fihlela dipakane tse kang ho reka laptop."
+        },
+        {
+          "english": "Saving prevents debt when unexpected expenses arise.",
+          "sesotho": "Ho boloka ho thibela sekoloto ha ditshenyehelo tse sa lebellwang di hlaha."
+        }
+      ],
+      "university": [
+        {
+          "english": "Saving provides capital for investments and wealth building.",
+          "sesotho": "Ho boloka ho fana ka motheo wa matsete le ho haha maruo."
+        },
+        {
+          "english": "An emergency fund prevents financial crises.",
+          "sesotho": "Letlole la tshohanyetso le thibela mathata a lichelete."
+        },
+        {
+          "english": "Saving creates financial independence and options.",
+          "sesotho": "Ho boloka ho bopa boikemelo ba lichelete le dikgetho."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "Mpho gets M20 pocket money. She wants to buy sweets (M5) and a toy (M15). Should she spend all or save some?",
+            "sesotho": "Mpho o fumana M20 ya pokotho. O batla ho reka dipompong (M5) le sebapadiswa (M15). Na o lokela ho sebedisa tsohle kapa ho boloka tse ding?"
+          },
+          "advice": {
+            "english": "Mpho should save at least M5. She can buy sweets and save the rest for the toy later.",
+            "sesotho": "Mpho o lokela ho boloka M5. A ka reka dipompong mme a boloke tse setseng bakeng sa sebapadiswa."
+          },
+          "lesson": {
+            "english": "Always save something from what you receive.",
+            "sesotho": "Dula o boloka ho hong ho tswa ho seo o se fumanang."
+          }
+        },
+        {
+          "situation": {
+            "english": "Thabo wants a bicycle that costs M500. He gets M50 pocket money every week. How can he save for it?",
+            "sesotho": "Thabo o batla baesekele e bitsang M500. O fumana M50 ka beke. A ka e bolokela jwang?"
+          },
+          "advice": {
+            "english": "If Thabo saves M25 per week, he will have M500 in 20 weeks (5 months).",
+            "sesotho": "Haeba Thabo a boloka M25 ka beke, o tla ba le M500 ka dibeke tse 20 (dikgwedi tse 5)."
+          },
+          "lesson": {
+            "english": "Break big goals into smaller weekly savings.",
+            "sesotho": "Arola dipakane tse kgolo ka dipoloko tse nyane tsa beke."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "Lerato earns M600 monthly from part-time work. She spends everything on entertainment. What should she change?",
+            "sesotho": "Lerato o fumana M600 ka kgwedi mosebetsing wa nakwana. O sebedisa tsohle boithabisong. O lokela ho fetola eng?"
+          },
+          "advice": {
+            "english": "Lerato should save at least M120 (20%). She can still enjoy M480 for other things.",
+            "sesotho": "Lerato o lokela ho boloka M120 (20%). A ka ntsha M480 bakeng sa dintho tse ding."
+          },
+          "lesson": {
+            "english": "Pay yourself first before spending on wants.",
+            "sesotho": "Itefe pele pele o sebedisa ditakatso."
+          }
+        },
+        {
+          "situation": {
+            "english": "A student gets a M1,000 gift. They want to buy a new phone (M800) and go out with friends (M200). Is this wise?",
+            "sesotho": "Moithuti o fumana mpho ya M1,000. O batla ho reka fono (M800) le ho ya le metswalle (M200). Na see se bohlale?"
+          },
+          "advice": {
+            "english": "Better plan: Save M300, spend M500 on phone, M200 for friends. Or save M500 and buy a cheaper phone.",
+            "sesotho": "Leano le betere: Boloka M300, sebedisa M500 fonong, M200 metswalle. Kapa boloka M500 mme o reke fono e theko e tlase."
+          },
+          "lesson": {
+            "english": "Balance saving and spending, even with gift money.",
+            "sesotho": "Lekalekanya ho boloka le ho sebedisa, le ka chelete ya dimpho."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "A student receives M2,500 bursary monthly. Rent is M1,000, food M800, transport M300. How much should they save?",
+            "sesotho": "Moithuti o fumana bursary ya M2,500. Rente M1,000, dijo M800, dipalangwang M300. O lokela ho boloka bokae?"
+          },
+          "advice": {
+            "english": "After expenses: M400 remains. Save M300 and keep M100 for emergencies.",
+            "sesotho": "Kamora ditshenyehelo: M400 e setseng. Boloka M300 mme o boloke M100 bakeng sa tshohanyetso."
+          },
+          "lesson": {
+            "english": "Always allocate surplus to savings before discretionary spending.",
+            "sesotho": "Dula o arola se setseng polokong pele o sebedisa."
+          }
+        },
+        {
+          "situation": {
+            "english": "A student has no savings and their laptop breaks. They need M3,000 urgently. What went wrong?",
+            "sesotho": "Moithuti ha a na poloko mme laptop ya hae e senyeha. O hloka M3,000 ka potlako. Ho senyehile eng?"
+          },
+          "advice": {
+            "english": "Without an emergency fund, unexpected expenses cause debt. Aim to save 3-6 months of expenses.",
+            "sesotho": "Ntle le letlole la tshohanyetso, ditshenyehelo tse sa lebellwang di baka sekoloto. Boloka dikgwedi tse 3-6 tsa ditshenyehelo."
+          },
+          "lesson": {
+            "english": "Emergency funds prevent financial crises.",
+            "sesotho": "Matlole a tshohanyetso a thibela mathata."
+          }
+        }
+      ]
+    }
+  },
+  "money": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "Money is what we use to buy things. In Lesotho, we use Maloti and Lisente.",
+          "sesotho": "Chelete ke seo re se sebedisang ho reka dintho. Lesotho re sebedisa Maloti le Lisente."
+        },
+        {
+          "english": "Money is special paper and coins that people use to pay for things.",
+          "sesotho": "Chelete ke pampiri le ditjhepe tse kgethehileng tseo batho ba di sebedisang ho lefa."
+        },
+        {
+          "english": "Money helps us buy food, clothes, and other things we need.",
+          "sesotho": "Chelete e re thusa ho reka dijo, diaparo le dintho tse ding tseo re di hlokang."
+        },
+        {
+          "english": "In Lesotho, our money is called the Loti.",
+          "sesotho": "Lesotho, chelete ya rona e bitswa Loti."
+        },
+        {
+          "english": "Money is a tool for buying and selling things.",
+          "sesotho": "Chelete ke sesebediswa sa ho reka le ho rekisa."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Money is a medium of exchange used to buy goods and services.",
+          "sesotho": "Chelete ke mokgwa wa ho fapanyetsana o sebediswang ho reka thepa le ditshebeletso."
+        },
+        {
+          "english": "The Loti is divided into 100 Lisente.",
+          "sesotho": "Loti e arotswe ka Lisente tse 100."
+        },
+        {
+          "english": "Money has three functions: medium of exchange, unit of account, store of value.",
+          "sesotho": "Chelete e na le mesebetsi e meraro: ho fapanyetsana, ho metha boleng le ho boloka boleng."
+        },
+        {
+          "english": "The Loti is pegged to the South African Rand.",
+          "sesotho": "Loti e hokahane le Rand ya Afrika Borwa."
+        },
+        {
+          "english": "Money represents purchasing power.",
+          "sesotho": "Chelete e emela matla a ho reka."
+        }
+      ],
+      "university": [
+        {
+          "english": "Money serves as medium of exchange, store of value, and unit of account.",
+          "sesotho": "Chelete e sebetsa e le mokgwa wa ho fapanyetsana, ho boloka boleng le ho metha boleng."
+        },
+        {
+          "english": "The Lesotho Loti (LSL) is pegged 1:1 to the Rand (ZAR).",
+          "sesotho": "Loti ya Lesotho (LSL) e hokahane 1:1 le Rand (ZAR)."
+        },
+        {
+          "english": "Money encompasses M0 through M3 with implications for liquidity.",
+          "sesotho": "Chelete e kenyelletsa M0 ho ya M3 ka ditlamorao tsa liquidity."
+        },
+        {
+          "english": "Understanding money requires analyzing banking and monetary policy.",
+          "sesotho": "Ho utlwisisa chelete ho hloka ho hlahloba dibanka le leano la lichelete."
+        },
+        {
+          "english": "Digital money represents a new form of financial inclusion.",
+          "sesotho": "Chelete ya dijithale e emela mokgwa o motjha wa ho kenyelletsa batho ditabeng tsa lichelete."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "A bread costs M10. You give M10 and get bread.",
+          "sesotho": "Bohobe bo bitsa M10. O fana ka M10 mme o fumana bohobe."
+        },
+        {
+          "english": "M1 is the same as 100 Lisente.",
+          "sesotho": "M1 e tshwana le Lisente tse 100."
+        },
+        {
+          "english": "A sweet costs M5. A packet of chips costs M10.",
+          "sesotho": "Pompong e bitsa M5. Pakete ya chips e bitsa M10."
+        },
+        {
+          "english": "M50 can buy five breads that cost M10 each.",
+          "sesotho": "M50 e ka reka mahobe a mahlano a bitsang M10 ka bonngwe."
+        },
+        {
+          "english": "You have M20 and want to buy something that costs M15. You have M5 left.",
+          "sesotho": "O na le M20 mme o batla ho reka ntho e bitsang M15. O setse le M5."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "M50 can be exchanged for goods worth M50.",
+          "sesotho": "M50 e ka fapanyetswa ka thepa ya boleng ba M50."
+        },
+        {
+          "english": "At 5 percent inflation, M100 today buys only M95 worth next year.",
+          "sesotho": "Ka inflation ya 5%, M100 kajeno e reka feela M95 selemong se tlang."
+        },
+        {
+          "english": "M1 equals R1 because of the peg.",
+          "sesotho": "M1 e lekana le R1 ka lebaka la peg."
+        },
+        {
+          "english": "Counting money: M20 + M10 + M5 = M35.",
+          "sesotho": "Ho bala chelete: M20 + M10 + M5 = M35."
+        },
+        {
+          "english": "You receive M500 and can spend or save it.",
+          "sesotho": "O fumana M500 mme o ka e sebedisa kapa ho e boloka."
+        }
+      ],
+      "university": [
+        {
+          "english": "The Loti-Rand peg means shared monetary policy with South Africa.",
+          "sesotho": "Peg ya Loti le Rand e bolela leano le kopaneng la lichelete le Afrika Borwa."
+        },
+        {
+          "english": "M1,000 in cash has different implications than M1,000 in savings.",
+          "sesotho": "M1,000 ya cash e na le moelelo o fapaneng le M1,000 polokong."
+        },
+        {
+          "english": "Depositing M500 enters the broader money supply.",
+          "sesotho": "Ho kenya M500 ho kena ka hara pokello e pharaletseng ya chelete."
+        },
+        {
+          "english": "Purchasing power parity compares prices between Maseru and Bloemfontein.",
+          "sesotho": "Purchasing power parity e bapisa ditheko pakeng tsa Maseru le Bloemfontein."
+        },
+        {
+          "english": "Mobile money like M-Pesa affects financial inclusion.",
+          "sesotho": "Mobile money e kang M-Pesa e ama ho kenyelletswa ditabeng tsa lichelete."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "Money grows on trees — FALSE! People earn money by working.",
+          "sesotho": "Chelete e mela difateng — HA SE NNETE! Batho ba fumana chelete ka ho sebetsa."
+        },
+        {
+          "english": "More money means more happiness — FALSE! Money helps but is not everything.",
+          "sesotho": "Chelete e ngata e bolela thabo e ngata — HA SE NNETE! Chelete ea thusa empa ha se yohle."
+        },
+        {
+          "english": "Only adults use money — FALSE! Children can learn to use money too.",
+          "sesotho": "Ke batho ba baholo feela ba sebedisang chelete — HA SE NNETE! Bana le bona ba ka ithuta."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Debit cards are unlimited money — FALSE! They only access your account.",
+          "sesotho": "Dikarete tsa debit ke chelete e sa feleng — HA SE NNETE! Di fihlella feela akhaonto ya hao."
+        },
+        {
+          "english": "The Loti and Rand are the same currency — FALSE! Different but pegged.",
+          "sesotho": "Loti le Rand ke chelete e le nngwe — HA SE NNETE! Di fapane empa di hokahane."
+        },
+        {
+          "english": "Banks print money — FALSE! The Central Bank controls money supply.",
+          "sesotho": "Dibanka di hatisa chelete — HA SE NNETE! Banka e Kgolo e laola tlhahiso ya chelete."
+        }
+      ],
+      "university": [
+        {
+          "english": "Cryptocurrency is legal tender in Lesotho — FALSE!",
+          "sesotho": "Cryptocurrency ke chelete ya molao Lesotho — HA SE NNETE!"
+        },
+        {
+          "english": "Money has intrinsic value — FALSE! Fiat money has value by decree.",
+          "sesotho": "Chelete e na le boleng ba tlhaho — HA SE NNETE! Fiat money e na le boleng ka molao."
+        },
+        {
+          "english": "Inflation always hurts everyone — FALSE! Borrowers with fixed rates benefit.",
+          "sesotho": "Inflation e utlwisa bohle bohloko — HA SE NNETE! Ba alimang ka fixed rates ba a rua molemo."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Want to learn how to count Maloti?",
+        "sesotho": "Na o batla ho ithuta ho bala Maloti?"
+      },
+      {
+        "english": "Would you like to know where money comes from?",
+        "sesotho": "Na o ka rata ho tseba moo chelete e tswang teng?"
+      },
+      {
+        "english": "Should we talk about saving money?",
+        "sesotho": "Na re bue ka ho boloka chelete?"
+      },
+      {
+        "english": "Want to understand what banks do with money?",
+        "sesotho": "Na o batla ho utlwisisa hore na dibanka di etsa eng ka chelete?"
+      },
+      {
+        "english": "Would you like to learn about earning money?",
+        "sesotho": "Na o ka rata ho ithuta ka ho fumana chelete?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Count your coins and notes to know how much you have.",
+          "sesotho": "Bala ditjhepe le dipampiri ho tseba hore na o na le bokae."
+        },
+        {
+          "english": "Learn that M1 equals 100 Lisente.",
+          "sesotho": "Ithute hore M1 e lekana le Lisente tse 100."
+        },
+        {
+          "english": "Practice buying small things to understand prices.",
+          "sesotho": "Ikwetlise ho reka dintho tse nyane ho utlwisisa ditheko."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Understand that the Loti is pegged to the Rand.",
+          "sesotho": "Utlwisisa hore Loti e hokahane le Rand."
+        },
+        {
+          "english": "Track how much money comes in and goes out.",
+          "sesotho": "Latela chelete e kenang le e tswang."
+        },
+        {
+          "english": "Learn about inflation and purchasing power.",
+          "sesotho": "Ithute ka inflation le matla a ho reka."
+        }
+      ],
+      "university": [
+        {
+          "english": "Understand monetary policy and the Common Monetary Area.",
+          "sesotho": "Utlwisisa leano la lichelete le Common Monetary Area."
+        },
+        {
+          "english": "Analyze how digital money affects financial inclusion.",
+          "sesotho": "Hlahloba kamoo chelete ya dijithale e amang ho kenyelletswa."
+        },
+        {
+          "english": "Study the money multiplier and fractional reserve banking.",
+          "sesotho": "Ithute ka money multiplier le fractional reserve banking."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "We need money to buy food, clothes, and other things.",
+          "sesotho": "Re hloka chelete ho reka dijo, diaparo le dintho tse ding."
+        },
+        {
+          "english": "Money helps us trade fairly.",
+          "sesotho": "Chelete e re thusa ho rekisana ka toka."
+        },
+        {
+          "english": "Understanding money helps you make good choices.",
+          "sesotho": "Ho utlwisisa chelete ho thusa ho etsa dikgetho tse ntle."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Money makes trade efficient.",
+          "sesotho": "Chelete e etsa kgwebo e be bonolo."
+        },
+        {
+          "english": "Understanding money helps you manage finances.",
+          "sesotho": "Ho utlwisisa chelete ho thusa ho laola lichelete."
+        },
+        {
+          "english": "The Loti-Rand peg stabilizes the economy.",
+          "sesotho": "Peg ya Loti le Rand e tsitsisa moruo."
+        }
+      ],
+      "university": [
+        {
+          "english": "Money serves as store of value and unit of account.",
+          "sesotho": "Chelete e boloka boleng le ho metha boleng."
+        },
+        {
+          "english": "Monetary policy affects inflation and growth.",
+          "sesotho": "Leano la lichelete le ama inflation le kgolo."
+        },
+        {
+          "english": "Digital money is transforming financial services.",
+          "sesotho": "Chelete ya dijithale e fetola ditshebeletso."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "You have M50. A bread costs M10. How many breads can you buy?",
+            "sesotho": "O na le M50. Bohobe bo bitsa M10. O ka reka mahobe a makae?"
+          },
+          "advice": {
+            "english": "M50 divided by M10 = 5 breads. You can buy 5 breads.",
+            "sesotho": "M50 arolwa ka M10 = mahobe a 5. O ka reka mahobe a 5."
+          },
+          "lesson": {
+            "english": "Division helps you know how many things you can buy.",
+            "sesotho": "Ho arola ho o thusa ho tseba hore na o ka reka dintho tse kae."
+          }
+        },
+        {
+          "situation": {
+            "english": "A sweet costs M2. You have M10. How many sweets can you buy?",
+            "sesotho": "Pompong e bitsa M2. O na le M10. O ka reka dipompong tse kae?"
+          },
+          "advice": {
+            "english": "M10 divided by M2 = 5 sweets.",
+            "sesotho": "M10 arolwa ka M2 = dipompong tse 5."
+          },
+          "lesson": {
+            "english": "Understanding prices helps you spend wisely.",
+            "sesotho": "Ho utlwisisa ditheko ho thusa ho sebedisa ka bohlale."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "You have M200. Transport costs M20 per day. How many days can you travel?",
+            "sesotho": "O na le M200. Dipalangwang di bitsa M20 ka letsatsi. O ka tsamaya matsatsi a makae?"
+          },
+          "advice": {
+            "english": "M200 divided by M20 = 10 days of transport.",
+            "sesotho": "M200 arolwa ka M20 = matsatsi a 10 a dipalangwang."
+          },
+          "lesson": {
+            "english": "Budgeting daily expenses helps money last longer.",
+            "sesotho": "Ho rera ditshenyehelo tsa letsatsi ho thusa chelete ho tshwarella."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "At 6% inflation, M1,000 today will be worth how much in buying power next year?",
+            "sesotho": "Ka inflation ya 6%, M1,000 kajeno e tla ba le matla a ho reka a bokae selemong se tlang?"
+          },
+          "advice": {
+            "english": "M1,000 / 1.06 = approximately M943 purchasing power.",
+            "sesotho": "M1,000 / 1.06 = M943 matla a ho reka."
+          },
+          "lesson": {
+            "english": "Inflation erodes purchasing power over time.",
+            "sesotho": "Inflation e fokotsa matla a ho reka ka nako."
+          }
+        }
+      ]
+    }
+  },
+  "budgeting": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "A budget is a plan for your money.",
+          "sesotho": "Tekanyetso ke moralo wa chelete ya hao."
+        },
+        {
+          "english": "Budgeting means deciding where your money will go.",
+          "sesotho": "Ho etsa tekanyetso ho bolela ho etsa qeto ya hore na chelete e ya kae."
+        },
+        {
+          "english": "A budget is like a map for your money.",
+          "sesotho": "Tekanyetso e tshwana le mmapa wa chelete ya hao."
+        },
+        {
+          "english": "When you budget, you divide your money into different purposes.",
+          "sesotho": "Ha o etsa tekanyetso, o arola chelete ka merero e fapaneng."
+        },
+        {
+          "english": "A budget helps you know how much to spend, save, and give.",
+          "sesotho": "Tekanyetso e o thusa ho tseba hore na o sebedisa, o boloka le ho fana bokae."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Budgeting is creating a structured plan for income and expenses.",
+          "sesotho": "Tekanyetso ke ho theha moralo o hlophisitsweng wa moputso le ditshenyehelo."
+        },
+        {
+          "english": "A budget tracks money coming in and going out.",
+          "sesotho": "Tekanyetso e latela chelete e kenang le e tswang."
+        },
+        {
+          "english": "Budgeting means allocating income to different categories.",
+          "sesotho": "Ho etsa tekanyetso ho bolela ho arola moputso ka dikarolo tse fapaneng."
+        },
+        {
+          "english": "A budget helps you live within your means.",
+          "sesotho": "Tekanyetso e o thusa ho phela ka hara seo o nang le sona."
+        },
+        {
+          "english": "Budgeting involves comparing income to expenses.",
+          "sesotho": "Tekanyetso e kenyelletsa ho bapisa moputso le ditshenyehelo."
+        }
+      ],
+      "university": [
+        {
+          "english": "Budgeting is the systematic allocation of financial resources.",
+          "sesotho": "Tekanyetso ke ho arola mehlodi ya lichelete ka mokgwa o hlophisitsweng."
+        },
+        {
+          "english": "A budget matches income against fixed and variable expenses.",
+          "sesotho": "Tekanyetso e bapisa moputso le ditshenyehelo tse sa fetoheng le tse fetohang."
+        },
+        {
+          "english": "Budgeting encompasses zero-based and 50/30/20 approaches.",
+          "sesotho": "Tekanyetso e kenyelletsa mekgwa ya zero-based le 50/30/20."
+        },
+        {
+          "english": "Effective budgeting requires understanding cash flow.",
+          "sesotho": "Tekanyetso e atlehileng e hloka ho utlwisisa phallo ya chelete."
+        },
+        {
+          "english": "Budgeting provides visibility and control over every Maloti.",
+          "sesotho": "Tekanyetso e fana ka ponahalo le taolo hodima Maloti a mang le a mang."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "You get M50: M20 snacks, M20 savings, M10 giving.",
+          "sesotho": "O fumana M50: M20 dipompong, M20 poloko, M10 ho fana."
+        },
+        {
+          "english": "Your budget shows M30. A toy costs M40. You need M10 more.",
+          "sesotho": "Tekanyetso e bontsha M30. Sebapadiswa se bitsa M40. O hloka M10 e nngwe."
+        },
+        {
+          "english": "Divide M100 into three envelopes: Spend, Save, Give.",
+          "sesotho": "Arola M100 ka di-enfelopo tse tharo: Sebedisa, Boloka, Fana."
+        },
+        {
+          "english": "Check your budget before buying anything.",
+          "sesotho": "Hlahloba tekanyetso ya hao pele o reka letho."
+        },
+        {
+          "english": "Weekly budget: M15 transport, M10 food, M5 saving.",
+          "sesotho": "Tekanyetso ya beke: M15 dipalangwang, M10 dijo, M5 poloko."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Monthly M600: M200 transport, M150 food, M100 airtime, M100 savings, M50 fun.",
+          "sesotho": "Ka kgwedi M600: M200 dipalangwang, M150 dijo, M100 airtime, M100 poloko, M50 boithabiso."
+        },
+        {
+          "english": "Earn M500, expenses M450, M50 left to save.",
+          "sesotho": "Fumana M500, ditshenyehelo M450, M50 e setseng ho boloka."
+        },
+        {
+          "english": "Use envelopes: M200 food, M100 transport, M50 savings.",
+          "sesotho": "Sebedisa di-enfelopo: M200 dijo, M100 dipalangwang, M50 poloko."
+        },
+        {
+          "english": "Cut entertainment from M150 to M50 to balance budget.",
+          "sesotho": "Fokotsa boithabiso ho tloha M150 ho ya M50 ho lekalekanya tekanyetso."
+        },
+        {
+          "english": "Track spending for one month to understand patterns.",
+          "sesotho": "Latela tshebediso kgwedi e le nngwe ho utlwisisa mekgwa."
+        }
+      ],
+      "university": [
+        {
+          "english": "Bursary M2,500: M1,000 rent, M800 food, M300 transport, M200 books, M200 savings.",
+          "sesotho": "Bursary M2,500: M1,000 rente, M800 dijo, M300 dipalangwang, M200 dibuka, M200 poloko."
+        },
+        {
+          "english": "Zero-based: every Maloti of M3,000 has a job.",
+          "sesotho": "Zero-based: Maloti a mang le a mang a M3,000 a na le mosebetsi."
+        },
+        {
+          "english": "50/30/20 on M4,000: M2,000 needs, M1,200 wants, M800 savings.",
+          "sesotho": "50/30/20 ho M4,000: M2,000 ditlhoko, M1,200 ditakatso, M800 poloko."
+        },
+        {
+          "english": "Reduce eating out from M600 to M300 to save M300 more.",
+          "sesotho": "Fokotsa ho jella kantle ho tloha M600 ho ya M300 ho boloka M300 e nngwe."
+        },
+        {
+          "english": "Allocate 10 percent of income to emergency fund.",
+          "sesotho": "Arola 10% ya moputso ho letlole la tshohanyetso."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "Budgets are boring — FALSE! Budgets help you get what you want.",
+          "sesotho": "Ditekanyetso di a tena — HA SE NNETE! Di o thusa ho fumana seo o se batlang."
+        },
+        {
+          "english": "Only adults need budgets — FALSE! Children can plan money too.",
+          "sesotho": "Ke batho ba baholo feela ba hlokang ditekanyetso — HA SE NNETE! Bana le bona ba ka rera."
+        },
+        {
+          "english": "A budget means you cannot buy anything — FALSE! It means buying what matters.",
+          "sesotho": "Tekanyetso e bolela hore o ke ke wa reka letho — HA SE NNETE! E bolela ho reka se bohlokwa."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Budgeting is only for people struggling — FALSE! Everyone benefits.",
+          "sesotho": "Tekanyetso ke ya batho ba nang le mathata feela — HA SE NNETE! Bohle ba a rua molemo."
+        },
+        {
+          "english": "Budgets are too restrictive — FALSE! They give freedom within limits.",
+          "sesotho": "Ditekanyetso di a thibela — HA SE NNETE! Di fana ka tokoloho ka hara meedi."
+        },
+        {
+          "english": "You need lots of money to budget — FALSE! Works with any amount.",
+          "sesotho": "O hloka chelete e ngata ho etsa tekanyetso — HA SE NNETE! E sebetsa ka chelete efe kapa efe."
+        }
+      ],
+      "university": [
+        {
+          "english": "Budgeting means cutting all fun — FALSE! It means intentional spending.",
+          "sesotho": "Tekanyetso e bolela ho kgaola boithabiso bohle — HA SE NNETE! E bolela ho sebedisa ka boomo."
+        },
+        {
+          "english": "No need to budget if you do not overspend — FALSE! Budgets optimize savings.",
+          "sesotho": "Ha ho hlokahale tekanyetso haeba o sa sebedise ho feta — HA SE NNETE! Tekanyetso e ntlafatsa poloko."
+        },
+        {
+          "english": "Budgeting apps are necessary — FALSE! A notebook works fine.",
+          "sesotho": "Di-app tsa tekanyetso di a hlokahala — HA SE NNETE! Buka ya ho ngola e sebetsa hantle."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Want to create your first budget?",
+        "sesotho": "Na o batla ho etsa tekanyetso ya hao ya pele?"
+      },
+      {
+        "english": "Should we practice dividing M100 into categories?",
+        "sesotho": "Na re ikwetlise ho arola M100 ka dikarolo?"
+      },
+      {
+        "english": "Would you like to learn about tracking expenses?",
+        "sesotho": "Na o ka rata ho ithuta ho latela ditshenyehelo?"
+      },
+      {
+        "english": "Want to know the 50/30/20 rule?",
+        "sesotho": "Na o batla ho tseba molao wa 50/30/20?"
+      },
+      {
+        "english": "Should we talk about saving money too?",
+        "sesotho": "Na re bue le ka ho boloka chelete?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Divide your money into Spend, Save, and Give.",
+          "sesotho": "Arola chelete ka Sebedisa, Boloka le Fana."
+        },
+        {
+          "english": "Use three jars or envelopes for your money.",
+          "sesotho": "Sebedisa linkho kapa di-enfelopo tse tharo."
+        },
+        {
+          "english": "Write down what you want to buy and check if you have enough.",
+          "sesotho": "Ngola seo o batlang ho se reka mme o hlahlobe."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "List all income and expenses for one month.",
+          "sesotho": "Ngola moputso le ditshenyehelo tsohle tsa kgwedi."
+        },
+        {
+          "english": "Categorize expenses: needs, wants, savings.",
+          "sesotho": "Arola ditshenyehelo: ditlhoko, ditakatso, poloko."
+        },
+        {
+          "english": "Adjust spending to not exceed income.",
+          "sesotho": "Fetola tshebediso ho se fete moputso."
+        }
+      ],
+      "university": [
+        {
+          "english": "Use zero-based budgeting or the 50/30/20 rule.",
+          "sesotho": "Sebedisa zero-based kapa molao wa 50/30/20."
+        },
+        {
+          "english": "Track every Maloti and review monthly.",
+          "sesotho": "Latela Maloti a mang le a mang kgwedi le kgwedi."
+        },
+        {
+          "english": "Build an emergency fund into your budget.",
+          "sesotho": "Kenyelletsa letlole la tshohanyetso tekanyetsong."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "A budget helps you know where your money goes.",
+          "sesotho": "Tekanyetso e o thusa ho tseba moo chelete e yang."
+        },
+        {
+          "english": "Budgeting helps you save for things you want.",
+          "sesotho": "Tekanyetso e thusa ho bolokela dintho tseo o di batlang."
+        },
+        {
+          "english": "A budget stops you from running out of money.",
+          "sesotho": "Tekanyetso e thibela ho felloa ke chelete."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Budgeting prevents overspending and debt.",
+          "sesotho": "Tekanyetso e thibela ho sebedisa ho feta le sekoloto."
+        },
+        {
+          "english": "A budget helps you achieve financial goals.",
+          "sesotho": "Tekanyetso e thusa ho fihlela dipakane."
+        },
+        {
+          "english": "Budgeting gives you control over your money.",
+          "sesotho": "Tekanyetso e o fa taolo hodima chelete."
+        }
+      ],
+      "university": [
+        {
+          "english": "Budgeting optimizes resource allocation.",
+          "sesotho": "Tekanyetso e ntlafatsa ho arola mehlodi."
+        },
+        {
+          "english": "A budget provides visibility into cash flow.",
+          "sesotho": "Tekanyetso e fana ka ponahalo ya phallo."
+        },
+        {
+          "english": "Budgeting is the foundation of financial planning.",
+          "sesotho": "Tekanyetso ke motheo wa moralo wa lichelete."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "Palesa has M30. She needs bread (M10) and wants sweets (M25). Can she buy both?",
+            "sesotho": "Palesa o na le M30. O hloka bohobe (M10) mme o batla dipompong (M25). A ka reka ka bobeli?"
+          },
+          "advice": {
+            "english": "Bread + sweets = M35. She needs M5 more. She should prioritise bread (need) over sweets (want).",
+            "sesotho": "Bohobe + dipompong = M35. O hloka M5 e nngwe. O lokela ho beha bohobe (tlhoko) pele ho dipompong (takatso)."
+          },
+          "lesson": {
+            "english": "Needs come before wants when budgeting.",
+            "sesotho": "Ditlhoko di tla pele ho ditakatso."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "Tumelo earns M500 monthly. Expenses: transport M150, food M200, airtime M50, entertainment M150. Total = M550. What should change?",
+            "sesotho": "Tumelo o fumana M500. Ditshenyehelo: dipalangwang M150, dijo M200, airtime M50, boithabiso M150. Kakaretso = M550. Ho lokela ho fetoha eng?"
+          },
+          "advice": {
+            "english": "He overspends by M50. Cut entertainment from M150 to M100.",
+            "sesotho": "O sebedisa M50 ho feta. Fokotsa boithabiso ho tloha M150 ho ya M100."
+          },
+          "lesson": {
+            "english": "When expenses exceed income, reduce wants first.",
+            "sesotho": "Ha ditshenyehelo di feta moputso, fokotsa ditakatso pele."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "A student has M3,000 monthly. Fixed: rent M1,200, utilities M300, food M800. Variable: transport M300, entertainment M300. What is the savings potential?",
+            "sesotho": "Moithuti o na le M3,000. E sa fetoheng: rente M1,200, motlakase M300, dijo M800. E fetohang: dipalangwang M300, boithabiso M300. Poloko e ka ba bokae?"
+          },
+          "advice": {
+            "english": "Total expenses = M2,900. Savings potential = M100. Reduce entertainment to M200 to save M200.",
+            "sesotho": "Kakaretso = M2,900. Poloko = M100. Fokotsa boithabiso ho M200 ho boloka M200."
+          },
+          "lesson": {
+            "english": "Small adjustments in variable expenses increase savings.",
+            "sesotho": "Diphetoho tse nyane ditshenyehelong di eketsa poloko."
+          }
+        }
+      ]
+    }
+  },
+  "interest": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "Interest is extra money you get when you keep money in a bank.",
+          "sesotho": "Phaello ke chelete e eketsehileng eo o e fumanang ha o boloka chelete bankeng."
+        },
+        {
+          "english": "When you save, the bank gives you a little extra money. That is interest.",
+          "sesotho": "Ha o boloka, banka e o fa chelete e nyane e eketsehileng. Ke phaello."
+        },
+        {
+          "english": "Interest is like a reward for saving your money.",
+          "sesotho": "Phaello e tshwana le moputso wa ho boloka chelete ya hao."
+        },
+        {
+          "english": "If you put M100 in the bank and get M5 extra, that M5 is interest.",
+          "sesotho": "Haeba o kenya M100 bankeng mme o fumana M5 e eketsehileng, M5 eo ke phaello."
+        },
+        {
+          "english": "Interest is money that grows on your saved money.",
+          "sesotho": "Phaello ke chelete e holang hodima chelete e bolokilweng."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Interest is the cost of borrowing or the reward for saving.",
+          "sesotho": "Phaello ke theko ya ho alima kapa moputso wa ho boloka."
+        },
+        {
+          "english": "Interest is money paid for the use of borrowed money.",
+          "sesotho": "Phaello ke chelete e lefuwang bakeng sa tshebediso ya chelete e alimilweng."
+        },
+        {
+          "english": "Simple interest is calculated on principal only. Compound interest includes accumulated interest.",
+          "sesotho": "Phaello e bonolo e balwa hodima chelete feela. Phaello e kopaneng e kenyelletsa phaello e bokelletsweng."
+        },
+        {
+          "english": "Interest rate is expressed as a percentage.",
+          "sesotho": "Phaello e hlaloswa e le peresente."
+        },
+        {
+          "english": "When you save, interest works for you. When you borrow, it works against you.",
+          "sesotho": "Ha o boloka, phaello e o sebeletsa. Ha o alima, e o lwantsha."
+        }
+      ],
+      "university": [
+        {
+          "english": "Interest represents the time value of money.",
+          "sesotho": "Phaello e emela boleng ba nako ba chelete."
+        },
+        {
+          "english": "Simple interest: I = P x r x t. Compound interest: A = P(1+r)^n.",
+          "sesotho": "Phaello e bonolo: I = P x r x t. Phaello e kopaneng: A = P(1+r)^n."
+        },
+        {
+          "english": "Real interest rate equals nominal rate minus inflation.",
+          "sesotho": "Phaello ya nnete e lekana le phaello ya lebitso ho tlosa inflation."
+        },
+        {
+          "english": "Central bank policy and inflation influence interest rates.",
+          "sesotho": "Leano la banka e kgolo le inflation di ama phaello."
+        },
+        {
+          "english": "Effective annual rate accounts for compounding frequency.",
+          "sesotho": "Phaello e sebetsang ea selemo e balela makgetlo a ho kopanya."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "Save M100 at 5 percent. After one year, you have M105.",
+          "sesotho": "Boloka M100 ka 5%. Kamora selemo, o na le M105."
+        },
+        {
+          "english": "Borrow M50 and repay M55. The extra M5 is interest.",
+          "sesotho": "Alima M50 mme o kgutlise M55. M5 e eketsehileng ke phaello."
+        },
+        {
+          "english": "A bank account gives interest, but a piggy bank does not.",
+          "sesotho": "Akhaonto ya banka e fana ka phaello, empa piggy bank ha e fane."
+        },
+        {
+          "english": "Save M200 and get M10 extra. That is your interest.",
+          "sesotho": "Boloka M200 mme o fumane M10 e eketsehileng. Ke phaello ya hao."
+        },
+        {
+          "english": "Interest makes your money grow while you sleep.",
+          "sesotho": "Phaello e etsa hore chelete ya hao e hole ha o robetse."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "M1,000 at 10 percent = repay M1,100 after one year.",
+          "sesotho": "M1,000 ka 10% = kgutlisa M1,100 kamora selemo."
+        },
+        {
+          "english": "Simple interest on M5,000 at 8 percent for 3 years = M1,200.",
+          "sesotho": "Phaello e bonolo ho M5,000 ka 8% dilemo tse 3 = M1,200."
+        },
+        {
+          "english": "Compound: M1,000 at 10 percent — Year 1: M1,100, Year 2: M1,210, Year 3: M1,331.",
+          "sesotho": "E kopaneng: M1,000 ka 10% — Selemo 1: M1,100, Selemo 2: M1,210, Selemo 3: M1,331."
+        },
+        {
+          "english": "Save M100 monthly at 6 percent for 10 years = M16,470.",
+          "sesotho": "Boloka M100 ka kgwedi ka 6% dilemo tse 10 = M16,470."
+        },
+        {
+          "english": "Credit card at 24 percent doubles debt every 3 years.",
+          "sesotho": "Karete ya mokitlane ka 24% e imena sekoloto ka dilemo tse 3."
+        }
+      ],
+      "university": [
+        {
+          "english": "M10,000 at 7 percent for 10 years grows to M19,672.",
+          "sesotho": "M10,000 ka 7% dilemo tse 10 e hola ho fihlela M19,672."
+        },
+        {
+          "english": "Rule of 72: divide 72 by rate to estimate doubling time.",
+          "sesotho": "Molao wa 72: arola 72 ka phaello ho hakanya nako ya ho imena."
+        },
+        {
+          "english": "12 percent monthly compounding = 12.68 percent effective annual.",
+          "sesotho": "12% e kopanwang kgwedi le kgwedi = 12.68% e sebetsang ka selemo."
+        },
+        {
+          "english": "M15,000 loan at 10 percent over 3 years = M4,500 interest.",
+          "sesotho": "Kalimo ya M15,000 ka 10% dilemo tse 3 = M4,500 phaello."
+        },
+        {
+          "english": "At 6 percent inflation and 3 percent savings, real return is negative.",
+          "sesotho": "Ka inflation ya 6% le poloko ya 3%, phaello ya nnete e negative."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "Interest is only for rich people — FALSE! Anyone earns interest on savings.",
+          "sesotho": "Phaello ke ya barui feela — HA SE NNETE! Motho e mong le e mong o fumana phaello polokong."
+        },
+        {
+          "english": "All interest is bad — FALSE! Interest on savings is good!",
+          "sesotho": "Phaello yohle e mpe — HA SE NNETE! Phaello polokong e ntle!"
+        },
+        {
+          "english": "Interest grows money instantly — FALSE! It grows slowly over time.",
+          "sesotho": "Phaello e holisa chelete hanghang — HA SE NNETE! E hola butle ka nako."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Interest only applies to loans — FALSE! Savings earn interest too.",
+          "sesotho": "Phaello e sebetsa feela dikolong — HA SE NNETE! Poloko le yona e fumana phaello."
+        },
+        {
+          "english": "All banks offer same rates — FALSE! Rates vary significantly.",
+          "sesotho": "Dibanka tsohle di fana ka diphaello tse tshwanang — HA SE NNETE! Di fapana haholo."
+        },
+        {
+          "english": "Compound equals simple interest — FALSE! Compound grows faster.",
+          "sesotho": "E kopaneng e tshwana le e bonolo — HA SE NNETE! E kopaneng e hola ka potlako."
+        }
+      ],
+      "university": [
+        {
+          "english": "Low rates always help borrowers — FALSE! They hurt savers too.",
+          "sesotho": "Diphaello tse tlase di thusa ba alimang — HA SE NNETE! Di utlwisa ba bolokang bohloko."
+        },
+        {
+          "english": "Rule of 72 is exact — FALSE! It is an approximation.",
+          "sesotho": "Molao wa 72 o nepahetse — HA SE NNETE! Ke tekanyo feela."
+        },
+        {
+          "english": "Higher rates always mean better investments — FALSE! Risk matters.",
+          "sesotho": "Diphaello tse phahameng di bolela matsete a matle — HA SE NNETE! Kotsi le yona e bohlokwa."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Want to learn how to calculate interest?",
+        "sesotho": "Na o batla ho ithuta ho bala phaello?"
+      },
+      {
+        "english": "Should we talk about compound interest?",
+        "sesotho": "Na re bue ka phaello e kopaneng?"
+      },
+      {
+        "english": "Want to know what interest rate to expect?",
+        "sesotho": "Na o batla ho tseba phaello e lebeletsweng?"
+      },
+      {
+        "english": "Should we compare savings accounts?",
+        "sesotho": "Na re bapise diakhaonto tsa poloko?"
+      },
+      {
+        "english": "Want to understand loan interest?",
+        "sesotho": "Na o batla ho utlwisisa phaello ya dikoloto?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Save money in a bank to earn interest.",
+          "sesotho": "Boloka chelete bankeng ho fumana phaello."
+        },
+        {
+          "english": "Ask the bank about interest rates.",
+          "sesotho": "Botsa banka ka diphaello."
+        },
+        {
+          "english": "Leave your savings untouched to earn more.",
+          "sesotho": "Tlohela poloko e sa amehe ho fumana phaello e ngata."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Compare interest rates from different banks.",
+          "sesotho": "Bapisa diphaello tsa dibanka."
+        },
+        {
+          "english": "Understand simple vs compound interest.",
+          "sesotho": "Utlwisisa phapang ya phaello e bonolo le e kopaneng."
+        },
+        {
+          "english": "Calculate interest using I = P x r x t.",
+          "sesotho": "Bala phaello ka I = P x r x t."
+        }
+      ],
+      "university": [
+        {
+          "english": "Use compound interest formula A = P(1+r)^n.",
+          "sesotho": "Sebedisa A = P(1+r)^n."
+        },
+        {
+          "english": "Calculate effective annual rate for comparison.",
+          "sesotho": "Bala effective annual rate."
+        },
+        {
+          "english": "Use Rule of 72 to estimate doubling time.",
+          "sesotho": "Sebedisa Molao wa 72."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "Interest is a reward for saving your money.",
+          "sesotho": "Phaello ke moputso wa ho boloka."
+        },
+        {
+          "english": "Interest makes your money grow over time.",
+          "sesotho": "Phaello e holisa chelete ka nako."
+        },
+        {
+          "english": "Saving in a bank is better than keeping money at home.",
+          "sesotho": "Ho boloka bankeng ho molemo ho feta lapeng."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Compound interest accelerates wealth building.",
+          "sesotho": "E kopaneng e potlakisa ho haha maruo."
+        },
+        {
+          "english": "Understanding interest helps borrowing decisions.",
+          "sesotho": "Ho utlwisisa phaello ho thusa ho alima."
+        },
+        {
+          "english": "Interest rates affect savings and loans.",
+          "sesotho": "Diphaello di ama poloko le dikoloto."
+        }
+      ],
+      "university": [
+        {
+          "english": "Interest represents the time value of money.",
+          "sesotho": "Phaello e emela boleng ba nako."
+        },
+        {
+          "english": "Real interest rates account for inflation.",
+          "sesotho": "Phaello ya nnete e balela inflation."
+        },
+        {
+          "english": "Interest knowledge is essential for investing.",
+          "sesotho": "Tsebo ya phaello e bohlokwa matseteng."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "You save M100 at 5% interest. After one year, how much do you have?",
+            "sesotho": "O boloka M100 ka 5%. Kamora selemo, o na le bokae?"
+          },
+          "advice": {
+            "english": "M100 x 5% = M5 interest. Total = M105.",
+            "sesotho": "M100 x 5% = M5 phaello. Kakaretso = M105."
+          },
+          "lesson": {
+            "english": "Interest is extra money on your savings.",
+            "sesotho": "Phaello ke chelete e eketsehileng polokong."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "You borrow M1,000 at 10% annual interest for 2 years. What is the total repayment?",
+            "sesotho": "O alima M1,000 ka 10% ka selemo dilemo tse 2. Kakaretso ya tefo ke bokae?"
+          },
+          "advice": {
+            "english": "Interest = M1,000 x 10% x 2 = M200. Total = M1,200.",
+            "sesotho": "Phaello = M1,000 x 10% x 2 = M200. Kakaretso = M1,200."
+          },
+          "lesson": {
+            "english": "The longer you borrow, the more interest you pay.",
+            "sesotho": "Ha o alima nako e telele, o lefa phaello e ngata."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "You have M5,000 to save. Bank A offers 5% simple interest. Bank B offers 4.8% compound interest. Which is better after 5 years?",
+            "sesotho": "O na le M5,000 ho boloka. Banka A e fana ka 5% simple. Banka B e fana ka 4.8% compound. E feng e betere kamora dilemo tse 5?"
+          },
+          "advice": {
+            "english": "Bank A: M5,000 + (M5,000 x 5% x 5) = M6,250. Bank B: M5,000 x (1.048)^5 = M6,317. Bank B is better.",
+            "sesotho": "Banka A: M6,250. Banka B: M6,317. Banka B e betere."
+          },
+          "lesson": {
+            "english": "Compound interest beats simple interest over time.",
+            "sesotho": "E kopaneng e feta e bonolo ka nako."
+          }
+        }
+      ]
+    }
+  },
+  "loans": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "A loan is money you borrow and agree to pay back later.",
+          "sesotho": "Kalimo ke chelete eo o e alimang mme o dumela ho e kgutlisa hamorao."
+        },
+        {
+          "english": "When you borrow money, that is called a loan.",
+          "sesotho": "Ha o alima chelete, seo se bitswa kalimo."
+        },
+        {
+          "english": "A loan is money someone gives you that you must return.",
+          "sesotho": "Kalimo ke chelete eo motho a o fang yona eo o tlamehang ho e kgutlisa."
+        },
+        {
+          "english": "Borrowing M50 from a friend is a loan.",
+          "sesotho": "Ho alima M50 ho motswalle ke kalimo."
+        },
+        {
+          "english": "A loan is like borrowing a book — you give it back.",
+          "sesotho": "Kalimo e tshwana le ho alima buka — o a e kgutlisa."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "A loan is borrowed money repaid with interest over time.",
+          "sesotho": "Kalimo ke chelete e alimilweng e kgutliswang le phaello."
+        },
+        {
+          "english": "Loans can be secured or unsecured.",
+          "sesotho": "Dikoloto di ka ba tse sireleditsweng kapa tse sa sireleditsweng."
+        },
+        {
+          "english": "Student loans help pay for education.",
+          "sesotho": "Dikoloto tsa baithuti di thusa ho lefella thuto."
+        },
+        {
+          "english": "The cost of a loan includes interest and fees.",
+          "sesotho": "Theko ya kalimo e kenyelletsa phaello le ditefiso."
+        },
+        {
+          "english": "Repayment terms define how long you have to repay.",
+          "sesotho": "Dipehelo tsa tefo di hlalosa hore na o na le nako e kae ya ho kgutlisa."
+        }
+      ],
+      "university": [
+        {
+          "english": "Loans are debt instruments requiring repayment with interest.",
+          "sesotho": "Dikoloto ke disebediswa tsa molato tse hlokang ho kgutlisa le phaello."
+        },
+        {
+          "english": "Key metrics include APR and debt-to-income ratio.",
+          "sesotho": "Ditekanyo tsa bohlokwa di kenyelletsa APR le debt-to-income ratio."
+        },
+        {
+          "english": "Amortization schedules split payments between principal and interest.",
+          "sesotho": "Mananeo a amortization a arola ditefo pakeng tsa chelete le phaello."
+        },
+        {
+          "english": "Credit risk determines loan eligibility and rates.",
+          "sesotho": "Kotsi ya mokitlane e etsa qeto ya ho tshwaneleha le diphaello."
+        },
+        {
+          "english": "Student loans may offer deferment and income-based repayment.",
+          "sesotho": "Dikoloto tsa baithuti di ka fana ka deferment le ditefo tse itshetlehileng moputsong."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "Borrow M50 from a friend. You must give back M50.",
+          "sesotho": "Alima M50 ho motswalle. O tlameha ho kgutlisa M50."
+        },
+        {
+          "english": "Borrow M20 and repay M22. The extra M2 is interest.",
+          "sesotho": "Alima M20 mme o kgutlise M22. M2 e eketsehileng ke phaello."
+        },
+        {
+          "english": "A bank loan of M100 means you owe the bank M100 plus interest.",
+          "sesotho": "Kalimo ya banka ya M100 e bolela hore o kolota banka M100 le phaello."
+        },
+        {
+          "english": "A toy costs M60. You borrow M60 and repay from allowance.",
+          "sesotho": "Sebapadiswa se bitsa M60. O alima M60 mme o kgutlisa ho tswa cheleteng ya pokotho."
+        },
+        {
+          "english": "Borrowing is a promise to return something. Always keep your promise!",
+          "sesotho": "Ho alima ke tshepiso ya ho kgutlisa. Dula o phethahatsa tshepiso!"
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Student loan of M10,000 at 8 percent over 2 years = M450 monthly.",
+          "sesotho": "Kalimo ya moithuti ya M10,000 ka 8% dilemo tse 2 = M450 ka kgwedi."
+        },
+        {
+          "english": "Borrow M5,000 for business at 12 percent = repay M5,600.",
+          "sesotho": "Alima M5,000 bakeng sa kgwebo ka 12% = kgutlisa M5,600."
+        },
+        {
+          "english": "Phone on credit M3,000 at 15 percent over 12 months = M3,450 total.",
+          "sesotho": "Fono ka mokitlane M3,000 ka 15% dikgwedi tse 12 = M3,450 yohle."
+        },
+        {
+          "english": "Personal loan M2,000 for school fees at 10 percent over 6 months.",
+          "sesotho": "Kalimo ya botho M2,000 bakeng sa ditefello tsa sekolo ka 10% dikgwedi tse 6."
+        },
+        {
+          "english": "Family loans may have no interest but are still commitments.",
+          "sesotho": "Dikoloto tsa lelapa di ka se be le phaello empa e ntse e le boitlamo."
+        }
+      ],
+      "university": [
+        {
+          "english": "M15,000 loan at 10 percent over 3 years = M19,500 total.",
+          "sesotho": "Kalimo ya M15,000 ka 10% dilemo tse 3 = M19,500 yohle."
+        },
+        {
+          "english": "Bank A: 8% for 2 years is cheaper than Bank B: 6% for 3 years.",
+          "sesotho": "Banka A: 8% dilemo tse 2 e theko e tlase ho feta Banka B: 6% dilemo tse 3."
+        },
+        {
+          "english": "Debt-to-income of 30 percent on M3,000 income = M900 debt payments.",
+          "sesotho": "Debt-to-income ya 30% ho moputso wa M3,000 = M900 ditefo tsa molato."
+        },
+        {
+          "english": "M20,000 loan at 12 percent over 5 years = M445 monthly.",
+          "sesotho": "Kalimo ya M20,000 ka 12% dilemo tse 5 = M445 ka kgwedi."
+        },
+        {
+          "english": "Interest-free periods avoid interest if paid within 30 days.",
+          "sesotho": "Dinako tse se nang phaello di qoba phaello haeba o lefa ka hara matsatsi a 30."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "You do not have to pay back loans — FALSE! Always repay.",
+          "sesotho": "Ha o tlamehe ho kgutlisa dikoloto — HA SE NNETE! Dula o kgutlisa."
+        },
+        {
+          "english": "Borrowing is always bad — FALSE! Sometimes it helps.",
+          "sesotho": "Ho alima ho mpe kamehla — HA SE NNETE! Ka nako e nngwe ho a thusa."
+        },
+        {
+          "english": "Only adults can borrow — FALSE! But always ask parents first.",
+          "sesotho": "Ke batho ba baholo feela ba ka alimang — HA SE NNETE! Empa dula o botsa batswadi pele."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Student loans are free money — FALSE! They must be repaid.",
+          "sesotho": "Dikoloto tsa baithuti ke chelete ya mahala — HA SE NNETE! Di tlameha ho kgutliswa."
+        },
+        {
+          "english": "No need to read loan terms — FALSE! Always understand full cost.",
+          "sesotho": "Ha ho hlokahale ho bala dipehelo tsa kalimo — HA SE NNETE! Dula o utlwisisa theko yohle."
+        },
+        {
+          "english": "All debt is bad — FALSE! Education loans can be good.",
+          "sesotho": "Molato wohle o mobe — HA SE NNETE! Dikoloto tsa thuto di ka ba ntle."
+        }
+      ],
+      "university": [
+        {
+          "english": "Lower rate always means cheaper loan — FALSE! Consider fees.",
+          "sesotho": "Phaello e tlase e bolela kalimo e theko e tlase — HA SE NNETE! Nahana ka ditefiso."
+        },
+        {
+          "english": "Defaulting has no consequences — FALSE! It damages credit.",
+          "sesotho": "Ho se lefe ha ho na ditlamorao — HA SE NNETE! Ho senya mokitlane."
+        },
+        {
+          "english": "Perfect credit needed for any loan — FALSE! Options exist.",
+          "sesotho": "Ho hlokahala mokitlane o phethahetseng — HA SE NNETE! Ho na le dikgetho."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Want to know if you should borrow money?",
+        "sesotho": "Na o batla ho tseba hore na o lokela ho alima?"
+      },
+      {
+        "english": "Should we talk about student loans?",
+        "sesotho": "Na re bue ka dikoloto tsa baithuti?"
+      },
+      {
+        "english": "Want to understand interest on loans?",
+        "sesotho": "Na o batla ho utlwisisa phaello ya dikoloto?"
+      },
+      {
+        "english": "Should we learn how to repay loans?",
+        "sesotho": "Na re ithute ho kgutlisa dikoloto?"
+      },
+      {
+        "english": "Want to know the risks of borrowing?",
+        "sesotho": "Na o batla ho tseba dikotsi tsa ho alima?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Always ask a parent or teacher before borrowing.",
+          "sesotho": "Dula o botsa motswadi pele o alima."
+        },
+        {
+          "english": "Only borrow what you can pay back.",
+          "sesotho": "Alima feela seo o ka se kgutlisang."
+        },
+        {
+          "english": "Pay back loans as soon as you can.",
+          "sesotho": "Kgutlisa dikoloto kapele."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Compare loan offers from different lenders.",
+          "sesotho": "Bapisa dikoloto tsa ba alimang."
+        },
+        {
+          "english": "Understand total cost including interest and fees.",
+          "sesotho": "Utlwisisa theko yohle le ditefiso."
+        },
+        {
+          "english": "Read loan terms carefully before signing.",
+          "sesotho": "Bala dipehelo ka hloko pele o saena."
+        }
+      ],
+      "university": [
+        {
+          "english": "Calculate debt-to-income ratio before borrowing.",
+          "sesotho": "Bala debt-to-income ratio pele o alima."
+        },
+        {
+          "english": "Understand amortization schedules.",
+          "sesotho": "Utlwisisa amortization."
+        },
+        {
+          "english": "Explore income-based repayment options.",
+          "sesotho": "Hlahloba ditefo tse itshetlehileng moputsong."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "Understanding loans helps you avoid debt problems.",
+          "sesotho": "Ho utlwisisa ho qoba mathata a molato."
+        },
+        {
+          "english": "Always repay loans to build trust.",
+          "sesotho": "Dula o kgutlisa ho haha tshepo."
+        },
+        {
+          "english": "Borrowing wisely can help you achieve goals.",
+          "sesotho": "Ho alima ka bohlale ho thusa dipakane."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Loans can help pay for education.",
+          "sesotho": "Dikoloto di thusa ho lefella thuto."
+        },
+        {
+          "english": "Understanding loans prevents mistakes.",
+          "sesotho": "Ho utlwisisa ho thibela diphoso."
+        },
+        {
+          "english": "Good debt vs bad debt matters.",
+          "sesotho": "Molato o motle vs o mobe o bohlokwa."
+        }
+      ],
+      "university": [
+        {
+          "english": "Loans enable education and business investment.",
+          "sesotho": "Dikoloto di dumella thuto le kgwebo."
+        },
+        {
+          "english": "Understanding terms prevents predatory lending.",
+          "sesotho": "Ho utlwisisa ho thibela ho alima ka bomadimabe."
+        },
+        {
+          "english": "Debt management is key to financial health.",
+          "sesotho": "Taolo ya molato ke senotlolo."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "Your friend borrows M20 and promises to pay back M25 next week. Is this a good deal for you?",
+            "sesotho": "Motswalle o alima M20 mme o tshepisa ho kgutlisa M25 bekeng e tlang. Na ke ntho e ntle?"
+          },
+          "advice": {
+            "english": "Yes, M5 extra is interest. But always be careful lending to friends.",
+            "sesotho": "E, M5 e eketsehileng ke phaello. Empa dula o hlokolosi ha o alima metswalle."
+          },
+          "lesson": {
+            "english": "Interest is earned when you lend money too.",
+            "sesotho": "Phaello e fumanwa le ha o alima chelete."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "You need M5,000 for school fees. Two options: Borrow from bank at 8% for 1 year, or from a loan shark at 30% for 6 months. Which is safer?",
+            "sesotho": "O hloka M5,000 bakeng sa ditefello. Banka 8% selemo, kapa loan shark 30% dikgwedi tse 6. E feng e bolokehileng?"
+          },
+          "advice": {
+            "english": "Bank: M5,400 total. Loan shark: M5,750 total. Bank is cheaper and safer.",
+            "sesotho": "Banka: M5,400. Loan shark: M5,750. Banka e theko e tlase le e bolokehileng."
+          },
+          "lesson": {
+            "english": "Avoid loan sharks with extremely high interest rates.",
+            "sesotho": "Qoba loan sharks tse nang le diphaello tse phahameng haholo."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "You graduate with M20,000 student loan at 10% over 5 years. Monthly payment is M425. Is this manageable on a M4,000 salary?",
+            "sesotho": "O qeta ka kalimo ya M20,000 ka 10% dilemo tse 5. Tefo ya kgwedi M425. Na see se a kgoneha ka moputso wa M4,000?"
+          },
+          "advice": {
+            "english": "M425 is about 10.6% of income — manageable. But reduce other expenses.",
+            "sesotho": "M425 ke 10.6% ya moputso — ea kgoneha. Empa fokotsa ditshenyehelo tse ding."
+          },
+          "lesson": {
+            "english": "Keep debt payments under 15% of monthly income.",
+            "sesotho": "Boloka ditefo tsa molato ka tlasa 15% ya moputso."
+          }
+        }
+      ]
+    }
+  },
+  "income": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "Income is the money you receive from allowance, gifts, or small jobs.",
+          "sesotho": "Moputso ke chelete eo o e fumanang ho tswa ho chelete ya pokotho, dimpho kapa mesebetsi e menyenyane."
+        },
+        {
+          "english": "When someone gives you money, that is income.",
+          "sesotho": "Ha motho a o fa chelete, ke moputso."
+        },
+        {
+          "english": "Your pocket money is income.",
+          "sesotho": "Chelete ya pokotho ya hao ke moputso."
+        },
+        {
+          "english": "Income is money coming in. Expenses are money going out.",
+          "sesotho": "Moputso ke chelete e kenang. Ditshenyehelo ke chelete e tswang."
+        },
+        {
+          "english": "If your parents give you M30 per week, that is weekly income.",
+          "sesotho": "Haeba batswadi ba o fa M30 ka beke, ke moputso wa beke."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Income is money received regularly from work or other sources.",
+          "sesotho": "Moputso ke chelete e fumanwang kgafetsa ho tswa mosebetsing kapa mehloding e meng."
+        },
+        {
+          "english": "Income is the flow of money into your possession.",
+          "sesotho": "Moputso ke phallo ya chelete e kenang matsohong a hao."
+        },
+        {
+          "english": "Sources include wages, allowances, business profits, and investment returns.",
+          "sesotho": "Mehlodi e kenyelletsa meputso, dipokotho, phaello ya kgwebo le matsete."
+        },
+        {
+          "english": "Gross income is before deductions. Net income is what you receive.",
+          "sesotho": "Moputso o felletseng ke pele ho ditefello. Moputso o hlwekileng ke seo o se fumanang."
+        },
+        {
+          "english": "Regular income helps you plan and budget.",
+          "sesotho": "Moputso o tloaelehileng o o thusa ho rera le ho etsa tekanyetso."
+        }
+      ],
+      "university": [
+        {
+          "english": "Income includes earned income, unearned income, and transfer payments.",
+          "sesotho": "Moputso o kenyelletsa moputso o sebetswang, o sa sebetsweng le ditefello tsa phetiso."
+        },
+        {
+          "english": "Disposable income equals gross income minus taxes.",
+          "sesotho": "Moputso o sebediswang o lekana le moputso o felletseng ho tlosa makgetho."
+        },
+        {
+          "english": "Income streams can be active or passive.",
+          "sesotho": "Mehlodi ya moputso e ka ba e sebetsang kapa e sa sebetseng."
+        },
+        {
+          "english": "Income diversification is key to financial resilience.",
+          "sesotho": "Ho fapanya mehlodi ya moputso ke senotlolo sa botsitso ba lichelete."
+        },
+        {
+          "english": "Student income includes bursaries, part-time work, and entrepreneurship.",
+          "sesotho": "Moputso wa moithuti o kenyelletsa dibursary, mosebetsi wa nakwana le kgwebo."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "Your grandmother gives you M10. That is income!",
+          "sesotho": "Nkhono o o fa M10. Ke moputso!"
+        },
+        {
+          "english": "You help wash dishes and get M5. That is income.",
+          "sesotho": "O thusa ho hlatswa dijana mme o fumana M5. Ke moputso."
+        },
+        {
+          "english": "Your parents give you M20 pocket money every week.",
+          "sesotho": "Batswadi ba o fa M20 ya pokotho beke le beke."
+        },
+        {
+          "english": "You sell old toys and get M15.",
+          "sesotho": "O rekisa dipapadi tsa kgale mme o fumana M15."
+        },
+        {
+          "english": "You receive M50 for your birthday. That is special income.",
+          "sesotho": "O fumana M50 ka letsatsi la hao la tswalo. Ke moputso o kgethehileng."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Part-time job at M25/hour for 20 hours = M500 weekly.",
+          "sesotho": "Mosebetsi wa nakwana ka M25/ka hora dihora tse 20 = M500 ka beke."
+        },
+        {
+          "english": "Sell 10 items at M15 each = M150 business income.",
+          "sesotho": "Rekisa dintho tse 10 ka M15 ka bonngwe = M150 moputso wa kgwebo."
+        },
+        {
+          "english": "Monthly allowance of M300 is regular income.",
+          "sesotho": "Chelete ya kgwedi ya M300 ke moputso o tloaelehileng."
+        },
+        {
+          "english": "Earn M200 helping a neighbour.",
+          "sesotho": "Fumana M200 ka ho thusa moahelani."
+        },
+        {
+          "english": "Interest from savings = M20. That is investment income.",
+          "sesotho": "Phaello ho tswa polokong = M20. Ke moputso wa matsete."
+        }
+      ],
+      "university": [
+        {
+          "english": "Bursary M2,500 plus part-time M1,000 = M3,500 monthly.",
+          "sesotho": "Bursary M2,500 le mosebetsi wa nakwana M1,000 = M3,500 ka kgwedi."
+        },
+        {
+          "english": "Freelance: 5 projects at M400 = M2,000 monthly.",
+          "sesotho": "Freelance: diprojeke tse 5 ka M400 = M2,000 ka kgwedi."
+        },
+        {
+          "english": "M50,000 invested at 6 percent = M3,000 annual interest.",
+          "sesotho": "M50,000 e kentsweng ka 6% = M3,000 phaello ka selemo."
+        },
+        {
+          "english": "Tutoring: 10 students at M200 = M2,000 monthly.",
+          "sesotho": "Ho ruta: baithuti ba 10 ka M200 = M2,000 ka kgwedi."
+        },
+        {
+          "english": "Mixed income streams create financial stability.",
+          "sesotho": "Mehlodi e fapaneng ya moputso e bopa botsitso ba lichelete."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "Income is only from jobs — FALSE! Gifts count too.",
+          "sesotho": "Moputso o tswa mesebetsing feela — HA SE NNETE! Dimpho le tsona di balwa."
+        },
+        {
+          "english": "More income means more problems — FALSE! More opportunities.",
+          "sesotho": "Moputso o mongata o bolela mathata — HA SE NNETE! Menyetla e mengata."
+        },
+        {
+          "english": "Only adults have income — FALSE! Children can earn.",
+          "sesotho": "Ke batho ba baholo feela ba nang le moputso — HA SE NNETE! Bana le bona ba ka fumana."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "You need a full-time job for income — FALSE! Part-time counts.",
+          "sesotho": "O hloka mosebetsi wa nako yohle — HA SE NNETE! Wa nakwana le wona o balwa."
+        },
+        {
+          "english": "Income is always money — FALSE! Goods can be income.",
+          "sesotho": "Moputso ke chelete kamehla — HA SE NNETE! Thepa le yona e ka ba moputso."
+        },
+        {
+          "english": "All income should be spent — FALSE! Save a portion.",
+          "sesotho": "Moputso wohle o lokela ho sebediswa — HA SE NNETE! Boloka karolo."
+        }
+      ],
+      "university": [
+        {
+          "english": "Bursary money needs no management — FALSE! It requires budgeting.",
+          "sesotho": "Chelete ya bursary ha e hloke taolo — HA SE NNETE! E hloka tekanyetso."
+        },
+        {
+          "english": "Side income need not be reported — FALSE! Tax may apply.",
+          "sesotho": "Moputso wa lehlakoreng ha o hloke ho tlalehwa — HA SE NNETE! Makgetho a ka sebetsa."
+        },
+        {
+          "english": "Passive income means no work — FALSE! Requires upfront effort.",
+          "sesotho": "Moputso o sa sebetseng o bolela ho se sebetse — HA SE NNETE! O hloka boikitlaetso pele."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Want to learn how to earn more money?",
+        "sesotho": "Na o batla ho ithuta ho fumana chelete e ngata?"
+      },
+      {
+        "english": "Should we talk about budgeting your income?",
+        "sesotho": "Na re bue ka tekanyetso ya moputso?"
+      },
+      {
+        "english": "Want to know how to save from income?",
+        "sesotho": "Na o batla ho tseba ho boloka ho tswa moputsong?"
+      },
+      {
+        "english": "Should we explore student business ideas?",
+        "sesotho": "Na re hlahlobe mehopolo ya dikgwebo tsa baithuti?"
+      },
+      {
+        "english": "Want to understand gross vs net income?",
+        "sesotho": "Na o batla ho utlwisisa phapang ya gross le net?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Help with chores to earn pocket money.",
+          "sesotho": "Thusa ka mesebetsi ya lapeng."
+        },
+        {
+          "english": "Ask grandparents for small jobs to earn money.",
+          "sesotho": "Kopa bo-nkhono mesebetsi e menyenyane."
+        },
+        {
+          "english": "Sell old toys you no longer use.",
+          "sesotho": "Rekisa dipapadi tsa kgale."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Find part-time work in your community.",
+          "sesotho": "Fumana mosebetsi wa nakwana."
+        },
+        {
+          "english": "Offer tutoring services to younger students.",
+          "sesotho": "Fana ka ho ruta baithuti ba banyane."
+        },
+        {
+          "english": "Sell items you make or no longer need.",
+          "sesotho": "Rekisa dintho tseo o di etsang."
+        }
+      ],
+      "university": [
+        {
+          "english": "Apply for bursaries and scholarships.",
+          "sesotho": "Kopa dibursary le di-scholarship."
+        },
+        {
+          "english": "Explore freelance and gig opportunities.",
+          "sesotho": "Hlahloba freelance le gig economy."
+        },
+        {
+          "english": "Start a small campus business.",
+          "sesotho": "Qala kgwebo e nyane khamphaseng."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "Income helps you buy things you need.",
+          "sesotho": "Moputso o thusa ho reka ditlhoko."
+        },
+        {
+          "english": "Earning money teaches responsibility.",
+          "sesotho": "Ho fumana ho ruta boikarabelo."
+        },
+        {
+          "english": "Saving from income builds good habits.",
+          "sesotho": "Ho boloka ho tswa moputsong ho haha ditlwaelo."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Income provides financial independence.",
+          "sesotho": "Moputso o fana ka boikemelo."
+        },
+        {
+          "english": "Multiple income sources create stability.",
+          "sesotho": "Mehlodi e mengata e bopa botsitso."
+        },
+        {
+          "english": "Earning builds work experience.",
+          "sesotho": "Ho fumana ho haha boiphihlelo."
+        }
+      ],
+      "university": [
+        {
+          "english": "Income diversification reduces risk.",
+          "sesotho": "Ho fapanya ho fokotsa kotsi."
+        },
+        {
+          "english": "Passive income builds wealth over time.",
+          "sesotho": "O sa sebetseng o haha maruo."
+        },
+        {
+          "english": "Financial independence requires income management.",
+          "sesotho": "Boikemelo bo hloka taolo ya moputso."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "You earn M10 helping a neighbour. Should you spend it all or save some?",
+            "sesotho": "O fumana M10 ka ho thusa moahelani. O sebedise tsohle kapa o boloke tse ding?"
+          },
+          "advice": {
+            "english": "Save M3 and spend M7. Always save something from what you earn.",
+            "sesotho": "Boloka M3 mme o sebedise M7. Dula o boloka ho tswa ho seo o se fumanang."
+          },
+          "lesson": {
+            "english": "Saving from income builds good habits.",
+            "sesotho": "Ho boloka ho tswa moputsong ho haha ditlwaelo."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "You can tutor for M50/hour (5 hours/week) or work at a shop for M25/hour (10 hours/week). Which earns more?",
+            "sesotho": "O ka ruta ka M50/ka hora (dihora tse 5) kapa lebenkeleng ka M25/ka hora (dihora tse 10). Ke efe e fumanang ho feta?"
+          },
+          "advice": {
+            "english": "Tutoring: M250/week. Shop: M250/week. Same! But tutoring uses less time.",
+            "sesotho": "Ho ruta: M250/ka beke. Lebenkele: M250/ka beke. Hoa tshwana! Empa ho ruta ho sebedisa nako e nyane."
+          },
+          "lesson": {
+            "english": "Higher hourly rate means more free time.",
+            "sesotho": "Phaello e phahameng ka hora e bolela nako e ngata ya phomolo."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "You have two income options: Fixed job M2,000/month or freelance averaging M2,500/month but irregular. Which is safer?",
+            "sesotho": "O na le dikgetho tse pedi: Mosebetsi o tsitsitseng M2,000/kgwedi kapa freelance M2,500/kgwedi empa e sa tshwarahala. E feng e bolokehileng?"
+          },
+          "advice": {
+            "english": "Fixed job is more stable for budgeting. Freelance offers more but riskier.",
+            "sesotho": "Mosebetsi o tsitsitseng o bolokehile bakeng sa tekanyetso. Freelance e fana ka ho feta empa e kotsi."
+          },
+          "lesson": {
+            "english": "Stable income makes budgeting easier.",
+            "sesotho": "Moputso o tsitsitseng o etsa tekanyetso e be bonolo."
+          }
+        }
+      ]
+    }
+  },
+  "banking": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "A bank is a safe place to keep your money.",
+          "sesotho": "Banka ke sebaka se sireletsehileng sa ho boloka chelete."
+        },
+        {
+          "english": "Banks help you store, get, and send money.",
+          "sesotho": "Dibanka di o thusa ho boloka, ho fumana le ho romella chelete."
+        },
+        {
+          "english": "A bank account is like a special box at the bank for your money.",
+          "sesotho": "Akhaonto ya banka e tshwana le lebokose le kgethehileng bankeng bakeng sa chelete ya hao."
+        },
+        {
+          "english": "Money in a bank is safe from getting lost.",
+          "sesotho": "Chelete bankeng e sireletsehile hore e se lahlehe."
+        },
+        {
+          "english": "Banks are buildings where people keep money safe.",
+          "sesotho": "Dibanka ke meaho eo batho ba bolokang chelete ho yona."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Banks accept deposits, provide loans, and offer payment services.",
+          "sesotho": "Dibanka di amohela depositi, di fana ka dikoloto le ditshebeletso tsa ditefo."
+        },
+        {
+          "english": "A bank account stores money securely and earns interest.",
+          "sesotho": "Akhaonto ya banka e boloka chelete ka mokgwa o sireletsehileng le ho fumana phaello."
+        },
+        {
+          "english": "Banking services include savings, mobile banking, and ATMs.",
+          "sesotho": "Ditshebeletso tsa banka di kenyelletsa poloko, mobile banking le di-ATM."
+        },
+        {
+          "english": "Banks act as intermediaries between savers and borrowers.",
+          "sesotho": "Dibanka di sebetsa e le mokenna-dipakeng pakeng tsa ba bolokang le ba alimang."
+        },
+        {
+          "english": "Mobile banking enables transactions through your phone.",
+          "sesotho": "Mobile banking e dumella ditransakshene ka fono ya hao."
+        }
+      ],
+      "university": [
+        {
+          "english": "Banks operate under fractional reserve banking.",
+          "sesotho": "Dibanka di sebetsa tlasa fractional reserve banking."
+        },
+        {
+          "english": "The Central Bank of Lesotho regulates commercial banks.",
+          "sesotho": "Banka e Kgolo ya Lesotho e laola dibanka tsa kgwebo."
+        },
+        {
+          "english": "Banking services include deposits, credit, payments, and wealth management.",
+          "sesotho": "Ditshebeletso tsa banka di kenyelletsa depositi, mokitlane, ditefo le taolo ya maruo."
+        },
+        {
+          "english": "Digital banking and mobile money expand financial inclusion.",
+          "sesotho": "Digital banking le mobile money di eketsa ho kenyelletswa ditabeng tsa lichelete."
+        },
+        {
+          "english": "Understanding fees and rates is essential for personal finance.",
+          "sesotho": "Ho utlwisisa ditefiso le diphaello ho bohlokwa bakeng sa lichelete tsa botho."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "Put M50 in the bank. It stays safe.",
+          "sesotho": "Kenya M50 bankeng. E dula e sireletsehile."
+        },
+        {
+          "english": "Your parents have a bank account.",
+          "sesotho": "Batswadi ba hao ba na le akhaonto ya banka."
+        },
+        {
+          "english": "When you take money from the bank, it is a withdrawal.",
+          "sesotho": "Ha o nka chelete bankeng, ke withdrawal."
+        },
+        {
+          "english": "A piggy bank at home is like a mini bank!",
+          "sesotho": "Piggy bank lapeng e tshwana le banka e nyane!"
+        },
+        {
+          "english": "Banks give you a card to get your money.",
+          "sesotho": "Dibanka di o fa karete ya ho fumana chelete ya hao."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Open a savings account with M100. Deposit M50 monthly.",
+          "sesotho": "Bula akhaonto ya poloko ka M100. Kenya M50 ka kgwedi."
+        },
+        {
+          "english": "Use mobile banking to check balance and transfer money.",
+          "sesotho": "Sebedisa mobile banking ho hlahloba balance le ho romella chelete."
+        },
+        {
+          "english": "Withdraw M200 from ATM using your card and PIN.",
+          "sesotho": "Ntsha M200 ho ATM ka karete le PIN ya hao."
+        },
+        {
+          "english": "Student accounts may offer lower fees.",
+          "sesotho": "Diakhaonto tsa baithuti di ka fana ka ditefiso tse tlase."
+        },
+        {
+          "english": "Deposit part-time earnings into your bank account.",
+          "sesotho": "Kenya moputso wa mosebetsi wa nakwana akhaontong ya hao ya banka."
+        }
+      ],
+      "university": [
+        {
+          "english": "Bank A charges M20 monthly with 3 percent interest. Bank B has no fee but 1.5 percent.",
+          "sesotho": "Banka A e lefisa M20 ka kgwedi ka 3%. Banka B ha e lefise empa 1.5%."
+        },
+        {
+          "english": "M-Pesa offers convenience but may have higher transfer fees.",
+          "sesotho": "M-Pesa e fana ka bonolo empa e ka ba le ditefiso tse phahameng tsa ho romella."
+        },
+        {
+          "english": "Fixed deposit M10,000 at 7 percent for 12 months = M700 interest.",
+          "sesotho": "Fixed deposit ya M10,000 ka 7% dikgwedi tse 12 = M700 phaello."
+        },
+        {
+          "english": "Overdraft M500 at 15 percent for 30 days = approximately M6.25 interest.",
+          "sesotho": "Overdraft ya M500 ka 15% matsatsi a 30 = M6.25 phaello."
+        },
+        {
+          "english": "Two-factor authentication protects your account.",
+          "sesotho": "Two-factor authentication e sireletsa akhaonto ya hao."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "Banks keep your money in a special box — FALSE! They track it digitally.",
+          "sesotho": "Dibanka di boloka chelete ka lebokoseng — HA SE NNETE! Di e latela ka dijithale."
+        },
+        {
+          "english": "Only rich people use banks — FALSE! Anyone can open an account.",
+          "sesotho": "Ke barui feela ba sebedisang dibanka — HA SE NNETE! Motho e mong le e mong a ka bula akhaonto."
+        },
+        {
+          "english": "Banks are dangerous — FALSE! They are very safe.",
+          "sesotho": "Dibanka di kotsi — HA SE NNETE! Di sireletsehile haholo."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "You need lots of money to open an account — FALSE! Many start with M50.",
+          "sesotho": "O hloka chelete e ngata ho bula akhaonto — HA SE NNETE! Tse ngata di qala ka M50."
+        },
+        {
+          "english": "ATMs give free money — FALSE! You withdraw what is yours.",
+          "sesotho": "Di-ATM di fana ka chelete ya mahala — HA SE NNETE! O ntsha seo e leng sa hao."
+        },
+        {
+          "english": "Bank cards equal credit cards — FALSE! Debit uses your money.",
+          "sesotho": "Dikarete tsa banka di tshwana le tsa mokitlane — HA SE NNETE! Debit e sebedisa chelete ya hao."
+        }
+      ],
+      "university": [
+        {
+          "english": "All bank accounts are the same — FALSE! Fees and rates vary.",
+          "sesotho": "Diakhaonto tsohle tsa banka di a tshwana — HA SE NNETE! Ditefiso le diphaello di a fapana."
+        },
+        {
+          "english": "Banks do not charge for accounts — FALSE! Many charge monthly fees.",
+          "sesotho": "Dibanka ha di lefise diakhaonto — HA SE NNETE! Tse ngata di lefisa kgwedi le kgwedi."
+        },
+        {
+          "english": "Money in bank is 100 percent risk-free — FALSE! Very safe but not absolute.",
+          "sesotho": "Chelete bankeng ha e na kotsi — HA SE NNETE! E sireletsehile empa eseng ka ho phethahala."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Want to know how to open a bank account?",
+        "sesotho": "Na o batla ho tseba ho bula akhaonto ya banka?"
+      },
+      {
+        "english": "Should we talk about keeping money safe?",
+        "sesotho": "Na re bue ka ho boloka chelete e sireletsehile?"
+      },
+      {
+        "english": "Want to understand mobile banking?",
+        "sesotho": "Na o batla ho utlwisisa mobile banking?"
+      },
+      {
+        "english": "Should we compare bank accounts?",
+        "sesotho": "Na re bapise diakhaonto tsa banka?"
+      },
+      {
+        "english": "Want to learn about saving in a bank?",
+        "sesotho": "Na o batla ho ithuta ka ho boloka bankeng?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Ask your parents to open a bank account for you.",
+          "sesotho": "Kopa batswadi ho o bulela akhaonto."
+        },
+        {
+          "english": "Deposit money in the bank to keep it safe.",
+          "sesotho": "Kenya chelete bankeng."
+        },
+        {
+          "english": "Learn to use an ATM with adult supervision.",
+          "sesotho": "Ithute ho sebedisa ATM le motho e moholo."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Compare bank accounts before choosing one.",
+          "sesotho": "Bapisa diakhaonto pele o kgetha."
+        },
+        {
+          "english": "Set up mobile banking on your phone.",
+          "sesotho": "Kenya mobile banking fonong."
+        },
+        {
+          "english": "Check your balance regularly.",
+          "sesotho": "Hlahloba balance kgafetsa."
+        }
+      ],
+      "university": [
+        {
+          "english": "Use two-factor authentication for security.",
+          "sesotho": "Sebedisa two-factor authentication."
+        },
+        {
+          "english": "Understand fees and minimum balance requirements.",
+          "sesotho": "Utlwisisa ditefiso le minimum balance."
+        },
+        {
+          "english": "Explore fixed deposits for higher interest.",
+          "sesotho": "Hlahloba fixed deposits."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "Banks keep your money safe from theft.",
+          "sesotho": "Dibanka di boloka chelete e sireletsehile."
+        },
+        {
+          "english": "Money in the bank earns interest.",
+          "sesotho": "Chelete bankeng e fumana phaello."
+        },
+        {
+          "english": "Bank accounts teach money management.",
+          "sesotho": "Diakhaonto di ruta taolo ya chelete."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Banking builds financial credibility.",
+          "sesotho": "Banka e haha tshepahalo."
+        },
+        {
+          "english": "Mobile banking makes transactions convenient.",
+          "sesotho": "Mobile banking e etsa ditransakshene bonolo."
+        },
+        {
+          "english": "Banks provide secure payment services.",
+          "sesotho": "Dibanka di fana ka ditshebeletso tse sireletsehileng."
+        }
+      ],
+      "university": [
+        {
+          "english": "Banking enables credit access.",
+          "sesotho": "Banka e dumella mokitlane."
+        },
+        {
+          "english": "Digital banking expands financial inclusion.",
+          "sesotho": "Digital banking e eketsa ho kenyelletswa."
+        },
+        {
+          "english": "Understanding banking is essential for planning.",
+          "sesotho": "Ho utlwisisa banka ho bohlokwa."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "You have M100. Should you keep it under your mattress or in a bank?",
+            "sesotho": "O na le M100. O e boloke kapa bankeng?"
+          },
+          "advice": {
+            "english": "Bank! Money in a bank is safer and earns interest.",
+            "sesotho": "Banka! Chelete bankeng e bolokehile le ho fumana phaello."
+          },
+          "lesson": {
+            "english": "Banks are safer than keeping money at home.",
+            "sesotho": "Dibanka di bolokehile ho feta ho boloka chelete lapeng."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "Bank A: no monthly fee, 1% interest. Bank B: M10 monthly fee, 4% interest. You have M500. Which is better after 1 year?",
+            "sesotho": "Banka A: ha e lefise, 1% phaello. Banka B: M10 kgwedi, 4% phaello. O na le M500. E feng e betere kamora selemo?"
+          },
+          "advice": {
+            "english": "Bank A: M505. Bank B: M520 - M120 fees = M400. Bank A is better for M500.",
+            "sesotho": "Banka A: M505. Banka B: M520 - M120 = M400. Banka A e betere."
+          },
+          "lesson": {
+            "english": "Fees can eat your interest. Always calculate total cost.",
+            "sesotho": "Ditefiso di ka ja phaello. Dula o bala kakaretso."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "You receive M1,000 via mobile money. Transfer to bank costs M20. Is this worth it to earn 5% annual interest?",
+            "sesotho": "O fumana M1,000 ka mobile money. Ho romella bankeng M20. Na ho bohlokwa ho fumana 5% phaello?"
+          },
+          "advice": {
+            "english": "5% on M1,000 = M50 interest. Transfer M20. Net = M30. Yes, worth it if held for a year.",
+            "sesotho": "5% ho M1,000 = M50. Transfer M20. Net = M30. E, ho bohlokwa haeba e bolokilwe selemo."
+          },
+          "lesson": {
+            "english": "Calculate net returns after fees.",
+            "sesotho": "Bala phaello kamora ditefiso."
+          }
+        }
+      ]
+    }
+  },
+  "needs_wants": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "Needs are things you must have. Wants are things that are nice to have.",
+          "sesotho": "Ditlhoko ke dintho tseo o tlamehang ho ba le tsona. Ditakatso ke tse monate feela."
+        },
+        {
+          "english": "A need is something you cannot do without. A want is nice to have.",
+          "sesotho": "Tlhoko ke ntho eo o ke keng wa phela ntle le yona. Takatso e monate feela."
+        },
+        {
+          "english": "Needs keep you alive and safe. Wants make life fun.",
+          "sesotho": "Ditlhoko di o boloka o phela mme o sireletsehile. Ditakatso di etsa bophelo bo monate."
+        },
+        {
+          "english": "Food, water, clothes, and a home are needs. Toys and sweets are wants.",
+          "sesotho": "Dijo, metsi, diaparo le lehae ke ditlhoko. Dipapadi le dipompong ke ditakatso."
+        },
+        {
+          "english": "Needs come first. Wants come after needs.",
+          "sesotho": "Ditlhoko di tla pele. Ditakatso di tla kamora ditlhoko."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Needs are essential expenses. Wants are discretionary purchases.",
+          "sesotho": "Ditlhoko ke ditshenyehelo tsa bohlokwa. Ditakatso ke ditheko tsa boikgethelo."
+        },
+        {
+          "english": "Distinguishing needs from wants helps prioritize spending.",
+          "sesotho": "Ho khetholla ditlhoko le ditakatso ho thusa ho beha tshebediso pele."
+        },
+        {
+          "english": "Needs include food, shelter, education, and transport.",
+          "sesotho": "Ditlhoko di kenyelletsa dijo, bolulo, thuto le dipalangwang."
+        },
+        {
+          "english": "The difference is subjective but essential for budgeting.",
+          "sesotho": "Phapang e itshetlehile boemong empa e bohlokwa bakeng sa tekanyetso."
+        },
+        {
+          "english": "Understanding needs vs wants enables wise resource allocation.",
+          "sesotho": "Ho utlwisisa ditlhoko le ditakatso ho dumella ho arola mehlodi ka bohlale."
+        }
+      ],
+      "university": [
+        {
+          "english": "Needs are non-discretionary expenses. Wants reflect lifestyle choices.",
+          "sesotho": "Ditlhoko ke ditshenyehelo tse sa qojoeng. Ditakatso di bontsha dikgetho tsa bophelo."
+        },
+        {
+          "english": "The 50/30/20 rule allocates 50 percent to needs.",
+          "sesotho": "Molao wa 50/30/20 o arola 50% ho ditlhoko."
+        },
+        {
+          "english": "Distinguishing needs from wants requires self-awareness.",
+          "sesotho": "Ho khetholla ditlhoko le ditakatso ho hloka ho itseba."
+        },
+        {
+          "english": "Needs are inelastic; wants are elastic.",
+          "sesotho": "Ditlhoko ha di fetohe habonolo; ditakatso di a feto-fetoha."
+        },
+        {
+          "english": "Maslow hierarchy frames needs as physiological and safety requirements.",
+          "sesotho": "Maslow o hlalosa ditlhoko e le tsa mmele le tshireletso."
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "Food = need. Sweets = want.",
+          "sesotho": "Dijo = tlhoko. Dipompong = takatso."
+        },
+        {
+          "english": "School uniform = need. New toy = want.",
+          "sesotho": "Yunifomo ya sekolo = tlhoko. Sebapadiswa se setjha = takatso."
+        },
+        {
+          "english": "Water = need. Juice = want.",
+          "sesotho": "Metsi = tlhoko. Jusi = takatso."
+        },
+        {
+          "english": "A warm blanket = need. A new phone = want.",
+          "sesotho": "Kobo e futhumetseng = tlhoko. Fono e ntjha = takatso."
+        },
+        {
+          "english": "School books = need. Comic books = want.",
+          "sesotho": "Dibuka tsa sekolo = tlhoko. Dibuka tsa metlae = takatso."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Transport to school = need. Netflix = want.",
+          "sesotho": "Dipalangwang ho ya sekolong = tlhoko. Netflix = takatso."
+        },
+        {
+          "english": "School supplies = need. Designer shoes = want.",
+          "sesotho": "Disebediswa tsa sekolo = tlhoko. Dieta tsa designer = takatso."
+        },
+        {
+          "english": "Basic phone = need. Latest smartphone = want.",
+          "sesotho": "Fono ya motheo = tlhoko. Smartphone ya morao-rao = takatso."
+        },
+        {
+          "english": "Nutritious food = need. Eating out = want.",
+          "sesotho": "Dijo tse nang le phepo = tlhoko. Ho jella kantle = takatso."
+        },
+        {
+          "english": "Basic clothing = need. Brand fashion = want.",
+          "sesotho": "Diaparo tsa motheo = tlhoko. Feshene ya mabitso = takatso."
+        }
+      ],
+      "university": [
+        {
+          "english": "Rent = need. Bigger apartment = want.",
+          "sesotho": "Rente = tlhoko. Folete e kgolo = takatso."
+        },
+        {
+          "english": "Textbooks = need. Coffee shop spending = want.",
+          "sesotho": "Dibuka = tlhoko. Ho reka kofi = takatso."
+        },
+        {
+          "english": "Data for classes = need. Streaming = want.",
+          "sesotho": "Data bakeng sa dithuto = tlhoko. Streaming = takatso."
+        },
+        {
+          "english": "Basic groceries = need. Restaurant meals = want.",
+          "sesotho": "Dijo tsa motheo = tlhoko. Dijo tsa resturante = takatso."
+        },
+        {
+          "english": "Laptop for studies = need. Gaming console = want.",
+          "sesotho": "Laptop bakeng sa dithuto = tlhoko. Gaming console = takatso."
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "Everything you want is a need — FALSE! Wants are optional.",
+          "sesotho": "Ntho e nngwe le e nngwe eo o e batlang ke tlhoko — HA SE NNETE! Ditakatso ke tsa boikgethelo."
+        },
+        {
+          "english": "Wants are bad — FALSE! They are fine after needs.",
+          "sesotho": "Ditakatso di mpe — HA SE NNETE! Di lokile kamora ditlhoko."
+        },
+        {
+          "english": "Needs are boring — FALSE! Meeting needs feels good.",
+          "sesotho": "Ditlhoko di a tena — HA SE NNETE! Ho fihlela ditlhoko ho monate."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "If I really want it, it becomes a need — FALSE!",
+          "sesotho": "Haeba ke e batla haholo, e fetoha tlhoko — HA SE NNETE!"
+        },
+        {
+          "english": "Expensive things are always wants — FALSE! Some needs cost a lot.",
+          "sesotho": "Dintho tse turang ke ditakatso kamehla — HA SE NNETE! Ditlhoko tse ding di a tura."
+        },
+        {
+          "english": "Cheap things are always needs — FALSE! Price does not determine.",
+          "sesotho": "Dintho tse theko e tlase ke ditlhoko — HA SE NNETE! Theko ha e etse qeto."
+        }
+      ],
+      "university": [
+        {
+          "english": "Lifestyle inflation is normal — FALSE! It undermines goals.",
+          "sesotho": "Ho nyoloha ha bophelo ke ntho e tlwaelehileng — HA SE NNETE! Ho senya dipakane."
+        },
+        {
+          "english": "All discretionary spending is bad — FALSE! Wants provide quality of life.",
+          "sesotho": "Tshebediso yohle ya boikgethelo e mpe — HA SE NNETE! Ditakatso di ntlafatsa bophelo."
+        },
+        {
+          "english": "The line is always clear — FALSE! Context matters.",
+          "sesotho": "Phapang e hlakile kamehla — HA SE NNETE! Boemo bo a bohlokwa."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "Want to practice sorting needs from wants?",
+        "sesotho": "Na o batla ho ikwetlisa ho arola ditlhoko le ditakatso?"
+      },
+      {
+        "english": "Should we talk about budgeting for needs?",
+        "sesotho": "Na re bue ka tekanyetso ya ditlhoko?"
+      },
+      {
+        "english": "Want to learn to balance needs and wants?",
+        "sesotho": "Na o batla ho ithuta ho lekalekanya ditlhoko le ditakatso?"
+      },
+      {
+        "english": "Should we explore the 50/30/20 rule?",
+        "sesotho": "Na re hlahlobe molao wa 50/30/20?"
+      },
+      {
+        "english": "Want to know how to resist impulse wants?",
+        "sesotho": "Na o batla ho tseba ho hanela ditakatso tsa tshohanyetso?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Before buying, ask: Do I need this or just want it?",
+          "sesotho": "Pele o reka, ipotse: Na ke a e hloka kapa ke a e batla?"
+        },
+        {
+          "english": "Make a list of needs first, then wants.",
+          "sesotho": "Etsa lenane la ditlhoko pele."
+        },
+        {
+          "english": "Wait one day before buying something you want.",
+          "sesotho": "Ema letsatsi pele o reka."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Categorize expenses as needs or wants.",
+          "sesotho": "Arola ditshenyehelo e le ditlhoko kapa ditakatso."
+        },
+        {
+          "english": "Use the 50/30/20 rule to limit wants spending.",
+          "sesotho": "Sebedisa 50/30/20 ho lekanyetsa."
+        },
+        {
+          "english": "Wait 30 days before major want purchases.",
+          "sesotho": "Ema matsatsi a 30 pele o reka."
+        }
+      ],
+      "university": [
+        {
+          "english": "Conduct a needs audit of monthly expenses.",
+          "sesotho": "Etsa tlhahlobo ya ditlhoko."
+        },
+        {
+          "english": "Distinguish lifestyle inflation from genuine needs.",
+          "sesotho": "Khetholla lifestyle inflation."
+        },
+        {
+          "english": "Practice mindful spending and delayed gratification.",
+          "sesotho": "Ikwetlise ho sebedisa ka hloko."
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "Knowing needs vs wants helps you spend wisely.",
+          "sesotho": "Ho tseba ho thusa ho sebedisa ka bohlale."
+        },
+        {
+          "english": "Needs come first to keep you safe.",
+          "sesotho": "Ditlhoko di tla pele."
+        },
+        {
+          "english": "Wants are fine after needs are met.",
+          "sesotho": "Ditakatso di lokile kamora ditlhoko."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Distinguishing needs helps prioritize spending.",
+          "sesotho": "Ho khetholla ho thusa ho beha pele."
+        },
+        {
+          "english": "Wants spending control prevents debt.",
+          "sesotho": "Taolo ya ditakatso e thibela sekoloto."
+        },
+        {
+          "english": "Understanding needs vs wants builds discipline.",
+          "sesotho": "Ho utlwisisa ho haha taeo."
+        }
+      ],
+      "university": [
+        {
+          "english": "Needs analysis is foundational to budgeting.",
+          "sesotho": "Tlhahlobo ya ditlhoko ke motheo."
+        },
+        {
+          "english": "Lifestyle inflation undermines goals.",
+          "sesotho": "Lifestyle inflation e senya dipakane."
+        },
+        {
+          "english": "Intentional spending increases satisfaction.",
+          "sesotho": "Ho sebedisa ka boomo ho eketsa kgotsofalo."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "You have M50. School shoes (M40) are worn out. You also want a new toy (M45). Which do you buy?",
+            "sesotho": "O na le M50. Dieta tsa sekolo (M40) di senyehile. O batla le sebapadiswa (M45). O reka sefe?"
+          },
+          "advice": {
+            "english": "School shoes are a NEED. The toy is a WANT. Buy the shoes.",
+            "sesotho": "Dieta tsa sekolo ke TLHOKO. Sebapadiswa ke TAKATSO. Reka dieta."
+          },
+          "lesson": {
+            "english": "Needs always come before wants.",
+            "sesotho": "Ditlhoko di tla pele ho ditakatso kamehla."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "Your phone breaks and you need it for school communication. A basic phone costs M300. A smartphone costs M1,000. Which?",
+            "sesotho": "Fono ya hao e senyehile mme o e hloka bakeng sa sekolo. E bonolo M300. Smartphone M1,000. E feng?"
+          },
+          "advice": {
+            "english": "Basic phone meets the need. Smartphone is a want unless you have extra money.",
+            "sesotho": "Fono e bonolo e fihlella tlhoko. Smartphone ke takatso ntle le chelete e eketsehileng."
+          },
+          "lesson": {
+            "english": "Meeting needs does not require the most expensive option.",
+            "sesotho": "Ho fihlella ditlhoko ha ho hloke ntho e turang haholo."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "You need a laptop for studies. Options: New MacBook M15,000 or used laptop M4,000 that meets requirements. Which?",
+            "sesotho": "O hloka laptop bakeng sa dithuto. MacBook M15,000 kapa e sebedisitsweng M4,000. E feng?"
+          },
+          "advice": {
+            "english": "Used laptop meets the need at 73% less cost. Invest the M11,000 difference.",
+            "sesotho": "E sebedisitsweng e fihlella tlhoko ka 73% e theko e tlase. Boloka M11,000 e setseng."
+          },
+          "lesson": {
+            "english": "Meeting needs smartly frees money for savings and investments.",
+            "sesotho": "Ho fihlella ditlhoko ka bohlale ho lokolla chelete bakeng sa poloko."
+          }
+        }
+      ]
+    }
+  },
+  "greeting": {
+    "definitions": {
+      "primary": [
+        {
+          "english": "Hello! I am LeSAH, your financial literacy assistant. How can I help you?",
+          "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka o thusa jwang?"
+        },
+        {
+          "english": "Hi there! I am LeSAH. I can teach you about money!",
+          "sesotho": "Lumela! Ke LeSAH. Nka o ruta ka chelete!"
+        },
+        {
+          "english": "Welcome! I am LeSAH. What would you like to learn?",
+          "sesotho": "Re a o amohela! Ke LeSAH. O batla ho ithuta eng?"
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Hello! I am LeSAH, your financial literacy tutor. Ask me about money.",
+          "sesotho": "Lumela! Ke LeSAH, morupelli wa hao wa tsebo ya lichelete. Mpotse ka chelete."
+        },
+        {
+          "english": "Hi! I am LeSAH. I am here to help you understand money.",
+          "sesotho": "Lumela! Ke LeSAH. Ke mona ho o thusa ho utlwisisa chelete."
+        },
+        {
+          "english": "Hey there! I am LeSAH. What financial topic interests you?",
+          "sesotho": "Lumela! Ke LeSAH. Ke taba efe ya lichelete e o kgahlang?"
+        }
+      ],
+      "university": [
+        {
+          "english": "Hello! I am LeSAH, your financial literacy assistant. I can help with budgeting, investing, and debt.",
+          "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka thusa ka tekanyetso, matsete le dikoloto."
+        },
+        {
+          "english": "Welcome! I am LeSAH. Let us discuss personal finance.",
+          "sesotho": "Re a o amohela! Ke LeSAH. Ha re buisaneng ka lichelete tsa botho."
+        },
+        {
+          "english": "Greetings! I am LeSAH. What aspect of finance would you like to explore?",
+          "sesotho": "Lumela! Ke LeSAH. Ke karolo efe ya lichelete eo o batlang ho e hlahloba?"
+        }
+      ]
+    },
+    "examples": {
+      "primary": [
+        {
+          "english": "Ask me: What is saving?",
+          "sesotho": "Mpotse: Ho boloka ke eng?"
+        },
+        {
+          "english": "Try asking: How do I count money?",
+          "sesotho": "Leka ho botsa: Ke bala chelete jwang?"
+        },
+        {
+          "english": "Ask me: What is a budget?",
+          "sesotho": "Mpotse: Tekanyetso ke eng?"
+        },
+        {
+          "english": "Try: What are needs and wants?",
+          "sesotho": "Leka: Ditlhoko le ditakatso ke eng?"
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Ask me: How do I create a budget?",
+          "sesotho": "Mpotse: Ke etsa tekanyetso jwang?"
+        },
+        {
+          "english": "Try: What is compound interest?",
+          "sesotho": "Leka: Phaello e kopaneng ke eng?"
+        },
+        {
+          "english": "Ask: Should I get a student loan?",
+          "sesotho": "Botsa: Na ke lokela ho alima kalimo ya moithuti?"
+        }
+      ],
+      "university": [
+        {
+          "english": "Ask me: How do I build an emergency fund?",
+          "sesotho": "Mpotse: Ke haha letlole la tshohanyetso jwang?"
+        },
+        {
+          "english": "Try: What is the best investment strategy?",
+          "sesotho": "Leka: Leano le molemohali la matsete ke lefe?"
+        },
+        {
+          "english": "Ask: How do I manage student debt?",
+          "sesotho": "Botsa: Ke laola sekoloto sa moithuti jwang?"
+        }
+      ]
+    },
+    "misconceptions": {
+      "primary": [
+        {
+          "english": "I only teach boring money stuff — FALSE! Learning can be fun!",
+          "sesotho": "Ke ruta feela dintho tse tenang tsa chelete — HA SE NNETE! Ho ithuta ho ka ba monate!"
+        },
+        {
+          "english": "I only speak English — FALSE! I speak Sesotho too!",
+          "sesotho": "Ke bua Senyesemane feela — HA SE NNETE! Ke bua le Sesotho!"
+        },
+        {
+          "english": "I am only for adults — FALSE! I help all students!",
+          "sesotho": "Ke ya batho ba baholo feela — HA SE NNETE! Ke thusa baithuti bohle!"
+        }
+      ],
+      "high_school": [
+        {
+          "english": "I am only for finance students — FALSE! Everyone benefits.",
+          "sesotho": "Ke ya baithuti ba lichelete feela — HA SE NNETE! Bohle ba a rua molemo."
+        },
+        {
+          "english": "I only answer simple questions — FALSE! I adapt to your level.",
+          "sesotho": "Ke araba dipotso tse bonolo feela — HA SE NNETE! Ke ikamahanya le boemo ba hao."
+        }
+      ],
+      "university": [
+        {
+          "english": "I replace financial advisors — FALSE! I provide education.",
+          "sesotho": "Ke nka sebaka sa baeletsi ba lichelete — HA SE NNETE! Ke fana ka thuto."
+        },
+        {
+          "english": "I am only for beginners — FALSE! I explain advanced concepts.",
+          "sesotho": "Ke ya ba qalang feela — HA SE NNETE! Ke hlalosa le dikgopolo tse tsoetseng pele."
+        }
+      ]
+    },
+    "follow_up_suggestions": [
+      {
+        "english": "What would you like to learn about?",
+        "sesotho": "O batla ho ithuta ka eng?"
+      },
+      {
+        "english": "Should we start with saving or budgeting?",
+        "sesotho": "Na re qale ka poloko kapa tekanyetso?"
+      },
+      {
+        "english": "Want to test your knowledge with a quiz?",
+        "sesotho": "Na o batla ho hlahloba tsebo ya hao ka quiz?"
+      },
+      {
+        "english": "Would you like to try an interactive activity?",
+        "sesotho": "Na o ka rata ho leka ketsahalo e kopanetsweng?"
+      },
+      {
+        "english": "What financial topic interests you most?",
+        "sesotho": "Ke taba efe ya lichelete e o kgahlang haholo?"
+      }
+    ],
+    "how_to": {
+      "primary": [
+        {
+          "english": "Ask me about saving, money, or budgeting!",
+          "sesotho": "Mpotse ka ho boloka, chelete kapa tekanyetso!"
+        },
+        {
+          "english": "Try asking: What is interest?",
+          "sesotho": "Leka ho botsa: Phaello ke eng?"
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Ask me: How do I create a budget?",
+          "sesotho": "Mpotse: Ke etsa tekanyetso jwang?"
+        },
+        {
+          "english": "Try: What is compound interest?",
+          "sesotho": "Leka: Phaello e kopaneng ke eng?"
+        }
+      ],
+      "university": [
+        {
+          "english": "Ask me: How do I build an emergency fund?",
+          "sesotho": "Mpotse: Ke haha letlole la tshohanyetso jwang?"
+        },
+        {
+          "english": "Try: What is the best investment strategy?",
+          "sesotho": "Leka: Leano le molemohali la matsete ke lefe?"
+        }
+      ]
+    },
+    "why": {
+      "primary": [
+        {
+          "english": "Learning about money now helps you later in life.",
+          "sesotho": "Ho ithuta ka chelete hona joale ho thusa hamorao."
+        },
+        {
+          "english": "Financial literacy is a life skill.",
+          "sesotho": "Tsebo ya lichelete ke bokgoni ba bophelo."
+        }
+      ],
+      "high_school": [
+        {
+          "english": "Financial knowledge builds confidence.",
+          "sesotho": "Tsebo ya lichelete e haha tshepo."
+        },
+        {
+          "english": "Understanding money prevents future problems.",
+          "sesotho": "Ho utlwisisa ho thibela mathata."
+        }
+      ],
+      "university": [
+        {
+          "english": "Financial literacy is essential for independence.",
+          "sesotho": "Tsebo ya lichelete e bohlokwa bakeng sa boikemelo."
+        },
+        {
+          "english": "Smart money management creates opportunities.",
+          "sesotho": "Taolo e bohlale e bopa menyetla."
+        }
+      ]
+    },
+    "scenarios": {
+      "primary": [
+        {
+          "situation": {
+            "english": "You want to learn about money. What should you ask LeSAH first?",
+            "sesotho": "O batla ho ithuta ka chelete. O botse LeSAH eng pele?"
+          },
+          "advice": {
+            "english": "Try asking: What is saving?",
+            "sesotho": "Leka ho botsa: Ho boloka ke eng?"
+          },
+          "lesson": {
+            "english": "Asking questions is the first step to learning.",
+            "sesotho": "Ho botsa ke mohato wa pele wa ho ithuta."
+          }
+        }
+      ],
+      "high_school": [
+        {
+          "situation": {
+            "english": "You have questions about managing your M500 monthly allowance. What should you ask?",
+            "sesotho": "O na le dipotso ka ho laola M500 ya kgwedi. O botse eng?"
+          },
+          "advice": {
+            "english": "Ask: How do I create a budget for M500?",
+            "sesotho": "Botsa: Ke etsa tekanyetso ya M500 jwang?"
+          },
+          "lesson": {
+            "english": "Specific questions get better answers.",
+            "sesotho": "Dipotso tse hlakileng di fumana dikarabo tse betere."
+          }
+        }
+      ],
+      "university": [
+        {
+          "situation": {
+            "english": "You want to start investing but do not know where to begin. What should you ask?",
+            "sesotho": "O batla ho qala matsete empa ha o tsebe moo o qalang. O botse eng?"
+          },
+          "advice": {
+            "english": "Ask: What is the best investment strategy for beginners?",
+            "sesotho": "Botsa: Leano le molemohali la matsete ke lefe?"
+          },
+          "lesson": {
+            "english": "Start with education before investing money.",
+            "sesotho": "Qala ka thuto pele o kenya chelete."
+          }
+        }
+      ]
+    }
+  },
+  "comparisons": {
+    "saving_vs_investing": {
+      "primary": {
+        "english": "Saving is keeping money safe. Investing is using money to try to make more money.",
+        "sesotho": "Ho boloka ke ho boloka chelete e sireletsehile. Matsete ke ho sebedisa chelete ho leka ho etsa e ngata."
+      },
+      "high_school": {
+        "english": "Saving has low risk but low returns. Investing has higher risk but potentially higher returns.",
+        "sesotho": "Ho boloka ho na le kotsi e tlase empa phaello e tlase. Matsete a na le kotsi e kgolo empa phaello e ka ba kgolo."
+      },
+      "university": {
+        "english": "Saving preserves capital with minimal risk (e.g., 3-5% interest). Investing deploys capital for growth (e.g., 7-12% returns) with market risk.",
+        "sesotho": "Ho boloka ho boloka chelete ka kotsi e nyane (3-5%). Matsete a sebedisa chelete bakeng sa kgolo (7-12%) ka kotsi ya mmaraka."
+      }
+    },
+    "needs_vs_wants": {
+      "primary": {
+        "english": "Needs are things you MUST have to live. Wants are things you would LIKE but can live without.",
+        "sesotho": "Ditlhoko ke tseo o T LAMEHANG ho ba le tsona. Ditakatso ke tseo o ka phelang ntle le tsona."
+      },
+      "high_school": {
+        "english": "Needs are essential for survival and wellbeing. Wants improve quality of life but are optional.",
+        "sesotho": "Ditlhoko di bohlokwa bakeng sa ho phela. Ditakatso di ntlafatsa bophelo empa ke tsa boikgethelo."
+      },
+      "university": {
+        "english": "Needs are non-discretionary (rent, food, healthcare). Wants are discretionary (entertainment, luxury items).",
+        "sesotho": "Ditlhoko ha di qojwe (rente, dijo). Ditakatso ke tsa boikgethelo (boithabiso)."
+      }
+    },
+    "simple_vs_compound_interest": {
+      "primary": {
+        "english": "Simple interest is calculated once on your starting money. Compound interest is calculated on your money PLUS the interest you earned.",
+        "sesotho": "E bonolo e balwa hanngwe hodima chelete ya hao. E kopaneng e balwa hodima chelete LE phaello e fumanweng."
+      },
+      "high_school": {
+        "english": "Simple interest: I = P x r x t (principal only). Compound interest: A = P(1+r)^n (principal + accumulated interest).",
+        "sesotho": "E bonolo: I = P x r x t. E kopaneng: A = P(1+r)^n."
+      },
+      "university": {
+        "english": "Simple interest grows linearly. Compound interest grows exponentially — this is why it accelerates wealth building.",
+        "sesotho": "E bonolo e hola ka mokgwa o otlolohileng. E kopaneng e hola ka exponentially."
+      }
+    },
+    "loan_vs_gift": {
+      "primary": {
+        "english": "A loan must be paid back. A gift is free and does not need to be returned.",
+        "sesotho": "Kalimo e tlameha ho kgutliswa. Mpho ke ya mahala mme ha e kgutliswe."
+      },
+      "high_school": {
+        "english": "A loan is borrowed money with repayment obligation. A gift has no repayment requirement.",
+        "sesotho": "Kalimo ke chelete e alimilweng e hlokang ho kgutliswa. Mpho ha e hloke ho kgutliswa."
+      },
+      "university": {
+        "english": "Loans create debt obligations with interest. Gifts are transfers without reciprocal obligation.",
+        "sesotho": "Dikoloto di bopa boitlamo le phaello. Dimpho ke phetiso ntle le boitlamo."
+      }
+    },
+    "bank_vs_mobile_money": {
+      "primary": {
+        "english": "A bank is a building where you keep money. Mobile money is on your phone.",
+        "sesotho": "Banka ke moaho moo o bolokang chelete. Mobile money e fonong ya hao."
+      },
+      "high_school": {
+        "english": "Banks offer more services (loans, interest) but may have fees. Mobile money is convenient but has transfer fees.",
+        "sesotho": "Dibanka di fana ka ditshebeletso tse ngata empa di lefisa. Mobile money e bonolo empa e na le ditefiso."
+      },
+      "university": {
+        "english": "Banks are regulated financial institutions with deposit insurance. Mobile money operators are telecom-based with different regulations.",
+        "sesotho": "Dibanka di laolwa ka molao. Mobile money e itshetlehile ho telecom."
+      }
+    },
+    "income_vs_profit": {
+      "primary": {
+        "english": "Income is money you receive. Profit is money left after paying costs.",
+        "sesotho": "Moputso ke chelete eo o e fumanang. Phaello ke chelete e setseng kamora ho lefa ditshenyehelo."
+      },
+      "high_school": {
+        "english": "Income is total money received. Profit = Income - Expenses.",
+        "sesotho": "Moputso ke kakaretso e fumanweng. Phaello = Moputso - Ditshenyehelo."
+      },
+      "university": {
+        "english": "Income (revenue) is the top line. Profit is the bottom line after all costs, taxes, and expenses.",
+        "sesotho": "Moputso ke top line. Phaello ke bottom line kamora ditshenyehelo tsohle."
+      }
+    }
+  },
+  "learning_paths": {
+    "saving": [
+      {
+        "english": "Budgeting",
+        "sesotho": "Tekanyetso"
+      },
+      {
+        "english": "Interest",
+        "sesotho": "Phaello"
+      },
+      {
+        "english": "Investing",
+        "sesotho": "Matsete"
+      }
+    ],
+    "money": [
+      {
+        "english": "Saving",
+        "sesotho": "Ho boloka"
+      },
+      {
+        "english": "Budgeting",
+        "sesotho": "Tekanyetso"
+      },
+      {
+        "english": "Banking",
+        "sesotho": "Banka"
+      }
+    ],
+    "budgeting": [
+      {
+        "english": "Saving",
+        "sesotho": "Ho boloka"
+      },
+      {
+        "english": "Needs & Wants",
+        "sesotho": "Ditlhoko le Ditakatso"
+      },
+      {
+        "english": "Income",
+        "sesotho": "Moputso"
+      }
+    ],
+    "interest": [
+      {
+        "english": "Loans",
+        "sesotho": "Dikoloto"
+      },
+      {
+        "english": "Investing",
+        "sesotho": "Matsete"
+      },
+      {
+        "english": "Saving",
+        "sesotho": "Ho boloka"
+      }
+    ],
+    "loans": [
+      {
+        "english": "Interest",
+        "sesotho": "Phaello"
+      },
+      {
+        "english": "Budgeting",
+        "sesotho": "Tekanyetso"
+      },
+      {
+        "english": "Income",
+        "sesotho": "Moputso"
+      }
+    ],
+    "income": [
+      {
+        "english": "Budgeting",
+        "sesotho": "Tekanyetso"
+      },
+      {
+        "english": "Saving",
+        "sesotho": "Ho boloka"
+      },
+      {
+        "english": "Investing",
+        "sesotho": "Matsete"
+      }
+    ],
+    "banking": [
+      {
+        "english": "Saving",
+        "sesotho": "Ho boloka"
+      },
+      {
+        "english": "Interest",
+        "sesotho": "Phaello"
+      },
+      {
+        "english": "Loans",
+        "sesotho": "Dikoloto"
+      }
+    ],
+    "needs_wants": [
+      {
+        "english": "Budgeting",
+        "sesotho": "Tekanyetso"
+      },
+      {
+        "english": "Saving",
+        "sesotho": "Ho boloka"
+      },
+      {
+        "english": "Income",
+        "sesotho": "Moputso"
+      }
+    ]
+  },
+  "emergency_scenarios": {
+    "lost_bursary": {
+      "situation": {
+        "english": "A student loses their bursary due to academic performance. They have M1,000 saved and monthly expenses of M1,500. What should they do?",
+        "sesotho": "Moithuti o lahlehetswe ke bursary. O na le M1,000 e bolokilweng le ditshenyehelo tsa M1,500 ka kgwedi. O etse eng?"
+      },
+      "advice": {
+        "english": "First, cut all non-essential spending. Find part-time work quickly. Apply for other funding. The M1,000 is a buffer for 2-3 weeks.",
+        "sesotho": "Pele, fokotsa tshebediso e sa hlokahaleng. Fumana mosebetsi wa nakwana. Kopa dithuso tse ding. M1,000 ke buffer ya dibeke tse 2-3."
+      },
+      "lesson": {
+        "english": "Emergency funds buy you time during crises.",
+        "sesotho": "Matlole a tshohanyetso a o reka nako mathateng."
+      }
+    },
+    "friend_borrowing": {
+      "situation": {
+        "english": "A friend asks to borrow M200 and promises to repay next month. You know they already owe others money. What should you do?",
+        "sesotho": "Motswalle o kopa M200 mme o tshepisa ho kgutlisa kgwedi e tlang. O tseba hore o se a kolota batho ba bang. O etse eng?"
+      },
+      "advice": {
+        "english": "Politely decline or lend only what you can afford to lose. Never lend money you need for your own expenses.",
+        "sesotho": "Hana ka mosa kapa alima feela seo o ka se lahlehelwang. O se ke wa alima chelete eo o e hlokang."
+      },
+      "lesson": {
+        "english": "Protect your financial wellbeing, even with friends.",
+        "sesotho": "Sireletsa bophelo ba hao ba lichelete, le ho metswalle."
+      }
+    },
+    "overspending": {
+      "situation": {
+        "english": "You spent M400 on entertainment and now have only M100 for food for two weeks. What went wrong and how do you fix it?",
+        "sesotho": "O sebedisitse M400 boithabisong mme o setse le M100 bakeng sa dijo dibeke tse pedi. Ho senyehile eng?"
+      },
+      "advice": {
+        "english": "You prioritized wants over needs. Fix: Buy basic food (rice, mealie meal). Avoid entertainment until next month.",
+        "sesotho": "O behile ditakatso pele ho ditlhoko. Fix: Reka dijo tsa motheo. Qoba boithabiso ho fihlela kgwedi e tlang."
+      },
+      "lesson": {
+        "english": "Always budget for needs before spending on wants.",
+        "sesotho": "Dula o rera ditlhoko pele o sebedisa ditakatso."
+      }
+    },
+    "unexpected_expense": {
+      "situation": {
+        "english": "Your phone breaks and you need it for school. Repairs cost M500 but you only have M200 saved.",
+        "sesotho": "Fono ya hao e senyehile mme o e hloka bakeng sa sekolo. Ho lokisa M500 empa o bolokile M200 feela."
+      },
+      "advice": {
+        "english": "This is why emergency funds matter. Borrow M300 from family (interest-free) or find temporary work. Next time, save more.",
+        "sesotho": "Ke ka hona matlole a tshohanyetso a le bohlokwa. Alima M300 lelapeng kapa fumana mosebetsi wa nakwana."
+      },
+      "lesson": {
+        "english": "Emergency funds should cover unexpected repairs.",
+        "sesotho": "Matlole a tshohanyetso a lokela ho akaretsa ditokiso tse sa lebellwang."
+      }
+    }
+  }
+}
