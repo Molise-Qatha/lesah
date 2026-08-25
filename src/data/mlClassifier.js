@@ -1,13 +1,157 @@
-// Extract amount from question
+// ML Intent Classifier for LeSAH Financial Literacy
+// Loads the trained model and knowledge base
+
+let trainedModel = null;
+let knowledgeBase = null;
+
+// Load ML model
+export const loadMLModel = async () => {
+  if (trainedModel) return trainedModel;
+  try {
+    const response = await fetch('/ml/trained-model.json');
+    trainedModel = await response.json();
+    return trainedModel;
+  } catch (error) {
+    console.warn('Could not load ML model');
+    return null;
+  }
+};
+
+// Load knowledge base
+export const loadKnowledgeBase = async () => {
+  if (knowledgeBase) return knowledgeBase;
+  try {
+    const response = await fetch('/ml/knowledge-rich.json');
+    knowledgeBase = await response.json();
+    return knowledgeBase;
+  } catch (error) {
+    console.warn('Could not load knowledge base');
+    return null;
+  }
+};
+
+// Stop words for classification
+const STOP_WORDS = [
+  'what', 'is', 'are', 'the', 'a', 'an', 'to', 'do', 'does', 'how',
+  'can', 'i', 'you', 'we', 'they', 'it', 'of', 'in', 'on', 'at',
+  'ke', 'eng', 'le', 'ka', 'ea', 'ho', 'na', 'se', 'e',
+  'why', 'when', 'where', 'who', 'which', 'for', 'with', 'from'
+];
+
+// Sesotho words for auto-detection
+const SESOTHO_WORDS = [
+  'ke', 'eng', 'ho', 'boloka', 'chelete', 'phaello', 'kalimo', 'joang',
+  'lumela', 'bokae', 'le', 'ka', 'ea', 'na', 'nka', 'batla', 'hloka',
+  'fumana', 'tseba', 'rata', 'kena', 'jwang', 'mme', 'hobaneng',
+  'nthuse', 'thusang', 'bala', 'reka', 'rekisa', 'sebedisa', 'alima',
+  'boloke', 'poloko', 'keno', 'mokitlane', 'sekoloto', 'moputso',
+  'tekanyetso', 'ditlhoko', 'ditakatso', 'dibanka', 'banka', 'akhaonto'
+];
+
+// Classify topic using ML model
+function classifyTopic(text) {
+  if (!trainedModel) return { topic: 'unknown', confidence: 0 };
+  
+  const words = text.toLowerCase().split(' ');
+  const scores = {};
+  let matched = 0;
+
+  words.forEach(function(word) {
+    if (STOP_WORDS.indexOf(word) !== -1) return;
+    if (trainedModel[word]) {
+      matched++;
+      Object.keys(trainedModel[word]).forEach(function(intent) {
+        scores[intent] = (scores[intent] || 0) + trainedModel[word][intent];
+      });
+    }
+  });
+
+  let bestIntent = 'unknown';
+  let bestScore = 0;
+
+  Object.keys(scores).forEach(function(intent) {
+    if (scores[intent] > bestScore) {
+      bestScore = scores[intent];
+      bestIntent = intent;
+    }
+  });
+
+  return { topic: bestIntent, confidence: matched > 0 ? Math.min(0.95, bestScore / 20) : 0 };
+}
+
+// Detect language — FIXED: balanced scoring, requires strong Sesotho signal
+function detectLanguage(question, explicitLanguage) {
+  // Respect explicit language selection
+  if (explicitLanguage === 'sesotho') return 'sesotho';
+  if (explicitLanguage === 'english') return 'english';
+  
+  // Auto-detect from question content
+  const words = question.toLowerCase().split(' ');
+  let sesothoScore = 0;
+  let englishScore = 0;
+  
+  words.forEach(function(word) {
+    if (SESOTHO_WORDS.indexOf(word) !== -1) {
+      sesothoScore += 2;
+    } else if (STOP_WORDS.indexOf(word) === -1 && /^[a-z]+$/.test(word) && word.length > 2) {
+      englishScore += 1;
+    }
+  });
+  
+  // Require Sesotho score to be clearly dominant
+  if (sesothoScore >= 4 && sesothoScore > englishScore * 2) {
+    return 'sesotho';
+  }
+  
+  return 'english';
+}
+
+// Get grade level
+function getLevel(gradeId) {
+  if (gradeId && gradeId.indexOf('uni_') === 0) return 'university';
+  const num = parseInt(gradeId ? gradeId.replace('grade', '') : '1') || 1;
+  if (num <= 3) return 'primary';
+  if (num <= 9) return 'high_school';
+  return 'university';
+}
+
+// Extract text from bilingual object
+function getText(item, lang) {
+  if (!item) return null;
+  if (typeof item === 'string') return item;
+  if (lang === 'sesotho' && item.sesotho) return item.sesotho;
+  if (item.english) return item.english;
+  return null;
+}
+
+// Pick random from array
+function getRandom(arr) {
+  if (!arr || arr.length === 0) return null;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Extract amount from question — FIXED: more patterns
 function extractAmount(question) {
-  const matches = question.match(/m(\d+)/i) || question.match(/(\d+)/);
-  if (matches) {
-    return parseInt(matches[1]);
+  const patterns = [
+    /m\s*(\d+)/i,
+    /(\d+)\s*maloti/i,
+    /(\d+)\s*loti/i,
+    /(\d+)/
+  ];
+  
+  for (const pattern of patterns) {
+    const match = question.match(pattern);
+    if (match) {
+      const amount = parseInt(match[1]);
+      if (amount >= 1 && amount <= 100000) {
+        return amount;
+      }
+    }
   }
   return null;
 }
 
-// Personalize saving advice based on amount
+// Personalize saving advice — FIXED: simpler and more direct
 function personalizeSavingAdvice(amount, lang, level) {
   if (!amount) return null;
   
@@ -15,24 +159,28 @@ function personalizeSavingAdvice(amount, lang, level) {
   const spendAmount = amount - saveAmount;
   
   if (lang === 'sesotho') {
-    if (level === 'primary') {
-      return `U na le M${amount}. Boloka M${saveAmount} 'me u sebelise M${spendAmount}.`;
-    } else if (level === 'high_school') {
-      return `U na le M${amount}. Ka molao oa 50/30/20, boloka M${saveAmount} (20%) 'me u sebelise M${spendAmount}.`;
-    } else {
-      return `U na le M${amount}. Boloka M${saveAmount} (20%) bakeng sa poloko, 'me u sebelise M${spendAmount}.`;
-    }
+    return `U na le M${amount}. Boloka M${saveAmount} (20%) 'me u sebelise M${spendAmount}.`;
   } else {
-    if (level === 'primary') {
-      return `You have M${amount}. Save M${saveAmount} and use M${spendAmount}.`;
-    } else if (level === 'high_school') {
-      return `You have M${amount}. Following the 50/30/20 rule, save M${saveAmount} (20%) and use M${spendAmount}.`;
-    } else {
-      return `You have M${amount}. Save M${saveAmount} (20%) and allocate M${spendAmount} for spending.`;
-    }
+    return `You have M${amount}. Save M${saveAmount} (20%) and use M${spendAmount}.`;
   }
 }
 
+// Personalize budgeting advice
+function personalizeBudgetAdvice(amount, lang, level) {
+  if (!amount) return null;
+  
+  const needs = Math.round(amount * 0.5);
+  const wants = Math.round(amount * 0.3);
+  const savings = Math.round(amount * 0.2);
+  
+  if (lang === 'sesotho') {
+    return `U na le M${amount}. Arola: 50% litlhoko (M${needs}), 30% litakatso (M${wants}), 20% poloko (M${savings}).`;
+  } else {
+    return `You have M${amount}. Split: 50% needs (M${needs}), 30% wants (M${wants}), 20% savings (M${savings}).`;
+  }
+}
+
+// Main reasoning function
 export function getAIResponse(question, gradeId, language) {
   if (!trainedModel || !knowledgeBase) {
     return language === 'sesotho' 
@@ -40,10 +188,10 @@ export function getAIResponse(question, gradeId, language) {
       : 'AI is still loading. Please try again.';
   }
 
+  const amount = extractAmount(question);
   const result = classifyTopic(question);
   const level = getLevel(gradeId);
   const lang = detectLanguage(question, language);
-  const amount = extractAmount(question);
 
   // Fallback topic detection from keywords
   let topicId = result.topic;
@@ -72,20 +220,26 @@ export function getAIResponse(question, gradeId, language) {
   if (/how do|how can|how to|how should|how does|joang|kamoo|jwang/i.test(question)) intent = 'how_to';
   else if (/why|hobaneng|ke hobane/i.test(question)) intent = 'why';
   else if (/should|advice|recommend|keletso|nka etsa eng/i.test(question)) intent = 'advice';
-  else if (/scenario|what if|haeba|ha kere/i.test(question)) intent = 'scenarios';
 
-  let answer = '';
-
-  // PERSONALIZATION: If amount exists AND saving topic AND how_to intent
-  if (amount && topicId === 'saving' && (intent === 'how_to' || intent === 'advice')) {
+  // PERSONALIZATION: Check FIRST for amount-based responses
+  if (amount && topicId === 'saving') {
     const personalized = personalizeSavingAdvice(amount, lang, level);
     if (personalized) {
-      answer = personalized;
+      return personalized;
     }
   }
 
-  // If no personalized answer, use standard responses
-  if (!answer && intent === 'how_to' && topicData.how_to && topicData.how_to[level]) {
+  if (amount && topicId === 'budgeting') {
+    const personalized = personalizeBudgetAdvice(amount, lang, level);
+    if (personalized) {
+      return personalized;
+    }
+  }
+
+  let answer = '';
+
+  // Standard responses
+  if (intent === 'how_to' && topicData.how_to && topicData.how_to[level]) {
     const item = getRandom(topicData.how_to[level]);
     const text = getText(item, lang);
     if (text) answer = text;
@@ -111,7 +265,7 @@ export function getAIResponse(question, gradeId, language) {
     if (text) answer = text;
   }
 
-  // Add example with 50% probability (skip if already personalized)
+  // Add example with 50% probability (skip if amount was detected)
   if (!amount && topicData.examples && topicData.examples[level] && Math.random() < 0.5) {
     const item = getRandom(topicData.examples[level]);
     const text = getText(item, lang);
@@ -140,3 +294,7 @@ export function getAIResponse(question, gradeId, language) {
 
   return answer || (lang === 'sesotho' ? 'Ke utloisisa potso ea hau.' : 'I understand your question.');
 }
+
+// Initialize
+loadMLModel();
+loadKnowledgeBase();
