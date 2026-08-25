@@ -1,0 +1,203 @@
+/* ============ LANDING PAGE ============ */
+.morabaraba-landing {
+  min-height: 100vh;
+  background: #f5e6d3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.morabaraba-landing-inner {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.landing-header h1 {
+  font-size: 2.5rem;
+  color: #3b2818;
+  margin: 20px 0 8px;
+  letter-spacing: 2px;
+}
+
+.landing-subtitle {
+  color: #8B7355;
+  font-size: 1rem;
+  margin: 0 0 4px;
+  font-style: italic;
+}
+
+.landing-desc {
+  color: #5a4a3a;
+  font-size: 0.95rem;
+  margin: 0 0 30px;
+}
+
+/* AI Play Card */
+.ai-play-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 30px 20px;
+  background: linear-gradient(145deg, #fff8f0, #f0e6d8);
+  border: 2px solid #8B7355;
+  border-radius: 16px;
+  cursor: pointer;
+  margin-bottom: 25px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.ai-play-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  border-color: #3b2818;
+}
+
+.ai-play-icon {
+  font-size: 3rem;
+}
+
+.ai-play-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #3b2818;
+}
+
+.ai-play-subtitle {
+  font-size: 0.85rem;
+  color: #8B7355;
+}
+
+/* Game Time */
+.game-time-section h2 {
+  color: #3b2818;
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+}
+
+.time-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.time-chip {
+  padding: 10px 18px;
+  border: 2px solid #c4a882;
+  border-radius: 25px;
+  background: #fff;
+  color: #3b2818;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.25s;
+}
+
+.time-chip:hover {
+  border-color: #8B7355;
+  background: #f0e6d8;
+}
+
+.time-chip.active {
+  background: #3b2818;
+  color: #fff;
+  border-color: #3b2818;
+  box-shadow: 0 2px 10px rgba(59,40,24,0.3);
+}
+
+/* Difficulty Display */
+.difficulty-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 25px;
+  padding: 15px;
+  border: 1px dashed #c4a882;
+  border-radius: 12px;
+}
+
+.difficulty-label {
+  font-size: 0.8rem;
+  color: #8B7355;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.difficulty-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #d97706;
+  letter-spacing: 1px;
+}
+
+.difficulty-note {
+  font-size: 0.75rem;
+  color: #8B7355;
+  font-style: italic;
+}
+
+/* Start Game Button */
+.start-game-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(145deg, #3b2818, #5a3d28);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.start-game-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  background: linear-gradient(145deg, #5a3d28, #3b2818);
+}
+
+/* Back link */
+.back-link {
+  display: inline-block;
+  color: #8B7355;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #3b2818;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .morabaraba-landing-inner {
+    padding: 20px 10px;
+  }
+
+  .landing-header h1 {
+    font-size: 2rem;
+  }
+
+  .time-chip {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+
+  .start-game-btn {
+    font-size: 1rem;
+    padding: 14px;
+  }
+}

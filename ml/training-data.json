@@ -1,0 +1,8018 @@
+[
+  {
+    "text": "hi",
+    "intent": "greeting"
+  },
+  {
+    "text": "hello",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is hello",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i hello",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about hello",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand hello",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain hello",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about hello",
+    "intent": "greeting"
+  },
+  {
+    "text": "hey",
+    "intent": "greeting"
+  },
+  {
+    "text": "lumela",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is lumela",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i lumela",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about lumela",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand lumela",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain lumela",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about lumela",
+    "intent": "greeting"
+  },
+  {
+    "text": "lumelang",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is lumelang",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i lumelang",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about lumelang",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand lumelang",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain lumelang",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about lumelang",
+    "intent": "greeting"
+  },
+  {
+    "text": "khotsong",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is khotsong",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i khotsong",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about khotsong",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand khotsong",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain khotsong",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about khotsong",
+    "intent": "greeting"
+  },
+  {
+    "text": "le kae",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is le kae",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i le kae",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about le kae",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand le kae",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain le kae",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about le kae",
+    "intent": "greeting"
+  },
+  {
+    "text": "u phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is u phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i u phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about u phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand u phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain u phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about u phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "le phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is le phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i le phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about le phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand le phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain le phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about le phela joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "ho joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is ho joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i ho joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about ho joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand ho joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain ho joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about ho joang",
+    "intent": "greeting"
+  },
+  {
+    "text": "ausi",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is ausi",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i ausi",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about ausi",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand ausi",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain ausi",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about ausi",
+    "intent": "greeting"
+  },
+  {
+    "text": "abuti",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is abuti",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i abuti",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about abuti",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand abuti",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain abuti",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about abuti",
+    "intent": "greeting"
+  },
+  {
+    "text": "ntate",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is ntate",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i ntate",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about ntate",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand ntate",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain ntate",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about ntate",
+    "intent": "greeting"
+  },
+  {
+    "text": "mme",
+    "intent": "greeting"
+  },
+  {
+    "text": "howzit",
+    "intent": "greeting"
+  },
+  {
+    "text": "sharp",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is sharp",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i sharp",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about sharp",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand sharp",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain sharp",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about sharp",
+    "intent": "greeting"
+  },
+  {
+    "text": "whats up",
+    "intent": "greeting"
+  },
+  {
+    "text": "good morning",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is good morning",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i good morning",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about good morning",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand good morning",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain good morning",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about good morning",
+    "intent": "greeting"
+  },
+  {
+    "text": "good evening",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is good evening",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i good evening",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about good evening",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand good evening",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain good evening",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about good evening",
+    "intent": "greeting"
+  },
+  {
+    "text": "goodbye",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is goodbye",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i goodbye",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about goodbye",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand goodbye",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain goodbye",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about goodbye",
+    "intent": "greeting"
+  },
+  {
+    "text": "bye",
+    "intent": "greeting"
+  },
+  {
+    "text": "thank you",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is thank you",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i thank you",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about thank you",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand thank you",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain thank you",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about thank you",
+    "intent": "greeting"
+  },
+  {
+    "text": "kea leboha",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is kea leboha",
+    "intent": "greeting"
+  },
+  {
+    "text": "how do i kea leboha",
+    "intent": "greeting"
+  },
+  {
+    "text": "tell me about kea leboha",
+    "intent": "greeting"
+  },
+  {
+    "text": "help me understand kea leboha",
+    "intent": "greeting"
+  },
+  {
+    "text": "can you explain kea leboha",
+    "intent": "greeting"
+  },
+  {
+    "text": "i want to know about kea leboha",
+    "intent": "greeting"
+  },
+  {
+    "text": "what is saving",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i save",
+    "intent": "saving"
+  },
+  {
+    "text": "why save",
+    "intent": "saving"
+  },
+  {
+    "text": "what is why save",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i why save",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about why save",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand why save",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain why save",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about why save",
+    "intent": "saving"
+  },
+  {
+    "text": "where to save",
+    "intent": "saving"
+  },
+  {
+    "text": "what is where to save",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i where to save",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about where to save",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand where to save",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain where to save",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about where to save",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to save",
+    "intent": "saving"
+  },
+  {
+    "text": "help me save",
+    "intent": "saving"
+  },
+  {
+    "text": "saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "what is saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "how much to save",
+    "intent": "saving"
+  },
+  {
+    "text": "save money",
+    "intent": "saving"
+  },
+  {
+    "text": "what is save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about save money",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand save money",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain save money",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about save money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "what is saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "what is ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "what is ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "what is poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "what is nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "ke batla ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "what is ke batla ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i ke batla ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about ke batla ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand ke batla ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain ke batla ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about ke batla ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "what is saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "savings",
+    "intent": "saving"
+  },
+  {
+    "text": "what is savings",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i savings",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about savings",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand savings",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain savings",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about savings",
+    "intent": "saving"
+  },
+  {
+    "text": "put money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "what is put money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i put money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about put money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand put money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain put money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about put money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "what is keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "store money",
+    "intent": "saving"
+  },
+  {
+    "text": "what is store money",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i store money",
+    "intent": "saving"
+  },
+  {
+    "text": "tell me about store money",
+    "intent": "saving"
+  },
+  {
+    "text": "help me understand store money",
+    "intent": "saving"
+  },
+  {
+    "text": "can you explain store money",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to know about store money",
+    "intent": "saving"
+  },
+  {
+    "text": "what is money",
+    "intent": "money"
+  },
+  {
+    "text": "what are maloti",
+    "intent": "money"
+  },
+  {
+    "text": "what is lisente",
+    "intent": "money"
+  },
+  {
+    "text": "chelete",
+    "intent": "money"
+  },
+  {
+    "text": "what is chelete",
+    "intent": "money"
+  },
+  {
+    "text": "how do i chelete",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about chelete",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand chelete",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain chelete",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about chelete",
+    "intent": "money"
+  },
+  {
+    "text": "maloti",
+    "intent": "money"
+  },
+  {
+    "text": "what is maloti",
+    "intent": "money"
+  },
+  {
+    "text": "how do i maloti",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about maloti",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand maloti",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain maloti",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about maloti",
+    "intent": "money"
+  },
+  {
+    "text": "lisente",
+    "intent": "money"
+  },
+  {
+    "text": "what is lisente",
+    "intent": "money"
+  },
+  {
+    "text": "how do i lisente",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about lisente",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand lisente",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain lisente",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about lisente",
+    "intent": "money"
+  },
+  {
+    "text": "currency",
+    "intent": "money"
+  },
+  {
+    "text": "what is currency",
+    "intent": "money"
+  },
+  {
+    "text": "how do i currency",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about currency",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand currency",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain currency",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about currency",
+    "intent": "money"
+  },
+  {
+    "text": "coins and notes",
+    "intent": "money"
+  },
+  {
+    "text": "what is coins and notes",
+    "intent": "money"
+  },
+  {
+    "text": "how do i coins and notes",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about coins and notes",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand coins and notes",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain coins and notes",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about coins and notes",
+    "intent": "money"
+  },
+  {
+    "text": "count money",
+    "intent": "money"
+  },
+  {
+    "text": "what is count money",
+    "intent": "money"
+  },
+  {
+    "text": "how do i count money",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about count money",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand count money",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain count money",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about count money",
+    "intent": "money"
+  },
+  {
+    "text": "how much does it cost",
+    "intent": "money"
+  },
+  {
+    "text": "price",
+    "intent": "money"
+  },
+  {
+    "text": "what is price",
+    "intent": "money"
+  },
+  {
+    "text": "how do i price",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about price",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand price",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain price",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about price",
+    "intent": "money"
+  },
+  {
+    "text": "cash",
+    "intent": "money"
+  },
+  {
+    "text": "what is cash",
+    "intent": "money"
+  },
+  {
+    "text": "how do i cash",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about cash",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand cash",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain cash",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about cash",
+    "intent": "money"
+  },
+  {
+    "text": "t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "what is t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "how do i t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "what is pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "how do i pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "what is lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "how do i lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "buying things",
+    "intent": "money"
+  },
+  {
+    "text": "what is buying things",
+    "intent": "money"
+  },
+  {
+    "text": "how do i buying things",
+    "intent": "money"
+  },
+  {
+    "text": "tell me about buying things",
+    "intent": "money"
+  },
+  {
+    "text": "help me understand buying things",
+    "intent": "money"
+  },
+  {
+    "text": "can you explain buying things",
+    "intent": "money"
+  },
+  {
+    "text": "i want to know about buying things",
+    "intent": "money"
+  },
+  {
+    "text": "what can i buy",
+    "intent": "money"
+  },
+  {
+    "text": "what is a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "monthly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is monthly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i monthly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about monthly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand monthly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain monthly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about monthly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "student budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is student budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i student budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about student budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand student budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain student budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about student budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "manage money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is manage money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i manage money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about manage money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand manage money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain manage money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about manage money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "plan spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is plan spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i plan spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about plan spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand plan spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain plan spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about plan spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "moralo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is moralo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i moralo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about moralo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand moralo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain moralo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about moralo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is budget my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i budget my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about budget my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand budget my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain budget my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about budget my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "divide my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is divide my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i divide my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about divide my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand divide my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain divide my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about divide my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me understand spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "can you explain spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to know about spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "how does interest work",
+    "intent": "interest"
+  },
+  {
+    "text": "earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "what is phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "what is tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "what is ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on loans",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest on loans",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i interest on loans",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about interest on loans",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand interest on loans",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain interest on loans",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about interest on loans",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest",
+    "intent": "interest"
+  },
+  {
+    "text": "calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how do i calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "tell me about calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "help me understand calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "can you explain calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "i want to know about calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "what is borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is debt",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i debt",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about debt",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand debt",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain debt",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about debt",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "what is kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "what is sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "ho alima",
+    "intent": "loans"
+  },
+  {
+    "text": "what is ho alima",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i ho alima",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about ho alima",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand ho alima",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain ho alima",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about ho alima",
+    "intent": "loans"
+  },
+  {
+    "text": "student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what is student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "pay back loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what is pay back loan",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i pay back loan",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about pay back loan",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand pay back loan",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain pay back loan",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about pay back loan",
+    "intent": "loans"
+  },
+  {
+    "text": "repay debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is repay debt",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i repay debt",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about repay debt",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand repay debt",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain repay debt",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about repay debt",
+    "intent": "loans"
+  },
+  {
+    "text": "mokitlane",
+    "intent": "loans"
+  },
+  {
+    "text": "what is mokitlane",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i mokitlane",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about mokitlane",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand mokitlane",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain mokitlane",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about mokitlane",
+    "intent": "loans"
+  },
+  {
+    "text": "how to borrow",
+    "intent": "loans"
+  },
+  {
+    "text": "is debt bad",
+    "intent": "loans"
+  },
+  {
+    "text": "what is is debt bad",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i is debt bad",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about is debt bad",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand is debt bad",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain is debt bad",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about is debt bad",
+    "intent": "loans"
+  },
+  {
+    "text": "repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "what is repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "how do i repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "tell me about repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "help me understand repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "can you explain repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "i want to know about repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "what is income",
+    "intent": "income"
+  },
+  {
+    "text": "how to earn money",
+    "intent": "income"
+  },
+  {
+    "text": "salary",
+    "intent": "income"
+  },
+  {
+    "text": "what is salary",
+    "intent": "income"
+  },
+  {
+    "text": "how do i salary",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about salary",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand salary",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain salary",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about salary",
+    "intent": "income"
+  },
+  {
+    "text": "make money",
+    "intent": "income"
+  },
+  {
+    "text": "what is make money",
+    "intent": "income"
+  },
+  {
+    "text": "how do i make money",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about make money",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand make money",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain make money",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about make money",
+    "intent": "income"
+  },
+  {
+    "text": "moputso",
+    "intent": "income"
+  },
+  {
+    "text": "what is moputso",
+    "intent": "income"
+  },
+  {
+    "text": "how do i moputso",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about moputso",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand moputso",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain moputso",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about moputso",
+    "intent": "income"
+  },
+  {
+    "text": "chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "what is chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "how do i chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "ho fumana chelete",
+    "intent": "income"
+  },
+  {
+    "text": "what is ho fumana chelete",
+    "intent": "income"
+  },
+  {
+    "text": "how do i ho fumana chelete",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about ho fumana chelete",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand ho fumana chelete",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain ho fumana chelete",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about ho fumana chelete",
+    "intent": "income"
+  },
+  {
+    "text": "part time job",
+    "intent": "income"
+  },
+  {
+    "text": "what is part time job",
+    "intent": "income"
+  },
+  {
+    "text": "how do i part time job",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about part time job",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand part time job",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain part time job",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about part time job",
+    "intent": "income"
+  },
+  {
+    "text": "ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "what is ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "how do i ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "earning as student",
+    "intent": "income"
+  },
+  {
+    "text": "what is earning as student",
+    "intent": "income"
+  },
+  {
+    "text": "how do i earning as student",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about earning as student",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand earning as student",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain earning as student",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about earning as student",
+    "intent": "income"
+  },
+  {
+    "text": "side hustle money",
+    "intent": "income"
+  },
+  {
+    "text": "what is side hustle money",
+    "intent": "income"
+  },
+  {
+    "text": "how do i side hustle money",
+    "intent": "income"
+  },
+  {
+    "text": "tell me about side hustle money",
+    "intent": "income"
+  },
+  {
+    "text": "help me understand side hustle money",
+    "intent": "income"
+  },
+  {
+    "text": "can you explain side hustle money",
+    "intent": "income"
+  },
+  {
+    "text": "i want to know about side hustle money",
+    "intent": "income"
+  },
+  {
+    "text": "what is a bank",
+    "intent": "banking"
+  },
+  {
+    "text": "bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "what is bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "what is open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "what is mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "atm",
+    "intent": "banking"
+  },
+  {
+    "text": "deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "what is deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "what is withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "banka",
+    "intent": "banking"
+  },
+  {
+    "text": "what is banka",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i banka",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about banka",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand banka",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain banka",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about banka",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "what is akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "what is mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "what is ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "what is mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "what is bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "how do banks work",
+    "intent": "banking"
+  },
+  {
+    "text": "keep money safe",
+    "intent": "banking"
+  },
+  {
+    "text": "what is keep money safe",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i keep money safe",
+    "intent": "banking"
+  },
+  {
+    "text": "tell me about keep money safe",
+    "intent": "banking"
+  },
+  {
+    "text": "help me understand keep money safe",
+    "intent": "banking"
+  },
+  {
+    "text": "can you explain keep money safe",
+    "intent": "banking"
+  },
+  {
+    "text": "i want to know about keep money safe",
+    "intent": "banking"
+  },
+  {
+    "text": "need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is a want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "essential things",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is essential things",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i essential things",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about essential things",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand essential things",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain essential things",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about essential things",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "non essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is non essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i non essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about non essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand non essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain non essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about non essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "things i must have",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is things i must have",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i things i must have",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about things i must have",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand things i must have",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain things i must have",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about things i must have",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "things i can live without",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is things i can live without",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i things i can live without",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about things i can live without",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand things i can live without",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain things i can live without",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about things i can live without",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "difference between need and want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is difference between need and want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i difference between need and want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about difference between need and want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand difference between need and want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain difference between need and want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about difference between need and want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is food a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is is food a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how do i is food a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tell me about is food a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "help me understand is food a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "can you explain is food a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "i want to know about is food a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "maloti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "lisente ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea Lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "what is money in lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho currency",
+    "intent": "money"
+  },
+  {
+    "text": "loti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "ho bala chelete",
+    "intent": "money"
+  },
+  {
+    "text": "maloti le lisente",
+    "intent": "money"
+  },
+  {
+    "text": "m1 ke lisente tse kae",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea Lesotho ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "how can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i save money as a student",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i save money as a student",
+    "intent": "saving"
+  },
+  {
+    "text": "ways to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "ways to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "ways to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "best way to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "best way to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money every month",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money every month",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money for students",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money for students",
+    "intent": "saving"
+  },
+  {
+    "text": "i need to save more",
+    "intent": "saving"
+  },
+  {
+    "text": "i need to save more",
+    "intent": "saving"
+  },
+  {
+    "text": "help me save money",
+    "intent": "saving"
+  },
+  {
+    "text": "help me save money",
+    "intent": "saving"
+  },
+  {
+    "text": "where can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "where can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how much money should i save each month",
+    "intent": "saving"
+  },
+  {
+    "text": "how much money should i save each month",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money is hard",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money is hard",
+    "intent": "saving"
+  },
+  {
+    "text": "how to start saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to start saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to start saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving tips for students",
+    "intent": "saving"
+  },
+  {
+    "text": "saving tips for students",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from my allowance",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from my allowance",
+    "intent": "saving"
+  },
+  {
+    "text": "i get m100 how much should i save",
+    "intent": "saving"
+  },
+  {
+    "text": "i get m100 how much should i save",
+    "intent": "saving"
+  },
+  {
+    "text": "ke batla ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "ke batla ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "ke batla ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka chelete joang",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka chelete joang",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka chelete joang",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka chelete joang",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka chelete joang",
+    "intent": "saving"
+  },
+  {
+    "text": "mokhoa oa ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "mokhoa oa ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka chelete ho bohlokoa",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka chelete ho bohlokoa",
+    "intent": "saving"
+  },
+  {
+    "text": "ke qala ho boloka joang",
+    "intent": "saving"
+  },
+  {
+    "text": "ke qala ho boloka joang",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "poloko ea chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "poloko ea chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "ke hloka ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "ke hloka ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money challenge",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money challenge",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save m100 every month",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save m100 every month",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for school",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for school",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for university",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for university",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save when you are a student",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save when you are a student",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save with little money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save with little money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save with no money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save with no money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving habits",
+    "intent": "saving"
+  },
+  {
+    "text": "saving habits",
+    "intent": "saving"
+  },
+  {
+    "text": "saving habits",
+    "intent": "saving"
+  },
+  {
+    "text": "build saving habit",
+    "intent": "saving"
+  },
+  {
+    "text": "build saving habit",
+    "intent": "saving"
+  },
+  {
+    "text": "why saving is important for students",
+    "intent": "saving"
+  },
+  {
+    "text": "why saving is important for students",
+    "intent": "saving"
+  },
+  {
+    "text": "importance of saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "importance of saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "reasons to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "reasons to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving vs spending",
+    "intent": "saving"
+  },
+  {
+    "text": "saving vs spending",
+    "intent": "saving"
+  },
+  {
+    "text": "should i save or spend",
+    "intent": "saving"
+  },
+  {
+    "text": "should i save or spend",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save consistently",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save consistently",
+    "intent": "saving"
+  },
+  {
+    "text": "saving small amounts",
+    "intent": "saving"
+  },
+  {
+    "text": "saving small amounts",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every week",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every week",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every month",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every month",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to save for the future",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to save for the future",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save for emergencies",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save for emergencies",
+    "intent": "saving"
+  },
+  {
+    "text": "emergency fund saving",
+    "intent": "saving"
+  },
+  {
+    "text": "emergency fund saving",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a goal",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a goal",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a goal",
+    "intent": "saving"
+  },
+  {
+    "text": "how to reach my saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "how to reach my saving goal",
+    "intent": "saving"
+  },
+  {
+    "text": "what percentage should i save",
+    "intent": "saving"
+  },
+  {
+    "text": "what percentage should i save",
+    "intent": "saving"
+  },
+  {
+    "text": "saving 20 percent of income",
+    "intent": "saving"
+  },
+  {
+    "text": "saving 20 percent of income",
+    "intent": "saving"
+  },
+  {
+    "text": "saving 10 percent",
+    "intent": "saving"
+  },
+  {
+    "text": "saving 10 percent",
+    "intent": "saving"
+  },
+  {
+    "text": "save half my money",
+    "intent": "saving"
+  },
+  {
+    "text": "save half my money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money fast",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money fast",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money quickly",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money quickly",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money every day",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money every day",
+    "intent": "saving"
+  },
+  {
+    "text": "daily saving",
+    "intent": "saving"
+  },
+  {
+    "text": "daily saving",
+    "intent": "saving"
+  },
+  {
+    "text": "weekly saving",
+    "intent": "saving"
+  },
+  {
+    "text": "weekly saving",
+    "intent": "saving"
+  },
+  {
+    "text": "monthly saving",
+    "intent": "saving"
+  },
+  {
+    "text": "monthly saving",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save m50 every week",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save m50 every week",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save m200 every month",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save m200 every month",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a phone",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a phone",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a laptop",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a laptop",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for clothes",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for clothes",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for food",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for food",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for transport",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for transport",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka bokae",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka bokae",
+    "intent": "saving"
+  },
+  {
+    "text": "chelete e bolokiloeng",
+    "intent": "saving"
+  },
+  {
+    "text": "chelete e bolokiloeng",
+    "intent": "saving"
+  },
+  {
+    "text": "mokhoa o motle oa ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "mokhoa o motle oa ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "nthuse ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "nthuse ho boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete ea ka",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete ea ka",
+    "intent": "saving"
+  },
+  {
+    "text": "hobaneng ke lokela ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "hobaneng ke lokela ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka ho bohlokoa joang",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka ho bohlokoa joang",
+    "intent": "saving"
+  },
+  {
+    "text": "how to calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how to calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate formula",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate formula",
+    "intent": "interest"
+  },
+  {
+    "text": "what is the interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "what is the interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest do i earn",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest do i earn",
+    "intent": "interest"
+  },
+  {
+    "text": "bank interest rates",
+    "intent": "interest"
+  },
+  {
+    "text": "bank interest rates",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on my savings",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on my savings",
+    "intent": "interest"
+  },
+  {
+    "text": "how compound interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "how compound interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "how simple interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "how simple interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ea chelete",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ea chelete",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello e kopaneng ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello e kopaneng ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello e bonolo ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello e bonolo ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "ho bala phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "ho bala phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "tswala ea banka",
+    "intent": "interest"
+  },
+  {
+    "text": "tswala ea banka",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate on savings account",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate on savings account",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest will i earn",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest will i earn",
+    "intent": "interest"
+  },
+  {
+    "text": "calculate my interest",
+    "intent": "interest"
+  },
+  {
+    "text": "calculate my interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest calculator",
+    "intent": "interest"
+  },
+  {
+    "text": "interest calculator",
+    "intent": "interest"
+  },
+  {
+    "text": "what interest rate is good",
+    "intent": "interest"
+  },
+  {
+    "text": "what interest rate is good",
+    "intent": "interest"
+  },
+  {
+    "text": "high interest savings",
+    "intent": "interest"
+  },
+  {
+    "text": "high interest savings",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "simple interest formula",
+    "intent": "interest"
+  },
+  {
+    "text": "simple interest formula",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ea poloko ea ka",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ea poloko ea ka",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on loan repayment",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on loan repayment",
+    "intent": "interest"
+  },
+  {
+    "text": "what is apr",
+    "intent": "interest"
+  },
+  {
+    "text": "what is apr",
+    "intent": "interest"
+  },
+  {
+    "text": "what is annual interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is annual interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how to apply for a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "how to apply for a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what do i need for a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what do i need for a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "student loan explained",
+    "intent": "loans"
+  },
+  {
+    "text": "student loan explained",
+    "intent": "loans"
+  },
+  {
+    "text": "how to repay a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "how to repay a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "loan repayment plan",
+    "intent": "loans"
+  },
+  {
+    "text": "loan repayment plan",
+    "intent": "loans"
+  },
+  {
+    "text": "what happens if i do not pay my loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what happens if i do not pay my loan",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing from family",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing from family",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing from friends",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing from friends",
+    "intent": "loans"
+  },
+  {
+    "text": "is a student loan worth it",
+    "intent": "loans"
+  },
+  {
+    "text": "is a student loan worth it",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo ea moithuti",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo ea moithuti",
+    "intent": "loans"
+  },
+  {
+    "text": "ho alima chelete ho banka",
+    "intent": "loans"
+  },
+  {
+    "text": "ho alima chelete ho banka",
+    "intent": "loans"
+  },
+  {
+    "text": "sekoloto sa moithuti",
+    "intent": "loans"
+  },
+  {
+    "text": "sekoloto sa moithuti",
+    "intent": "loans"
+  },
+  {
+    "text": "how to avoid debt",
+    "intent": "loans"
+  },
+  {
+    "text": "how to avoid debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is good debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is good debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is bad debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is bad debt",
+    "intent": "loans"
+  },
+  {
+    "text": "debt free",
+    "intent": "loans"
+  },
+  {
+    "text": "debt free",
+    "intent": "loans"
+  },
+  {
+    "text": "getting out of debt",
+    "intent": "loans"
+  },
+  {
+    "text": "getting out of debt",
+    "intent": "loans"
+  },
+  {
+    "text": "loan for school fees",
+    "intent": "loans"
+  },
+  {
+    "text": "loan for school fees",
+    "intent": "loans"
+  },
+  {
+    "text": "personal loan",
+    "intent": "loans"
+  },
+  {
+    "text": "personal loan",
+    "intent": "loans"
+  },
+  {
+    "text": "small loan",
+    "intent": "loans"
+  },
+  {
+    "text": "small loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what are basic needs",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what are basic needs",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "examples of needs",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "examples of needs",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "examples of wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "examples of wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how to know if something is a need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "how to know if something is a need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is education a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is education a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is airtime a need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is airtime a need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is data a need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is data a need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litlhoko tsa bohlokoa",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litlhoko tsa bohlokoa",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "mehlala ea litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "mehlala ea litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "mehlala ea litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "mehlala ea litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "na thuto ke tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "na thuto ke tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "na airtime ke tlhoko kapa takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "na airtime ke tlhoko kapa takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "maloti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "maloti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "lisente ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "lisente ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea Lesotho ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea Lesotho ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "what is money in lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "what is money in lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho currency is called",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho currency is called",
+    "intent": "money"
+  },
+  {
+    "text": "loti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "loti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "m1 ke lisente tse kae",
+    "intent": "money"
+  },
+  {
+    "text": "m1 ke lisente tse kae",
+    "intent": "money"
+  },
+  {
+    "text": "what is the currency of lesotho called",
+    "intent": "money"
+  },
+  {
+    "text": "what is the currency of lesotho called",
+    "intent": "money"
+  },
+  {
+    "text": "how can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how can i save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i save",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i save",
+    "intent": "saving"
+  },
+  {
+    "text": "how do i save",
+    "intent": "saving"
+  },
+  {
+    "text": "ways to save",
+    "intent": "saving"
+  },
+  {
+    "text": "ways to save",
+    "intent": "saving"
+  },
+  {
+    "text": "ways to save",
+    "intent": "saving"
+  },
+  {
+    "text": "save money tips",
+    "intent": "saving"
+  },
+  {
+    "text": "save money tips",
+    "intent": "saving"
+  },
+  {
+    "text": "save money tips",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save as student",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save as student",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for students",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for students",
+    "intent": "saving"
+  },
+  {
+    "text": "student saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "student saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "best way to save",
+    "intent": "saving"
+  },
+  {
+    "text": "best way to save",
+    "intent": "saving"
+  },
+  {
+    "text": "how to start saving",
+    "intent": "saving"
+  },
+  {
+    "text": "how to start saving",
+    "intent": "saving"
+  },
+  {
+    "text": "how to start saving",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to save",
+    "intent": "saving"
+  },
+  {
+    "text": "i want to save",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "save some money",
+    "intent": "saving"
+  },
+  {
+    "text": "save some money",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka joang",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka joang",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka joang",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka joang",
+    "intent": "saving"
+  },
+  {
+    "text": "mokhoa oa poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "mokhoa oa poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "chelete ea poloko ke eng",
+    "intent": "saving"
+  },
+  {
+    "text": "chelete ea poloko ke eng",
+    "intent": "saving"
+  },
+  {
+    "text": "how much to save",
+    "intent": "saving"
+  },
+  {
+    "text": "how much to save",
+    "intent": "saving"
+  },
+  {
+    "text": "how much should i save each month",
+    "intent": "saving"
+  },
+  {
+    "text": "how much should i save each month",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money for beginners",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money for beginners",
+    "intent": "saving"
+  },
+  {
+    "text": "saving basics",
+    "intent": "saving"
+  },
+  {
+    "text": "saving basics",
+    "intent": "saving"
+  },
+  {
+    "text": "learn to save",
+    "intent": "saving"
+  },
+  {
+    "text": "learn to save",
+    "intent": "saving"
+  },
+  {
+    "text": "teach me to save",
+    "intent": "saving"
+  },
+  {
+    "text": "teach me to save",
+    "intent": "saving"
+  },
+  {
+    "text": "why save money",
+    "intent": "saving"
+  },
+  {
+    "text": "why save money",
+    "intent": "saving"
+  },
+  {
+    "text": "why is saving good",
+    "intent": "saving"
+  },
+  {
+    "text": "why is saving good",
+    "intent": "saving"
+  },
+  {
+    "text": "benefits of saving",
+    "intent": "saving"
+  },
+  {
+    "text": "benefits of saving",
+    "intent": "saving"
+  },
+  {
+    "text": "importance of saving",
+    "intent": "saving"
+  },
+  {
+    "text": "importance of saving",
+    "intent": "saving"
+  },
+  {
+    "text": "saving helps me",
+    "intent": "saving"
+  },
+  {
+    "text": "saving helps me",
+    "intent": "saving"
+  },
+  {
+    "text": "how saving works",
+    "intent": "saving"
+  },
+  {
+    "text": "how saving works",
+    "intent": "saving"
+  },
+  {
+    "text": "what is a savings account",
+    "intent": "saving"
+  },
+  {
+    "text": "what is a savings account",
+    "intent": "saving"
+  },
+  {
+    "text": "save for future",
+    "intent": "saving"
+  },
+  {
+    "text": "save for future",
+    "intent": "saving"
+  },
+  {
+    "text": "save for emergency",
+    "intent": "saving"
+  },
+  {
+    "text": "save for emergency",
+    "intent": "saving"
+  },
+  {
+    "text": "save for school",
+    "intent": "saving"
+  },
+  {
+    "text": "save for school",
+    "intent": "saving"
+  },
+  {
+    "text": "i need to save",
+    "intent": "saving"
+  },
+  {
+    "text": "i need to save",
+    "intent": "saving"
+  },
+  {
+    "text": "help me save money",
+    "intent": "saving"
+  },
+  {
+    "text": "help me save money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving strategies for students",
+    "intent": "saving"
+  },
+  {
+    "text": "saving strategies for students",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money as a university student",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money as a university student",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money every month",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save money every month",
+    "intent": "saving"
+  },
+  {
+    "text": "save money each week",
+    "intent": "saving"
+  },
+  {
+    "text": "save money each week",
+    "intent": "saving"
+  },
+  {
+    "text": "save money each month",
+    "intent": "saving"
+  },
+  {
+    "text": "save money each month",
+    "intent": "saving"
+  },
+  {
+    "text": "put some money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "put some money aside",
+    "intent": "saving"
+  },
+  {
+    "text": "keep some money",
+    "intent": "saving"
+  },
+  {
+    "text": "keep some money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to keep money",
+    "intent": "saving"
+  },
+  {
+    "text": "where to put savings",
+    "intent": "saving"
+  },
+  {
+    "text": "where to put savings",
+    "intent": "saving"
+  },
+  {
+    "text": "saving habit",
+    "intent": "saving"
+  },
+  {
+    "text": "saving habit",
+    "intent": "saving"
+  },
+  {
+    "text": "build saving habits",
+    "intent": "saving"
+  },
+  {
+    "text": "build saving habits",
+    "intent": "saving"
+  },
+  {
+    "text": "saving consistently",
+    "intent": "saving"
+  },
+  {
+    "text": "saving consistently",
+    "intent": "saving"
+  },
+  {
+    "text": "saving small money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving small money",
+    "intent": "saving"
+  },
+  {
+    "text": "small savings",
+    "intent": "saving"
+  },
+  {
+    "text": "small savings",
+    "intent": "saving"
+  },
+  {
+    "text": "save even m5",
+    "intent": "saving"
+  },
+  {
+    "text": "save even m5",
+    "intent": "saving"
+  },
+  {
+    "text": "save even m10",
+    "intent": "saving"
+  },
+  {
+    "text": "save even m10",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save with small income",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save with small income",
+    "intent": "saving"
+  },
+  {
+    "text": "saving on a student budget",
+    "intent": "saving"
+  },
+  {
+    "text": "saving on a student budget",
+    "intent": "saving"
+  },
+  {
+    "text": "how to make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to create budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to create budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "making a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "making a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget tips",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget tips",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting tips for students",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting tips for students",
+    "intent": "budgeting"
+  },
+  {
+    "text": "student budget tips",
+    "intent": "budgeting"
+  },
+  {
+    "text": "student budget tips",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to stick to a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to stick to a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget planning",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget planning",
+    "intent": "budgeting"
+  },
+  {
+    "text": "plan my budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "plan my budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget my spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget my spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to manage my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to manage my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "money management",
+    "intent": "budgeting"
+  },
+  {
+    "text": "money management",
+    "intent": "budgeting"
+  },
+  {
+    "text": "financial planning",
+    "intent": "budgeting"
+  },
+  {
+    "text": "financial planning",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso ea chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso ea chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho etsa moralo oa chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho etsa moralo oa chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to divide money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to divide money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "splitting my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "splitting my money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to allocate money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to allocate money",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for food",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for food",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for rent",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for rent",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for transport",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for transport",
+    "intent": "budgeting"
+  },
+  {
+    "text": "monthly spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "monthly spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "weekly spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "weekly spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to control spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to control spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to reduce expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to reduce expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "cut down spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "cut down spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spend less save more",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spend less save more",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is a bank account for",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a bank account for",
+    "intent": "banking"
+  },
+  {
+    "text": "how to open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "how to open bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "opening a bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "opening a bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "bank account requirements",
+    "intent": "banking"
+  },
+  {
+    "text": "bank account requirements",
+    "intent": "banking"
+  },
+  {
+    "text": "what do i need to open a bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "what do i need to open a bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "how to use a bank",
+    "intent": "banking"
+  },
+  {
+    "text": "how to use a bank",
+    "intent": "banking"
+  },
+  {
+    "text": "bank services",
+    "intent": "banking"
+  },
+  {
+    "text": "bank services",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a savings account",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a savings account",
+    "intent": "banking"
+  },
+  {
+    "text": "difference between checking and savings",
+    "intent": "banking"
+  },
+  {
+    "text": "difference between checking and savings",
+    "intent": "banking"
+  },
+  {
+    "text": "how to deposit money in bank",
+    "intent": "banking"
+  },
+  {
+    "text": "how to deposit money in bank",
+    "intent": "banking"
+  },
+  {
+    "text": "how to withdraw from bank",
+    "intent": "banking"
+  },
+  {
+    "text": "how to withdraw from bank",
+    "intent": "banking"
+  },
+  {
+    "text": "using an atm",
+    "intent": "banking"
+  },
+  {
+    "text": "using an atm",
+    "intent": "banking"
+  },
+  {
+    "text": "atm card",
+    "intent": "banking"
+  },
+  {
+    "text": "atm card",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a debit card",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a debit card",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile money explained",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile money explained",
+    "intent": "banking"
+  },
+  {
+    "text": "how does mobile money work",
+    "intent": "banking"
+  },
+  {
+    "text": "how does mobile money work",
+    "intent": "banking"
+  },
+  {
+    "text": "mpesa explained",
+    "intent": "banking"
+  },
+  {
+    "text": "mpesa explained",
+    "intent": "banking"
+  },
+  {
+    "text": "ecocash explained",
+    "intent": "banking"
+  },
+  {
+    "text": "ecocash explained",
+    "intent": "banking"
+  },
+  {
+    "text": "banka e sebetsa joang",
+    "intent": "banking"
+  },
+  {
+    "text": "banka e sebetsa joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ho kenya chelete bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "ho kenya chelete bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "ho nt?a chelete bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "ho nt?a chelete bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto ea poloko",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto ea poloko",
+    "intent": "banking"
+  },
+  {
+    "text": "banking tips",
+    "intent": "banking"
+  },
+  {
+    "text": "banking tips",
+    "intent": "banking"
+  },
+  {
+    "text": "safe place to keep money",
+    "intent": "banking"
+  },
+  {
+    "text": "safe place to keep money",
+    "intent": "banking"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "what is chelete",
+    "intent": "money"
+  },
+  {
+    "text": "what is chelete",
+    "intent": "money"
+  },
+  {
+    "text": "maloti",
+    "intent": "money"
+  },
+  {
+    "text": "maloti",
+    "intent": "money"
+  },
+  {
+    "text": "maloti",
+    "intent": "money"
+  },
+  {
+    "text": "lisente",
+    "intent": "money"
+  },
+  {
+    "text": "lisente",
+    "intent": "money"
+  },
+  {
+    "text": "lisente",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea Lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea Lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea Lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "loti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "loti ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "what is loti",
+    "intent": "money"
+  },
+  {
+    "text": "what is loti",
+    "intent": "money"
+  },
+  {
+    "text": "currency",
+    "intent": "money"
+  },
+  {
+    "text": "currency",
+    "intent": "money"
+  },
+  {
+    "text": "currency of lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "currency of lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "maloti le lisente",
+    "intent": "money"
+  },
+  {
+    "text": "maloti le lisente",
+    "intent": "money"
+  },
+  {
+    "text": "t?epe ke chelete",
+    "intent": "money"
+  },
+  {
+    "text": "pampiri ke chelete",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho money",
+    "intent": "money"
+  },
+  {
+    "text": "what money does lesotho use",
+    "intent": "money"
+  },
+  {
+    "text": "what money does lesotho use",
+    "intent": "money"
+  },
+  {
+    "text": "what is income",
+    "intent": "income"
+  },
+  {
+    "text": "what is income",
+    "intent": "income"
+  },
+  {
+    "text": "what is income",
+    "intent": "income"
+  },
+  {
+    "text": "how do i earn money",
+    "intent": "income"
+  },
+  {
+    "text": "how do i earn money",
+    "intent": "income"
+  },
+  {
+    "text": "how do i earn money",
+    "intent": "income"
+  },
+  {
+    "text": "ways to make money",
+    "intent": "income"
+  },
+  {
+    "text": "ways to make money",
+    "intent": "income"
+  },
+  {
+    "text": "ways to make money",
+    "intent": "income"
+  },
+  {
+    "text": "how to earn income",
+    "intent": "income"
+  },
+  {
+    "text": "how to earn income",
+    "intent": "income"
+  },
+  {
+    "text": "sources of money",
+    "intent": "income"
+  },
+  {
+    "text": "sources of money",
+    "intent": "income"
+  },
+  {
+    "text": "how to get income",
+    "intent": "income"
+  },
+  {
+    "text": "how to get income",
+    "intent": "income"
+  },
+  {
+    "text": "earning money",
+    "intent": "income"
+  },
+  {
+    "text": "earning money",
+    "intent": "income"
+  },
+  {
+    "text": "earning money",
+    "intent": "income"
+  },
+  {
+    "text": "make money as student",
+    "intent": "income"
+  },
+  {
+    "text": "make money as student",
+    "intent": "income"
+  },
+  {
+    "text": "student income",
+    "intent": "income"
+  },
+  {
+    "text": "student income",
+    "intent": "income"
+  },
+  {
+    "text": "how students make money",
+    "intent": "income"
+  },
+  {
+    "text": "how students make money",
+    "intent": "income"
+  },
+  {
+    "text": "moputso ke eng",
+    "intent": "income"
+  },
+  {
+    "text": "moputso ke eng",
+    "intent": "income"
+  },
+  {
+    "text": "moputso ke eng",
+    "intent": "income"
+  },
+  {
+    "text": "ke fumana chelete joang",
+    "intent": "income"
+  },
+  {
+    "text": "ke fumana chelete joang",
+    "intent": "income"
+  },
+  {
+    "text": "chelete e kenang ke eng",
+    "intent": "income"
+  },
+  {
+    "text": "chelete e kenang ke eng",
+    "intent": "income"
+  },
+  {
+    "text": "ho fumana moputso",
+    "intent": "income"
+  },
+  {
+    "text": "ho fumana moputso",
+    "intent": "income"
+  },
+  {
+    "text": "salary explained",
+    "intent": "income"
+  },
+  {
+    "text": "salary explained",
+    "intent": "income"
+  },
+  {
+    "text": "what is a salary",
+    "intent": "income"
+  },
+  {
+    "text": "what is a salary",
+    "intent": "income"
+  },
+  {
+    "text": "what is a wage",
+    "intent": "income"
+  },
+  {
+    "text": "what is a wage",
+    "intent": "income"
+  },
+  {
+    "text": "wage vs salary",
+    "intent": "income"
+  },
+  {
+    "text": "wage vs salary",
+    "intent": "income"
+  },
+  {
+    "text": "earn money from work",
+    "intent": "income"
+  },
+  {
+    "text": "earn money from work",
+    "intent": "income"
+  },
+  {
+    "text": "part time income",
+    "intent": "income"
+  },
+  {
+    "text": "part time income",
+    "intent": "income"
+  },
+  {
+    "text": "side hustle",
+    "intent": "income"
+  },
+  {
+    "text": "side hustle",
+    "intent": "income"
+  },
+  {
+    "text": "how to make extra money",
+    "intent": "income"
+  },
+  {
+    "text": "how to make extra money",
+    "intent": "income"
+  },
+  {
+    "text": "business income",
+    "intent": "income"
+  },
+  {
+    "text": "business income",
+    "intent": "income"
+  },
+  {
+    "text": "selling things to earn money",
+    "intent": "income"
+  },
+  {
+    "text": "selling things to earn money",
+    "intent": "income"
+  },
+  {
+    "text": "allowance is income",
+    "intent": "income"
+  },
+  {
+    "text": "allowance is income",
+    "intent": "income"
+  },
+  {
+    "text": "pocket money income",
+    "intent": "income"
+  },
+  {
+    "text": "pocket money income",
+    "intent": "income"
+  },
+  {
+    "text": "how do i earn",
+    "intent": "income"
+  },
+  {
+    "text": "how do i earn",
+    "intent": "income"
+  },
+  {
+    "text": "ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "earn income",
+    "intent": "income"
+  },
+  {
+    "text": "earn income",
+    "intent": "income"
+  },
+  {
+    "text": "get money",
+    "intent": "income"
+  },
+  {
+    "text": "get money",
+    "intent": "income"
+  },
+  {
+    "text": "make cash",
+    "intent": "income"
+  },
+  {
+    "text": "make cash",
+    "intent": "income"
+  },
+  {
+    "text": "earning potential",
+    "intent": "income"
+  },
+  {
+    "text": "earning potential",
+    "intent": "income"
+  },
+  {
+    "text": "what is interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "how interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "how to calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how to calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest",
+    "intent": "interest"
+  },
+  {
+    "text": "simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "simple interest",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "tswala ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "tswala ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "ho bala phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "ho bala phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "bank interest",
+    "intent": "interest"
+  },
+  {
+    "text": "bank interest",
+    "intent": "interest"
+  },
+  {
+    "text": "savings interest",
+    "intent": "interest"
+  },
+  {
+    "text": "savings interest",
+    "intent": "interest"
+  },
+  {
+    "text": "loan interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "loan interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest",
+    "intent": "interest"
+  },
+  {
+    "text": "earn interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "earn interest on savings",
+    "intent": "interest"
+  },
+  {
+    "text": "what is a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what is a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what is a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo ke eng",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo ke eng",
+    "intent": "loans"
+  },
+  {
+    "text": "how loans work",
+    "intent": "loans"
+  },
+  {
+    "text": "how loans work",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing money",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing money",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing money",
+    "intent": "loans"
+  },
+  {
+    "text": "how to borrow",
+    "intent": "loans"
+  },
+  {
+    "text": "how to borrow",
+    "intent": "loans"
+  },
+  {
+    "text": "what is debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "what is borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "loan explained",
+    "intent": "loans"
+  },
+  {
+    "text": "loan explained",
+    "intent": "loans"
+  },
+  {
+    "text": "debt explained",
+    "intent": "loans"
+  },
+  {
+    "text": "debt explained",
+    "intent": "loans"
+  },
+  {
+    "text": "sekoloto ke eng",
+    "intent": "loans"
+  },
+  {
+    "text": "sekoloto ke eng",
+    "intent": "loans"
+  },
+  {
+    "text": "ho alima chelete",
+    "intent": "loans"
+  },
+  {
+    "text": "ho alima chelete",
+    "intent": "loans"
+  },
+  {
+    "text": "student loans",
+    "intent": "loans"
+  },
+  {
+    "text": "student loans",
+    "intent": "loans"
+  },
+  {
+    "text": "repaying a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "repaying a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "loan repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "loan repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing from bank",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing from bank",
+    "intent": "loans"
+  },
+  {
+    "text": "is loan good",
+    "intent": "loans"
+  },
+  {
+    "text": "is loan good",
+    "intent": "loans"
+  },
+  {
+    "text": "is borrowing good",
+    "intent": "loans"
+  },
+  {
+    "text": "is borrowing good",
+    "intent": "loans"
+  },
+  {
+    "text": "save money",
+    "intent": "saving"
+  },
+  {
+    "text": "save money",
+    "intent": "saving"
+  },
+  {
+    "text": "save money",
+    "intent": "saving"
+  },
+  {
+    "text": "save money",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving money",
+    "intent": "saving"
+  },
+  {
+    "text": "i need to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "i need to save money",
+    "intent": "saving"
+  },
+  {
+    "text": "help me to save",
+    "intent": "saving"
+  },
+  {
+    "text": "help me to save",
+    "intent": "saving"
+  },
+  {
+    "text": "best saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "best saving tips",
+    "intent": "saving"
+  },
+  {
+    "text": "saving ideas",
+    "intent": "saving"
+  },
+  {
+    "text": "saving ideas",
+    "intent": "saving"
+  },
+  {
+    "text": "ways i can save",
+    "intent": "saving"
+  },
+  {
+    "text": "ways i can save",
+    "intent": "saving"
+  },
+  {
+    "text": "how do students save",
+    "intent": "saving"
+  },
+  {
+    "text": "how do students save",
+    "intent": "saving"
+  },
+  {
+    "text": "student money saving",
+    "intent": "saving"
+  },
+  {
+    "text": "student money saving",
+    "intent": "saving"
+  },
+  {
+    "text": "university student saving",
+    "intent": "saving"
+  },
+  {
+    "text": "university student saving",
+    "intent": "saving"
+  },
+  {
+    "text": "high school saving",
+    "intent": "saving"
+  },
+  {
+    "text": "high school saving",
+    "intent": "saving"
+  },
+  {
+    "text": "primary school saving",
+    "intent": "saving"
+  },
+  {
+    "text": "primary school saving",
+    "intent": "saving"
+  },
+  {
+    "text": "save for something",
+    "intent": "saving"
+  },
+  {
+    "text": "save for something",
+    "intent": "saving"
+  },
+  {
+    "text": "what should i save for",
+    "intent": "saving"
+  },
+  {
+    "text": "what should i save for",
+    "intent": "saving"
+  },
+  {
+    "text": "how much saving is enough",
+    "intent": "saving"
+  },
+  {
+    "text": "how much saving is enough",
+    "intent": "saving"
+  },
+  {
+    "text": "save 10 percent",
+    "intent": "saving"
+  },
+  {
+    "text": "save 10 percent",
+    "intent": "saving"
+  },
+  {
+    "text": "save 20 percent",
+    "intent": "saving"
+  },
+  {
+    "text": "save 20 percent",
+    "intent": "saving"
+  },
+  {
+    "text": "save half of my allowance",
+    "intent": "saving"
+  },
+  {
+    "text": "save half of my allowance",
+    "intent": "saving"
+  },
+  {
+    "text": "saving from pocket money",
+    "intent": "saving"
+  },
+  {
+    "text": "saving from pocket money",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "boloka chelete",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "ho boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "poloko",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "ke boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "nka boloka",
+    "intent": "saving"
+  },
+  {
+    "text": "saving is smart",
+    "intent": "saving"
+  },
+  {
+    "text": "saving is smart",
+    "intent": "saving"
+  },
+  {
+    "text": "saving is wise",
+    "intent": "saving"
+  },
+  {
+    "text": "saving is wise",
+    "intent": "saving"
+  },
+  {
+    "text": "save before spending",
+    "intent": "saving"
+  },
+  {
+    "text": "save before spending",
+    "intent": "saving"
+  },
+  {
+    "text": "pay yourself first saving",
+    "intent": "saving"
+  },
+  {
+    "text": "pay yourself first saving",
+    "intent": "saving"
+  },
+  {
+    "text": "automatic saving",
+    "intent": "saving"
+  },
+  {
+    "text": "automatic saving",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every day",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every day",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every week",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every week",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every month",
+    "intent": "saving"
+  },
+  {
+    "text": "saving every month",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from salary",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from salary",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from allowance",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from allowance",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from m100",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from m100",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from m200",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from m200",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from m500",
+    "intent": "saving"
+  },
+  {
+    "text": "how to save from m500",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a goal",
+    "intent": "saving"
+  },
+  {
+    "text": "saving for a goal",
+    "intent": "saving"
+  },
+  {
+    "text": "saving goal ideas",
+    "intent": "saving"
+  },
+  {
+    "text": "saving goal ideas",
+    "intent": "saving"
+  },
+  {
+    "text": "how to reach saving goals",
+    "intent": "saving"
+  },
+  {
+    "text": "how to reach saving goals",
+    "intent": "saving"
+  },
+  {
+    "text": "saving tracker",
+    "intent": "saving"
+  },
+  {
+    "text": "saving tracker",
+    "intent": "saving"
+  },
+  {
+    "text": "saving plan",
+    "intent": "saving"
+  },
+  {
+    "text": "saving plan",
+    "intent": "saving"
+  },
+  {
+    "text": "saving method",
+    "intent": "saving"
+  },
+  {
+    "text": "saving method",
+    "intent": "saving"
+  },
+  {
+    "text": "best saving method",
+    "intent": "saving"
+  },
+  {
+    "text": "best saving method",
+    "intent": "saving"
+  },
+  {
+    "text": "what is money",
+    "intent": "money"
+  },
+  {
+    "text": "what is money",
+    "intent": "money"
+  },
+  {
+    "text": "what is money",
+    "intent": "money"
+  },
+  {
+    "text": "explain money",
+    "intent": "money"
+  },
+  {
+    "text": "explain money",
+    "intent": "money"
+  },
+  {
+    "text": "money basics",
+    "intent": "money"
+  },
+  {
+    "text": "money basics",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ke eng",
+    "intent": "money"
+  },
+  {
+    "text": "maloti",
+    "intent": "money"
+  },
+  {
+    "text": "maloti",
+    "intent": "money"
+  },
+  {
+    "text": "lisente",
+    "intent": "money"
+  },
+  {
+    "text": "lisente",
+    "intent": "money"
+  },
+  {
+    "text": "what is maloti",
+    "intent": "money"
+  },
+  {
+    "text": "what is maloti",
+    "intent": "money"
+  },
+  {
+    "text": "what is lisente",
+    "intent": "money"
+  },
+  {
+    "text": "what is lisente",
+    "intent": "money"
+  },
+  {
+    "text": "money in lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "money in lesotho",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho currency",
+    "intent": "money"
+  },
+  {
+    "text": "lesotho currency",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m1",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m1",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m10",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m10",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m20",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m20",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m50",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m50",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m100",
+    "intent": "money"
+  },
+  {
+    "text": "how much is m100",
+    "intent": "money"
+  },
+  {
+    "text": "counting maloti",
+    "intent": "money"
+  },
+  {
+    "text": "counting maloti",
+    "intent": "money"
+  },
+  {
+    "text": "coins",
+    "intent": "money"
+  },
+  {
+    "text": "coins",
+    "intent": "money"
+  },
+  {
+    "text": "notes",
+    "intent": "money"
+  },
+  {
+    "text": "notes",
+    "intent": "money"
+  },
+  {
+    "text": "money value",
+    "intent": "money"
+  },
+  {
+    "text": "money value",
+    "intent": "money"
+  },
+  {
+    "text": "what can money buy",
+    "intent": "money"
+  },
+  {
+    "text": "what can money buy",
+    "intent": "money"
+  },
+  {
+    "text": "why do we need money",
+    "intent": "money"
+  },
+  {
+    "text": "why do we need money",
+    "intent": "money"
+  },
+  {
+    "text": "what is the purpose of money",
+    "intent": "money"
+  },
+  {
+    "text": "what is the purpose of money",
+    "intent": "money"
+  },
+  {
+    "text": "money explained for kids",
+    "intent": "money"
+  },
+  {
+    "text": "money explained for kids",
+    "intent": "money"
+  },
+  {
+    "text": "money explained for students",
+    "intent": "money"
+  },
+  {
+    "text": "money explained for students",
+    "intent": "money"
+  },
+  {
+    "text": "t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea t?epe",
+    "intent": "money"
+  },
+  {
+    "text": "chelete ea pampiri",
+    "intent": "money"
+  },
+  {
+    "text": "maloti le lisente",
+    "intent": "money"
+  },
+  {
+    "text": "maloti le lisente",
+    "intent": "money"
+  },
+  {
+    "text": "buying with money",
+    "intent": "money"
+  },
+  {
+    "text": "buying with money",
+    "intent": "money"
+  },
+  {
+    "text": "selling for money",
+    "intent": "money"
+  },
+  {
+    "text": "selling for money",
+    "intent": "money"
+  },
+  {
+    "text": "how to budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "make a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting for beginners",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting for beginners",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to start budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to start budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting basics",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting basics",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spending plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "plan my spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "plan my spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to manage budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to manage budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting my income",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting my income",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting my expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting my expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to control my budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to control my budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "moralo oa chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "moralo oa chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to plan budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to plan budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget tips for students",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget tips for students",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for university",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for university",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for high school",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for high school",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for food and transport",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for food and transport",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to reduce spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to reduce spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spending less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "spending less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to cut expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to cut expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "manage expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "manage expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "track my budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "track my budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget tracking",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget tracking",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "how interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "how interest works",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "tswala",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "compound interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "simple interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "simple interest explained",
+    "intent": "interest"
+  },
+  {
+    "text": "how to earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how to earn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on money",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on money",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "bank interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "bank interest rate",
+    "intent": "interest"
+  },
+  {
+    "text": "interest earned",
+    "intent": "interest"
+  },
+  {
+    "text": "interest earned",
+    "intent": "interest"
+  },
+  {
+    "text": "interest paid",
+    "intent": "interest"
+  },
+  {
+    "text": "interest paid",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest",
+    "intent": "interest"
+  },
+  {
+    "text": "how much interest",
+    "intent": "interest"
+  },
+  {
+    "text": "calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "calculate interest",
+    "intent": "interest"
+  },
+  {
+    "text": "interest calculation",
+    "intent": "interest"
+  },
+  {
+    "text": "interest calculation",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello ke eng",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello e sebetsa joang",
+    "intent": "interest"
+  },
+  {
+    "text": "phaello e sebetsa joang",
+    "intent": "interest"
+  },
+  {
+    "text": "ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "ho fumana phaello",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on savings account",
+    "intent": "interest"
+  },
+  {
+    "text": "interest on savings account",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate formula",
+    "intent": "interest"
+  },
+  {
+    "text": "interest rate formula",
+    "intent": "interest"
+  },
+  {
+    "text": "interest for beginners",
+    "intent": "interest"
+  },
+  {
+    "text": "interest for beginners",
+    "intent": "interest"
+  },
+  {
+    "text": "explain interest",
+    "intent": "interest"
+  },
+  {
+    "text": "explain interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what is a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "what is a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "loan",
+    "intent": "loans"
+  },
+  {
+    "text": "loan",
+    "intent": "loans"
+  },
+  {
+    "text": "loan",
+    "intent": "loans"
+  },
+  {
+    "text": "loans",
+    "intent": "loans"
+  },
+  {
+    "text": "loans",
+    "intent": "loans"
+  },
+  {
+    "text": "loans",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing",
+    "intent": "loans"
+  },
+  {
+    "text": "what is debt",
+    "intent": "loans"
+  },
+  {
+    "text": "what is debt",
+    "intent": "loans"
+  },
+  {
+    "text": "debt",
+    "intent": "loans"
+  },
+  {
+    "text": "debt",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo",
+    "intent": "loans"
+  },
+  {
+    "text": "sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "sekoloto",
+    "intent": "loans"
+  },
+  {
+    "text": "how to get a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "how to get a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "how loans work",
+    "intent": "loans"
+  },
+  {
+    "text": "how loans work",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing money",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing money",
+    "intent": "loans"
+  },
+  {
+    "text": "loan explained",
+    "intent": "loans"
+  },
+  {
+    "text": "loan explained",
+    "intent": "loans"
+  },
+  {
+    "text": "student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "student loan",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo ke eng",
+    "intent": "loans"
+  },
+  {
+    "text": "kalimo ke eng",
+    "intent": "loans"
+  },
+  {
+    "text": "ho alima chelete",
+    "intent": "loans"
+  },
+  {
+    "text": "ho alima chelete",
+    "intent": "loans"
+  },
+  {
+    "text": "how to pay back a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "how to pay back a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "loan repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "loan repayment",
+    "intent": "loans"
+  },
+  {
+    "text": "is borrowing good",
+    "intent": "loans"
+  },
+  {
+    "text": "is borrowing good",
+    "intent": "loans"
+  },
+  {
+    "text": "should i get a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "should i get a loan",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing risks",
+    "intent": "loans"
+  },
+  {
+    "text": "borrowing risks",
+    "intent": "loans"
+  },
+  {
+    "text": "loan for students",
+    "intent": "loans"
+  },
+  {
+    "text": "loan for students",
+    "intent": "loans"
+  },
+  {
+    "text": "what is income",
+    "intent": "income"
+  },
+  {
+    "text": "what is income",
+    "intent": "income"
+  },
+  {
+    "text": "what is income",
+    "intent": "income"
+  },
+  {
+    "text": "income",
+    "intent": "income"
+  },
+  {
+    "text": "income",
+    "intent": "income"
+  },
+  {
+    "text": "income",
+    "intent": "income"
+  },
+  {
+    "text": "how to earn",
+    "intent": "income"
+  },
+  {
+    "text": "how to earn",
+    "intent": "income"
+  },
+  {
+    "text": "earn money",
+    "intent": "income"
+  },
+  {
+    "text": "earn money",
+    "intent": "income"
+  },
+  {
+    "text": "make money",
+    "intent": "income"
+  },
+  {
+    "text": "make money",
+    "intent": "income"
+  },
+  {
+    "text": "moputso",
+    "intent": "income"
+  },
+  {
+    "text": "moputso",
+    "intent": "income"
+  },
+  {
+    "text": "moputso",
+    "intent": "income"
+  },
+  {
+    "text": "how to make money",
+    "intent": "income"
+  },
+  {
+    "text": "how to make money",
+    "intent": "income"
+  },
+  {
+    "text": "ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "ways to earn",
+    "intent": "income"
+  },
+  {
+    "text": "what is salary",
+    "intent": "income"
+  },
+  {
+    "text": "what is salary",
+    "intent": "income"
+  },
+  {
+    "text": "salary",
+    "intent": "income"
+  },
+  {
+    "text": "salary",
+    "intent": "income"
+  },
+  {
+    "text": "how to get income",
+    "intent": "income"
+  },
+  {
+    "text": "how to get income",
+    "intent": "income"
+  },
+  {
+    "text": "student income",
+    "intent": "income"
+  },
+  {
+    "text": "student income",
+    "intent": "income"
+  },
+  {
+    "text": "how students earn",
+    "intent": "income"
+  },
+  {
+    "text": "how students earn",
+    "intent": "income"
+  },
+  {
+    "text": "ke fumana chelete joang",
+    "intent": "income"
+  },
+  {
+    "text": "ke fumana chelete joang",
+    "intent": "income"
+  },
+  {
+    "text": "chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "chelete e kenang",
+    "intent": "income"
+  },
+  {
+    "text": "earning money",
+    "intent": "income"
+  },
+  {
+    "text": "earning money",
+    "intent": "income"
+  },
+  {
+    "text": "side income",
+    "intent": "income"
+  },
+  {
+    "text": "side income",
+    "intent": "income"
+  },
+  {
+    "text": "extra income",
+    "intent": "income"
+  },
+  {
+    "text": "extra income",
+    "intent": "income"
+  },
+  {
+    "text": "how to earn more",
+    "intent": "income"
+  },
+  {
+    "text": "how to earn more",
+    "intent": "income"
+  },
+  {
+    "text": "income sources",
+    "intent": "income"
+  },
+  {
+    "text": "income sources",
+    "intent": "income"
+  },
+  {
+    "text": "what is a wage",
+    "intent": "income"
+  },
+  {
+    "text": "what is a wage",
+    "intent": "income"
+  },
+  {
+    "text": "wage",
+    "intent": "income"
+  },
+  {
+    "text": "wage",
+    "intent": "income"
+  },
+  {
+    "text": "what is a bank",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a bank",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a bank",
+    "intent": "banking"
+  },
+  {
+    "text": "bank",
+    "intent": "banking"
+  },
+  {
+    "text": "bank",
+    "intent": "banking"
+  },
+  {
+    "text": "bank",
+    "intent": "banking"
+  },
+  {
+    "text": "banking",
+    "intent": "banking"
+  },
+  {
+    "text": "banking",
+    "intent": "banking"
+  },
+  {
+    "text": "banking",
+    "intent": "banking"
+  },
+  {
+    "text": "banka",
+    "intent": "banking"
+  },
+  {
+    "text": "banka",
+    "intent": "banking"
+  },
+  {
+    "text": "bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "how to open an account",
+    "intent": "banking"
+  },
+  {
+    "text": "how to open an account",
+    "intent": "banking"
+  },
+  {
+    "text": "savings account",
+    "intent": "banking"
+  },
+  {
+    "text": "savings account",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile money",
+    "intent": "banking"
+  },
+  {
+    "text": "mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "mpesa",
+    "intent": "banking"
+  },
+  {
+    "text": "ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "ecocash",
+    "intent": "banking"
+  },
+  {
+    "text": "how to deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "how to deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "how to withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "how to withdraw",
+    "intent": "banking"
+  },
+  {
+    "text": "atm machine",
+    "intent": "banking"
+  },
+  {
+    "text": "atm machine",
+    "intent": "banking"
+  },
+  {
+    "text": "bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "bank card",
+    "intent": "banking"
+  },
+  {
+    "text": "debit card",
+    "intent": "banking"
+  },
+  {
+    "text": "debit card",
+    "intent": "banking"
+  },
+  {
+    "text": "where to keep money",
+    "intent": "banking"
+  },
+  {
+    "text": "where to keep money",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto ea banka",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto ea banka",
+    "intent": "banking"
+  },
+  {
+    "text": "ho bula akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "ho bula akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "banking for students",
+    "intent": "banking"
+  },
+  {
+    "text": "banking for students",
+    "intent": "banking"
+  },
+  {
+    "text": "student bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "student bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "how do banks work",
+    "intent": "banking"
+  },
+  {
+    "text": "how do banks work",
+    "intent": "banking"
+  },
+  {
+    "text": "needs vs wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "needs vs wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "needs vs wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "need vs want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is a want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what is a want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "needs",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "needs",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "tlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litlhoko",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "litakatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "difference between needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "difference between needs and wants",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "phapang pakeng tsa tlhoko le takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "phapang pakeng tsa tlhoko le takatso",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "essential vs non-essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "essential vs non-essential",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what do i need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what do i need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what do i want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "what do i want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is this a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is this a need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is this a want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "is this a want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "things i need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "things i need",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "things i want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "things i want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "need or want",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "sawubona",
+    "intent": "greeting"
+  },
+  {
+    "text": "hello there",
+    "intent": "greeting"
+  },
+  {
+    "text": "hi there",
+    "intent": "greeting"
+  },
+  {
+    "text": "good day",
+    "intent": "greeting"
+  },
+  {
+    "text": "good to see you",
+    "intent": "greeting"
+  },
+  {
+    "text": "save now",
+    "intent": "saving"
+  },
+  {
+    "text": "start saving now",
+    "intent": "saving"
+  },
+  {
+    "text": "begin saving",
+    "intent": "saving"
+  },
+  {
+    "text": "saving today",
+    "intent": "saving"
+  },
+  {
+    "text": "saving tomorrow",
+    "intent": "saving"
+  },
+  {
+    "text": "what is cash money",
+    "intent": "money"
+  },
+  {
+    "text": "money talk",
+    "intent": "money"
+  },
+  {
+    "text": "money matters",
+    "intent": "money"
+  },
+  {
+    "text": "cash explained",
+    "intent": "money"
+  },
+  {
+    "text": "budget now",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget today",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting now",
+    "intent": "budgeting"
+  },
+  {
+    "text": "plan budget now",
+    "intent": "budgeting"
+  },
+  {
+    "text": "interest now",
+    "intent": "interest"
+  },
+  {
+    "text": "interest today",
+    "intent": "interest"
+  },
+  {
+    "text": "learn interest",
+    "intent": "interest"
+  },
+  {
+    "text": "what is interest for",
+    "intent": "interest"
+  },
+  {
+    "text": "loan now",
+    "intent": "loans"
+  },
+  {
+    "text": "loans today",
+    "intent": "loans"
+  },
+  {
+    "text": "borrow now",
+    "intent": "loans"
+  },
+  {
+    "text": "debt now",
+    "intent": "loans"
+  },
+  {
+    "text": "income now",
+    "intent": "income"
+  },
+  {
+    "text": "earn today",
+    "intent": "income"
+  },
+  {
+    "text": "income today",
+    "intent": "income"
+  },
+  {
+    "text": "money coming in",
+    "intent": "income"
+  },
+  {
+    "text": "bank now",
+    "intent": "banking"
+  },
+  {
+    "text": "bank today",
+    "intent": "banking"
+  },
+  {
+    "text": "banking today",
+    "intent": "banking"
+  },
+  {
+    "text": "open account now",
+    "intent": "banking"
+  },
+  {
+    "text": "need today",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "want today",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "needs now",
+    "intent": "needs_wants"
+  },
+  {
+    "text": "wants now",
+    "intent": "needs_wants"
+  }
+]
