@@ -489,8 +489,10 @@ function Board({ s, animating, capturing, click, mode }) {
   return (
     <div className="board-container">
       <svg viewBox="0 0 300 300" className="morabaraba-board">
+        {/* 3D Board Background Image */}
         <image href={boardBgImg} x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice" />
         
+        {/* Board Lines */}
         {Object.entries(ADJ).map(([from, toList]) =>
           toList.map(to => +from < +to ? (
             <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y}
@@ -498,6 +500,7 @@ function Board({ s, animating, capturing, click, mode }) {
           ) : null)
         )}
         
+        {/* Points and Pieces */}
         {POINTS.map(pt => {
           const piece = s.board[pt.id];
           const isSel = s.selected === pt.id;
@@ -507,7 +510,6 @@ function Board({ s, animating, capturing, click, mode }) {
           const isCapturing = capturing === pt.id;
           const isMill = millPointSet.has(pt.id);
           const clickable = (mode === 'vsComputer' && s.player === 'green');
-          const pieceImage = piece === 'green' ? greenPieceImg : brownPieceImg;
 
           return (
             <g key={pt.id} onClick={() => {
@@ -518,17 +520,22 @@ function Board({ s, animating, capturing, click, mode }) {
               else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
             }}>
               {isMill && <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="3" className="mill-glow-ring" />}
-              <circle cx={pt.x} cy={pt.y} r="7" fill="#2b1a0e" className="intersection" />
+              <circle cx={pt.x} cy={pt.y} r="7" fill="#2b1a0e" stroke="#1a0e06" strokeWidth="1" className="intersection" />
               
+              {/* 3D Piece Image */}
               {piece && (
                 <g className={`piece-group ${isNew?'pop-in':''} ${isCapturing?'shake':''} ${isMill?'mill-piece':''}`}>
                   <image 
-                    href={pieceImage} 
-                    x={pt.x - 15} 
-                    y={pt.y - 15} 
-                    width="30" 
-                    height="30" 
-                    style={{ filter: isSel ? 'drop-shadow(0 0 5px #facc15)' : 'drop-shadow(0 2px 3px rgba(0,0,0,0.4))' }}
+                    href={piece === 'green' ? greenPieceImg : brownPieceImg}
+                    x={pt.x - 18}
+                    y={pt.y - 18}
+                    width="36"
+                    height="36"
+                    style={{ 
+                      filter: isSel 
+                        ? 'drop-shadow(0 0 6px #facc15) drop-shadow(0 2px 4px rgba(0,0,0,0.5))' 
+                        : 'drop-shadow(0 3px 5px rgba(0,0,0,0.4))' 
+                    }}
                   />
                 </g>
               )}
