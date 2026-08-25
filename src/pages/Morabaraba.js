@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './Morabaraba.css';
 
+// 🛠️ THE FIX: Import the images directly into the JS
+import greenPieceImg from './morabaraba-green-piece.png';
+import brownPieceImg from './morabaraba-brown-piece.png';
+import boardBgImg from './morabaraba-board.jpg';
+
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
 const POINTS = [
   { id: 0,  x: 30, y: 30 },  { id: 1,  x: 150, y: 30 },  { id: 2,  x: 270, y: 30 },
@@ -492,12 +497,6 @@ function Board({ s, animating, capturing, click, mode }) {
   const greenTrayPieces = Array.from({ length: 12 });
   const brownTrayPieces = Array.from({ length: 12 });
 
-  /* 🛠️ THE FIX: Use process.env.PUBLIC_URL */
-  const imageBase = process.env.PUBLIC_URL;
-  const greenPiece = `${imageBase}/images/morabaraba-green-piece.png`;
-  const brownPiece = `${imageBase}/images/morabaraba-brown-piece.png`;
-  const boardImage = `${imageBase}/images/morabaraba-board.jpg`;
-
   return (
     <div style={{ position: 'relative' }}>
       
@@ -524,7 +523,7 @@ function Board({ s, animating, capturing, click, mode }) {
       {/* The Main 3D Wooden Board */}
       <div className="board-container">
         <svg viewBox="0 0 300 300" className="morabaraba-board">
-          <image href={boardImage} x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice" />
+          <image href={boardBgImg} x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice" />
           
           {Object.entries(ADJ).map(([from, toList]) =>
             toList.map(to => +from < +to ? (
@@ -542,7 +541,7 @@ function Board({ s, animating, capturing, click, mode }) {
             const isMill = millPointSet.has(pt.id);
             const clickable = mode === 'twoPlayer' || (mode === 'vsComputer' && s.player === 'green');
             
-            const pieceImage = piece === 'green' ? greenPiece : brownPiece;
+            const pieceImage = piece === 'green' ? greenPieceImg : brownPieceImg;
 
             return (
               <g key={pt.id} onClick={() => {
