@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './Morabaraba.css';
-
-// 🛠️ THE FIX: Import the images directly into the JS
 import greenPieceImg from './morabaraba-green-piece.png';
 import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
@@ -248,7 +246,7 @@ function computerMove(s) {
 }
 
 /* ==================== MAIN COMPONENT ==================== */
-export default function MorabarabaGame() {
+export default function Morabaraba() {
   const [mode, setMode] = useState(null);
   const [gameTime, setGameTime] = useState(120);
   const [s, setS] = useState(freshState(120));
@@ -465,10 +463,7 @@ export default function MorabarabaGame() {
         {s.millAlert && <div className="mill-alert">⚡ Mill formed! Capture one opponent piece.</div>}
         {capturingPiece !== null && <div className="capture-alert">🔴 Removing piece…</div>}
         
-        {/* Board with Side Trays */}
-        <div className="board-wrapper">
-          <Board s={s} animating={animating} capturing={capturingPiece} click={click} mode={mode} />
-        </div>
+        <Board s={s} animating={animating} capturing={capturingPiece} click={click} mode={mode} />
 
         <div className="controls">
           <button onClick={() => { setS(freshState(gameTime)); sounds.click(); }} className="control-btn restart">🔄 Restart</button>
@@ -491,88 +486,58 @@ export default function MorabarabaGame() {
 /* ==================== SUB-COMPONENTS ==================== */
 function Board({ s, animating, capturing, click, mode }) {
   const millPointSet = s.millPoints ? new Set(s.millPoints) : new Set();
-  const greenInHand = s.toPlace.green;
-  const brownInHand = s.toPlace.brown;
-
-  const greenTrayPieces = Array.from({ length: 12 });
-  const brownTrayPieces = Array.from({ length: 12 });
-
   return (
-    <div style={{ position: 'relative' }}>
-      
-      {/* Left Side Tray (Green Pieces) */}
-      <div className="side-tray left">
-        {greenTrayPieces.map((_, i) => (
-          <div key={i} 
-               className={`tray-piece green ${i < greenInHand ? '' : 'used'}`}
-               style={{ opacity: i < greenInHand ? 1 : 0.2 }}
-          ></div>
-        ))}
-      </div>
+    <div className="board-container">
+      <svg viewBox="0 0 300 300" className="morabaraba-board">
+        <image href={boardBgImg} x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice" />
+        
+        {Object.entries(ADJ).map(([from, toList]) =>
+          toList.map(to => +from < +to ? (
+            <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y}
+                  x2={POINTS[to].x} y2={POINTS[to].y} stroke="#3d2314" strokeWidth="5" strokeLinecap="round" />
+          ) : null)
+        )}
+        
+        {POINTS.map(pt => {
+          const piece = s.board[pt.id];
+          const isSel = s.selected === pt.id;
+          const isValid = s.moves.includes(pt.id);
+          const isRem = s.removable.includes(pt.id);
+          const isNew = animating === pt.id;
+          const isCapturing = capturing === pt.id;
+          const isMill = millPointSet.has(pt.id);
+          const clickable = (mode === 'vsComputer' && s.player === 'green');
+          const pieceImage = piece === 'green' ? greenPieceImg : brownPieceImg;
 
-      {/* Right Side Tray (Brown Pieces) */}
-      <div className="side-tray right">
-        {brownTrayPieces.map((_, i) => (
-          <div key={i} 
-               className={`tray-piece brown ${i < brownInHand ? '' : 'used'}`}
-               style={{ opacity: i < brownInHand ? 1 : 0.2 }}
-          ></div>
-        ))}
-      </div>
-
-      {/* The Main 3D Wooden Board */}
-      <div className="board-container">
-        <svg viewBox="0 0 300 300" className="morabaraba-board">
-          <image href={boardBgImg} x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice" />
-          
-          {Object.entries(ADJ).map(([from, toList]) =>
-            toList.map(to => +from < +to ? (
-              <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y}
-                    x2={POINTS[to].x} y2={POINTS[to].y} stroke="#3d2314" strokeWidth="5" strokeLinecap="round" />
-            ) : null)
-          )}
-          {POINTS.map(pt => {
-            const piece = s.board[pt.id];
-            const isSel = s.selected === pt.id;
-            const isValid = s.moves.includes(pt.id);
-            const isRem = s.removable.includes(pt.id);
-            const isNew = animating === pt.id;
-            const isCapturing = capturing === pt.id;
-            const isMill = millPointSet.has(pt.id);
-            const clickable = mode === 'twoPlayer' || (mode === 'vsComputer' && s.player === 'green');
-            
-            const pieceImage = piece === 'green' ? greenPieceImg : brownPieceImg;
-
-            return (
-              <g key={pt.id} onClick={() => {
-                if (!clickable) return;
-                if (isRem && s.millAlert) click(pt.id, 'remove');
-                else if (isValid && s.selected !== null) click(pt.id, 'move');
-                else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
-                else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
-              }}>
-                {isMill && <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="3" className="mill-glow-ring" />}
-                <circle cx={pt.x} cy={pt.y} r="7" fill="#2b1a0e" className="intersection" />
-                
-                {piece && (
-                  <g className={`piece-group ${isNew?'pop-in':''} ${isCapturing?'shake':''} ${isMill?'mill-piece':''}`}>
-                    <image 
-                      href={pieceImage} 
-                      x={pt.x - 15} 
-                      y={pt.y - 15} 
-                      width="30" 
-                      height="30" 
-                      style={{ filter: isSel ? 'drop-shadow(0 0 5px #facc15)' : 'none' }}
-                    />
-                  </g>
-                )}
-                
-                {isValid && !piece && <circle cx={pt.x} cy={pt.y} r="5" className="move-dot" />}
-              </g>
-            );
-          })}
-        </svg>
-      </div>
+          return (
+            <g key={pt.id} onClick={() => {
+              if (!clickable) return;
+              if (isRem && s.millAlert) click(pt.id, 'remove');
+              else if (isValid && s.selected !== null) click(pt.id, 'move');
+              else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
+              else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
+            }}>
+              {isMill && <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="3" className="mill-glow-ring" />}
+              <circle cx={pt.x} cy={pt.y} r="7" fill="#2b1a0e" className="intersection" />
+              
+              {piece && (
+                <g className={`piece-group ${isNew?'pop-in':''} ${isCapturing?'shake':''} ${isMill?'mill-piece':''}`}>
+                  <image 
+                    href={pieceImage} 
+                    x={pt.x - 15} 
+                    y={pt.y - 15} 
+                    width="30" 
+                    height="30" 
+                    style={{ filter: isSel ? 'drop-shadow(0 0 5px #facc15)' : 'drop-shadow(0 2px 3px rgba(0,0,0,0.4))' }}
+                  />
+                </g>
+              )}
+              
+              {isValid && !piece && <circle cx={pt.x} cy={pt.y} r="5" className="move-dot" />}
+            </g>
+          );
+        })}
+      </svg>
     </div>
   );
 }
