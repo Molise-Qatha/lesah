@@ -25,6 +25,7 @@ const RAW_ADJ = {
   20: [19, 21], 21: [20, 22, 13, 24], 22: [21, 23], 23: [22, 16, 15, 24],
   24: [17, 21, 23, 19],
 };
+
 const ADJ = {};
 for (let i = 0; i < 25; i++) ADJ[i] = [];
 Object.entries(RAW_ADJ).forEach(([k, v]) => {
@@ -488,14 +489,13 @@ function Board({ s, animating, capturing, click, mode }) {
   const greenInHand = s.toPlace.green;
   const brownInHand = s.toPlace.brown;
 
-  // Create arrays of 12 pieces (duplicating the 2 3D images)
   const greenTrayPieces = Array.from({ length: 12 });
   const brownTrayPieces = Array.from({ length: 12 });
 
   return (
     <div style={{ position: 'relative' }}>
       
-      {/* Left Side Tray (Green Pieces - Duplicated 12 times) */}
+      {/* Left Side Tray (Green Pieces) */}
       <div className="side-tray left">
         {greenTrayPieces.map((_, i) => (
           <div key={i} 
@@ -505,7 +505,7 @@ function Board({ s, animating, capturing, click, mode }) {
         ))}
       </div>
 
-      {/* Right Side Tray (Brown Pieces - Duplicated 12 times) */}
+      {/* Right Side Tray (Brown Pieces) */}
       <div className="side-tray right">
         {brownTrayPieces.map((_, i) => (
           <div key={i} 
@@ -518,6 +518,8 @@ function Board({ s, animating, capturing, click, mode }) {
       {/* The Main 3D Wooden Board */}
       <div className="board-container">
         <svg viewBox="0 0 300 300" className="morabaraba-board">
+          <image href="/images/morabaraba-board.jpg" x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice" />
+          
           {Object.entries(ADJ).map(([from, toList]) =>
             toList.map(to => +from < +to ? (
               <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y}
@@ -549,7 +551,6 @@ function Board({ s, animating, capturing, click, mode }) {
                 {isMill && <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="3" className="mill-glow-ring" />}
                 <circle cx={pt.x} cy={pt.y} r="7" fill="#2b1a0e" className="intersection" />
                 
-                {/* 🛠️ 3D IMAGE PIECE */}
                 {piece && (
                   <g className={`piece-group ${isNew?'pop-in':''} ${isCapturing?'shake':''} ${isMill?'mill-piece':''}`}>
                     <image 
