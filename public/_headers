@@ -1,5 +1,43 @@
-/static/css/*.css
+@'
+/*
+  Content-Type: text/html
+
+/static/*.css
   Content-Type: text/css
 
-/static/js/*.js
+/static/*.js
   Content-Type: application/javascript
+
+/manifest.json
+  Content-Type: application/json
+
+/static/media/*.jpg
+  Content-Type: image/jpeg
+
+/static/media/*.png
+  Content-Type: image/png
+
+/static/media/*.svg
+  Content-Type: image/svg+xml
+
+/ml/trained-model.json
+  Content-Type: application/json
+
+/ml/knowledge-rich.json
+  Content-Type: application/json
+
+*.jpg
+  Content-Type: image/jpeg
+
+*.png
+  Content-Type: image/png
+
+*.svg
+  Content-Type: image/svg+xml
+
+*.ico
+  Content-Type: image/x-icon
+'@ | Out-File -FilePath public\_headers -Encoding UTF8
+
+# Verify
+Get-Content public\_headers
