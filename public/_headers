@@ -1,43 +1,18 @@
-@'
 /*
   Content-Type: text/html
+  X-Content-Type-Options: nosniff
 
-/static/*.css
+/static/css/*
   Content-Type: text/css
 
-/static/*.js
+/static/js/*
   Content-Type: application/javascript
+
+/static/media/*
+  Content-Type: image/png
 
 /manifest.json
   Content-Type: application/json
 
-/static/media/*.jpg
-  Content-Type: image/jpeg
-
-/static/media/*.png
-  Content-Type: image/png
-
-/static/media/*.svg
-  Content-Type: image/svg+xml
-
-/ml/trained-model.json
+/ml/*
   Content-Type: application/json
-
-/ml/knowledge-rich.json
-  Content-Type: application/json
-
-*.jpg
-  Content-Type: image/jpeg
-
-*.png
-  Content-Type: image/png
-
-*.svg
-  Content-Type: image/svg+xml
-
-*.ico
-  Content-Type: image/x-icon
-'@ | Out-File -FilePath public\_headers -Encoding UTF8
-
-# Verify
-Get-Content public\_headers
