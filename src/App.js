@@ -22,16 +22,14 @@ import LilothoGame from './pages/LilothoGame';
 import WordScrambleGame from './pages/WordScrambleGame';
 import WordSearchGame from './pages/WordSearchGame';
 import About from './pages/About';
-import MorabarabaGame from './pages/MorabarabaGame';
+import Morabaraba from './pages/Morabaraba';
 import SudokuGame from './pages/SudokuGame';
 import CampusMap from './pages/CampusMap';
 import Marketplace from './pages/Marketplace';
 import CommunitySafety from './pages/CommunitySafety';
 import VendorGuidelines from './pages/VendorGuidelines';
 import ProviderProfile from './pages/ProviderProfile';
-
-// 🛠️ 1. REPLACE the old HoKalla import with the new Entry Screen import
-import HoKallaEntry from './pages/HoKallaEntry'; 
+import HoKallaEntry from './pages/HoKallaEntry';
 
 import './App.css';
 
@@ -73,10 +71,8 @@ function App() {
       <div className="App">
         <Header />
         <Routes>
-          {/* Home Page — NEW animated landing page */}
+          {/* Home Page */}
           <Route path="/" element={<LandingPage />} />
-          
-
 
           {/* Service Pages */}
           <Route path="/accommodation" element={<Accommodation />} />
@@ -89,19 +85,16 @@ function App() {
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/financial-literacy" element={<FinancialLiteracy />} />
 
-
-          {/* Student Zone — hub */}
+          {/* Student Zone */}
           <Route path="/student-zone" element={<StudentZone />} />
 
-          {/* Individual game pages */}
+          {/* Game pages */}
           <Route path="/student-zone/lilotho" element={<LilothoGame />} />
           <Route path="/student-zone/word-scramble" element={<WordScrambleGame />} />
           <Route path="/student-zone/word-search" element={<WordSearchGame />} />
-          <Route path="/student-zone/morabaraba" element={<MorabarabaGame />} />
+          <Route path="/student-zone/morabaraba" element={<Morabaraba />} />
           <Route path="/student-zone/sudoku" element={<SudokuGame />} />
           <Route path="/student-zone/campus-map" element={<CampusMap />} />
-
-          {/* 🛠️ 2. UPDATED ROUTE: Point to the New Cinematic Entry Screen */}
           <Route path="/student-zone/hokalla" element={<HoKallaEntry />} />
 
           {/* Legal & Support Pages */}
@@ -110,13 +103,10 @@ function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/terms" element={<Terms />} />
           <Route path="/about" element={<About />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/community-safety" element={<CommunitySafety />} />
           <Route path="/vendor-guidelines" element={<VendorGuidelines />} />
-
-
 
           {/* Admin Dashboard (Protected) */}
           <Route
@@ -128,7 +118,7 @@ function App() {
             }
           />
 
-          {/* Catch-all redirect to home (404 handling) */}
+          {/* 404 */}
           <Route
             path="*"
             element={
