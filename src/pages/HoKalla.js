@@ -19,8 +19,8 @@ const SPRITE_CONFIG = {
     framesPerState: {
       idle: 1, walk: 3, land: 3, crouch: 4, jump: 6, 
       attack: 5,     // Reads from Tattack1.png etc
-      block: 1,      // 🛠️ Temporarily set to 1 to stop 404s
-      hit: 1,        // 🛠️ Temporarily set to 1 to stop 404s
+      block: 1,      
+      hit: 1,        
     },
     nameSuffix: '-removebg-preview',
   },
@@ -34,7 +34,7 @@ const ATTACK_DAMAGE = 10;
 const KICK_DAMAGE = 12;
 const POWER_DAMAGE = 30;
 const ULTIMATE_DAMAGE = 50;
-const ATTACK_RANGE = 90; // 🛠️ Increased range
+const ATTACK_RANGE = 90;
 const KICK_RANGE = 100;
 const POWER_RANGE = 150;
 const AI_AGGRO_RANGE = 300;
@@ -53,6 +53,9 @@ const HoKalla = () => {
   const animFrameId = useRef(null);
   const keys = useRef({});
   
+  // 🛠️ NEW: Show Coming Soon overlay immediately
+  const [showComingSoon, setShowComingSoon] = useState(true);
+
   const touchMoveLeft = useRef(false);
   const touchMoveRight = useRef(false);
   const touchJump = useRef(false);
@@ -162,7 +165,7 @@ const HoKalla = () => {
       return arr;
     };
 
-    // ------------- THABO LOADERS (Fixed for 404s) -------------
+    // ------------- THABO LOADERS -------------
     const loadThaboFrames = (prefix, count) => {
       const arr = [];
       const suffix = SPRITE_CONFIG.thabo.nameSuffix;
@@ -247,7 +250,6 @@ const HoKalla = () => {
 
   const playSound = (sound) => { if (sound && sound.play) { try { sound.play(); } catch (e) {} } };
 
-  // 🛠️ FIXED HITBOX: ACTIVE FOR LONGER, WORKS ON GROUND
   const checkAttackHit = (attacker, defender, damageVal, range) => {
     if (!attacker.hitActive) return;
     const distance = Math.abs(attacker.x - defender.x);
@@ -405,8 +407,6 @@ const HoKalla = () => {
     
     if (!isStunned1) {
       p1.blocking = blockPressed1;
-
-      // 🛠️ FIXED: Crouching now works with Down Arrow
       const crouchPressed = keys.current['ArrowDown'];
       p1.crouching = crouchPressed && p1.grounded && p1.state !== 'attack' && p1.state !== 'kick' && p1.state !== 'power';
 
@@ -464,7 +464,6 @@ const HoKalla = () => {
     applyPhysicsAndCollision(p1, p2);
     applyPhysicsAndCollision(p2, p1);
 
-    // 🛠️ FIXED: Passes RANGE argument properly
     if (p1.state === 'power') checkAttackHit(p1, p2, POWER_DAMAGE, POWER_RANGE);
     else if (p1.state === 'kick') checkAttackHit(p1, p2, KICK_DAMAGE, KICK_RANGE);
     else checkAttackHit(p1, p2, ATTACK_DAMAGE, ATTACK_RANGE);
@@ -620,69 +619,92 @@ const HoKalla = () => {
 
   const isTouchDevice = 'ontouchstart' in window;
 
+  // 🛠️ Function to go back to menu
+  const handleBackToMenu = () => {
+    window.location.reload();
+  };
+
   return (
-    <div className="ho-kalla-container" ref={containerRef}>
-      <canvas ref={canvasRef} className="ho-kalla-canvas" />
-      
-      <div className="hud-overlay">
-        <div className="timer-container">
-          <div className="timer-circle">99</div>
-          <div className="round-label">ROUND 1</div>
+    <>
+      {/* 🛠️ The Actual Game (Hidden behind overlay) */}
+      <div className="ho-kalla-container" ref={containerRef} style={{ display: showComingSoon ? 'none' : 'block' }}>
+        <canvas ref={canvasRef} className="ho-kalla-canvas" />
+        
+        <div className="hud-overlay">
+          <div className="timer-container">
+            <div className="timer-circle">99</div>
+            <div className="round-label">ROUND 1</div>
+          </div>
+
+          <div className="player-hud left">
+            <div className="portrait-frame">
+              <img src="/images/ui/khotso-portrait.png" alt="Khotso" />
+            </div>
+            <div className="player-info">
+              <div className="player-name">KHOTSO</div>
+              <div className="health-bar-container">
+                <div 
+                  className="health-bar-fill" 
+                  id="khotso-health" 
+                  style={{width: `${(khotsoHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
+                ></div>
+              </div>
+              <div className="super-meter">
+                <div className={`super-dot ${powerMeterRef.current >= 33 ? 'filled' : ''}`}></div>
+                <div className={`super-dot ${powerMeterRef.current >= 66 ? 'filled' : ''}`}></div>
+                <div className={`super-dot ${powerMeterRef.current >= 100 ? 'filled' : ''}`}></div>
+              </div>
+            </div>
+          </div>
+
+          <div className="player-hud right">
+            <div className="portrait-frame">
+              <img src="/images/ui/thabo-portrait.png" alt="Thabo" />
+            </div>
+            <div className="player-info">
+              <div className="player-name">THABO</div>
+              <div className="health-bar-container">
+                <div 
+                  className="health-bar-fill" 
+                  id="thabo-health" 
+                  style={{width: `${(thaboHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
+                ></div>
+              </div>
+              <div className="super-meter">
+                <div className="super-dot filled"></div>
+                <div className="super-dot filled"></div>
+                <div className="super-dot"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="player-hud left">
-          <div className="portrait-frame">
-            <img src="/images/ui/khotso-portrait.png" alt="Khotso" />
+        {isTouchDevice && (
+          <div className="touch-controls">
+            <button className="touch-btn left-btn" onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd} onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>◀</button>
+            <button className="touch-btn jump-btn" onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd} onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>▲</button>
+            <button className="touch-btn atk-btn" onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd} onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd} style={{background: '#d32f2f', color: 'white', border: '2px solid #fff'}}>⚔️</button>
+            <button className="touch-btn" onTouchStart={handleTouchKickStart} onTouchEnd={handleTouchKickEnd} onTouchCancel={handleTouchKickEnd} onMouseDown={handleTouchKickStart} onMouseUp={handleTouchKickEnd} onMouseLeave={handleTouchKickEnd} style={{background: '#ff9800', color: 'white', border: '2px solid #fff'}}>🦶 Kick</button>
+            <button className="touch-btn right-btn" onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd} onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>▶</button>
           </div>
-          <div className="player-info">
-            <div className="player-name">KHOTSO</div>
-            <div className="health-bar-container">
-              <div 
-                className="health-bar-fill" 
-                id="khotso-health" 
-                style={{width: `${(khotsoHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
-              ></div>
-            </div>
-            <div className="super-meter">
-              <div className={`super-dot ${powerMeterRef.current >= 33 ? 'filled' : ''}`}></div>
-              <div className={`super-dot ${powerMeterRef.current >= 66 ? 'filled' : ''}`}></div>
-              <div className={`super-dot ${powerMeterRef.current >= 100 ? 'filled' : ''}`}></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="player-hud right">
-          <div className="portrait-frame">
-            <img src="/images/ui/thabo-portrait.png" alt="Thabo" />
-          </div>
-          <div className="player-info">
-            <div className="player-name">THABO</div>
-            <div className="health-bar-container">
-              <div 
-                className="health-bar-fill" 
-                id="thabo-health" 
-                style={{width: `${(thaboHealthRef.current / PLAYER_MAX_HEALTH) * 100}%`}}
-              ></div>
-            </div>
-            <div className="super-meter">
-              <div className="super-dot filled"></div>
-              <div className="super-dot filled"></div>
-              <div className="super-dot"></div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
-      {isTouchDevice && (
-        <div className="touch-controls">
-          <button className="touch-btn left-btn" onTouchStart={handleTouchLeftStart} onTouchEnd={handleTouchLeftEnd} onTouchCancel={handleTouchLeftEnd} onMouseDown={handleTouchLeftStart} onMouseUp={handleTouchLeftEnd} onMouseLeave={handleTouchLeftEnd}>◀</button>
-          <button className="touch-btn jump-btn" onTouchStart={handleTouchJumpStart} onTouchEnd={handleTouchJumpEnd} onTouchCancel={handleTouchJumpEnd} onMouseDown={handleTouchJumpStart} onMouseUp={handleTouchJumpEnd} onMouseLeave={handleTouchJumpEnd}>▲</button>
-          <button className="touch-btn atk-btn" onTouchStart={handleTouchAttackStart} onTouchEnd={handleTouchAttackEnd} onTouchCancel={handleTouchAttackEnd} onMouseDown={handleTouchAttackStart} onMouseUp={handleTouchAttackEnd} onMouseLeave={handleTouchAttackEnd} style={{background: '#d32f2f', color: 'white', border: '2px solid #fff'}}>⚔️</button>
-          <button className="touch-btn" onTouchStart={handleTouchKickStart} onTouchEnd={handleTouchKickEnd} onTouchCancel={handleTouchKickEnd} onMouseDown={handleTouchKickStart} onMouseUp={handleTouchKickEnd} onMouseLeave={handleTouchKickEnd} style={{background: '#ff9800', color: 'white', border: '2px solid #fff'}}>🦶 Kick</button>
-          <button className="touch-btn right-btn" onTouchStart={handleTouchRightStart} onTouchEnd={handleTouchRightEnd} onTouchCancel={handleTouchRightEnd} onMouseDown={handleTouchRightStart} onMouseUp={handleTouchRightEnd} onMouseLeave={handleTouchRightEnd}>▶</button>
+      {/* 🛠️ The Coming Soon Overlay */}
+      {showComingSoon && (
+        <div className="coming-soon-overlay">
+          <h1 className="coming-soon-title">COMING SOON</h1>
+          <p className="coming-soon-message">
+            Thank you for your interest in Ho Kalla! <br/>
+            We are currently in active development, polishing the fighters and mechanics.
+            <br/>This experience will be available to players very soon.
+          </p>
+          <button className="coming-soon-btn" onClick={handleBackToMenu}>
+            ← Back to Menu
+          </button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
