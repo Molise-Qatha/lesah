@@ -17,7 +17,7 @@ const residences = [
     contactHidden: "56429005",
     walkingTime: 15,
     verified: false,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: null,
   },
   {
@@ -31,7 +31,7 @@ const residences = [
     contactHidden: "57345827",
     walkingTime: 20,
     verified: false,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: null,
   },
   {
@@ -45,7 +45,7 @@ const residences = [
     contactHidden: "63231600",
     walkingTime: 25,
     verified: true,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: null,
   },
   {
@@ -59,7 +59,7 @@ const residences = [
     contactHidden: "57528555",
     walkingTime: 20,
     verified: true,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: null,
   },
   {
@@ -87,7 +87,7 @@ const residences = [
     contactHidden: null,
     walkingTime: 8,
     verified: true,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: null,
   },
   {
@@ -101,7 +101,7 @@ const residences = [
     contactHidden: null,
     walkingTime: 10,
     verified: false,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: [
       '/images/accommodation/squireng_exterior.jpg',
       '/images/accommodation/squireng_interior.jpg',
@@ -118,7 +118,7 @@ const residences = [
     contactHidden: null,
     walkingTime: 7,
     verified: true,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: null,
   },
   {
@@ -132,7 +132,7 @@ const residences = [
     contactHidden: null,
     walkingTime: 25,
     verified: false,
-    occupied: false,
+    occupied: true, // 🛠️ Updated to occupied
     images: null,
     noImage: true,
   },
@@ -175,6 +175,11 @@ function Accommodation() {
   });
 
   const openWhatsApp = (residenceName, price, village, area) => {
+    // 🛠️ Prevent WhatsApp from opening if occupied
+    if (residences.find(r => r.name === residenceName)?.occupied) {
+      return;
+    }
+
     const priceText = price ? `M${price}/month` : 'price on request';
     const message = `Hello LeSAH, I'm interested in "${residenceName}" in ${village}, ${area} (${priceText}). I understand there is a M${BOOKING_FEE} booking fee. Could you help me get in touch with the landlord?`;
     const url = `${WHATSAPP_LINK}?text=${encodeURIComponent(message)}`;
@@ -196,6 +201,8 @@ function Accommodation() {
     window.open(url, '_blank');
   };
 
+  const allOccupied = residences.every(r => r.occupied); // 🛠️ Check if everything is occupied
+
   return (
     <div className="accommodation-page">
       <div className="accommodation-container">
@@ -212,6 +219,28 @@ function Accommodation() {
           <h1>Find Your Perfect Student Home</h1>
           <p>All distances are walking minutes from NUL campus</p>
         </div>
+
+        {/* 🛠️ NEW: Full Occupancy Notice Banner */}
+        {allOccupied && (
+          <div className="occupancy-notice-banner" style={{
+            backgroundColor: '#FFF8E1',
+            border: '2px solid #FBC02D',
+            color: '#F57F17',
+            padding: '20px',
+            borderRadius: '12px',
+            margin: '30px auto',
+            textAlign: 'center',
+            maxWidth: '800px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+          }}>
+            <div style={{ fontSize: '1.8rem', marginBottom: '10px' }}>🏠</div>
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '1.3rem' }}>Currently Fully Booked</h2>
+            <p style={{ margin: 0, fontSize: '1rem', color: '#5D4037' }}>
+              We are currently out of available listings as all our residences are fully occupied. 
+              We are actively working on adding more properties for you. Please check back soon!
+            </p>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="filters-section">
