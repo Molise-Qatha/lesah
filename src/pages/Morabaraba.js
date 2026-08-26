@@ -463,6 +463,7 @@ export default function Morabaraba() {
         {s.millAlert && <div className="mill-alert">⚡ Mill formed! Capture one opponent piece.</div>}
         {capturingPiece !== null && <div className="capture-alert">🔴 Removing piece…</div>}
         
+        {/* 🛠️ THE FIXED 3D BOARD */}
         <Board s={s} animating={animating} capturing={capturingPiece} click={click} mode={mode} />
 
         <div className="controls">
@@ -483,7 +484,7 @@ export default function Morabaraba() {
   );
 }
 
-/* ==================== BOARD COMPONENT WITH 3D IMAGES ==================== */
+/* ==================== THE FIXED 3D BOARD ==================== */
 function Board({ s, animating, capturing, click, mode }) {
   const millPointSet = s.millPoints ? new Set(s.millPoints) : new Set();
   
@@ -501,9 +502,12 @@ function Board({ s, animating, capturing, click, mode }) {
         margin: '0 auto',
         borderRadius: '12px',
         overflow: 'hidden',
-        boxShadow: '0 8px 30px rgba(0,0,0,0.3)'
+        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+        touchAction: 'manipulation'
       }}
     >
+      {/* 🛠️ Instead of an SVG background, we create transparent clickable overlays 
+          that are scaled perfectly to match the 3D board's coordinates. */}
       <svg 
         viewBox="0 0 300 300" 
         style={{ 
@@ -511,24 +515,10 @@ function Board({ s, animating, capturing, click, mode }) {
           top: 0, 
           left: 0, 
           width: '100%', 
-          height: '100%' 
+          height: '100%',
+          pointerEvents: 'none' 
         }}
       >
-        {/* Board Lines */}
-        {Object.entries(ADJ).map(([from, toList]) =>
-          toList.map(to => +from < +to ? (
-            <line key={`${from}-${to}`} 
-              x1={POINTS[from].x} y1={POINTS[from].y}
-              x2={POINTS[to].x} y2={POINTS[to].y} 
-              stroke="#2b1a0e" 
-              strokeWidth="4" 
-              strokeLinecap="round" 
-              opacity="0.7"
-            />
-          ) : null)
-        )}
-        
-        {/* Pieces */}
         {POINTS.map(pt => {
           const piece = s.board[pt.id];
           const isSel = s.selected === pt.id;
@@ -550,7 +540,7 @@ function Board({ s, animating, capturing, click, mode }) {
                   else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
                   else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
                 }}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', pointerEvents: 'all' }}
               />
               
               {/* 3D Piece Image */}
