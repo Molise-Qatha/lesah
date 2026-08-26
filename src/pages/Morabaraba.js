@@ -6,20 +6,20 @@ import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
 
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
-/* 🛠️ FINAL FIX: Tightened the outer ring (SPREAD) so pieces land in the holes */
-const CENTER = 150; // Center of the 300x300 SVG
-const OUTER = 92;   // 🛠️ Tightened outer ring (was 110)
-const MID = 50;     // Middle ring
-const INNER = 25;   // Inner ring
+/* 🛠️ FINAL PRECISION: Adjusted coordinate distances to match the 3D board's exact hole placement */
+const CENTER = 150;   // Center of the 300x300 SVG
+const OUTER = 83;     // 🛠️ Shrunk the outer ring 
+const MID = 50;       // Middle ring (perfect)
+const INNER = 25;     // Inner ring (perfect)
 
 const POINTS = [
   { id: 0,  x: CENTER - OUTER, y: CENTER - OUTER },  // 0
   { id: 1,  x: CENTER, y: CENTER - OUTER },           // 1
-  { id: 2,  x: CENTER + OUTER, y: CENTER - OUTER },   // 2
+  { id: 2,  x: CENTER + OUTER, y: CENTER - OUTER },  // 2
   { id: 3,  x: CENTER + OUTER, y: CENTER },           // 3
-  { id: 4,  x: CENTER + OUTER, y: CENTER + OUTER },   // 4
+  { id: 4,  x: CENTER + OUTER, y: CENTER + OUTER },  // 4
   { id: 5,  x: CENTER, y: CENTER + OUTER },           // 5
-  { id: 6,  x: CENTER - OUTER, y: CENTER + OUTER },   // 6
+  { id: 6,  x: CENTER - OUTER, y: CENTER + OUTER },  // 6
   { id: 7,  x: CENTER - OUTER, y: CENTER },           // 7
   { id: 8,  x: CENTER - MID, y: CENTER - MID },        // 8
   { id: 9,  x: CENTER, y: CENTER - MID },              // 9
@@ -37,7 +37,7 @@ const POINTS = [
   { id: 21, x: CENTER, y: CENTER + INNER },             // 21
   { id: 22, x: CENTER - INNER, y: CENTER + INNER },    // 22
   { id: 23, x: CENTER - INNER, y: CENTER },             // 23
-  { id: 24, x: CENTER, y: CENTER },                    // 24
+  { id: 24, x: CENTER, y: CENTER + 5 },               // 🛠️ Slightly lowered center for 3D perspective
 ];
 
 /* ==================== ADJACENCY ==================== */
