@@ -483,64 +483,105 @@ export default function Morabaraba() {
   );
 }
 
-/* ==================== SUB-COMPONENTS ==================== */
+/* ==================== BOARD COMPONENT WITH 3D IMAGES ==================== */
 function Board({ s, animating, capturing, click, mode }) {
   const millPointSet = s.millPoints ? new Set(s.millPoints) : new Set();
+  
   return (
-    <div className="board-container">
-      <svg viewBox="0 0 300 300" className="morabaraba-board">
-        {/* 3D Board Background Image */}
-        <image href={boardBgImg} x="0" y="0" width="300" height="300" preserveAspectRatio="xMidYMid slice" />
-        
+    <div 
+      className="board-3d-container" 
+      style={{ 
+        backgroundImage: `url(${boardBgImg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative',
+        width: '100%',
+        maxWidth: '420px',
+        aspectRatio: '1',
+        margin: '0 auto',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        boxShadow: '0 8px 30px rgba(0,0,0,0.3)'
+      }}
+    >
+      <svg 
+        viewBox="0 0 300 300" 
+        style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%' 
+        }}
+      >
         {/* Board Lines */}
         {Object.entries(ADJ).map(([from, toList]) =>
           toList.map(to => +from < +to ? (
-            <line key={`${from}-${to}`} x1={POINTS[from].x} y1={POINTS[from].y}
-                  x2={POINTS[to].x} y2={POINTS[to].y} stroke="#3d2314" strokeWidth="5" strokeLinecap="round" />
+            <line key={`${from}-${to}`} 
+              x1={POINTS[from].x} y1={POINTS[from].y}
+              x2={POINTS[to].x} y2={POINTS[to].y} 
+              stroke="#2b1a0e" 
+              strokeWidth="4" 
+              strokeLinecap="round" 
+              opacity="0.7"
+            />
           ) : null)
         )}
         
-        {/* Points and Pieces */}
+        {/* Pieces */}
         {POINTS.map(pt => {
           const piece = s.board[pt.id];
           const isSel = s.selected === pt.id;
           const isValid = s.moves.includes(pt.id);
           const isRem = s.removable.includes(pt.id);
-          const isNew = animating === pt.id;
-          const isCapturing = capturing === pt.id;
           const isMill = millPointSet.has(pt.id);
           const clickable = (mode === 'vsComputer' && s.player === 'green');
-
+          const pieceImg = piece === 'green' ? greenPieceImg : brownPieceImg;
+          
           return (
-            <g key={pt.id} onClick={() => {
-              if (!clickable) return;
-              if (isRem && s.millAlert) click(pt.id, 'remove');
-              else if (isValid && s.selected !== null) click(pt.id, 'move');
-              else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
-              else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
-            }}>
-              {isMill && <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="3" className="mill-glow-ring" />}
-              <circle cx={pt.x} cy={pt.y} r="7" fill="#2b1a0e" stroke="#1a0e06" strokeWidth="1" className="intersection" />
+            <g key={pt.id}>
+              {/* Invisible click area */}
+              <circle 
+                cx={pt.x} cy={pt.y} r="16" fill="transparent"
+                onClick={() => {
+                  if (!clickable) return;
+                  if (isRem && s.millAlert) click(pt.id, 'remove');
+                  else if (isValid && s.selected !== null) click(pt.id, 'move');
+                  else if (piece === s.player && s.phase !== PHASE.PLACING) click(pt.id, 'select');
+                  else if (s.phase === PHASE.PLACING && !piece) click(pt.id, 'place');
+                }}
+                style={{ cursor: 'pointer' }}
+              />
               
               {/* 3D Piece Image */}
               {piece && (
-                <g className={`piece-group ${isNew?'pop-in':''} ${isCapturing?'shake':''} ${isMill?'mill-piece':''}`}>
-                  <image 
-                    href={piece === 'green' ? greenPieceImg : brownPieceImg}
-                    x={pt.x - 18}
-                    y={pt.y - 18}
-                    width="36"
-                    height="36"
-                    style={{ 
-                      filter: isSel 
-                        ? 'drop-shadow(0 0 6px #facc15) drop-shadow(0 2px 4px rgba(0,0,0,0.5))' 
-                        : 'drop-shadow(0 3px 5px rgba(0,0,0,0.4))' 
-                    }}
-                  />
-                </g>
+                <image 
+                  href={pieceImg}
+                  x={pt.x - 15}
+                  y={pt.y - 15}
+                  width="30"
+                  height="30"
+                  style={{ 
+                    pointerEvents: 'none',
+                    filter: isSel ? 'drop-shadow(0 0 5px #facc15)' : 'drop-shadow(0 2px 3px rgba(0,0,0,0.5))'
+                  }}
+                />
               )}
               
-              {isValid && !piece && <circle cx={pt.x} cy={pt.y} r="5" className="move-dot" />}
+              {/* Mill Ring */}
+              {isMill && (
+                <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="2" />
+              )}
+              
+              {/* Valid Move Indicator */}
+              {isValid && !piece && (
+                <circle cx={pt.x} cy={pt.y} r="5" fill="rgba(16,185,129,0.7)" />
+              )}
+              
+              {/* Removable Indicator */}
+              {isRem && s.millAlert && (
+                <circle cx={pt.x} cy={pt.y} r="16" fill="none" stroke="#ef4444" strokeWidth="3" strokeDasharray="4" />
+              )}
             </g>
           );
         })}
