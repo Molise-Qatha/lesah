@@ -6,16 +6,16 @@ import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
 
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
-/* 🛠️ FINE-TUNED: Added perspective offsets for the Center Vertical Line */
-const CENTER = 150;   // Base center
-const OUTER = 98;     // Outer ring
-const MID = 50;       // Middle ring
-const INNER = 25;     // Inner ring
+/* 🛠️ FIXED: Middle ring pushed OUT to 62 (was 50) */
+const CENTER = 150;    // Base center
+const OUTER = 98;      // Outer ring
+const MID = 62;        // 🛠️ Middle ring pushed OUT
+const INNER = 25;      // Inner ring
 const TOP_OUTER = -6;  // Top outer ring
 const TOP_MID = -4;    // Top middle ring
 const TOP_INNER = -2;  // Top inner ring
-const BOTTOM_INNER = 2; // 🛠️ Pushed bottom inner piece DOWN slightly
-const CENTER_OFFSET = 1; // 🛠️ Pushed center piece DOWN slightly (perspective bulge)
+const BOTTOM_INNER = 2;
+const CENTER_OFFSET = 1;
 
 const POINTS = [
   // Outer Ring (0-7)
@@ -42,11 +42,11 @@ const POINTS = [
   { id: 18, x: CENTER + INNER, y: CENTER - INNER + TOP_INNER },
   { id: 19, x: CENTER + INNER, y: CENTER },
   { id: 20, x: CENTER + INNER, y: CENTER + INNER },
-  { id: 21, x: CENTER, y: CENTER + INNER + BOTTOM_INNER }, // 🛠️ Bottom inner pushed down
+  { id: 21, x: CENTER, y: CENTER + INNER + BOTTOM_INNER },
   { id: 22, x: CENTER - INNER, y: CENTER + INNER },
   { id: 23, x: CENTER - INNER, y: CENTER },
   // Center (24)
-  { id: 24, x: CENTER, y: CENTER + CENTER_OFFSET }, // 🛠️ Center pushed down slightly
+  { id: 24, x: CENTER, y: CENTER + CENTER_OFFSET },
 ];
 
 /* ==================== ADJACENCY ==================== */
