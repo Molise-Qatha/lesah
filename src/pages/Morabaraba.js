@@ -6,11 +6,11 @@ import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
 
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
-/* 🛠️ FINAL PRECISION: Adjusted coordinate distances to match the 3D board's exact hole placement */
+/* 🛠️ FINAL FIX: Middle rings stay perfect, outer ring pushed back OUT to 98 */
 const CENTER = 150;   // Center of the 300x300 SVG
-const OUTER = 83;     // 🛠️ Shrunk the outer ring 
-const MID = 50;       // Middle ring (perfect)
-const INNER = 25;     // Inner ring (perfect)
+const OUTER = 98;     // 🛠️ Pushed back out to sit on the outer holes
+const MID = 50;       // Middle ring (perfect, DO NOT CHANGE)
+const INNER = 25;     // Inner ring (perfect, DO NOT CHANGE)
 
 const POINTS = [
   { id: 0,  x: CENTER - OUTER, y: CENTER - OUTER },  // 0
@@ -37,7 +37,7 @@ const POINTS = [
   { id: 21, x: CENTER, y: CENTER + INNER },             // 21
   { id: 22, x: CENTER - INNER, y: CENTER + INNER },    // 22
   { id: 23, x: CENTER - INNER, y: CENTER },             // 23
-  { id: 24, x: CENTER, y: CENTER + 5 },               // 🛠️ Slightly lowered center for 3D perspective
+  { id: 24, x: CENTER, y: CENTER },                    // 24
 ];
 
 /* ==================== ADJACENCY ==================== */
