@@ -6,35 +6,37 @@ import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
 
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
-/* 🛠️ FIX: Adjusted coordinates to map tightly to the CENTER of the 3D board image */
-const BOARD_PADDING = 40; // The margin of the wooden frame on the image
+/* 🛠️ FINAL FIX: Tightened the outer ring (SPREAD) so pieces land in the holes */
 const CENTER = 150; // Center of the 300x300 SVG
-const SPREAD = 110; // How wide the playable area is
+const OUTER = 92;   // 🛠️ Tightened outer ring (was 110)
+const MID = 50;     // Middle ring
+const INNER = 25;   // Inner ring
+
 const POINTS = [
-  { id: 0,  x: CENTER - SPREAD, y: CENTER - SPREAD },  // 0
-  { id: 1,  x: CENTER, y: CENTER - SPREAD },           // 1
-  { id: 2,  x: CENTER + SPREAD, y: CENTER - SPREAD },  // 2
-  { id: 3,  x: CENTER + SPREAD, y: CENTER },           // 3
-  { id: 4,  x: CENTER + SPREAD, y: CENTER + SPREAD },  // 4
-  { id: 5,  x: CENTER, y: CENTER + SPREAD },           // 5
-  { id: 6,  x: CENTER - SPREAD, y: CENTER + SPREAD },  // 6
-  { id: 7,  x: CENTER - SPREAD, y: CENTER },           // 7
-  { id: 8,  x: CENTER - 55, y: CENTER - 55 },          // 8
-  { id: 9,  x: CENTER, y: CENTER - 55 },               // 9
-  { id: 10, x: CENTER + 55, y: CENTER - 55 },          // 10
-  { id: 11, x: CENTER + 55, y: CENTER },               // 11
-  { id: 12, x: CENTER + 55, y: CENTER + 55 },          // 12
-  { id: 13, x: CENTER, y: CENTER + 55 },               // 13
-  { id: 14, x: CENTER - 55, y: CENTER + 55 },          // 14
-  { id: 15, x: CENTER - 55, y: CENTER },               // 15
-  { id: 16, x: CENTER - 25, y: CENTER - 25 },          // 16
-  { id: 17, x: CENTER, y: CENTER - 25 },               // 17
-  { id: 18, x: CENTER + 25, y: CENTER - 25 },          // 18
-  { id: 19, x: CENTER + 25, y: CENTER },               // 19
-  { id: 20, x: CENTER + 25, y: CENTER + 25 },          // 20
-  { id: 21, x: CENTER, y: CENTER + 25 },               // 21
-  { id: 22, x: CENTER - 25, y: CENTER + 25 },          // 22
-  { id: 23, x: CENTER - 25, y: CENTER },               // 23
+  { id: 0,  x: CENTER - OUTER, y: CENTER - OUTER },  // 0
+  { id: 1,  x: CENTER, y: CENTER - OUTER },           // 1
+  { id: 2,  x: CENTER + OUTER, y: CENTER - OUTER },   // 2
+  { id: 3,  x: CENTER + OUTER, y: CENTER },           // 3
+  { id: 4,  x: CENTER + OUTER, y: CENTER + OUTER },   // 4
+  { id: 5,  x: CENTER, y: CENTER + OUTER },           // 5
+  { id: 6,  x: CENTER - OUTER, y: CENTER + OUTER },   // 6
+  { id: 7,  x: CENTER - OUTER, y: CENTER },           // 7
+  { id: 8,  x: CENTER - MID, y: CENTER - MID },        // 8
+  { id: 9,  x: CENTER, y: CENTER - MID },              // 9
+  { id: 10, x: CENTER + MID, y: CENTER - MID },        // 10
+  { id: 11, x: CENTER + MID, y: CENTER },              // 11
+  { id: 12, x: CENTER + MID, y: CENTER + MID },        // 12
+  { id: 13, x: CENTER, y: CENTER + MID },              // 13
+  { id: 14, x: CENTER - MID, y: CENTER + MID },        // 14
+  { id: 15, x: CENTER - MID, y: CENTER },              // 15
+  { id: 16, x: CENTER - INNER, y: CENTER - INNER },    // 16
+  { id: 17, x: CENTER, y: CENTER - INNER },             // 17
+  { id: 18, x: CENTER + INNER, y: CENTER - INNER },    // 18
+  { id: 19, x: CENTER + INNER, y: CENTER },             // 19
+  { id: 20, x: CENTER + INNER, y: CENTER + INNER },    // 20
+  { id: 21, x: CENTER, y: CENTER + INNER },             // 21
+  { id: 22, x: CENTER - INNER, y: CENTER + INNER },    // 22
+  { id: 23, x: CENTER - INNER, y: CENTER },             // 23
   { id: 24, x: CENTER, y: CENTER },                    // 24
 ];
 
