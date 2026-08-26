@@ -6,17 +6,36 @@ import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
 
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
+/* 🛠️ FIX: Adjusted coordinates to map tightly to the CENTER of the 3D board image */
+const BOARD_PADDING = 40; // The margin of the wooden frame on the image
+const CENTER = 150; // Center of the 300x300 SVG
+const SPREAD = 110; // How wide the playable area is
 const POINTS = [
-  { id: 0,  x: 30, y: 30 },  { id: 1,  x: 150, y: 30 },  { id: 2,  x: 270, y: 30 },
-  { id: 3,  x: 270, y: 150 }, { id: 4,  x: 270, y: 270 }, { id: 5,  x: 150, y: 270 },
-  { id: 6,  x: 30, y: 270 }, { id: 7,  x: 30, y: 150 },
-  { id: 8,  x: 90, y: 90 },  { id: 9,  x: 150, y: 90 },  { id: 10, x: 210, y: 90 },
-  { id: 11, x: 210, y: 150 }, { id: 12, x: 210, y: 210 }, { id: 13, x: 150, y: 210 },
-  { id: 14, x: 90, y: 210 }, { id: 15, x: 90, y: 150 },
-  { id: 16, x: 120, y: 120 },{ id: 17, x: 150, y: 120 },{ id: 18, x: 180, y: 120 },
-  { id: 19, x: 180, y: 150 },{ id: 20, x: 180, y: 180 },{ id: 21, x: 150, y: 180 },
-  { id: 22, x: 120, y: 180 },{ id: 23, x: 120, y: 150 },
-  { id: 24, x: 150, y: 150 },
+  { id: 0,  x: CENTER - SPREAD, y: CENTER - SPREAD },  // 0
+  { id: 1,  x: CENTER, y: CENTER - SPREAD },           // 1
+  { id: 2,  x: CENTER + SPREAD, y: CENTER - SPREAD },  // 2
+  { id: 3,  x: CENTER + SPREAD, y: CENTER },           // 3
+  { id: 4,  x: CENTER + SPREAD, y: CENTER + SPREAD },  // 4
+  { id: 5,  x: CENTER, y: CENTER + SPREAD },           // 5
+  { id: 6,  x: CENTER - SPREAD, y: CENTER + SPREAD },  // 6
+  { id: 7,  x: CENTER - SPREAD, y: CENTER },           // 7
+  { id: 8,  x: CENTER - 55, y: CENTER - 55 },          // 8
+  { id: 9,  x: CENTER, y: CENTER - 55 },               // 9
+  { id: 10, x: CENTER + 55, y: CENTER - 55 },          // 10
+  { id: 11, x: CENTER + 55, y: CENTER },               // 11
+  { id: 12, x: CENTER + 55, y: CENTER + 55 },          // 12
+  { id: 13, x: CENTER, y: CENTER + 55 },               // 13
+  { id: 14, x: CENTER - 55, y: CENTER + 55 },          // 14
+  { id: 15, x: CENTER - 55, y: CENTER },               // 15
+  { id: 16, x: CENTER - 25, y: CENTER - 25 },          // 16
+  { id: 17, x: CENTER, y: CENTER - 25 },               // 17
+  { id: 18, x: CENTER + 25, y: CENTER - 25 },          // 18
+  { id: 19, x: CENTER + 25, y: CENTER },               // 19
+  { id: 20, x: CENTER + 25, y: CENTER + 25 },          // 20
+  { id: 21, x: CENTER, y: CENTER + 25 },               // 21
+  { id: 22, x: CENTER - 25, y: CENTER + 25 },          // 22
+  { id: 23, x: CENTER - 25, y: CENTER },               // 23
+  { id: 24, x: CENTER, y: CENTER },                    // 24
 ];
 
 /* ==================== ADJACENCY ==================== */
@@ -463,7 +482,6 @@ export default function Morabaraba() {
         {s.millAlert && <div className="mill-alert">⚡ Mill formed! Capture one opponent piece.</div>}
         {capturingPiece !== null && <div className="capture-alert">🔴 Removing piece…</div>}
         
-        {/* 🛠️ THE FIXED 3D BOARD */}
         <Board s={s} animating={animating} capturing={capturingPiece} click={click} mode={mode} />
 
         <div className="controls">
@@ -506,8 +524,6 @@ function Board({ s, animating, capturing, click, mode }) {
         touchAction: 'manipulation'
       }}
     >
-      {/* 🛠️ Instead of an SVG background, we create transparent clickable overlays 
-          that are scaled perfectly to match the 3D board's coordinates. */}
       <svg 
         viewBox="0 0 300 300" 
         style={{ 
