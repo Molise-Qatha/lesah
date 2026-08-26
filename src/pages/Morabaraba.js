@@ -6,38 +6,39 @@ import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
 
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
-/* 🛠️ FINAL FIX: Middle rings stay perfect, outer ring pushed back OUT to 98 */
+/* 🛠️ PERSPECTIVE FIX: Moved top row Y-coordinates upward */
 const CENTER = 150;   // Center of the 300x300 SVG
-const OUTER = 98;     // 🛠️ Pushed back out to sit on the outer holes
-const MID = 50;       // Middle ring (perfect, DO NOT CHANGE)
-const INNER = 25;     // Inner ring (perfect, DO NOT CHANGE)
+const OUTER = 98;     // Outer ring (Bottom and Sides are perfect)
+const MID = 50;       // Middle ring
+const INNER = 25;     // Inner ring
+const TOP_OFFSET = -6; // 🛠️ Moves top pieces UP by 6 units (to match angled photo)
 
 const POINTS = [
-  { id: 0,  x: CENTER - OUTER, y: CENTER - OUTER },  // 0
-  { id: 1,  x: CENTER, y: CENTER - OUTER },           // 1
-  { id: 2,  x: CENTER + OUTER, y: CENTER - OUTER },  // 2
-  { id: 3,  x: CENTER + OUTER, y: CENTER },           // 3
-  { id: 4,  x: CENTER + OUTER, y: CENTER + OUTER },  // 4
-  { id: 5,  x: CENTER, y: CENTER + OUTER },           // 5
-  { id: 6,  x: CENTER - OUTER, y: CENTER + OUTER },  // 6
-  { id: 7,  x: CENTER - OUTER, y: CENTER },           // 7
-  { id: 8,  x: CENTER - MID, y: CENTER - MID },        // 8
-  { id: 9,  x: CENTER, y: CENTER - MID },              // 9
-  { id: 10, x: CENTER + MID, y: CENTER - MID },        // 10
-  { id: 11, x: CENTER + MID, y: CENTER },              // 11
-  { id: 12, x: CENTER + MID, y: CENTER + MID },        // 12
-  { id: 13, x: CENTER, y: CENTER + MID },              // 13
-  { id: 14, x: CENTER - MID, y: CENTER + MID },        // 14
-  { id: 15, x: CENTER - MID, y: CENTER },              // 15
-  { id: 16, x: CENTER - INNER, y: CENTER - INNER },    // 16
-  { id: 17, x: CENTER, y: CENTER - INNER },             // 17
-  { id: 18, x: CENTER + INNER, y: CENTER - INNER },    // 18
-  { id: 19, x: CENTER + INNER, y: CENTER },             // 19
-  { id: 20, x: CENTER + INNER, y: CENTER + INNER },    // 20
-  { id: 21, x: CENTER, y: CENTER + INNER },             // 21
-  { id: 22, x: CENTER - INNER, y: CENTER + INNER },    // 22
-  { id: 23, x: CENTER - INNER, y: CENTER },             // 23
-  { id: 24, x: CENTER, y: CENTER },                    // 24
+  { id: 0,  x: CENTER - OUTER, y: CENTER - OUTER + TOP_OFFSET }, // 🛠️ Top-Left (moved up)
+  { id: 1,  x: CENTER, y: CENTER - OUTER + TOP_OFFSET },          // 🛠️ Top-Center (moved up)
+  { id: 2,  x: CENTER + OUTER, y: CENTER - OUTER + TOP_OFFSET },  // 🛠️ Top-Right (moved up)
+  { id: 3,  x: CENTER + OUTER, y: CENTER },                        // 3 (Right)
+  { id: 4,  x: CENTER + OUTER, y: CENTER + OUTER },                // 4 (Bottom-Right)
+  { id: 5,  x: CENTER, y: CENTER + OUTER },                        // 5 (Bottom)
+  { id: 6,  x: CENTER - OUTER, y: CENTER + OUTER },                // 6 (Bottom-Left)
+  { id: 7,  x: CENTER - OUTER, y: CENTER },                        // 7 (Left)
+  { id: 8,  x: CENTER - MID, y: CENTER - MID },                    // 8
+  { id: 9,  x: CENTER, y: CENTER - MID },                          // 9
+  { id: 10, x: CENTER + MID, y: CENTER - MID },                    // 10
+  { id: 11, x: CENTER + MID, y: CENTER },                          // 11
+  { id: 12, x: CENTER + MID, y: CENTER + MID },                    // 12
+  { id: 13, x: CENTER, y: CENTER + MID },                          // 13
+  { id: 14, x: CENTER - MID, y: CENTER + MID },                    // 14
+  { id: 15, x: CENTER - MID, y: CENTER },                          // 15
+  { id: 16, x: CENTER - INNER, y: CENTER - INNER },                // 16
+  { id: 17, x: CENTER, y: CENTER - INNER },                        // 17
+  { id: 18, x: CENTER + INNER, y: CENTER - INNER },                // 18
+  { id: 19, x: CENTER + INNER, y: CENTER },                        // 19
+  { id: 20, x: CENTER + INNER, y: CENTER + INNER },                // 20
+  { id: 21, x: CENTER, y: CENTER + INNER },                        // 21
+  { id: 22, x: CENTER - INNER, y: CENTER + INNER },                // 22
+  { id: 23, x: CENTER - INNER, y: CENTER },                        // 23
+  { id: 24, x: CENTER, y: CENTER },                                // 24
 ];
 
 /* ==================== ADJACENCY ==================== */
