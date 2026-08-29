@@ -6,14 +6,13 @@ import brownPieceImg from './morabaraba-brown-piece.png';
 import boardBgImg from './morabaraba-board.jpg';
 
 /* ==================== BOARD GEOMETRY (25 points) ==================== */
-/* 🛠️ FIXED: Middle ring pushed OUT to 62 (was 50) */
-const CENTER = 150;    // Base center
-const OUTER = 98;      // Outer ring
-const MID = 62;        // 🛠️ Middle ring pushed OUT
-const INNER = 25;      // Inner ring
-const TOP_OUTER = -6;  // Top outer ring
-const TOP_MID = -4;    // Top middle ring
-const TOP_INNER = -2;  // Top inner ring
+const CENTER = 150;    
+const OUTER = 98;      
+const MID = 62;        
+const INNER = 25;      
+const TOP_OUTER = -6;  
+const TOP_MID = -4;    
+const TOP_INNER = -2;  
 const BOTTOM_INNER = 2;
 const CENTER_OFFSET = 1;
 
@@ -70,22 +69,22 @@ for (let i = 0; i < 25; i++) {
   ADJ[i].sort();
 }
 
-/* ==================== MILLS ==================== */
-const ALL_LINES = [
+/* ==================== MILL COMBINATIONS (The Fix) ==================== */
+/* 🛠️ REPLACED geometric filtering with explicit, exact legal combinations.
+   The inner layer positions (16-24) now ONLY work as the MIDDLE of a mill. */
+const MILL_COMBINATIONS = [
+  // Outer Ring (0-7)
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
+  // Middle Ring (8-15)
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
+  // Inner Ring (16-23)
   [16,17,18], [18,19,20], [20,21,22], [22,23,16],
-  [1,9,17], [9,17,24], [17,24,21], [24,21,13], [21,13,5],
-  [7,15,23], [15,23,24], [23,24,19], [24,19,11], [19,11,3],
+  // Center Point (24) as Middle
+  [17, 24, 21], [23, 24, 19],
+  // Interconnect Lines
+  [1, 9, 17], [9, 17, 24], [17, 24, 21], [24, 21, 13], [21, 13, 5],
+  [7, 15, 23], [15, 23, 24], [23, 24, 19], [24, 19, 11], [19, 11, 3],
 ];
-const MILLS = ALL_LINES.filter(arr => {
-  const [a,b,c] = arr;
-  const p1=POINTS[a], p2=POINTS[b], p3=POINTS[c];
-  const cross = (p2.x-p1.x)*(p3.y-p1.y) - (p2.y-p1.y)*(p3.x-p1.x);
-  if (Math.abs(cross) > 0.1) return false;
-  const dot = (p3.x-p1.x)*(p2.x-p1.x) + (p3.y-p1.y)*(p2.y-p1.y);
-  return dot >= 0;
-});
 
 /* ==================== CONSTANTS ==================== */
 const PHASE = { PLACING: 'placing', MOVING: 'moving', FLYING: 'flying' };
@@ -121,8 +120,9 @@ const sounds = {
 };
 
 /* ==================== HELPERS ==================== */
+/* 🛠️ FIX: Mill detection now strictly checks against the exact combination list */
 function millsForPlayer(board, point, player) {
-  return MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
+  return MILL_COMBINATIONS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
 function getRemovable(board, opponent) {
   const pieces = board.reduce((a, v, i) => v === opponent ? [...a, i] : a, []);
@@ -194,7 +194,7 @@ function evaluateState(s) {
   });
   score += (aiMobility - humanMobility) * 2;
   let aiMills = 0, humanMills = 0;
-  MILLS.forEach(mill => {
+  MILL_COMBINATIONS.forEach(mill => {
     if (mill.every(i => s.board[i] === aiPlayer)) aiMills++;
     if (mill.every(i => s.board[i] === human)) humanMills++;
   });
@@ -319,6 +319,34 @@ export default function Morabaraba() {
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, [mode, s.gameOver, s.millAlert, s.player, s.gameTimeRemaining]);
+
+  /* 🛠️ FIX: Detect blocked player and pass turn automatically */
+  useEffect(() => {
+    if (mode !== 'vsComputer' || s.gameOver || s.millAlert || s.phase === PHASE.PLACING) return;
+
+    // Check if current player has legal moves
+    const currentPlayer = s.player;
+    const phase = s.onBoard[currentPlayer] === 3 ? PHASE.FLYING : s.phase;
+    const hasMoves = canPlayerMove(s.board, currentPlayer, phase);
+
+    if (!hasMoves) {
+      // Both players are blocked - declare draw
+      const opp = currentPlayer === 'green' ? 'brown' : 'green';
+      const oppPhase = s.onBoard[opp] === 3 ? PHASE.FLYING : s.phase;
+      if (!canPlayerMove(s.board, opp, oppPhase)) {
+        setS(prev => ({ ...prev, gameOver: true, winner: null, message: '🤝 Draw (Both Blocked)' }));
+        return;
+      }
+
+      // Current player is blocked, pass turn to opponent
+      setS(prev => {
+        if (prev.gameOver || prev.player !== currentPlayer) return prev;
+        const next = cloneState(prev);
+        next.player = next.player === 'green' ? 'brown' : 'green';
+        return next;
+      });
+    }
+  }, [s.player, s.phase, s.onBoard, s.board, s.gameOver, s.millAlert, mode]);
 
   useEffect(() => {
     if (mode !== 'vsComputer' || s.player !== 'brown' || s.gameOver || s.millAlert) return;
@@ -557,7 +585,6 @@ function Board({ s, animating, capturing, click, mode }) {
           
           return (
             <g key={pt.id}>
-              {/* Invisible click area */}
               <circle 
                 cx={pt.x} cy={pt.y} r="16" fill="transparent"
                 onClick={() => {
@@ -570,7 +597,6 @@ function Board({ s, animating, capturing, click, mode }) {
                 style={{ cursor: 'pointer', pointerEvents: 'all' }}
               />
               
-              {/* 3D Piece Image */}
               {piece && (
                 <image 
                   href={pieceImg}
@@ -585,17 +611,14 @@ function Board({ s, animating, capturing, click, mode }) {
                 />
               )}
               
-              {/* Mill Ring */}
               {isMill && (
                 <circle cx={pt.x} cy={pt.y} r="18" fill="none" stroke="#facc15" strokeWidth="2" />
               )}
               
-              {/* Valid Move Indicator */}
               {isValid && !piece && (
                 <circle cx={pt.x} cy={pt.y} r="5" fill="rgba(16,185,129,0.7)" />
               )}
               
-              {/* Removable Indicator */}
               {isRem && s.millAlert && (
                 <circle cx={pt.x} cy={pt.y} r="16" fill="none" stroke="#ef4444" strokeWidth="3" strokeDasharray="4" />
               )}
