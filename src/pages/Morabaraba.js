@@ -65,32 +65,24 @@ for (let i = 0; i < 25; i++) {
   ADJ[i].sort();
 }
 
-/* ==================== MILL COMBINATIONS (STRICT GEOMETRY) ==================== */
-/* 🛠️ COMPLETELY REBUILT: 
-   1. Center (24) CANNOT form mills with ANY Middle/Outer layer pieces.
-   2. Center (24) CANNOT form mills with Inner Layer Corners (16, 18, 20, 22).
-   3. Center (24) ONLY forms mills with the Inner Layer Midpoints (17, 19, 21, 23) in a plus-sign.
+/* ==================== EXPLICIT MILL COMBINATIONS (THE FIX) ==================== */
+/* 🛠️ FIXED: The inner positions (16-24) are ONLY valid as MIDDLE points.
+   NO cross-ring mills involving the Center are allowed.
 */
 
-const MILL_COMBINATIONS = [
-  // 1. Outer Ring (0-7) - Perfect horizontal/vertical lines
+const VALID_MILLS = [
+  // Outer Ring (0-7) - Perfect horizontal/vertical lines
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
 
-  // 2. Middle Ring (8-15) - Perfect horizontal/vertical lines
+  // Middle Ring (8-15) - Perfect horizontal/vertical lines
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
 
-  // 3. Inner Layer (16-23) - Perfect horizontal/vertical lines
+  // Inner Layer (16-23) - Perfect horizontal/vertical lines (Inner corners 16,18,20,22 are endpoints)
   [16,17,18], [18,19,20], [20,21,22], [22,23,16],
 
-  // 4. Center Point (24) - ONLY valid straight plus-sign with Inner Midpoints
-  // Vertical Through Center:
-  [17, 24, 21], 
-  // Horizontal Through Center:
-  [23, 24, 19],
-
-  // 5. Straight "spokes" connecting Outer and Middle rings (NO inner or center pieces involved)
-  [1, 9, 17], [9, 17, 24], [17, 24, 21], [24, 21, 13], [21, 13, 5],
-  [7, 15, 23], [15, 23, 24], [23, 24, 19], [24, 19, 11], [19, 11, 3],
+  // 🛠️ Center (24) - ONLY allowed as Middle of INNER layer midpoints (17, 19, 21, 23)
+  [17, 24, 21], // Vertical Plus
+  [23, 24, 19], // Horizontal Plus
 ];
 
 /* ==================== CONSTANTS ==================== */
@@ -128,7 +120,7 @@ const sounds = {
 
 /* ==================== HELPERS ==================== */
 function millsForPlayer(board, point, player) {
-  return MILL_COMBINATIONS.filter(m => m.includes(point) && m.every(i => board[i] === player));
+  return VALID_MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
 function getRemovable(board, opponent) {
   const pieces = board.reduce((a, v, i) => v === opponent ? [...a, i] : a, []);
@@ -200,7 +192,7 @@ function evaluateState(s) {
   });
   score += (aiMobility - humanMobility) * 2;
   let aiMills = 0, humanMills = 0;
-  MILL_COMBINATIONS.forEach(mill => {
+  VALID_MILLS.forEach(mill => {
     if (mill.every(i => s.board[i] === aiPlayer)) aiMills++;
     if (mill.every(i => s.board[i] === human)) humanMills++;
   });
