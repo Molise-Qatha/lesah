@@ -65,24 +65,30 @@ for (let i = 0; i < 25; i++) {
   ADJ[i].sort();
 }
 
-/* ==================== EXPLICIT MILL COMBINATIONS (THE FIX) ==================== */
-/* 🛠️ FIXED: The inner positions (16-24) are ONLY valid as MIDDLE points.
-   NO cross-ring mills involving the Center are allowed.
+/* ==================== EXPLICIT MILL COMBINATIONS ==================== */
+/* 🛠️ FIXED: 
+   1. We KEEP the strict Center rules: [17, 24, 21] and [23, 24, 19].
+   2. We RE-ADD the ordinary straight-line mills across the outer/middle/inner rings.
+   3. We REMOVE only the broken "center as endpoint" combos. 
 */
 
 const VALID_MILLS = [
-  // Outer Ring (0-7) - Perfect horizontal/vertical lines
+  // Outer Ring (0-7)
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
 
-  // Middle Ring (8-15) - Perfect horizontal/vertical lines
+  // Middle Ring (8-15)
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
 
-  // Inner Layer (16-23) - Perfect horizontal/vertical lines (Inner corners 16,18,20,22 are endpoints)
+  // Inner Layer (16-23)
   [16,17,18], [18,19,20], [20,21,22], [22,23,16],
 
-  // 🛠️ Center (24) - ONLY allowed as Middle of INNER layer midpoints (17, 19, 21, 23)
-  [17, 24, 21], // Vertical Plus
-  [23, 24, 19], // Horizontal Plus
+  // Ordinary Cross-Ring Mills (Straight lines WITHOUT the center)
+  [1, 9, 17], [9, 17, 24], [17, 24, 21], [24, 21, 13], [21, 13, 5],
+  [7, 15, 23], [15, 23, 24], [23, 24, 19], [24, 19, 11], [19, 11, 3],
+
+  // 🛠️ Strict Center-Only Mills (Center MUST be the middle)
+  // Only allowed as: Middle-Inner-Middle (Plus sign)
+  [17, 24, 21], [23, 24, 19],
 ];
 
 /* ==================== CONSTANTS ==================== */
@@ -318,7 +324,6 @@ export default function Morabaraba() {
     return () => clearInterval(timerRef.current);
   }, [mode, s.gameOver, s.millAlert, s.player, s.gameTimeRemaining]);
 
-  /* FIX: Detect blocked player and pass turn automatically */
   useEffect(() => {
     if (mode !== 'vsComputer' || s.gameOver || s.millAlert || s.phase === PHASE.PLACING) return;
 
