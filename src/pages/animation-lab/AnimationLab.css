@@ -1,0 +1,353 @@
+/* ═══════════════ ANIMATION LAB ═══════════════ */
+.animation-lab-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #e0e0e0;
+  padding: 20px;
+}
+
+.animation-lab-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.back-link {
+  color: #888;
+  text-decoration: none;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-bottom: 15px;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #e0e0e0;
+}
+
+/* Header */
+.animation-lab-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.animation-lab-header h1 {
+  font-size: 2rem;
+  margin: 0 0 5px;
+  color: #fff;
+}
+
+.animation-lab-subtitle {
+  color: #aaa;
+  margin: 0 0 10px;
+}
+
+.dev-badge {
+  display: inline-block;
+  background: #8B0000;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════ STAGE ═══════════════ */
+.animation-stage {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  border: 1px solid #333;
+}
+
+/* Sky */
+.stage-sky {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  z-index: 1;
+}
+
+.sky-gradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #1a237e, #4fc3f7);
+}
+
+/* Mountains */
+.stage-mountains {
+  position: absolute;
+  top: 35%;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  z-index: 2;
+}
+
+.mountain {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-left: 80px solid transparent;
+  border-right: 80px solid transparent;
+  border-bottom: 100px solid #37474f;
+}
+
+.mountain-1 {
+  left: 10%;
+  border-bottom-color: #37474f;
+}
+
+.mountain-2 {
+  left: 40%;
+  border-left-width: 100px;
+  border-right-width: 100px;
+  border-bottom-color: #455a64;
+}
+
+.mountain-3 {
+  right: 10%;
+  border-left-width: 60px;
+  border-right-width: 60px;
+  border-bottom-color: #546e7a;
+}
+
+/* Ground */
+.stage-ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35%;
+  z-index: 3;
+}
+
+.ground-gradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #2e7d32, #1b5e20);
+}
+
+/* ═══════════════ CHARACTER ═══════════════ */
+.character-container {
+  position: absolute;
+  z-index: 10;
+  width: 80px;
+  height: 120px;
+  transform-origin: center center;
+  pointer-events: auto;
+}
+
+.character-body {
+  position: relative;
+  width: 80px;
+  height: 120px;
+}
+
+.sprite-body {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.character-eyes {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 20px;
+  z-index: 2;
+}
+
+.sprite-eyes {
+  width: 100%;
+  height: 100%;
+}
+
+.character-mouth {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 15px;
+  z-index: 2;
+}
+
+.sprite-mouth {
+  width: 100%;
+  height: 100%;
+}
+
+/* Placeholder overlay */
+.stage-placeholder {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  text-align: center;
+  background: rgba(0,0,0,0.6);
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.placeholder-hint {
+  font-size: 0.65rem;
+  color: #999;
+}
+
+/* ═══════════════ CONTROLS ═══════════════ */
+.animation-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.control-group {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.control-group h3 {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.control-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.control-btn {
+  padding: 8px 14px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.control-btn:hover {
+  background: #3a3a3a;
+  border-color: #666;
+}
+
+.control-btn.active {
+  background: #2e7d32;
+  border-color: #4caf50;
+  color: #fff;
+}
+
+/* ═══════════════ INFO PANEL ═══════════════ */
+.animation-info {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 25px;
+}
+
+.animation-info h3 {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #222;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row span:first-child {
+  color: #888;
+}
+
+.info-row span:last-child {
+  color: #e0e0e0;
+}
+
+/* ═══════════════ ARCHITECTURE ═══════════════ */
+.architecture-preview {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.architecture-preview h3 {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.arch-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.arch-item {
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  color: #ccc;
+}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media (max-width: 600px) {
+  .animation-stage {
+    height: 300px;
+  }
+
+  .character-container {
+    width: 60px;
+    height: 90px;
+  }
+
+  .animation-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .control-btn {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+}

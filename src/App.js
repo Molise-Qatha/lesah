@@ -30,6 +30,7 @@ import CommunitySafety from './pages/CommunitySafety';
 import VendorGuidelines from './pages/VendorGuidelines';
 import ProviderProfile from './pages/ProviderProfile';
 import HoKallaEntry from './pages/HoKallaEntry';
+import AnimationLab from './pages/animation-lab/AnimationLab';
 
 import './App.css';
 
@@ -73,6 +74,9 @@ function App() {
         <Routes>
           {/* Home Page */}
           <Route path="/" element={<LandingPage />} />
+
+          {/* Animation Lab — UNLISTED development route */}
+          <Route path="/animation-lab" element={<AnimationLab />} />
 
           {/* Service Pages */}
           <Route path="/accommodation" element={<Accommodation />} />
