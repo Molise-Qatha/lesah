@@ -65,30 +65,28 @@ for (let i = 0; i < 25; i++) {
   ADJ[i].sort();
 }
 
-/* ==================== EXPLICIT MILL COMBINATIONS ==================== */
-/* 🛠️ FIXED: 
-   1. We KEEP the strict Center rules: [17, 24, 21] and [23, 24, 19].
-   2. We RE-ADD the ordinary straight-line mills across the outer/middle/inner rings.
-   3. We REMOVE only the broken "center as endpoint" combos. 
-*/
+/* ==================== MILL COMBINATIONS ==================== */
+/* The absolute, predefined valid mill patterns for the board.
+   NOTE: These are strictly logical lists. They DO NOT use visual alignment. */
 
-const VALID_MILLS = [
-  // Outer Ring (0-7)
+/* 1. The ONLY valid Center Mills */
+const CENTER_MILLS = [
+  [17, 24, 21], // Vertical Inner Cross
+  [23, 24, 19], // Horizontal Inner Cross
+];
+
+/* 2. All Ordinary Mills (No center included) */
+const ORDINARY_MILLS = [
+  // Outer Ring
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
-
-  // Middle Ring (8-15)
+  // Middle Ring
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
-
-  // Inner Layer (16-23)
+  // Inner Layer
   [16,17,18], [18,19,20], [20,21,22], [22,23,16],
-
-  // Ordinary Cross-Ring Mills (Straight lines WITHOUT the center)
-  [1, 9, 17], [9, 17, 24], [17, 24, 21], [24, 21, 13], [21, 13, 5],
-  [7, 15, 23], [15, 23, 24], [23, 24, 19], [24, 19, 11], [19, 11, 3],
-
-  // 🛠️ Strict Center-Only Mills (Center MUST be the middle)
-  // Only allowed as: Middle-Inner-Middle (Plus sign)
-  [17, 24, 21], [23, 24, 19],
+  // Straight vertical lines (No Center)
+  [1, 9, 17], [7, 15, 23],
+  // Straight horizontal lines (No Center)
+  [3, 11, 19], [5, 13, 21],
 ];
 
 /* ==================== CONSTANTS ==================== */
@@ -125,9 +123,20 @@ const sounds = {
 };
 
 /* ==================== HELPERS ==================== */
+
+/* 🛠️ THE CRITICAL FIX: 
+   1. If the center (24) is in the candidate, ONLY check CENTER_MILLS.
+   2. If the center (24) is NOT in the candidate, check ORDINARY_MILLS. */
 function millsForPlayer(board, point, player) {
-  return VALID_MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
+  // Check if this point is the center
+  if (point === 24) {
+    return CENTER_MILLS.filter(m => m.every(i => board[i] === player));
+  }
+  
+  // If not the center, check all ordinary mills
+  return ORDINARY_MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
+
 function getRemovable(board, opponent) {
   const pieces = board.reduce((a, v, i) => v === opponent ? [...a, i] : a, []);
   const notInMill = pieces.filter(i => millsForPlayer(board, i, opponent).length === 0);
@@ -198,7 +207,7 @@ function evaluateState(s) {
   });
   score += (aiMobility - humanMobility) * 2;
   let aiMills = 0, humanMills = 0;
-  VALID_MILLS.forEach(mill => {
+  MILLS.forEach(mill => {
     if (mill.every(i => s.board[i] === aiPlayer)) aiMills++;
     if (mill.every(i => s.board[i] === human)) humanMills++;
   });
@@ -326,11 +335,9 @@ export default function Morabaraba() {
 
   useEffect(() => {
     if (mode !== 'vsComputer' || s.gameOver || s.millAlert || s.phase === PHASE.PLACING) return;
-
     const currentPlayer = s.player;
     const phase = s.onBoard[currentPlayer] === 3 ? PHASE.FLYING : s.phase;
     const hasMoves = canPlayerMove(s.board, currentPlayer, phase);
-
     if (!hasMoves) {
       const opp = currentPlayer === 'green' ? 'brown' : 'green';
       const oppPhase = s.onBoard[opp] === 3 ? PHASE.FLYING : s.phase;
@@ -338,7 +345,6 @@ export default function Morabaraba() {
         setS(prev => ({ ...prev, gameOver: true, winner: null, message: '🤝 Draw (Both Blocked)' }));
         return;
       }
-
       setS(prev => {
         if (prev.gameOver || prev.player !== currentPlayer) return prev;
         const next = cloneState(prev);
