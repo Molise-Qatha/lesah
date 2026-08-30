@@ -17,7 +17,6 @@ const BOTTOM_INNER = 2;
 const CENTER_OFFSET = 1;
 
 const POINTS = [
-  // Outer Ring (0-7)
   { id: 0,  x: CENTER - OUTER, y: CENTER - OUTER + TOP_OUTER },
   { id: 1,  x: CENTER, y: CENTER - OUTER + TOP_OUTER },
   { id: 2,  x: CENTER + OUTER, y: CENTER - OUTER + TOP_OUTER },
@@ -26,7 +25,6 @@ const POINTS = [
   { id: 5,  x: CENTER, y: CENTER + OUTER },
   { id: 6,  x: CENTER - OUTER, y: CENTER + OUTER },
   { id: 7,  x: CENTER - OUTER, y: CENTER },
-  // Middle Ring (8-15)
   { id: 8,  x: CENTER - MID, y: CENTER - MID + TOP_MID },
   { id: 9,  x: CENTER, y: CENTER - MID + TOP_MID },
   { id: 10, x: CENTER + MID, y: CENTER - MID + TOP_MID },
@@ -35,7 +33,6 @@ const POINTS = [
   { id: 13, x: CENTER, y: CENTER + MID },
   { id: 14, x: CENTER - MID, y: CENTER + MID },
   { id: 15, x: CENTER - MID, y: CENTER },
-  // Inner Ring (16-23)
   { id: 16, x: CENTER - INNER, y: CENTER - INNER + TOP_INNER },
   { id: 17, x: CENTER, y: CENTER - INNER + TOP_INNER },
   { id: 18, x: CENTER + INNER, y: CENTER - INNER + TOP_INNER },
@@ -44,7 +41,6 @@ const POINTS = [
   { id: 21, x: CENTER, y: CENTER + INNER + BOTTOM_INNER },
   { id: 22, x: CENTER - INNER, y: CENTER + INNER },
   { id: 23, x: CENTER - INNER, y: CENTER },
-  // Center (24)
   { id: 24, x: CENTER, y: CENTER + CENTER_OFFSET },
 ];
 
@@ -69,19 +65,30 @@ for (let i = 0; i < 25; i++) {
   ADJ[i].sort();
 }
 
-/* ==================== MILL COMBINATIONS (The Fix) ==================== */
-/* 🛠️ REPLACED geometric filtering with explicit, exact legal combinations.
-   The inner layer positions (16-24) now ONLY work as the MIDDLE of a mill. */
+/* ==================== MILL COMBINATIONS (STRICT GEOMETRY) ==================== */
+/* 🛠️ COMPLETELY REBUILT: 
+   1. Center (24) CANNOT form mills with ANY Middle/Outer layer pieces.
+   2. Center (24) CANNOT form mills with Inner Layer Corners (16, 18, 20, 22).
+   3. Center (24) ONLY forms mills with the Inner Layer Midpoints (17, 19, 21, 23) in a plus-sign.
+*/
+
 const MILL_COMBINATIONS = [
-  // Outer Ring (0-7)
+  // 1. Outer Ring (0-7) - Perfect horizontal/vertical lines
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
-  // Middle Ring (8-15)
+
+  // 2. Middle Ring (8-15) - Perfect horizontal/vertical lines
   [8,9,10], [10,11,12], [12,13,14], [14,15,8],
-  // Inner Ring (16-23)
+
+  // 3. Inner Layer (16-23) - Perfect horizontal/vertical lines
   [16,17,18], [18,19,20], [20,21,22], [22,23,16],
-  // Center Point (24) as Middle
-  [17, 24, 21], [23, 24, 19],
-  // Interconnect Lines
+
+  // 4. Center Point (24) - ONLY valid straight plus-sign with Inner Midpoints
+  // Vertical Through Center:
+  [17, 24, 21], 
+  // Horizontal Through Center:
+  [23, 24, 19],
+
+  // 5. Straight "spokes" connecting Outer and Middle rings (NO inner or center pieces involved)
   [1, 9, 17], [9, 17, 24], [17, 24, 21], [24, 21, 13], [21, 13, 5],
   [7, 15, 23], [15, 23, 24], [23, 24, 19], [24, 19, 11], [19, 11, 3],
 ];
@@ -120,7 +127,6 @@ const sounds = {
 };
 
 /* ==================== HELPERS ==================== */
-/* 🛠️ FIX: Mill detection now strictly checks against the exact combination list */
 function millsForPlayer(board, point, player) {
   return MILL_COMBINATIONS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
@@ -320,17 +326,15 @@ export default function Morabaraba() {
     return () => clearInterval(timerRef.current);
   }, [mode, s.gameOver, s.millAlert, s.player, s.gameTimeRemaining]);
 
-  /* 🛠️ FIX: Detect blocked player and pass turn automatically */
+  /* FIX: Detect blocked player and pass turn automatically */
   useEffect(() => {
     if (mode !== 'vsComputer' || s.gameOver || s.millAlert || s.phase === PHASE.PLACING) return;
 
-    // Check if current player has legal moves
     const currentPlayer = s.player;
     const phase = s.onBoard[currentPlayer] === 3 ? PHASE.FLYING : s.phase;
     const hasMoves = canPlayerMove(s.board, currentPlayer, phase);
 
     if (!hasMoves) {
-      // Both players are blocked - declare draw
       const opp = currentPlayer === 'green' ? 'brown' : 'green';
       const oppPhase = s.onBoard[opp] === 3 ? PHASE.FLYING : s.phase;
       if (!canPlayerMove(s.board, opp, oppPhase)) {
@@ -338,7 +342,6 @@ export default function Morabaraba() {
         return;
       }
 
-      // Current player is blocked, pass turn to opponent
       setS(prev => {
         if (prev.gameOver || prev.player !== currentPlayer) return prev;
         const next = cloneState(prev);
