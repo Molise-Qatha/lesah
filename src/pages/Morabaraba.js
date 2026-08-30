@@ -66,16 +66,11 @@ for (let i = 0; i < 25; i++) {
 }
 
 /* ==================== MILL COMBINATIONS ==================== */
-/* The absolute, predefined valid mill patterns for the board.
-   NOTE: These are strictly logical lists. They DO NOT use visual alignment. */
-
-/* 1. The ONLY valid Center Mills */
 const CENTER_MILLS = [
   [17, 24, 21], // Vertical Inner Cross
   [23, 24, 19], // Horizontal Inner Cross
 ];
 
-/* 2. All Ordinary Mills (No center included) */
 const ORDINARY_MILLS = [
   // Outer Ring
   [0,1,2], [2,3,4], [4,5,6], [6,7,0],
@@ -128,12 +123,9 @@ const sounds = {
    1. If the center (24) is in the candidate, ONLY check CENTER_MILLS.
    2. If the center (24) is NOT in the candidate, check ORDINARY_MILLS. */
 function millsForPlayer(board, point, player) {
-  // Check if this point is the center
   if (point === 24) {
     return CENTER_MILLS.filter(m => m.every(i => board[i] === player));
   }
-  
-  // If not the center, check all ordinary mills
   return ORDINARY_MILLS.filter(m => m.includes(point) && m.every(i => board[i] === player));
 }
 
@@ -207,10 +199,17 @@ function evaluateState(s) {
   });
   score += (aiMobility - humanMobility) * 2;
   let aiMills = 0, humanMills = 0;
-  MILLS.forEach(mill => {
+  
+  // 🛠️ FIX: Use the two separate lists for evaluation
+  CENTER_MILLS.forEach(mill => {
     if (mill.every(i => s.board[i] === aiPlayer)) aiMills++;
     if (mill.every(i => s.board[i] === human)) humanMills++;
   });
+  ORDINARY_MILLS.forEach(mill => {
+    if (mill.every(i => s.board[i] === aiPlayer)) aiMills++;
+    if (mill.every(i => s.board[i] === human)) humanMills++;
+  });
+
   score += (aiMills - humanMills) * 30;
   if (s.onBoard[aiPlayer] === 3 && s.onBoard[human] > 3) score += 20;
   if (s.onBoard[human] === 3 && s.onBoard[aiPlayer] > 3) score -= 20;
