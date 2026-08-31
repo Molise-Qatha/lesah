@@ -31,6 +31,7 @@ import VendorGuidelines from './pages/VendorGuidelines';
 import ProviderProfile from './pages/ProviderProfile';
 import HoKallaEntry from './pages/HoKallaEntry';
 import AnimationLab from './pages/animation-lab/AnimationLab';
+import KopanangTest from './pages/animation-lab/KopanangTest';
 
 import './App.css';
 
@@ -75,8 +76,9 @@ function App() {
           {/* Home Page */}
           <Route path="/" element={<LandingPage />} />
 
-          {/* Animation Lab — UNLISTED development route */}
+          {/* Animation Lab — UNLISTED development routes */}
           <Route path="/animation-lab" element={<AnimationLab />} />
+          <Route path="/animation-lab/kopanang" element={<KopanangTest />} />
 
           {/* Service Pages */}
           <Route path="/accommodation" element={<Accommodation />} />
