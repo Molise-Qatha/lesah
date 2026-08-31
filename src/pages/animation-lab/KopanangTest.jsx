@@ -29,6 +29,7 @@ const WALK_FRAMES = 4;
 const WALK_SHEET_WIDTH = 612;
 const WALK_SHEET_HEIGHT = 408;
 const WALK_FRAME_WIDTH = WALK_SHEET_WIDTH / WALK_FRAMES; // 153px
+const WALK_ASPECT_RATIO = WALK_SHEET_HEIGHT / WALK_FRAME_WIDTH; // 408/153 = 2.667
 
 const BODY_OPTIONS = [
   { id: 'body01', label: 'Body 01', src: body01 },
@@ -272,12 +273,12 @@ function KopanangTest() {
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* Walking sprite sheet (shown when walking) */}
+                {/* Walking Sprite Sheet */}
                 {isWalking ? (
                   <div
                     style={{
                       width: `${walkScale}px`,
-                      height: `${walkScale * (WALK_SHEET_HEIGHT / WALK_FRAME_WIDTH)}px`,
+                      height: `${walkScale * WALK_ASPECT_RATIO}px`,
                       position: 'relative',
                       top: `${walkY}px`,
                       left: `${walkX}px`,
@@ -287,12 +288,14 @@ function KopanangTest() {
                   >
                     <img
                       src={walkSheet}
-                      alt="Walking"
+                      alt="Kopanang walking"
                       style={{
-                        width: '400%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        objectPosition: `${currentWalkFrame * 100}% 0`,
+                        width: `${walkScale * WALK_FRAMES}px`,
+                        height: `${walkScale * WALK_ASPECT_RATIO}px`,
+                        position: 'absolute',
+                        top: 0,
+                        left: `-${currentWalkFrame * walkScale}px`,
+                        maxWidth: 'none',
                         display: 'block',
                         pointerEvents: 'none',
                       }}
@@ -300,7 +303,7 @@ function KopanangTest() {
                   </div>
                 ) : (
                   <>
-                    {/* Body (static) */}
+                    {/* Static Body */}
                     <img 
                       src={currentBody.src} 
                       alt="Body" 
@@ -377,10 +380,10 @@ function KopanangTest() {
             <div className="layer-controls">
               {/* Walk Panel */}
               <div className="control-panel walk-panel">
-                <h3>🚶 Walking Animation</h3>
+                <h3>🚶 Walking</h3>
                 <div className="pose-buttons">
-                  <button className={`test-btn ${isWalking ? 'active' : ''}`} onClick={() => setIsWalking(true)}>▶ Start Walking</button>
-                  <button className="test-btn" onClick={() => setIsWalking(false)}>⏹ Stop Walking</button>
+                  <button className={`test-btn ${isWalking ? 'active' : ''}`} onClick={() => setIsWalking(true)}>▶ Start</button>
+                  <button className="test-btn" onClick={() => setIsWalking(false)}>⏹ Stop</button>
                 </div>
                 <div className="slider-row" style={{ marginTop: '8px' }}>
                   <label>Speed:</label>
@@ -388,17 +391,17 @@ function KopanangTest() {
                   <span>{walkSpeed}ms</span>
                 </div>
                 <div className="slider-row">
-                  <label>Walk Scale:</label>
-                  <input type="range" min="50" max="300" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
+                  <label>Scale:</label>
+                  <input type="range" min="50" max="250" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
                   <span>{walkScale}px</span>
                 </div>
                 <div className="slider-row">
-                  <label>Walk Y:</label>
+                  <label>Y Position:</label>
                   <input type="range" min="-200" max="300" value={walkY} onChange={(e) => setWalkY(Number(e.target.value))} />
                   <span>{walkY}px</span>
                 </div>
                 <div className="slider-row">
-                  <label>Walk X:</label>
+                  <label>X Offset:</label>
                   <input type="range" min="-200" max="200" value={walkX} onChange={(e) => setWalkX(Number(e.target.value))} />
                   <span>{walkX}px</span>
                 </div>
@@ -409,7 +412,7 @@ function KopanangTest() {
 
               {/* Body Panel */}
               <div className="control-panel body-panel">
-                <h3>🧍 Body (Static Pose)</h3>
+                <h3>🧍 Body</h3>
                 <div className="slider-row">
                   <label>Width:</label>
                   <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
@@ -445,7 +448,7 @@ function KopanangTest() {
               <div className="control-panel mouth-panel">
                 <h3>👄 Mouth</h3>
                 <div className="pose-buttons">
-                  <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start Talking</button>
+                  <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
                   <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
                 </div>
                 <div className="slider-row" style={{ marginTop: '6px' }}>
@@ -481,7 +484,7 @@ function KopanangTest() {
 
             {/* Save Presets */}
             <div className="presets-section">
-              <h3>💾 Saved Presets</h3>
+              <h3>💾 Presets</h3>
               
               {savedPresets.length > 0 ? (
                 <div className="presets-list">
@@ -492,14 +495,14 @@ function KopanangTest() {
                         <span className="preset-detail">{preset.body} | {preset.face}</span>
                       </div>
                       <div className="preset-actions">
-                        <button className="test-btn" onClick={() => handleLoadPreset(preset)}>📂 Load</button>
+                        <button className="test-btn" onClick={() => handleLoadPreset(preset)}>Load</button>
                         <button className="test-btn delete-btn" onClick={() => handleDeletePreset(preset.id)}>🗑️</button>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="no-presets">No presets saved yet.</p>
+                <p className="no-presets">No presets saved.</p>
               )}
 
               {showSaveDialog ? (
@@ -519,20 +522,9 @@ function KopanangTest() {
                 </div>
               ) : (
                 <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>
-                  💾 Save Current Position
+                  💾 Save Position
                 </button>
               )}
-            </div>
-
-            {/* Values */}
-            <div className="test-status">
-              <h3>📋 Current Values</h3>
-              <pre className="values-display">
-{`Body: { width: ${bodyScale} }
-Head: { width: ${headScale} }
-Mouth: { width: ${mouthScale}, y: ${mouthY}, x: ${mouthX} }
-Walk: { scale: ${walkScale}, frame: ${currentWalkFrame + 1}/4 }`}
-              </pre>
             </div>
           </div>
         </div>
