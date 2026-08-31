@@ -69,8 +69,6 @@
 }
 
 /* ═══════════════ CHARACTER COMPOSITE ═══════════════ */
-/* CRITICAL: The body image DEFINES the container size.
-   Face and mouth are positioned relative to the body. */
 .character-composite {
   position: relative;
   width: 250px;
@@ -78,11 +76,12 @@
   transition: transform 0.3s ease;
 }
 
-/* Layer 1: Body — this is the BASE layer */
+/* Layer 1: Body — BASE layer, defines container size */
 .layer-body {
   position: relative;
   width: 100%;
   z-index: 1;
+  pointer-events: none;
 }
 
 .character-body-img {
@@ -92,7 +91,7 @@
   object-fit: contain;
 }
 
-/* Layer 2: Face — positioned relative to the body's rendered size */
+/* Layer 2: Face — positioned OVER body */
 .layer-face {
   position: absolute;
   top: 0;
@@ -100,6 +99,7 @@
   transform: translateX(-50%);
   width: 25%;
   z-index: 2;
+  pointer-events: none;
 }
 
 .character-face-img {
@@ -109,21 +109,27 @@
   object-fit: contain;
 }
 
-/* Layer 3: Mouth — positioned relative to the body's rendered size */
+/* Layer 3: Mouth — FORCED visible above face */
 .layer-mouth {
   position: absolute;
-  top: 8%;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
-  width: 10%;
-  z-index: 3;
+  width: 20%;
+  z-index: 999;
+  pointer-events: none;
+  display: block;
+  visibility: visible;
 }
 
 .character-mouth-img {
   width: 100%;
   height: auto;
-  display: block;
+  display: block !important;
   object-fit: contain;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: relative;
 }
 
 /* ═══════════════ CONTROLS ═══════════════ */
@@ -288,5 +294,11 @@
 
   .test-stage {
     min-height: 350px;
+  }
+
+  /* Keep mouth visible on mobile */
+  .layer-mouth {
+    top: 5%;
+    width: 20%;
   }
 }
