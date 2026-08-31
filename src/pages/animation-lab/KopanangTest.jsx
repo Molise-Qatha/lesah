@@ -68,7 +68,6 @@ function KopanangTest() {
 
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
-  const currentMouth = MOUTH_FRAMES[currentMouthIndex];
 
   return (
     <div className="kopanang-test-page">
@@ -84,19 +83,26 @@ function KopanangTest() {
         {/* Character Stage */}
         <div className="test-stage">
           <div className="character-composite" style={{ transform: `scale(${charScale})` }}>
-            {/* Layer 1: Body — defines container size */}
+            {/* Layer 1: Body */}
             <div className="layer-body">
               <img src={currentBody.src} alt={`Body ${selectedBody}`} className="character-body-img" />
             </div>
 
-            {/* Layer 2: Face — positioned OVER body */}
+            {/* Layer 2: Face — shows EITHER base face OR talking face (mouth frames are FULL faces) */}
             <div className="layer-face">
-              <img src={currentFace.src} alt={`Face ${selectedFace}`} className="character-face-img" />
-            </div>
-
-            {/* Layer 3: Mouth — positioned OVER face */}
-            <div className="layer-mouth">
-              <img src={currentMouth} alt={`Mouth ${currentMouthIndex + 1}`} className="character-mouth-img" />
+              {isTalking ? (
+                <img 
+                  src={MOUTH_FRAMES[currentMouthIndex]} 
+                  alt={`Talking frame ${currentMouthIndex + 1}`} 
+                  className="character-face-img" 
+                />
+              ) : (
+                <img 
+                  src={currentFace.src} 
+                  alt={`Face ${selectedFace}`} 
+                  className="character-face-img" 
+                />
+              )}
             </div>
           </div>
         </div>
@@ -139,7 +145,10 @@ function KopanangTest() {
                 <button 
                   key={face.id}
                   className={`test-btn ${selectedFace === face.id ? 'active' : ''}`}
-                  onClick={() => setSelectedFace(face.id)}
+                  onClick={() => {
+                    setSelectedFace(face.id);
+                    setIsTalking(false); // Stop talking to show the expression
+                  }}
                 >
                   {face.label}
                 </button>
@@ -191,11 +200,7 @@ function KopanangTest() {
           </div>
           <div className="status-row">
             <span>Face:</span>
-            <span>{currentFace.label}</span>
-          </div>
-          <div className="status-row">
-            <span>Mouth:</span>
-            <span>Frame {currentMouthIndex + 1} of 10</span>
+            <span>{isTalking ? `Talking Frame ${currentMouthIndex + 1}` : currentFace.label}</span>
           </div>
           <div className="status-row">
             <span>Talking:</span>
@@ -203,24 +208,28 @@ function KopanangTest() {
           </div>
           <div className="status-row">
             <span>Layers:</span>
-            <span>3 (Body + Face + Mouth)</span>
+            <span>2 (Body + Face/Neck)</span>
           </div>
         </div>
 
         {/* Architecture Note */}
         <div className="test-note">
-          <h3>📐 Layer Architecture</h3>
+          <h3>📐 Layer Architecture (CORRECTED)</h3>
           <pre className="layer-diagram">
 {`BODY (base)
   ↓
-FACE (emotion)
-  ↓
-MOUTH (speech)`}
+FACE/HEAD (swaps between:
+  - Neutral expression
+  - Angry expression
+  - Sad expression
+  - Worried expression
+  - Talking frames 1-10)`}
           </pre>
           <p className="note-text">
-            The body is the foundation. The face sits on top for emotional expression.
-            The mouth sits on top of the face for speech animation.
-            Each layer is independent and can be swapped without affecting the others.
+            The "Mouth" files are actually FULL FACE images with different mouth shapes.
+            When talking, the entire face is swapped to a talking frame.
+            When not talking, the face shows the selected expression.
+            The face and mouth layers must have IDENTICAL size and position.
           </p>
         </div>
       </div>

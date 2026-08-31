@@ -76,7 +76,7 @@
   transition: transform 0.3s ease;
 }
 
-/* Layer 1: Body — BASE layer, fills the entire container */
+/* Layer 1: Body — BASE layer, fills container */
 .layer-body {
   position: relative;
   width: 100%;
@@ -91,10 +91,9 @@
   object-fit: contain;
 }
 
-/* Layer 2: Face — SMALL, fixed size based on actual PNG dimensions
-   Face natural width: 115px → in a 200px container, that's ~57.5%
-   Positioned at neck (approximately 20% down from top of body)
-   z-index MUST be higher than body */
+/* Layer 2: Face/Neck — SAME SIZE as the base face.
+   The base face (neutral) sits here.
+   When talking, a mouth frame REPLACES this entire layer. */
 .layer-face {
   position: absolute;
   top: 20%;
@@ -112,18 +111,15 @@
   object-fit: contain;
 }
 
-/* Layer 3: Mouth — VERY SMALL, fixed size based on mouth PNG
-   Mouth natural width: ~30px on face (mouth is ~30% of face width)
-   In a 200px container, mouth = ~17% of body width
-   Positioned at lips (approximately 55% down from top of face)
-   z-index MUST be highest */
+/* Layer 3: TALKING FACE — must be EXACTLY the same size and position
+   as Layer 2 (the base face). It covers the base face when talking. */
 .layer-mouth {
   position: absolute;
-  top: 27%;
+  top: 20%; /* SAME as face */
   left: 50%;
   transform: translateX(-50%);
-  width: 18%;
-  z-index: 10;
+  width: 57%; /* SAME as face */
+  z-index: 5; /* HIGHER than face so it covers it */
   pointer-events: none;
   display: block;
   visibility: visible;
