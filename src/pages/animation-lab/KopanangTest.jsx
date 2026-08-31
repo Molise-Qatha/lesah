@@ -26,8 +26,8 @@ import walkFrame1 from '../../assets/kopanang_walk/kopanang_walk_1.png';
 import walkFrame2 from '../../assets/kopanang_walk/kopanang_walk_2.png';
 
 const WALK_FRAMES = [
-  { id: 'walk1', src: walkFrame1, width: 172, height: 314 },
-  { id: 'walk2', src: walkFrame2, width: 122, height: 317 },
+  { id: 'walk1', src: walkFrame1 },
+  { id: 'walk2', src: walkFrame2 },
 ];
 
 const BODY_OPTIONS = [
@@ -260,21 +260,30 @@ function KopanangTest() {
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* Walking — 2 individual frames */}
+                {/* Walking — both frames at SAME width */}
                 {isWalking ? (
-                  <img
-                    src={currentWalk.src}
-                    alt={`Walking ${currentWalkFrame + 1}`}
+                  <div
                     style={{
                       width: `${walkScale}px`,
-                      height: 'auto',
                       position: 'relative',
                       top: `${walkY}px`,
                       left: `${walkX}px`,
                       zIndex: 1,
                       pointerEvents: 'none',
                     }}
-                  />
+                  >
+                    <img
+                      src={currentWalk.src}
+                      alt={`Walking ${currentWalkFrame + 1}`}
+                      style={{
+                        width: `${walkScale}px`,
+                        height: 'auto',
+                        display: 'block',
+                        pointerEvents: 'none',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  </div>
                 ) : (
                   <>
                     {/* Static Body */}
