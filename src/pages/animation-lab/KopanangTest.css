@@ -76,7 +76,7 @@
   transition: transform 0.3s ease;
 }
 
-/* Layer 1: Body — BASE layer */
+/* Layer 1: Body — BASE layer, fills the entire container */
 .layer-body {
   position: relative;
   width: 100%;
@@ -91,16 +91,17 @@
   object-fit: contain;
 }
 
-/* Layer 2: Face — positioned at neck area
-   Face width = 115/156 = 73.7% of body width
-   Neck is approximately 22% down from top of body */
+/* Layer 2: Face — SMALL, fixed size based on actual PNG dimensions
+   Face natural width: 115px → in a 200px container, that's ~57.5%
+   Positioned at neck (approximately 20% down from top of body)
+   z-index MUST be higher than body */
 .layer-face {
   position: absolute;
-  top: 22%;
+  top: 20%;
   left: 50%;
   transform: translateX(-50%);
-  width: 74%;
-  z-index: 2;
+  width: 57%;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -111,16 +112,18 @@
   object-fit: contain;
 }
 
-/* Layer 3: Mouth — positioned on face
-   Mouth width = 102/156 = 65% of body width
-   Mouth sits approximately at 45% down from top of face */
+/* Layer 3: Mouth — VERY SMALL, fixed size based on mouth PNG
+   Mouth natural width: ~30px on face (mouth is ~30% of face width)
+   In a 200px container, mouth = ~17% of body width
+   Positioned at lips (approximately 55% down from top of face)
+   z-index MUST be highest */
 .layer-mouth {
   position: absolute;
-  top: 32%;
+  top: 27%;
   left: 50%;
   transform: translateX(-50%);
-  width: 50%;
-  z-index: 999;
+  width: 18%;
+  z-index: 10;
   pointer-events: none;
   display: block;
   visibility: visible;
