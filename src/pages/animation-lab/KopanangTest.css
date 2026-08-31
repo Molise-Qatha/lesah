@@ -221,3 +221,32 @@
     font-size: 0.7rem;
   }
 }
+/* Drag Hint */
+.drag-hint {
+  background: #1a1a1a;
+  border: 1px dashed #555;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.drag-hint strong {
+  color: #e0e0e0;
+}
+
+/* Draggable elements */
+.draggable {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.draggable:hover {
+  outline: 2px dashed rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
