@@ -15,7 +15,7 @@ import faceAngry from '../../assets/kopanang_face/kopanang_face_angry.png';
 import faceSad from '../../assets/kopanang_face/kopanang_face_sad.png';
 import faceWorried from '../../assets/kopanang_face/kopanang_face_worried.png';
 
-// Import NEW vowel mouth sprites (4 frames)
+// Import vowel mouth sprites
 import mouthA from '../../assets/kopanang_mouth_vowels/kopanang_mouth_a.png';
 import mouthE from '../../assets/kopanang_mouth_vowels/kopanang_mouth_e.png';
 import mouthI from '../../assets/kopanang_mouth_vowels/kopanang_mouth_i.png';
@@ -51,26 +51,35 @@ function KopanangTest() {
   const [currentMouthIndex, setCurrentMouthIndex] = useState(0);
   const [talkSpeed, setTalkSpeed] = useState(250);
 
-  // Body
+  // Body controls (draggable)
   const [bodyScale, setBodyScale] = useState(200);
   const [bodyRotation, setBodyRotation] = useState(0);
   const [bodyX, setBodyX] = useState(0);
   const [bodyY, setBodyY] = useState(0);
 
-  // Head
+  // Head controls (draggable)
   const [headScale, setHeadScale] = useState(60);
   const [headX, setHeadX] = useState(0);
   const [headY, setHeadY] = useState(20);
   const [headRotation, setHeadRotation] = useState(0);
 
-  // Mouth
+  // Mouth controls (SLIDER-BASED — no drag for small element)
   const [mouthScale, setMouthScale] = useState(30);
   const [mouthX, setMouthX] = useState(0);
   const [mouthY, setMouthY] = useState(45);
   const [mouthRotation, setMouthRotation] = useState(0);
   const [mouthAspectRatio, setMouthAspectRatio] = useState(0.4);
 
-  // Drag state
+  // Save presets
+  const [savedPresets, setSavedPresets] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('kopanang_presets') || '[]');
+    } catch { return []; }
+  });
+  const [presetName, setPresetName] = useState('');
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+
+  // Drag state (only for body and head)
   const [draggingLayer, setDraggingLayer] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const stageRef = useRef(null);
@@ -88,7 +97,9 @@ function KopanangTest() {
     };
   }, [isTalking, talkSpeed]);
 
+  // Drag handlers (body and head only)
   const handleMouseDown = (e, layer) => {
+    if (layer === 'mouth') return; // Mouth is not draggable
     e.preventDefault();
     setDraggingLayer(layer);
     
@@ -103,9 +114,6 @@ function KopanangTest() {
     } else if (layer === 'head') {
       layerX = headX + stageRect.width / 2;
       layerY = headY;
-    } else if (layer === 'mouth') {
-      layerX = mouthX + stageRect.width / 2;
-      layerY = mouthY;
     }
     
     setDragOffset({
@@ -130,9 +138,6 @@ function KopanangTest() {
     } else if (draggingLayer === 'head') {
       setHeadX(newX - stageRect.width / 2);
       setHeadY(newY);
-    } else if (draggingLayer === 'mouth') {
-      setMouthX(newX - stageRect.width / 2);
-      setMouthY(newY);
     }
   };
 
@@ -148,6 +153,63 @@ function KopanangTest() {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [draggingLayer, dragOffset]);
+
+  // Save preset
+  const handleSavePreset = () => {
+    if (!presetName.trim()) return;
+    
+    const preset = {
+      id: Date.now(),
+      name: presetName.trim(),
+      body: selectedBody,
+      face: selectedFace,
+      bodyScale,
+      bodyRotation,
+      bodyX: Math.round(bodyX),
+      bodyY: Math.round(bodyY),
+      headScale,
+      headRotation,
+      headX: Math.round(headX),
+      headY: Math.round(headY),
+      mouthScale,
+      mouthRotation,
+      mouthX: Math.round(mouthX),
+      mouthY: Math.round(mouthY),
+      mouthAspectRatio: mouthAspectRatio,
+    };
+    
+    const updated = [...savedPresets, preset];
+    setSavedPresets(updated);
+    localStorage.setItem('kopanang_presets', JSON.stringify(updated));
+    setPresetName('');
+    setShowSaveDialog(false);
+  };
+
+  // Load preset
+  const handleLoadPreset = (preset) => {
+    setSelectedBody(preset.body);
+    setSelectedFace(preset.face);
+    setBodyScale(preset.bodyScale);
+    setBodyRotation(preset.bodyRotation);
+    setBodyX(preset.bodyX);
+    setBodyY(preset.bodyY);
+    setHeadScale(preset.headScale);
+    setHeadRotation(preset.headRotation);
+    setHeadX(preset.headX);
+    setHeadY(preset.headY);
+    setMouthScale(preset.mouthScale);
+    setMouthRotation(preset.mouthRotation);
+    setMouthX(preset.mouthX);
+    setMouthY(preset.mouthY);
+    setMouthAspectRatio(preset.mouthAspectRatio);
+  };
+
+  // Delete preset
+  const handleDeletePreset = (presetId) => {
+    const updated = savedPresets.filter(p => p.id !== presetId);
+    setSavedPresets(updated);
+    localStorage.setItem('kopanang_presets', JSON.stringify(updated));
+  };
 
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
@@ -171,7 +233,7 @@ function KopanangTest() {
           style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
         >
           <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-            {/* Body */}
+            {/* Body — draggable */}
             <img 
               src={currentBody.src} 
               alt="Body" 
@@ -186,7 +248,7 @@ function KopanangTest() {
               onMouseDown={(e) => handleMouseDown(e, 'body')}
             />
 
-            {/* Face */}
+            {/* Face — draggable */}
             <img 
               src={currentFace.src}
               alt="Face"
@@ -204,7 +266,7 @@ function KopanangTest() {
               onMouseDown={(e) => handleMouseDown(e, 'head')}
             />
 
-            {/* Mouth */}
+            {/* Mouth — NOT draggable, controlled by sliders */}
             {isTalking && (
               <div
                 style={{
@@ -218,10 +280,8 @@ function KopanangTest() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'grab',
-                  pointerEvents: 'auto',
+                  pointerEvents: 'none',
                 }}
-                onMouseDown={(e) => handleMouseDown(e, 'mouth')}
               >
                 <img 
                   src={currentMouth.src}
@@ -231,7 +291,6 @@ function KopanangTest() {
                     maxHeight: '100%',
                     objectFit: 'contain',
                     display: 'block',
-                    pointerEvents: 'none',
                   }}
                 />
               </div>
@@ -241,7 +300,7 @@ function KopanangTest() {
 
         {/* Drag hint */}
         <div className="drag-hint">
-          💡 <strong>DRAG TIP:</strong> Drag Body, Head, or Mouth directly. Positions persist across body changes.
+          💡 <strong>DRAG:</strong> Body and Head. <strong>SLIDERS:</strong> Mouth (too small to grab).
         </div>
 
         {/* Controls */}
@@ -253,6 +312,11 @@ function KopanangTest() {
               <label>Width:</label>
               <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
               <span>{bodyScale}px</span>
+            </div>
+            <div className="slider-row">
+              <label>Rotation:</label>
+              <input type="range" min="-20" max="20" value={bodyRotation} onChange={(e) => setBodyRotation(Number(e.target.value))} />
+              <span>{bodyRotation}°</span>
             </div>
             <div className="pose-buttons">
               {BODY_OPTIONS.map(body => (
@@ -285,18 +349,33 @@ function KopanangTest() {
             </div>
           </div>
 
-          {/* Mouth */}
+          {/* Mouth — SLIDER CONTROLS */}
           <div className="control-panel mouth-panel">
-            <h3>👄 Mouth (A-E-I-O)</h3>
+            <h3>👄 Mouth (Slider Controls)</h3>
             <div className="slider-row">
               <label>Width:</label>
               <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
               <span>{mouthScale}px</span>
             </div>
             <div className="slider-row">
-              <label>Ratio:</label>
+              <label>Height Ratio:</label>
               <input type="range" min="0.2" max="1" step="0.05" value={mouthAspectRatio} onChange={(e) => setMouthAspectRatio(Number(e.target.value))} />
               <span>{mouthAspectRatio.toFixed(2)}</span>
+            </div>
+            <div className="slider-row">
+              <label>Y Position:</label>
+              <input type="range" min="-100" max="200" value={mouthY} onChange={(e) => setMouthY(Number(e.target.value))} />
+              <span>{mouthY}px</span>
+            </div>
+            <div className="slider-row">
+              <label>X Offset:</label>
+              <input type="range" min="-100" max="100" value={mouthX} onChange={(e) => setMouthX(Number(e.target.value))} />
+              <span>{mouthX}px</span>
+            </div>
+            <div className="slider-row">
+              <label>Rotation:</label>
+              <input type="range" min="-45" max="45" value={mouthRotation} onChange={(e) => setMouthRotation(Number(e.target.value))} />
+              <span>{mouthRotation}°</span>
             </div>
             <div className="pose-buttons">
               <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
@@ -307,21 +386,67 @@ function KopanangTest() {
               <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
               <span>{talkSpeed}ms</span>
             </div>
-            {/* Current frame indicator */}
             <div className="mouth-frame-indicator">
               Current: <strong>{currentMouth.label}</strong>
             </div>
           </div>
         </div>
 
-        {/* Values */}
+        {/* Save Presets */}
+        <div className="presets-section">
+          <h3>💾 Saved Presets</h3>
+          
+          {savedPresets.length > 0 ? (
+            <div className="presets-list">
+              {savedPresets.map(preset => (
+                <div key={preset.id} className="preset-item">
+                  <div className="preset-info">
+                    <strong>{preset.name}</strong>
+                    <span className="preset-detail">
+                      Body: {preset.body} | Face: {preset.face}
+                    </span>
+                  </div>
+                  <div className="preset-actions">
+                    <button className="test-btn" onClick={() => handleLoadPreset(preset)}>📂 Load</button>
+                    <button className="test-btn delete-btn" onClick={() => handleDeletePreset(preset.id)}>🗑️ Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="no-presets">No presets saved yet. Find a good position and save it!</p>
+          )}
+
+          {showSaveDialog ? (
+            <div className="save-dialog">
+              <input 
+                type="text" 
+                placeholder="Preset name (e.g., Body01-Neutral)" 
+                value={presetName}
+                onChange={(e) => setPresetName(e.target.value)}
+                className="preset-input"
+                autoFocus
+              />
+              <div className="preset-dialog-buttons">
+                <button className="test-btn" onClick={handleSavePreset}>✅ Save</button>
+                <button className="test-btn" onClick={() => setShowSaveDialog(false)}>❌ Cancel</button>
+              </div>
+            </div>
+          ) : (
+            <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>
+              💾 Save Current Position
+            </button>
+          )}
+        </div>
+
+        {/* Current values */}
         <div className="test-status">
           <h3>📋 Current Values</h3>
           <pre className="values-display">
-{`Body: { width: ${bodyScale}, x: ${Math.round(bodyX)}, y: ${Math.round(bodyY)} }
+{`Body: { width: ${bodyScale}, x: ${Math.round(bodyX)}, y: ${Math.round(bodyY)}, rotation: ${bodyRotation} }
 Head: { width: ${headScale}, x: ${Math.round(headX)}, y: ${Math.round(headY)}, rotation: ${headRotation} }
-Mouth: { width: ${mouthScale}, x: ${Math.round(mouthX)}, y: ${Math.round(mouthY)}, ratio: ${mouthAspectRatio.toFixed(2)} }
-Frame: ${currentMouth.label} (${currentMouthIndex + 1}/4)`}
+Mouth: { width: ${mouthScale}, x: ${Math.round(mouthX)}, y: ${Math.round(mouthY)}, rotation: ${mouthRotation}, ratio: ${mouthAspectRatio.toFixed(2)} }
+Frame: ${currentMouth.label}`}
           </pre>
         </div>
       </div>

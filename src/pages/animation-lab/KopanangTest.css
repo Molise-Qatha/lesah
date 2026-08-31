@@ -261,3 +261,129 @@
   color: #ffb74d;
   font-size: 1rem;
 }
+/* ═══════════════ SAVE PRESETS ═══════════════ */
+.presets-section {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 25px;
+}
+
+.presets-section h3 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.presets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preset-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px 15px;
+  gap: 10px;
+}
+
+.preset-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preset-info strong {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+}
+
+.preset-detail {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.preset-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.delete-btn {
+  border-color: #8B0000;
+  color: #ff6b6b;
+}
+
+.delete-btn:hover {
+  background: #8B0000;
+  border-color: #ff0000;
+  color: #fff;
+}
+
+.no-presets {
+  color: #888;
+  font-size: 0.85rem;
+  margin: 0 0 10px;
+}
+
+.save-preset-btn {
+  background: #2e7d32;
+  border: 1px solid #4caf50;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.save-preset-btn:hover {
+  background: #388e3c;
+}
+
+.save-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.preset-input {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.preset-input:focus {
+  border-color: #2e7d32;
+}
+
+.preset-dialog-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Mouth frame indicator */
+.mouth-frame-indicator {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.mouth-frame-indicator strong {
+  color: #ffb74d;
+  font-size: 1rem;
+}
