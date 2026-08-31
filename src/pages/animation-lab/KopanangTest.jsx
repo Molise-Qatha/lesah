@@ -21,20 +21,14 @@ import mouthE from '../../assets/kopanang_mouth_vowels/kopanang_mouth_e.png';
 import mouthI from '../../assets/kopanang_mouth_vowels/kopanang_mouth_i.png';
 import mouthO from '../../assets/kopanang_mouth_vowels/kopanang_mouth_o.png';
 
-// Import walking sprite sheet
-import walkSheet from '../../assets/kopanang_walk/kopanang_walk.png';
+// Import 2-frame walking sprites
+import walkFrame1 from '../../assets/kopanang_walk/kopanang_walk_1.png';
+import walkFrame2 from '../../assets/kopanang_walk/kopanang_walk_2.png';
 
-// EXACT frame boundaries from transparency analysis
-const WALK_FRAME_POSITIONS = [
-  { x: 6, width: 171 },
-  { x: 181, width: 121 },
-  { x: 309, width: 154 },
-  { x: 465, width: 142 },
+const WALK_FRAMES = [
+  { id: 'walk1', src: walkFrame1, width: 172, height: 314 },
+  { id: 'walk2', src: walkFrame2, width: 122, height: 317 },
 ];
-
-const WALK_SHEET_HEIGHT = 408;
-const WALK_SHEET_FULL_WIDTH = 612;
-const WALK_FRAMES = 4;
 
 const BODY_OPTIONS = [
   { id: 'body01', label: 'Body 01', src: body01 },
@@ -66,7 +60,7 @@ function KopanangTest() {
   const [currentMouthIndex, setCurrentMouthIndex] = useState(0);
   const [currentWalkFrame, setCurrentWalkFrame] = useState(0);
   const [talkSpeed, setTalkSpeed] = useState(250);
-  const [walkSpeed, setWalkSpeed] = useState(150);
+  const [walkSpeed, setWalkSpeed] = useState(300);
 
   const [bodyScale, setBodyScale] = useState(200);
   const [bodyRotation, setBodyRotation] = useState(0);
@@ -117,7 +111,7 @@ function KopanangTest() {
   useEffect(() => {
     if (isWalking) {
       walkTimerRef.current = setInterval(() => {
-        setCurrentWalkFrame(prev => (prev + 1) % WALK_FRAMES);
+        setCurrentWalkFrame(prev => (prev + 1) % WALK_FRAMES.length);
       }, walkSpeed);
     }
     return () => {
@@ -244,13 +238,7 @@ function KopanangTest() {
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
   const currentMouth = MOUTH_FRAMES[currentMouthIndex];
-
-  // Walking background position
-  const currentFramePos = WALK_FRAME_POSITIONS[currentWalkFrame];
-  const scaleRatio = walkScale / WALK_FRAME_POSITIONS[0].width;
-  const walkBgWidth = walkScale * (WALK_SHEET_FULL_WIDTH / WALK_FRAME_POSITIONS[0].width);
-  const walkBgHeight = walkScale * (WALK_SHEET_HEIGHT / WALK_FRAME_POSITIONS[0].width);
-  const walkBgPositionX = -(currentFramePos.x * scaleRatio);
+  const currentWalk = WALK_FRAMES[currentWalkFrame];
 
   return (
     <div className="kopanang-test-page">
@@ -272,20 +260,18 @@ function KopanangTest() {
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* WALKING — background-image approach */}
+                {/* Walking — 2 individual frames */}
                 {isWalking ? (
-                  <div
+                  <img
+                    src={currentWalk.src}
+                    alt={`Walking ${currentWalkFrame + 1}`}
                     style={{
                       width: `${walkScale}px`,
-                      height: `${walkBgHeight}px`,
+                      height: 'auto',
                       position: 'relative',
                       top: `${walkY}px`,
                       left: `${walkX}px`,
                       zIndex: 1,
-                      backgroundImage: `url(${walkSheet})`,
-                      backgroundSize: `${walkBgWidth}px ${walkBgHeight}px`,
-                      backgroundPosition: `${walkBgPositionX}px 0`,
-                      backgroundRepeat: 'no-repeat',
                       pointerEvents: 'none',
                     }}
                   />
@@ -368,19 +354,19 @@ function KopanangTest() {
             <div className="layer-controls">
               {/* Walk Panel */}
               <div className="control-panel walk-panel">
-                <h3>🚶 Walking</h3>
+                <h3>🚶 Walking (2 Frames)</h3>
                 <div className="pose-buttons">
                   <button className={`test-btn ${isWalking ? 'active' : ''}`} onClick={() => setIsWalking(true)}>▶ Start</button>
                   <button className="test-btn" onClick={() => setIsWalking(false)}>⏹ Stop</button>
                 </div>
                 <div className="slider-row" style={{ marginTop: '8px' }}>
                   <label>Speed:</label>
-                  <input type="range" min="50" max="400" value={walkSpeed} onChange={(e) => setWalkSpeed(Number(e.target.value))} />
+                  <input type="range" min="100" max="800" value={walkSpeed} onChange={(e) => setWalkSpeed(Number(e.target.value))} />
                   <span>{walkSpeed}ms</span>
                 </div>
                 <div className="slider-row">
                   <label>Scale:</label>
-                  <input type="range" min="50" max="250" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
+                  <input type="range" min="50" max="300" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
                   <span>{walkScale}px</span>
                 </div>
                 <div className="slider-row">
@@ -394,7 +380,7 @@ function KopanangTest() {
                   <span>{walkX}px</span>
                 </div>
                 <div className="mouth-frame-indicator">
-                  Frame: <strong>{currentWalkFrame + 1}/4</strong>
+                  Frame: <strong>{currentWalkFrame + 1}/2</strong>
                 </div>
               </div>
 
