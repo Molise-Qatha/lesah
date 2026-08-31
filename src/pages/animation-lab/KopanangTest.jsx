@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './KopanangTest.css';
 
@@ -15,16 +15,11 @@ import faceAngry from '../../assets/kopanang_face/kopanang_face_angry.png';
 import faceSad from '../../assets/kopanang_face/kopanang_face_sad.png';
 import faceWorried from '../../assets/kopanang_face/kopanang_face_worried.png';
 
-// Import mouth-ONLY sprites
-import mouthOnly01 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_01.png';
-import mouthOnly02 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_02.png';
-import mouthOnly03 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_03.png';
-import mouthOnly04 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_04.png';
-import mouthOnly05 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_05.png';
-import mouthOnly06 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_06.png';
-import mouthOnly07 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_07.png';
-import mouthOnly08 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_08.png';
-import mouthOnly09 from '../../assets/kopanang_mouth_only/kopanang_mouth_only_09.png';
+// Import NEW vowel mouth sprites (4 frames)
+import mouthA from '../../assets/kopanang_mouth_vowels/kopanang_mouth_a.png';
+import mouthE from '../../assets/kopanang_mouth_vowels/kopanang_mouth_e.png';
+import mouthI from '../../assets/kopanang_mouth_vowels/kopanang_mouth_i.png';
+import mouthO from '../../assets/kopanang_mouth_vowels/kopanang_mouth_o.png';
 
 const BODY_OPTIONS = [
   { id: 'body01', label: 'Body 01', src: body01 },
@@ -42,8 +37,10 @@ const FACE_OPTIONS = [
 ];
 
 const MOUTH_FRAMES = [
-  mouthOnly01, mouthOnly02, mouthOnly03, mouthOnly04, mouthOnly05,
-  mouthOnly06, mouthOnly07, mouthOnly08, mouthOnly09,
+  { id: 'A', label: 'A (Open)', src: mouthA },
+  { id: 'E', label: 'E (Smile)', src: mouthE },
+  { id: 'I', label: 'I (Narrow)', src: mouthI },
+  { id: 'O', label: 'O (Round)', src: mouthO },
 ];
 
 function KopanangTest() {
@@ -52,7 +49,7 @@ function KopanangTest() {
   const [selectedFace, setSelectedFace] = useState('neutral');
   const [isTalking, setIsTalking] = useState(true);
   const [currentMouthIndex, setCurrentMouthIndex] = useState(0);
-  const [talkSpeed, setTalkSpeed] = useState(200);
+  const [talkSpeed, setTalkSpeed] = useState(250);
 
   // Body
   const [bodyScale, setBodyScale] = useState(200);
@@ -60,13 +57,13 @@ function KopanangTest() {
   const [bodyX, setBodyX] = useState(0);
   const [bodyY, setBodyY] = useState(0);
 
-  // Head — persistent across body changes
+  // Head
   const [headScale, setHeadScale] = useState(60);
   const [headX, setHeadX] = useState(0);
   const [headY, setHeadY] = useState(20);
   const [headRotation, setHeadRotation] = useState(0);
 
-  // Mouth — persistent across body changes
+  // Mouth
   const [mouthScale, setMouthScale] = useState(30);
   const [mouthX, setMouthX] = useState(0);
   const [mouthY, setMouthY] = useState(45);
@@ -91,12 +88,10 @@ function KopanangTest() {
     };
   }, [isTalking, talkSpeed]);
 
-  // Drag handling
   const handleMouseDown = (e, layer) => {
     e.preventDefault();
     setDraggingLayer(layer);
     
-    // Calculate offset from the layer's current position
     const stageRect = stageRef.current.getBoundingClientRect();
     const mouseX = e.clientX - stageRect.left;
     const mouseY = e.clientY - stageRect.top;
@@ -145,7 +140,6 @@ function KopanangTest() {
     setDraggingLayer(null);
   };
 
-  // Clean up listeners
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -157,6 +151,7 @@ function KopanangTest() {
 
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
+  const currentMouth = MOUTH_FRAMES[currentMouthIndex];
 
   return (
     <div className="kopanang-test-page">
@@ -165,7 +160,7 @@ function KopanangTest() {
         
         <div className="test-header">
           <h1>🧪 Kopanang Alignment Tool</h1>
-          <p className="test-subtitle">Drag layers directly on the stage!</p>
+          <p className="test-subtitle">4 Vowel Talking Animation (A-E-I-O)</p>
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
@@ -176,7 +171,7 @@ function KopanangTest() {
           style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
         >
           <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-            {/* Layer 1: Body — draggable */}
+            {/* Body */}
             <img 
               src={currentBody.src} 
               alt="Body" 
@@ -191,7 +186,7 @@ function KopanangTest() {
               onMouseDown={(e) => handleMouseDown(e, 'body')}
             />
 
-            {/* Layer 2: Face — draggable */}
+            {/* Face */}
             <img 
               src={currentFace.src}
               alt="Face"
@@ -209,7 +204,7 @@ function KopanangTest() {
               onMouseDown={(e) => handleMouseDown(e, 'head')}
             />
 
-            {/* Layer 3: Mouth — draggable */}
+            {/* Mouth */}
             {isTalking && (
               <div
                 style={{
@@ -229,8 +224,8 @@ function KopanangTest() {
                 onMouseDown={(e) => handleMouseDown(e, 'mouth')}
               >
                 <img 
-                  src={MOUTH_FRAMES[currentMouthIndex]}
-                  alt={`Mouth ${currentMouthIndex + 1}`}
+                  src={currentMouth.src}
+                  alt={`Mouth ${currentMouth.label}`}
                   style={{
                     maxWidth: '100%',
                     maxHeight: '100%',
@@ -244,25 +239,20 @@ function KopanangTest() {
           </div>
         </div>
 
-        {/* Hint */}
+        {/* Drag hint */}
         <div className="drag-hint">
-          💡 <strong>DRAG TIP:</strong> Click and drag the Body, Head, or Mouth directly on the stage to move them. Positions persist when changing body postures.
+          💡 <strong>DRAG TIP:</strong> Drag Body, Head, or Mouth directly. Positions persist across body changes.
         </div>
 
-        {/* ═══════════ LAYER CONTROLS ═══════════ */}
+        {/* Controls */}
         <div className="layer-controls">
-          {/* BODY CONTROLS */}
+          {/* Body */}
           <div className="control-panel body-panel">
-            <h3>🧍 Body Layer</h3>
+            <h3>🧍 Body</h3>
             <div className="slider-row">
-              <label>Body Width:</label>
+              <label>Width:</label>
               <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
               <span>{bodyScale}px</span>
-            </div>
-            <div className="slider-row">
-              <label>Body Rotation:</label>
-              <input type="range" min="-20" max="20" value={bodyRotation} onChange={(e) => setBodyRotation(Number(e.target.value))} />
-              <span>{bodyRotation}°</span>
             </div>
             <div className="pose-buttons">
               {BODY_OPTIONS.map(body => (
@@ -273,16 +263,16 @@ function KopanangTest() {
             </div>
           </div>
 
-          {/* HEAD CONTROLS */}
+          {/* Head */}
           <div className="control-panel head-panel">
-            <h3>👤 Head Layer</h3>
+            <h3>👤 Head</h3>
             <div className="slider-row">
-              <label>Head Width:</label>
+              <label>Width:</label>
               <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
               <span>{headScale}px</span>
             </div>
             <div className="slider-row">
-              <label>Head Rotation:</label>
+              <label>Rotation:</label>
               <input type="range" min="-45" max="45" value={headRotation} onChange={(e) => setHeadRotation(Number(e.target.value))} />
               <span>{headRotation}°</span>
             </div>
@@ -295,16 +285,16 @@ function KopanangTest() {
             </div>
           </div>
 
-          {/* MOUTH CONTROLS */}
+          {/* Mouth */}
           <div className="control-panel mouth-panel">
-            <h3>👄 Mouth Layer</h3>
+            <h3>👄 Mouth (A-E-I-O)</h3>
             <div className="slider-row">
-              <label>Mouth Width:</label>
+              <label>Width:</label>
               <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
               <span>{mouthScale}px</span>
             </div>
             <div className="slider-row">
-              <label>Mouth Ratio:</label>
+              <label>Ratio:</label>
               <input type="range" min="0.2" max="1" step="0.05" value={mouthAspectRatio} onChange={(e) => setMouthAspectRatio(Number(e.target.value))} />
               <span>{mouthAspectRatio.toFixed(2)}</span>
             </div>
@@ -314,19 +304,24 @@ function KopanangTest() {
             </div>
             <div className="slider-row" style={{ marginTop: '10px' }}>
               <label>Speed:</label>
-              <input type="range" min="50" max="500" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
+              <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
               <span>{talkSpeed}ms</span>
+            </div>
+            {/* Current frame indicator */}
+            <div className="mouth-frame-indicator">
+              Current: <strong>{currentMouth.label}</strong>
             </div>
           </div>
         </div>
 
-        {/* Current values */}
+        {/* Values */}
         <div className="test-status">
           <h3>📋 Current Values</h3>
           <pre className="values-display">
-{`Body: { width: ${bodyScale}, x: ${Math.round(bodyX)}, y: ${Math.round(bodyY)}, rotation: ${bodyRotation} }
+{`Body: { width: ${bodyScale}, x: ${Math.round(bodyX)}, y: ${Math.round(bodyY)} }
 Head: { width: ${headScale}, x: ${Math.round(headX)}, y: ${Math.round(headY)}, rotation: ${headRotation} }
-Mouth: { width: ${mouthScale}, x: ${Math.round(mouthX)}, y: ${Math.round(mouthY)}, ratio: ${mouthAspectRatio.toFixed(2)} }`}
+Mouth: { width: ${mouthScale}, x: ${Math.round(mouthX)}, y: ${Math.round(mouthY)}, ratio: ${mouthAspectRatio.toFixed(2)} }
+Frame: ${currentMouth.label} (${currentMouthIndex + 1}/4)`}
           </pre>
         </div>
       </div>
