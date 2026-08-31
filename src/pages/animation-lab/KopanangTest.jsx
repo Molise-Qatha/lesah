@@ -81,6 +81,7 @@ function KopanangTest() {
   const [walkScale, setWalkScale] = useState(150);
   const [walkY, setWalkY] = useState(50);
   const [walkX, setWalkX] = useState(0);
+  const [walkHeightRatio, setWalkHeightRatio] = useState(1.8);
 
   const [savedPresets, setSavedPresets] = useState(() => {
     try {
@@ -199,6 +200,7 @@ function KopanangTest() {
       walkScale,
       walkX: Math.round(walkX),
       walkY: Math.round(walkY),
+      walkHeightRatio,
     };
     
     const updated = [...savedPresets, preset];
@@ -227,6 +229,7 @@ function KopanangTest() {
     if (preset.walkScale) setWalkScale(preset.walkScale);
     if (preset.walkX !== undefined) setWalkX(preset.walkX);
     if (preset.walkY !== undefined) setWalkY(preset.walkY);
+    if (preset.walkHeightRatio) setWalkHeightRatio(preset.walkHeightRatio);
   };
 
   const handleDeletePreset = (presetId) => {
@@ -260,27 +263,32 @@ function KopanangTest() {
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* Walking — both frames at SAME width */}
+                {/* Walking — FIXED container size prevents bouncing */}
                 {isWalking ? (
                   <div
                     style={{
                       width: `${walkScale}px`,
+                      height: `${walkScale * walkHeightRatio}px`,
                       position: 'relative',
                       top: `${walkY}px`,
                       left: `${walkX}px`,
                       zIndex: 1,
                       pointerEvents: 'none',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
                   >
                     <img
                       src={currentWalk.src}
                       alt={`Walking ${currentWalkFrame + 1}`}
                       style={{
-                        width: `${walkScale}px`,
-                        height: 'auto',
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
                         display: 'block',
                         pointerEvents: 'none',
-                        objectFit: 'contain',
                       }}
                     />
                   </div>
@@ -377,6 +385,11 @@ function KopanangTest() {
                   <label>Scale:</label>
                   <input type="range" min="50" max="300" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
                   <span>{walkScale}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>Height Ratio:</label>
+                  <input type="range" min="1" max="3" step="0.1" value={walkHeightRatio} onChange={(e) => setWalkHeightRatio(Number(e.target.value))} />
+                  <span>{walkHeightRatio.toFixed(1)}</span>
                 </div>
                 <div className="slider-row">
                   <label>Y Position:</label>
