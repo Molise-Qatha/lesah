@@ -65,10 +65,11 @@ function KopanangTest() {
   const [headRotation, setHeadRotation] = useState(0);
 
   // Mouth-only controls
-  const [mouthScale, setMouthScale] = useState(20);
+  const [mouthScale, setMouthScale] = useState(30);
   const [mouthX, setMouthX] = useState(0);
   const [mouthY, setMouthY] = useState(45);
   const [mouthRotation, setMouthRotation] = useState(0);
+  const [mouthAspectRatio, setMouthAspectRatio] = useState(0.4); // height = width * 0.4
 
   const mouthTimerRef = useRef(null);
 
@@ -128,21 +129,35 @@ function KopanangTest() {
               }}
             />
 
-            {/* Layer 3: Mouth-ONLY (animated while talking) */}
+            {/* Layer 3: Mouth-ONLY — FIXED container prevents jumping */}
             {isTalking && (
-              <img 
-                src={MOUTH_FRAMES[currentMouthIndex]}
-                alt={`Mouth ${currentMouthIndex + 1}`}
-                className="layer-mouth-only-img"
+              <div
                 style={{
                   width: `${mouthScale}px`,
+                  height: `${mouthScale * mouthAspectRatio}px`,
                   position: 'absolute',
                   top: `${mouthY}px`,
                   left: `calc(50% + ${mouthX}px)`,
-                  transform: `translateX(-50%) rotate(${mouthRotation}deg)`,
+                  transform: `translate(-50%, -50%) rotate(${mouthRotation}deg)`,
                   zIndex: 20,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'visible',
+                  pointerEvents: 'none',
                 }}
-              />
+              >
+                <img 
+                  src={MOUTH_FRAMES[currentMouthIndex]}
+                  alt={`Mouth ${currentMouthIndex + 1}`}
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+              </div>
             )}
           </div>
         </div>
@@ -208,8 +223,13 @@ function KopanangTest() {
             <h3>👄 Mouth Layer</h3>
             <div className="slider-row">
               <label>Mouth Width:</label>
-              <input type="range" min="5" max="100" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
+              <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
               <span>{mouthScale}px</span>
+            </div>
+            <div className="slider-row">
+              <label>Mouth Height Ratio:</label>
+              <input type="range" min="0.2" max="1" step="0.05" value={mouthAspectRatio} onChange={(e) => setMouthAspectRatio(Number(e.target.value))} />
+              <span>{mouthAspectRatio.toFixed(2)}</span>
             </div>
             <div className="slider-row">
               <label>Mouth Y Position:</label>
@@ -244,7 +264,7 @@ function KopanangTest() {
           <pre className="values-display">
 {`Body: { width: ${bodyScale}, rotation: ${bodyRotation} }
 Head: { width: ${headScale}, y: ${headY}, x: ${headX}, rotation: ${headRotation} }
-Mouth: { width: ${mouthScale}, y: ${mouthY}, x: ${mouthX}, rotation: ${mouthRotation} }`}
+Mouth: { width: ${mouthScale}, ratio: ${mouthAspectRatio.toFixed(2)}, y: ${mouthY}, x: ${mouthX}, rotation: ${mouthRotation} }`}
           </pre>
         </div>
       </div>
