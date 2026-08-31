@@ -51,19 +51,19 @@ function KopanangTest() {
   const [currentMouthIndex, setCurrentMouthIndex] = useState(0);
   const [talkSpeed, setTalkSpeed] = useState(250);
 
-  // Body controls (draggable)
+  // Body controls
   const [bodyScale, setBodyScale] = useState(200);
   const [bodyRotation, setBodyRotation] = useState(0);
   const [bodyX, setBodyX] = useState(0);
   const [bodyY, setBodyY] = useState(0);
 
-  // Head controls (draggable)
+  // Head controls
   const [headScale, setHeadScale] = useState(60);
   const [headX, setHeadX] = useState(0);
   const [headY, setHeadY] = useState(20);
   const [headRotation, setHeadRotation] = useState(0);
 
-  // Mouth controls (SLIDER-BASED — no drag for small element)
+  // Mouth controls (slider-based)
   const [mouthScale, setMouthScale] = useState(30);
   const [mouthX, setMouthX] = useState(0);
   const [mouthY, setMouthY] = useState(45);
@@ -79,7 +79,7 @@ function KopanangTest() {
   const [presetName, setPresetName] = useState('');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
 
-  // Drag state (only for body and head)
+  // Drag state (body and head only)
   const [draggingLayer, setDraggingLayer] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const stageRef = useRef(null);
@@ -97,9 +97,9 @@ function KopanangTest() {
     };
   }, [isTalking, talkSpeed]);
 
-  // Drag handlers (body and head only)
+  // Drag handlers
   const handleMouseDown = (e, layer) => {
-    if (layer === 'mouth') return; // Mouth is not draggable
+    if (layer === 'mouth') return;
     e.preventDefault();
     setDraggingLayer(layer);
     
@@ -175,7 +175,7 @@ function KopanangTest() {
       mouthRotation,
       mouthX: Math.round(mouthX),
       mouthY: Math.round(mouthY),
-      mouthAspectRatio: mouthAspectRatio,
+      mouthAspectRatio,
     };
     
     const updated = [...savedPresets, preset];
@@ -226,228 +226,231 @@ function KopanangTest() {
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
-        {/* Stage */}
-        <div 
-          className="test-stage" 
-          ref={stageRef}
-          style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
-        >
-          <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-            {/* Body — draggable */}
-            <img 
-              src={currentBody.src} 
-              alt="Body" 
-              className="layer-body-img draggable"
-              style={{
-                width: '100%',
-                transform: `translate(${bodyX}px, ${bodyY}px) rotate(${bodyRotation}deg)`,
-                position: 'relative',
-                zIndex: 1,
-                cursor: 'grab',
-              }}
-              onMouseDown={(e) => handleMouseDown(e, 'body')}
-            />
-
-            {/* Face — draggable */}
-            <img 
-              src={currentFace.src}
-              alt="Face"
-              className="layer-head-img draggable"
-              style={{
-                width: `${headScale}px`,
-                position: 'absolute',
-                top: `${headY}px`,
-                left: `calc(50% + ${headX}px)`,
-                transform: `translateX(-50%) rotate(${headRotation}deg)`,
-                zIndex: 10,
-                cursor: 'grab',
-                pointerEvents: 'auto',
-              }}
-              onMouseDown={(e) => handleMouseDown(e, 'head')}
-            />
-
-            {/* Mouth — NOT draggable, controlled by sliders */}
-            {isTalking && (
-              <div
-                style={{
-                  width: `${mouthScale}px`,
-                  height: `${mouthScale * mouthAspectRatio}px`,
-                  position: 'absolute',
-                  top: `${mouthY}px`,
-                  left: `calc(50% + ${mouthX}px)`,
-                  transform: `translate(-50%, -50%) rotate(${mouthRotation}deg)`,
-                  zIndex: 20,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  pointerEvents: 'none',
-                }}
-              >
+        {/* ═══════════ SIDE-BY-SIDE LAYOUT ═══════════ */}
+        <div className="main-layout">
+          {/* LEFT: Stage */}
+          <div className="stage-container">
+            <div 
+              className="test-stage" 
+              ref={stageRef}
+              style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
+            >
+              <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
+                {/* Body */}
                 <img 
-                  src={currentMouth.src}
-                  alt={`Mouth ${currentMouth.label}`}
+                  src={currentBody.src} 
+                  alt="Body" 
+                  className="layer-body-img draggable"
                   style={{
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    objectFit: 'contain',
-                    display: 'block',
+                    width: '100%',
+                    transform: `translate(${bodyX}px, ${bodyY}px) rotate(${bodyRotation}deg)`,
+                    position: 'relative',
+                    zIndex: 1,
+                    cursor: 'grab',
                   }}
+                  onMouseDown={(e) => handleMouseDown(e, 'body')}
                 />
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Drag hint */}
-        <div className="drag-hint">
-          💡 <strong>DRAG:</strong> Body and Head. <strong>SLIDERS:</strong> Mouth (too small to grab).
-        </div>
+                {/* Face */}
+                <img 
+                  src={currentFace.src}
+                  alt="Face"
+                  className="layer-head-img draggable"
+                  style={{
+                    width: `${headScale}px`,
+                    position: 'absolute',
+                    top: `${headY}px`,
+                    left: `calc(50% + ${headX}px)`,
+                    transform: `translateX(-50%) rotate(${headRotation}deg)`,
+                    zIndex: 10,
+                    cursor: 'grab',
+                    pointerEvents: 'auto',
+                  }}
+                  onMouseDown={(e) => handleMouseDown(e, 'head')}
+                />
 
-        {/* Controls */}
-        <div className="layer-controls">
-          {/* Body */}
-          <div className="control-panel body-panel">
-            <h3>🧍 Body</h3>
-            <div className="slider-row">
-              <label>Width:</label>
-              <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
-              <span>{bodyScale}px</span>
-            </div>
-            <div className="slider-row">
-              <label>Rotation:</label>
-              <input type="range" min="-20" max="20" value={bodyRotation} onChange={(e) => setBodyRotation(Number(e.target.value))} />
-              <span>{bodyRotation}°</span>
-            </div>
-            <div className="pose-buttons">
-              {BODY_OPTIONS.map(body => (
-                <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>
-                  {body.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Head */}
-          <div className="control-panel head-panel">
-            <h3>👤 Head</h3>
-            <div className="slider-row">
-              <label>Width:</label>
-              <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
-              <span>{headScale}px</span>
-            </div>
-            <div className="slider-row">
-              <label>Rotation:</label>
-              <input type="range" min="-45" max="45" value={headRotation} onChange={(e) => setHeadRotation(Number(e.target.value))} />
-              <span>{headRotation}°</span>
-            </div>
-            <div className="pose-buttons">
-              {FACE_OPTIONS.map(face => (
-                <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>
-                  {face.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Mouth — SLIDER CONTROLS */}
-          <div className="control-panel mouth-panel">
-            <h3>👄 Mouth (Slider Controls)</h3>
-            <div className="slider-row">
-              <label>Width:</label>
-              <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
-              <span>{mouthScale}px</span>
-            </div>
-            <div className="slider-row">
-              <label>Height Ratio:</label>
-              <input type="range" min="0.2" max="1" step="0.05" value={mouthAspectRatio} onChange={(e) => setMouthAspectRatio(Number(e.target.value))} />
-              <span>{mouthAspectRatio.toFixed(2)}</span>
-            </div>
-            <div className="slider-row">
-              <label>Y Position:</label>
-              <input type="range" min="-100" max="200" value={mouthY} onChange={(e) => setMouthY(Number(e.target.value))} />
-              <span>{mouthY}px</span>
-            </div>
-            <div className="slider-row">
-              <label>X Offset:</label>
-              <input type="range" min="-100" max="100" value={mouthX} onChange={(e) => setMouthX(Number(e.target.value))} />
-              <span>{mouthX}px</span>
-            </div>
-            <div className="slider-row">
-              <label>Rotation:</label>
-              <input type="range" min="-45" max="45" value={mouthRotation} onChange={(e) => setMouthRotation(Number(e.target.value))} />
-              <span>{mouthRotation}°</span>
-            </div>
-            <div className="pose-buttons">
-              <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
-              <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
-            </div>
-            <div className="slider-row" style={{ marginTop: '10px' }}>
-              <label>Speed:</label>
-              <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
-              <span>{talkSpeed}ms</span>
-            </div>
-            <div className="mouth-frame-indicator">
-              Current: <strong>{currentMouth.label}</strong>
-            </div>
-          </div>
-        </div>
-
-        {/* Save Presets */}
-        <div className="presets-section">
-          <h3>💾 Saved Presets</h3>
-          
-          {savedPresets.length > 0 ? (
-            <div className="presets-list">
-              {savedPresets.map(preset => (
-                <div key={preset.id} className="preset-item">
-                  <div className="preset-info">
-                    <strong>{preset.name}</strong>
-                    <span className="preset-detail">
-                      Body: {preset.body} | Face: {preset.face}
-                    </span>
+                {/* Mouth — slider controlled, not draggable */}
+                {isTalking && (
+                  <div
+                    style={{
+                      width: `${mouthScale}px`,
+                      height: `${mouthScale * mouthAspectRatio}px`,
+                      position: 'absolute',
+                      top: `${mouthY}px`,
+                      left: `calc(50% + ${mouthX}px)`,
+                      transform: `translate(-50%, -50%) rotate(${mouthRotation}deg)`,
+                      zIndex: 20,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    <img 
+                      src={currentMouth.src}
+                      alt={`Mouth ${currentMouth.label}`}
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        objectFit: 'contain',
+                        display: 'block',
+                      }}
+                    />
                   </div>
-                  <div className="preset-actions">
-                    <button className="test-btn" onClick={() => handleLoadPreset(preset)}>📂 Load</button>
-                    <button className="test-btn delete-btn" onClick={() => handleDeletePreset(preset.id)}>🗑️ Delete</button>
+                )}
+              </div>
+            </div>
+
+            <div className="drag-hint">
+              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth
+            </div>
+          </div>
+
+          {/* RIGHT: Controls */}
+          <div className="controls-container">
+            <div className="layer-controls">
+              {/* Body Panel */}
+              <div className="control-panel body-panel">
+                <h3>🧍 Body</h3>
+                <div className="slider-row">
+                  <label>Width:</label>
+                  <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
+                  <span>{bodyScale}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>Rotation:</label>
+                  <input type="range" min="-20" max="20" value={bodyRotation} onChange={(e) => setBodyRotation(Number(e.target.value))} />
+                  <span>{bodyRotation}°</span>
+                </div>
+                <div className="pose-buttons">
+                  {BODY_OPTIONS.map(body => (
+                    <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>
+                      {body.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Head Panel */}
+              <div className="control-panel head-panel">
+                <h3>👤 Head</h3>
+                <div className="slider-row">
+                  <label>Width:</label>
+                  <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
+                  <span>{headScale}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>Rotation:</label>
+                  <input type="range" min="-45" max="45" value={headRotation} onChange={(e) => setHeadRotation(Number(e.target.value))} />
+                  <span>{headRotation}°</span>
+                </div>
+                <div className="pose-buttons">
+                  {FACE_OPTIONS.map(face => (
+                    <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>
+                      {face.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mouth Panel */}
+              <div className="control-panel mouth-panel">
+                <h3>👄 Mouth</h3>
+                <div className="slider-row">
+                  <label>Width:</label>
+                  <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
+                  <span>{mouthScale}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>Ratio:</label>
+                  <input type="range" min="0.2" max="1" step="0.05" value={mouthAspectRatio} onChange={(e) => setMouthAspectRatio(Number(e.target.value))} />
+                  <span>{mouthAspectRatio.toFixed(2)}</span>
+                </div>
+                <div className="slider-row">
+                  <label>Y Position:</label>
+                  <input type="range" min="-100" max="200" value={mouthY} onChange={(e) => setMouthY(Number(e.target.value))} />
+                  <span>{mouthY}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>X Offset:</label>
+                  <input type="range" min="-100" max="100" value={mouthX} onChange={(e) => setMouthX(Number(e.target.value))} />
+                  <span>{mouthX}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>Rotation:</label>
+                  <input type="range" min="-45" max="45" value={mouthRotation} onChange={(e) => setMouthRotation(Number(e.target.value))} />
+                  <span>{mouthRotation}°</span>
+                </div>
+                <div className="pose-buttons">
+                  <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
+                  <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
+                </div>
+                <div className="slider-row" style={{ marginTop: '8px' }}>
+                  <label>Speed:</label>
+                  <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
+                  <span>{talkSpeed}ms</span>
+                </div>
+                <div className="mouth-frame-indicator">
+                  Frame: <strong>{currentMouth.label}</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Presets */}
+            <div className="presets-section">
+              <h3>💾 Saved Presets</h3>
+              
+              {savedPresets.length > 0 ? (
+                <div className="presets-list">
+                  {savedPresets.map(preset => (
+                    <div key={preset.id} className="preset-item">
+                      <div className="preset-info">
+                        <strong>{preset.name}</strong>
+                        <span className="preset-detail">{preset.body} | {preset.face}</span>
+                      </div>
+                      <div className="preset-actions">
+                        <button className="test-btn" onClick={() => handleLoadPreset(preset)}>📂 Load</button>
+                        <button className="test-btn delete-btn" onClick={() => handleDeletePreset(preset.id)}>🗑️</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="no-presets">No presets saved yet.</p>
+              )}
+
+              {showSaveDialog ? (
+                <div className="save-dialog">
+                  <input 
+                    type="text" 
+                    placeholder="Preset name (e.g., Body01-Neutral)" 
+                    value={presetName}
+                    onChange={(e) => setPresetName(e.target.value)}
+                    className="preset-input"
+                    autoFocus
+                  />
+                  <div className="preset-dialog-buttons">
+                    <button className="test-btn" onClick={handleSavePreset}>✅ Save</button>
+                    <button className="test-btn" onClick={() => setShowSaveDialog(false)}>❌ Cancel</button>
                   </div>
                 </div>
-              ))}
+              ) : (
+                <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>
+                  💾 Save Current Position
+                </button>
+              )}
             </div>
-          ) : (
-            <p className="no-presets">No presets saved yet. Find a good position and save it!</p>
-          )}
 
-          {showSaveDialog ? (
-            <div className="save-dialog">
-              <input 
-                type="text" 
-                placeholder="Preset name (e.g., Body01-Neutral)" 
-                value={presetName}
-                onChange={(e) => setPresetName(e.target.value)}
-                className="preset-input"
-                autoFocus
-              />
-              <div className="preset-dialog-buttons">
-                <button className="test-btn" onClick={handleSavePreset}>✅ Save</button>
-                <button className="test-btn" onClick={() => setShowSaveDialog(false)}>❌ Cancel</button>
-              </div>
+            {/* Values */}
+            <div className="test-status">
+              <h3>📋 Current Values</h3>
+              <pre className="values-display">
+{`Body: { width: ${bodyScale}, x: ${Math.round(bodyX)}, y: ${Math.round(bodyY)} }
+Head: { width: ${headScale}, x: ${Math.round(headX)}, y: ${Math.round(headY)} }
+Mouth: { width: ${mouthScale}, x: ${Math.round(mouthX)}, y: ${Math.round(mouthY)} }`}
+              </pre>
             </div>
-          ) : (
-            <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>
-              💾 Save Current Position
-            </button>
-          )}
-        </div>
-
-        {/* Current values */}
-        <div className="test-status">
-          <h3>📋 Current Values</h3>
-          <pre className="values-display">
-{`Body: { width: ${bodyScale}, x: ${Math.round(bodyX)}, y: ${Math.round(bodyY)}, rotation: ${bodyRotation} }
-Head: { width: ${headScale}, x: ${Math.round(headX)}, y: ${Math.round(headY)}, rotation: ${headRotation} }
-Mouth: { width: ${mouthScale}, x: ${Math.round(mouthX)}, y: ${Math.round(mouthY)}, rotation: ${mouthRotation}, ratio: ${mouthAspectRatio.toFixed(2)} }
-Frame: ${currentMouth.label}`}
-          </pre>
+          </div>
         </div>
       </div>
     </div>
