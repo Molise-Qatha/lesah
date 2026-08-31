@@ -21,6 +21,15 @@ import mouthE from '../../assets/kopanang_mouth_vowels/kopanang_mouth_e.png';
 import mouthI from '../../assets/kopanang_mouth_vowels/kopanang_mouth_i.png';
 import mouthO from '../../assets/kopanang_mouth_vowels/kopanang_mouth_o.png';
 
+// Import walking sprite sheet
+import walkSheet from '../../assets/kopanang_walk/kopanang_walk.png';
+
+// Sprite sheet constants
+const WALK_FRAMES = 4;
+const WALK_SHEET_WIDTH = 612;
+const WALK_SHEET_HEIGHT = 408;
+const WALK_FRAME_WIDTH = WALK_SHEET_WIDTH / WALK_FRAMES; // 153px
+
 const BODY_OPTIONS = [
   { id: 'body01', label: 'Body 01', src: body01 },
   { id: 'body02', label: 'Body 02', src: body02 },
@@ -47,9 +56,12 @@ function KopanangTest() {
   // Layer selection
   const [selectedBody, setSelectedBody] = useState('body01');
   const [selectedFace, setSelectedFace] = useState('neutral');
-  const [isTalking, setIsTalking] = useState(true);
+  const [isTalking, setIsTalking] = useState(false);
+  const [isWalking, setIsWalking] = useState(false);
   const [currentMouthIndex, setCurrentMouthIndex] = useState(0);
+  const [currentWalkFrame, setCurrentWalkFrame] = useState(0);
   const [talkSpeed, setTalkSpeed] = useState(250);
+  const [walkSpeed, setWalkSpeed] = useState(150);
 
   // Body controls
   const [bodyScale, setBodyScale] = useState(200);
@@ -63,12 +75,17 @@ function KopanangTest() {
   const [headY, setHeadY] = useState(20);
   const [headRotation, setHeadRotation] = useState(0);
 
-  // Mouth controls (slider-based)
+  // Mouth controls
   const [mouthScale, setMouthScale] = useState(30);
   const [mouthX, setMouthX] = useState(0);
   const [mouthY, setMouthY] = useState(45);
   const [mouthRotation, setMouthRotation] = useState(0);
   const [mouthAspectRatio, setMouthAspectRatio] = useState(0.4);
+
+  // Walk controls
+  const [walkScale, setWalkScale] = useState(153);
+  const [walkY, setWalkY] = useState(50);
+  const [walkX, setWalkX] = useState(0);
 
   // Save presets
   const [savedPresets, setSavedPresets] = useState(() => {
@@ -79,13 +96,15 @@ function KopanangTest() {
   const [presetName, setPresetName] = useState('');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
 
-  // Drag state (body and head only)
+  // Drag state
   const [draggingLayer, setDraggingLayer] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const stageRef = useRef(null);
 
   const mouthTimerRef = useRef(null);
+  const walkTimerRef = useRef(null);
 
+  // Mouth animation
   useEffect(() => {
     if (isTalking) {
       mouthTimerRef.current = setInterval(() => {
@@ -97,9 +116,21 @@ function KopanangTest() {
     };
   }, [isTalking, talkSpeed]);
 
+  // Walk animation
+  useEffect(() => {
+    if (isWalking) {
+      walkTimerRef.current = setInterval(() => {
+        setCurrentWalkFrame(prev => (prev + 1) % WALK_FRAMES);
+      }, walkSpeed);
+    }
+    return () => {
+      if (walkTimerRef.current) clearInterval(walkTimerRef.current);
+    };
+  }, [isWalking, walkSpeed]);
+
   // Drag handlers
   const handleMouseDown = (e, layer) => {
-    if (layer === 'mouth') return;
+    if (layer === 'mouth' || layer === 'walk') return;
     e.preventDefault();
     setDraggingLayer(layer);
     
@@ -176,6 +207,9 @@ function KopanangTest() {
       mouthX: Math.round(mouthX),
       mouthY: Math.round(mouthY),
       mouthAspectRatio,
+      walkScale,
+      walkX: Math.round(walkX),
+      walkY: Math.round(walkY),
     };
     
     const updated = [...savedPresets, preset];
@@ -202,6 +236,9 @@ function KopanangTest() {
     setMouthX(preset.mouthX);
     setMouthY(preset.mouthY);
     setMouthAspectRatio(preset.mouthAspectRatio);
+    if (preset.walkScale) setWalkScale(preset.walkScale);
+    if (preset.walkX !== undefined) setWalkX(preset.walkX);
+    if (preset.walkY !== undefined) setWalkY(preset.walkY);
   };
 
   // Delete preset
@@ -221,12 +258,11 @@ function KopanangTest() {
         <Link to="/animation-lab" className="back-link">← Back to Animation Lab</Link>
         
         <div className="test-header">
-          <h1>🧪 Kopanang Alignment Tool</h1>
-          <p className="test-subtitle">4 Vowel Talking Animation (A-E-I-O)</p>
+          <h1>🧪 Kopanang Animation Tool</h1>
+          <p className="test-subtitle">Talking + Walking + Expressions</p>
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
-        {/* ═══════════ SIDE-BY-SIDE LAYOUT ═══════════ */}
         <div className="main-layout">
           {/* LEFT: Stage */}
           <div className="stage-container">
@@ -236,91 +272,148 @@ function KopanangTest() {
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* Body */}
-                <img 
-                  src={currentBody.src} 
-                  alt="Body" 
-                  className="layer-body-img draggable"
-                  style={{
-                    width: '100%',
-                    transform: `translate(${bodyX}px, ${bodyY}px) rotate(${bodyRotation}deg)`,
-                    position: 'relative',
-                    zIndex: 1,
-                    cursor: 'grab',
-                  }}
-                  onMouseDown={(e) => handleMouseDown(e, 'body')}
-                />
-
-                {/* Face */}
-                <img 
-                  src={currentFace.src}
-                  alt="Face"
-                  className="layer-head-img draggable"
-                  style={{
-                    width: `${headScale}px`,
-                    position: 'absolute',
-                    top: `${headY}px`,
-                    left: `calc(50% + ${headX}px)`,
-                    transform: `translateX(-50%) rotate(${headRotation}deg)`,
-                    zIndex: 10,
-                    cursor: 'grab',
-                    pointerEvents: 'auto',
-                  }}
-                  onMouseDown={(e) => handleMouseDown(e, 'head')}
-                />
-
-                {/* Mouth — slider controlled, not draggable */}
-                {isTalking && (
+                {/* Walking sprite sheet (shown when walking) */}
+                {isWalking ? (
                   <div
                     style={{
-                      width: `${mouthScale}px`,
-                      height: `${mouthScale * mouthAspectRatio}px`,
-                      position: 'absolute',
-                      top: `${mouthY}px`,
-                      left: `calc(50% + ${mouthX}px)`,
-                      transform: `translate(-50%, -50%) rotate(${mouthRotation}deg)`,
-                      zIndex: 20,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      pointerEvents: 'none',
+                      width: `${walkScale}px`,
+                      height: `${walkScale * (WALK_SHEET_HEIGHT / WALK_FRAME_WIDTH)}px`,
+                      position: 'relative',
+                      top: `${walkY}px`,
+                      left: `${walkX}px`,
+                      zIndex: 1,
+                      overflow: 'hidden',
                     }}
                   >
-                    <img 
-                      src={currentMouth.src}
-                      alt={`Mouth ${currentMouth.label}`}
+                    <img
+                      src={walkSheet}
+                      alt="Walking"
                       style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        objectFit: 'contain',
+                        width: '400%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: `${currentWalkFrame * 100}% 0`,
                         display: 'block',
+                        pointerEvents: 'none',
                       }}
                     />
                   </div>
+                ) : (
+                  <>
+                    {/* Body (static) */}
+                    <img 
+                      src={currentBody.src} 
+                      alt="Body" 
+                      className="layer-body-img draggable"
+                      style={{
+                        width: '100%',
+                        transform: `translate(${bodyX}px, ${bodyY}px) rotate(${bodyRotation}deg)`,
+                        position: 'relative',
+                        zIndex: 1,
+                        cursor: 'grab',
+                      }}
+                      onMouseDown={(e) => handleMouseDown(e, 'body')}
+                    />
+
+                    {/* Face */}
+                    <img 
+                      src={currentFace.src}
+                      alt="Face"
+                      className="layer-head-img draggable"
+                      style={{
+                        width: `${headScale}px`,
+                        position: 'absolute',
+                        top: `${headY}px`,
+                        left: `calc(50% + ${headX}px)`,
+                        transform: `translateX(-50%) rotate(${headRotation}deg)`,
+                        zIndex: 10,
+                        cursor: 'grab',
+                        pointerEvents: 'auto',
+                      }}
+                      onMouseDown={(e) => handleMouseDown(e, 'head')}
+                    />
+
+                    {/* Mouth */}
+                    {isTalking && (
+                      <div
+                        style={{
+                          width: `${mouthScale}px`,
+                          height: `${mouthScale * mouthAspectRatio}px`,
+                          position: 'absolute',
+                          top: `${mouthY}px`,
+                          left: `calc(50% + ${mouthX}px)`,
+                          transform: `translate(-50%, -50%) rotate(${mouthRotation}deg)`,
+                          zIndex: 20,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        <img 
+                          src={currentMouth.src}
+                          alt={`Mouth ${currentMouth.label}`}
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'contain',
+                            display: 'block',
+                          }}
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
 
             <div className="drag-hint">
-              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth
+              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth & Walk
             </div>
           </div>
 
           {/* RIGHT: Controls */}
           <div className="controls-container">
             <div className="layer-controls">
+              {/* Walk Panel */}
+              <div className="control-panel walk-panel">
+                <h3>🚶 Walking Animation</h3>
+                <div className="pose-buttons">
+                  <button className={`test-btn ${isWalking ? 'active' : ''}`} onClick={() => setIsWalking(true)}>▶ Start Walking</button>
+                  <button className="test-btn" onClick={() => setIsWalking(false)}>⏹ Stop Walking</button>
+                </div>
+                <div className="slider-row" style={{ marginTop: '8px' }}>
+                  <label>Speed:</label>
+                  <input type="range" min="50" max="400" value={walkSpeed} onChange={(e) => setWalkSpeed(Number(e.target.value))} />
+                  <span>{walkSpeed}ms</span>
+                </div>
+                <div className="slider-row">
+                  <label>Walk Scale:</label>
+                  <input type="range" min="50" max="300" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
+                  <span>{walkScale}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>Walk Y:</label>
+                  <input type="range" min="-200" max="300" value={walkY} onChange={(e) => setWalkY(Number(e.target.value))} />
+                  <span>{walkY}px</span>
+                </div>
+                <div className="slider-row">
+                  <label>Walk X:</label>
+                  <input type="range" min="-200" max="200" value={walkX} onChange={(e) => setWalkX(Number(e.target.value))} />
+                  <span>{walkX}px</span>
+                </div>
+                <div className="mouth-frame-indicator">
+                  Frame: <strong>{currentWalkFrame + 1}/4</strong>
+                </div>
+              </div>
+
               {/* Body Panel */}
               <div className="control-panel body-panel">
-                <h3>🧍 Body</h3>
+                <h3>🧍 Body (Static Pose)</h3>
                 <div className="slider-row">
                   <label>Width:</label>
                   <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
                   <span>{bodyScale}px</span>
-                </div>
-                <div className="slider-row">
-                  <label>Rotation:</label>
-                  <input type="range" min="-20" max="20" value={bodyRotation} onChange={(e) => setBodyRotation(Number(e.target.value))} />
-                  <span>{bodyRotation}°</span>
                 </div>
                 <div className="pose-buttons">
                   {BODY_OPTIONS.map(body => (
@@ -339,11 +432,6 @@ function KopanangTest() {
                   <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
                   <span>{headScale}px</span>
                 </div>
-                <div className="slider-row">
-                  <label>Rotation:</label>
-                  <input type="range" min="-45" max="45" value={headRotation} onChange={(e) => setHeadRotation(Number(e.target.value))} />
-                  <span>{headRotation}°</span>
-                </div>
                 <div className="pose-buttons">
                   {FACE_OPTIONS.map(face => (
                     <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>
@@ -356,15 +444,14 @@ function KopanangTest() {
               {/* Mouth Panel */}
               <div className="control-panel mouth-panel">
                 <h3>👄 Mouth</h3>
-                <div className="slider-row">
+                <div className="pose-buttons">
+                  <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start Talking</button>
+                  <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
+                </div>
+                <div className="slider-row" style={{ marginTop: '6px' }}>
                   <label>Width:</label>
                   <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
                   <span>{mouthScale}px</span>
-                </div>
-                <div className="slider-row">
-                  <label>Ratio:</label>
-                  <input type="range" min="0.2" max="1" step="0.05" value={mouthAspectRatio} onChange={(e) => setMouthAspectRatio(Number(e.target.value))} />
-                  <span>{mouthAspectRatio.toFixed(2)}</span>
                 </div>
                 <div className="slider-row">
                   <label>Y Position:</label>
@@ -381,11 +468,7 @@ function KopanangTest() {
                   <input type="range" min="-45" max="45" value={mouthRotation} onChange={(e) => setMouthRotation(Number(e.target.value))} />
                   <span>{mouthRotation}°</span>
                 </div>
-                <div className="pose-buttons">
-                  <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
-                  <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
-                </div>
-                <div className="slider-row" style={{ marginTop: '8px' }}>
+                <div className="slider-row">
                   <label>Speed:</label>
                   <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
                   <span>{talkSpeed}ms</span>
@@ -423,7 +506,7 @@ function KopanangTest() {
                 <div className="save-dialog">
                   <input 
                     type="text" 
-                    placeholder="Preset name (e.g., Body01-Neutral)" 
+                    placeholder="Preset name" 
                     value={presetName}
                     onChange={(e) => setPresetName(e.target.value)}
                     className="preset-input"
@@ -445,9 +528,10 @@ function KopanangTest() {
             <div className="test-status">
               <h3>📋 Current Values</h3>
               <pre className="values-display">
-{`Body: { width: ${bodyScale}, x: ${Math.round(bodyX)}, y: ${Math.round(bodyY)} }
-Head: { width: ${headScale}, x: ${Math.round(headX)}, y: ${Math.round(headY)} }
-Mouth: { width: ${mouthScale}, x: ${Math.round(mouthX)}, y: ${Math.round(mouthY)} }`}
+{`Body: { width: ${bodyScale} }
+Head: { width: ${headScale} }
+Mouth: { width: ${mouthScale}, y: ${mouthY}, x: ${mouthX} }
+Walk: { scale: ${walkScale}, frame: ${currentWalkFrame + 1}/4 }`}
               </pre>
             </div>
           </div>

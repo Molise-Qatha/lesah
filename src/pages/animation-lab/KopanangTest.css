@@ -410,3 +410,11 @@
     font-size: 0.65rem;
   }
 }
+/* Walk Panel */
+.walk-panel {
+  border-color: #8b5cf6;
+}
+
+.walk-panel h3 {
+  color: #a78bfa;
+}
