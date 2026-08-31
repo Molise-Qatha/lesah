@@ -26,13 +26,14 @@ import walkSheet from '../../assets/kopanang_walk/kopanang_walk.png';
 
 // EXACT frame boundaries from transparency analysis
 const WALK_FRAME_POSITIONS = [
-  { x: 6, width: 171 },    // Frame 1: content at x=6 to x=176
-  { x: 181, width: 121 },  // Frame 2: content at x=181 to x=301
-  { x: 309, width: 154 },  // Frame 3: content at x=309 to x=462
-  { x: 465, width: 142 },  // Frame 4: content at x=465 to x=606
+  { x: 6, width: 171 },
+  { x: 181, width: 121 },
+  { x: 309, width: 154 },
+  { x: 465, width: 142 },
 ];
 
 const WALK_SHEET_HEIGHT = 408;
+const WALK_SHEET_FULL_WIDTH = 612;
 const WALK_FRAMES = 4;
 
 const BODY_OPTIONS = [
@@ -58,7 +59,6 @@ const MOUTH_FRAMES = [
 ];
 
 function KopanangTest() {
-  // Layer selection
   const [selectedBody, setSelectedBody] = useState('body01');
   const [selectedFace, setSelectedFace] = useState('neutral');
   const [isTalking, setIsTalking] = useState(false);
@@ -68,31 +68,26 @@ function KopanangTest() {
   const [talkSpeed, setTalkSpeed] = useState(250);
   const [walkSpeed, setWalkSpeed] = useState(150);
 
-  // Body controls
   const [bodyScale, setBodyScale] = useState(200);
   const [bodyRotation, setBodyRotation] = useState(0);
   const [bodyX, setBodyX] = useState(0);
   const [bodyY, setBodyY] = useState(0);
 
-  // Head controls
   const [headScale, setHeadScale] = useState(60);
   const [headX, setHeadX] = useState(0);
   const [headY, setHeadY] = useState(20);
   const [headRotation, setHeadRotation] = useState(0);
 
-  // Mouth controls
   const [mouthScale, setMouthScale] = useState(30);
   const [mouthX, setMouthX] = useState(0);
   const [mouthY, setMouthY] = useState(45);
   const [mouthRotation, setMouthRotation] = useState(0);
   const [mouthAspectRatio, setMouthAspectRatio] = useState(0.4);
 
-  // Walk controls
   const [walkScale, setWalkScale] = useState(150);
   const [walkY, setWalkY] = useState(50);
   const [walkX, setWalkX] = useState(0);
 
-  // Save presets
   const [savedPresets, setSavedPresets] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('kopanang_presets') || '[]');
@@ -101,7 +96,6 @@ function KopanangTest() {
   const [presetName, setPresetName] = useState('');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
 
-  // Drag state
   const [draggingLayer, setDraggingLayer] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const stageRef = useRef(null);
@@ -109,7 +103,6 @@ function KopanangTest() {
   const mouthTimerRef = useRef(null);
   const walkTimerRef = useRef(null);
 
-  // Mouth animation
   useEffect(() => {
     if (isTalking) {
       mouthTimerRef.current = setInterval(() => {
@@ -121,7 +114,6 @@ function KopanangTest() {
     };
   }, [isTalking, talkSpeed]);
 
-  // Walk animation
   useEffect(() => {
     if (isWalking) {
       walkTimerRef.current = setInterval(() => {
@@ -133,9 +125,8 @@ function KopanangTest() {
     };
   }, [isWalking, walkSpeed]);
 
-  // Drag handlers
   const handleMouseDown = (e, layer) => {
-    if (layer === 'mouth' || layer === 'walk') return;
+    if (layer === 'mouth') return;
     e.preventDefault();
     setDraggingLayer(layer);
     
@@ -190,7 +181,6 @@ function KopanangTest() {
     };
   }, [draggingLayer, dragOffset]);
 
-  // Save preset
   const handleSavePreset = () => {
     if (!presetName.trim()) return;
     
@@ -224,7 +214,6 @@ function KopanangTest() {
     setShowSaveDialog(false);
   };
 
-  // Load preset
   const handleLoadPreset = (preset) => {
     setSelectedBody(preset.body);
     setSelectedFace(preset.face);
@@ -246,7 +235,6 @@ function KopanangTest() {
     if (preset.walkY !== undefined) setWalkY(preset.walkY);
   };
 
-  // Delete preset
   const handleDeletePreset = (presetId) => {
     const updated = savedPresets.filter(p => p.id !== presetId);
     setSavedPresets(updated);
@@ -257,9 +245,12 @@ function KopanangTest() {
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
   const currentMouth = MOUTH_FRAMES[currentMouthIndex];
 
-  // Calculate current walk frame display
+  // Walking background position
   const currentFramePos = WALK_FRAME_POSITIONS[currentWalkFrame];
-  const walkDisplayHeight = (WALK_SHEET_HEIGHT / currentFramePos.width) * walkScale;
+  const scaleRatio = walkScale / WALK_FRAME_POSITIONS[0].width;
+  const walkBgWidth = walkScale * (WALK_SHEET_FULL_WIDTH / WALK_FRAME_POSITIONS[0].width);
+  const walkBgHeight = walkScale * (WALK_SHEET_HEIGHT / WALK_FRAME_POSITIONS[0].width);
+  const walkBgPositionX = -(currentFramePos.x * scaleRatio);
 
   return (
     <div className="kopanang-test-page">
@@ -281,36 +272,23 @@ function KopanangTest() {
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* Walking Sprite Sheet with EXACT frame boundaries */}
+                {/* WALKING — background-image approach */}
                 {isWalking ? (
                   <div
                     style={{
                       width: `${walkScale}px`,
-                      height: `${walkDisplayHeight}px`,
+                      height: `${walkBgHeight}px`,
                       position: 'relative',
                       top: `${walkY}px`,
                       left: `${walkX}px`,
                       zIndex: 1,
-                      overflow: 'hidden',
+                      backgroundImage: `url(${walkSheet})`,
+                      backgroundSize: `${walkBgWidth}px ${walkBgHeight}px`,
+                      backgroundPosition: `${walkBgPositionX}px 0`,
+                      backgroundRepeat: 'no-repeat',
+                      pointerEvents: 'none',
                     }}
-                  >
-                    <img
-                      src={walkSheet}
-                      alt="Kopanang walking"
-                      style={{
-                        width: `${walkScale}px`,
-                        height: 'auto',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        maxWidth: 'none',
-                        display: 'block',
-                        objectFit: 'none',
-                        objectPosition: `-${currentFramePos.x}px 0`,
-                        pointerEvents: 'none',
-                      }}
-                    />
-                  </div>
+                  />
                 ) : (
                   <>
                     {/* Static Body */}
@@ -416,7 +394,7 @@ function KopanangTest() {
                   <span>{walkX}px</span>
                 </div>
                 <div className="mouth-frame-indicator">
-                  Frame: <strong>{currentWalkFrame + 1}/4</strong> (x={currentFramePos.x}, w={currentFramePos.width})
+                  Frame: <strong>{currentWalkFrame + 1}/4</strong>
                 </div>
               </div>
 
