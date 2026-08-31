@@ -76,7 +76,7 @@
   transition: transform 0.3s ease;
 }
 
-/* Layer 1: Body — BASE layer, fills container */
+/* Layer 1: Body — fills container, already has small head drawn on it */
 .layer-body {
   position: relative;
   width: 100%;
@@ -91,15 +91,15 @@
   object-fit: contain;
 }
 
-/* Layer 2: Face/Neck — SAME SIZE as the base face.
-   The base face (neutral) sits here.
-   When talking, a mouth frame REPLACES this entire layer. */
+/* Layer 2: Face/Head overlay — TINY fixed size to cover the body's small head
+   Body is 156px wide in a 200px container.
+   The head on the body is approximately 50-60px wide at the top. */
 .layer-face {
   position: absolute;
-  top: 20%;
+  top: 8%;
   left: 50%;
   transform: translateX(-50%);
-  width: 57%;
+  width: 55px;
   z-index: 3;
   pointer-events: none;
 }
@@ -111,15 +111,14 @@
   object-fit: contain;
 }
 
-/* Layer 3: TALKING FACE — must be EXACTLY the same size and position
-   as Layer 2 (the base face). It covers the base face when talking. */
+/* Layer 3: Talking face — MUST be IDENTICAL to base face */
 .layer-mouth {
   position: absolute;
-  top: 20%; /* SAME as face */
+  top: 8%; /* SAME as face */
   left: 50%;
   transform: translateX(-50%);
-  width: 57%; /* SAME as face */
-  z-index: 5; /* HIGHER than face so it covers it */
+  width: 55px; /* SAME as face */
+  z-index: 5;
   pointer-events: none;
   display: block;
   visibility: visible;
@@ -284,6 +283,13 @@
 @media (max-width: 600px) {
   .character-composite {
     width: 160px;
+  }
+
+  /* Scale face down proportionally on mobile */
+  .layer-face,
+  .layer-mouth {
+    width: 44px;
+    top: 8%;
   }
 
   .test-controls {
