@@ -24,12 +24,16 @@ import mouthO from '../../assets/kopanang_mouth_vowels/kopanang_mouth_o.png';
 // Import walking sprite sheet
 import walkSheet from '../../assets/kopanang_walk/kopanang_walk.png';
 
-// Sprite sheet constants
-const WALK_FRAMES = 4;
-const WALK_SHEET_WIDTH = 612;
+// EXACT frame boundaries from transparency analysis
+const WALK_FRAME_POSITIONS = [
+  { x: 6, width: 171 },    // Frame 1: content at x=6 to x=176
+  { x: 181, width: 121 },  // Frame 2: content at x=181 to x=301
+  { x: 309, width: 154 },  // Frame 3: content at x=309 to x=462
+  { x: 465, width: 142 },  // Frame 4: content at x=465 to x=606
+];
+
 const WALK_SHEET_HEIGHT = 408;
-const WALK_FRAME_WIDTH = WALK_SHEET_WIDTH / WALK_FRAMES; // 153px
-const WALK_ASPECT_RATIO = WALK_SHEET_HEIGHT / WALK_FRAME_WIDTH; // 408/153 = 2.667
+const WALK_FRAMES = 4;
 
 const BODY_OPTIONS = [
   { id: 'body01', label: 'Body 01', src: body01 },
@@ -84,7 +88,7 @@ function KopanangTest() {
   const [mouthAspectRatio, setMouthAspectRatio] = useState(0.4);
 
   // Walk controls
-  const [walkScale, setWalkScale] = useState(153);
+  const [walkScale, setWalkScale] = useState(150);
   const [walkY, setWalkY] = useState(50);
   const [walkX, setWalkX] = useState(0);
 
@@ -253,6 +257,10 @@ function KopanangTest() {
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
   const currentMouth = MOUTH_FRAMES[currentMouthIndex];
 
+  // Calculate current walk frame display
+  const currentFramePos = WALK_FRAME_POSITIONS[currentWalkFrame];
+  const walkDisplayHeight = (WALK_SHEET_HEIGHT / currentFramePos.width) * walkScale;
+
   return (
     <div className="kopanang-test-page">
       <div className="kopanang-test-container">
@@ -273,12 +281,12 @@ function KopanangTest() {
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* Walking Sprite Sheet */}
+                {/* Walking Sprite Sheet with EXACT frame boundaries */}
                 {isWalking ? (
                   <div
                     style={{
                       width: `${walkScale}px`,
-                      height: `${walkScale * WALK_ASPECT_RATIO}px`,
+                      height: `${walkDisplayHeight}px`,
                       position: 'relative',
                       top: `${walkY}px`,
                       left: `${walkX}px`,
@@ -290,13 +298,15 @@ function KopanangTest() {
                       src={walkSheet}
                       alt="Kopanang walking"
                       style={{
-                        width: `${walkScale * WALK_FRAMES}px`,
-                        height: `${walkScale * WALK_ASPECT_RATIO}px`,
+                        width: `${walkScale}px`,
+                        height: 'auto',
                         position: 'absolute',
                         top: 0,
-                        left: `-${currentWalkFrame * walkScale}px`,
+                        left: 0,
                         maxWidth: 'none',
                         display: 'block',
+                        objectFit: 'none',
+                        objectPosition: `-${currentFramePos.x}px 0`,
                         pointerEvents: 'none',
                       }}
                     />
@@ -406,7 +416,7 @@ function KopanangTest() {
                   <span>{walkX}px</span>
                 </div>
                 <div className="mouth-frame-indicator">
-                  Frame: <strong>{currentWalkFrame + 1}/4</strong>
+                  Frame: <strong>{currentWalkFrame + 1}/4</strong> (x={currentFramePos.x}, w={currentFramePos.width})
                 </div>
               </div>
 
