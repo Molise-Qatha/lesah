@@ -58,7 +58,7 @@
   background: #2a2a2a;
   border: 1px solid #444;
   border-radius: 12px;
-  min-height: 500px;
+  min-height: 450px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,7 +68,7 @@
   padding: 20px;
 }
 
-/* ═══════════════ CHARACTER COMPOSITE ═══════════════ */
+/* ═══════════════ CHARACTER ═══════════════ */
 .character-composite {
   position: relative;
   width: 200px;
@@ -76,7 +76,6 @@
   transition: transform 0.3s ease;
 }
 
-/* Layer 1: Body — fills container, already has small head drawn on it */
 .layer-body {
   position: relative;
   width: 100%;
@@ -88,50 +87,67 @@
   width: 100%;
   height: auto;
   display: block;
-  object-fit: contain;
 }
 
-/* Layer 2: Face/Head overlay — TINY fixed size to cover the body's small head
-   Body is 156px wide in a 200px container.
-   The head on the body is approximately 50-60px wide at the top. */
-.layer-face {
+/* HEAD LAYER — controlled by alignment sliders */
+.layer-head {
   position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 55px;
-  z-index: 3;
+  z-index: 10;
   pointer-events: none;
+  transition: all 0.1s ease;
 }
 
-.character-face-img {
+.character-head-img {
   width: 100%;
   height: auto;
   display: block;
   object-fit: contain;
 }
 
-/* Layer 3: Talking face — MUST be IDENTICAL to base face */
-.layer-mouth {
-  position: absolute;
-  top: 8%; /* SAME as face */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 55px; /* SAME as face */
-  z-index: 5;
-  pointer-events: none;
-  display: block;
-  visibility: visible;
+/* ═══════════════ ALIGNMENT PANEL ═══════════════ */
+.alignment-panel {
+  background: #1a0a0a;
+  border: 1px solid #8B0000;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 25px;
 }
 
-.character-mouth-img {
-  width: 100%;
-  height: auto;
-  display: block !important;
-  object-fit: contain;
-  opacity: 1 !important;
-  visibility: visible !important;
-  position: relative;
+.alignment-panel h3 {
+  margin: 0 0 5px;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.alignment-hint {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin: 0 0 15px;
+}
+
+.alignment-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.alignment-row label {
+  min-width: 100px;
+  color: #ddd;
+}
+
+.alignment-row input[type="range"] {
+  flex: 1;
+}
+
+.alignment-row span {
+  min-width: 50px;
+  color: #ff6b6b;
+  font-weight: 600;
 }
 
 /* ═══════════════ CONTROLS ═══════════════ */
@@ -213,7 +229,6 @@
   border: 1px solid #333;
   border-radius: 10px;
   padding: 15px;
-  margin-bottom: 25px;
 }
 
 .test-status h3 {
@@ -244,52 +259,10 @@
   color: #e0e0e0;
 }
 
-/* ═══════════════ ARCHITECTURE NOTE ═══════════════ */
-.test-note {
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 15px;
-}
-
-.test-note h3 {
-  margin: 0 0 10px;
-  font-size: 0.85rem;
-  color: #aaa;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.layer-diagram {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 12px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
-  color: #4caf50;
-  white-space: pre;
-  margin: 0 0 10px;
-}
-
-.note-text {
-  font-size: 0.8rem;
-  color: #aaa;
-  line-height: 1.5;
-  margin: 0;
-}
-
 /* ═══════════════ RESPONSIVE ═══════════════ */
 @media (max-width: 600px) {
   .character-composite {
     width: 160px;
-  }
-
-  /* Scale face down proportionally on mobile */
-  .layer-face,
-  .layer-mouth {
-    width: 44px;
-    top: 8%;
   }
 
   .test-controls {

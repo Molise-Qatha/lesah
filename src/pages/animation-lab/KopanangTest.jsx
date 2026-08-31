@@ -52,9 +52,15 @@ function KopanangTest() {
   const [isTalking, setIsTalking] = useState(true);
   const [talkSpeed, setTalkSpeed] = useState(150);
   const [charScale, setCharScale] = useState(1);
+
+  // Head alignment controls (developer tuning)
+  const [headWidth, setHeadWidth] = useState(55);
+  const [headTop, setHeadTop] = useState(5);
+  const [headLeft, setHeadLeft] = useState(50);
+  const [headRotation, setHeadRotation] = useState(0);
+
   const mouthTimerRef = useRef(null);
 
-  // Mouth animation loop
   useEffect(() => {
     if (isTalking) {
       mouthTimerRef.current = setInterval(() => {
@@ -68,6 +74,16 @@ function KopanangTest() {
 
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
+
+  // Toggle talking when selecting a face expression
+  const handleFaceSelect = (faceId) => {
+    setSelectedFace(faceId);
+    setIsTalking(false);
+  };
+
+  const handleStartTalking = () => {
+    setIsTalking(true);
+  };
 
   return (
     <div className="kopanang-test-page">
@@ -88,19 +104,27 @@ function KopanangTest() {
               <img src={currentBody.src} alt={`Body ${selectedBody}`} className="character-body-img" />
             </div>
 
-            {/* Layer 2: Face — shows EITHER base face OR talking face (mouth frames are FULL faces) */}
-            <div className="layer-face">
+            {/* Layer 2: Head (face or talking face) — controlled by alignment sliders */}
+            <div 
+              className="layer-head"
+              style={{
+                top: `${headTop}%`,
+                left: `${headLeft}%`,
+                width: `${headWidth}px`,
+                transform: `translate(-50%, -50%) rotate(${headRotation}deg)`,
+              }}
+            >
               {isTalking ? (
                 <img 
                   src={MOUTH_FRAMES[currentMouthIndex]} 
-                  alt={`Talking frame ${currentMouthIndex + 1}`} 
-                  className="character-face-img" 
+                  alt={`Talking ${currentMouthIndex + 1}`} 
+                  className="character-head-img" 
                 />
               ) : (
                 <img 
                   src={currentFace.src} 
                   alt={`Face ${selectedFace}`} 
-                  className="character-face-img" 
+                  className="character-head-img" 
                 />
               )}
             </div>
@@ -114,19 +138,19 @@ function KopanangTest() {
             <div className="control-buttons">
               <button 
                 className={`test-btn ${isTalking ? 'active' : ''}`}
-                onClick={() => setIsTalking(!isTalking)}
+                onClick={handleStartTalking}
               >
-                {isTalking ? '⏸ Stop Talking' : '▶ Start Talking'}
+                ▶ Start Talking
               </button>
               <button 
                 className="test-btn"
-                onClick={() => setCurrentMouthIndex(0)}
+                onClick={() => setIsTalking(false)}
               >
-                🔄 Reset Mouth
+                ⏹ Stop Talking
               </button>
             </div>
             <div className="speed-control">
-              <label>Talk Speed:</label>
+              <label>Speed:</label>
               <input 
                 type="range" 
                 min="50" 
@@ -144,11 +168,8 @@ function KopanangTest() {
               {FACE_OPTIONS.map(face => (
                 <button 
                   key={face.id}
-                  className={`test-btn ${selectedFace === face.id ? 'active' : ''}`}
-                  onClick={() => {
-                    setSelectedFace(face.id);
-                    setIsTalking(false); // Stop talking to show the expression
-                  }}
+                  className={`test-btn ${selectedFace === face.id && !isTalking ? 'active' : ''}`}
+                  onClick={() => handleFaceSelect(face.id)}
                 >
                   {face.label}
                 </button>
@@ -170,67 +191,85 @@ function KopanangTest() {
               ))}
             </div>
           </div>
+        </div>
 
-          <div className="control-section">
-            <h3>📐 Character Scale</h3>
-            <div className="control-buttons">
-              <button 
-                className="test-btn"
-                onClick={() => setCharScale(prev => Math.max(prev - 0.1, 0.5))}
-              >
-                −
-              </button>
-              <span className="scale-display">{charScale.toFixed(1)}x</span>
-              <button 
-                className="test-btn"
-                onClick={() => setCharScale(prev => Math.min(prev + 0.1, 2))}
-              >
-                +
-              </button>
-            </div>
+        {/* ═══════════ HEAD ALIGNMENT CONTROLS ═══════════ */}
+        <div className="alignment-panel">
+          <h3>🔧 Head Alignment Controls</h3>
+          <p className="alignment-hint">Use these sliders to position the head over the body's neck. Adjust until perfect, then note the values.</p>
+          
+          <div className="alignment-row">
+            <label>Head Width:</label>
+            <input 
+              type="range" 
+              min="20" 
+              max="120" 
+              value={headWidth} 
+              onChange={(e) => setHeadWidth(Number(e.target.value))}
+            />
+            <span>{headWidth}px</span>
+          </div>
+
+          <div className="alignment-row">
+            <label>Head Top:</label>
+            <input 
+              type="range" 
+              min="0" 
+              max="40" 
+              value={headTop} 
+              onChange={(e) => setHeadTop(Number(e.target.value))}
+            />
+            <span>{headTop}%</span>
+          </div>
+
+          <div className="alignment-row">
+            <label>Head Left:</label>
+            <input 
+              type="range" 
+              min="30" 
+              max="70" 
+              value={headLeft} 
+              onChange={(e) => setHeadLeft(Number(e.target.value))}
+            />
+            <span>{headLeft}%</span>
+          </div>
+
+          <div className="alignment-row">
+            <label>Head Rotation:</label>
+            <input 
+              type="range" 
+              min="-30" 
+              max="30" 
+              value={headRotation} 
+              onChange={(e) => setHeadRotation(Number(e.target.value))}
+            />
+            <span>{headRotation}°</span>
           </div>
         </div>
 
-        {/* Status Info */}
+        {/* Status */}
         <div className="test-status">
-          <h3>Current Composition</h3>
+          <h3>Current Configuration</h3>
           <div className="status-row">
             <span>Body:</span>
             <span>{currentBody.label}</span>
           </div>
           <div className="status-row">
-            <span>Face:</span>
-            <span>{isTalking ? `Talking Frame ${currentMouthIndex + 1}` : currentFace.label}</span>
+            <span>Head:</span>
+            <span>{isTalking ? `Talking ${currentMouthIndex + 1}/10` : currentFace.label}</span>
           </div>
           <div className="status-row">
-            <span>Talking:</span>
-            <span>{isTalking ? 'Yes' : 'No'}</span>
+            <span>Head Position:</span>
+            <span>top {headTop}%, left {headLeft}%</span>
           </div>
           <div className="status-row">
-            <span>Layers:</span>
-            <span>2 (Body + Face/Neck)</span>
+            <span>Head Size:</span>
+            <span>{headWidth}px</span>
           </div>
-        </div>
-
-        {/* Architecture Note */}
-        <div className="test-note">
-          <h3>📐 Layer Architecture (CORRECTED)</h3>
-          <pre className="layer-diagram">
-{`BODY (base)
-  ↓
-FACE/HEAD (swaps between:
-  - Neutral expression
-  - Angry expression
-  - Sad expression
-  - Worried expression
-  - Talking frames 1-10)`}
-          </pre>
-          <p className="note-text">
-            The "Mouth" files are actually FULL FACE images with different mouth shapes.
-            When talking, the entire face is swapped to a talking frame.
-            When not talking, the face shows the selected expression.
-            The face and mouth layers must have IDENTICAL size and position.
-          </p>
+          <div className="status-row">
+            <span>Head Rotation:</span>
+            <span>{headRotation}°</span>
+          </div>
         </div>
       </div>
     </div>
