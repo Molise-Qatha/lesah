@@ -14,7 +14,6 @@ import faceAngry from '../../assets/kopanang_face/kopanang_face_angry.png';
 import faceSad from '../../assets/kopanang_face/kopanang_face_sad.png';
 import faceWorried from '../../assets/kopanang_face/kopanang_face_worried.png';
 
-// Mouth files use single digits (1-10, not 01-10)
 import mouth1 from '../../assets/kopanang_mouth/kopanang_mouth_1.png';
 import mouth2 from '../../assets/kopanang_mouth/kopanang_mouth_2.png';
 import mouth3 from '../../assets/kopanang_mouth/kopanang_mouth_3.png';
@@ -85,18 +84,18 @@ function KopanangTest() {
         {/* Character Stage */}
         <div className="test-stage">
           <div className="character-composite" style={{ transform: `scale(${charScale})` }}>
-            {/* Layer 1: Body */}
-            <div className="layer layer-body">
+            {/* Layer 1: Body — defines container size */}
+            <div className="layer-body">
               <img src={currentBody.src} alt={`Body ${selectedBody}`} className="character-body-img" />
             </div>
 
-            {/* Layer 2: Face */}
-            <div className="layer layer-face">
+            {/* Layer 2: Face — positioned OVER body */}
+            <div className="layer-face">
               <img src={currentFace.src} alt={`Face ${selectedFace}`} className="character-face-img" />
             </div>
 
-            {/* Layer 3: Mouth */}
-            <div className="layer layer-mouth">
+            {/* Layer 3: Mouth — positioned OVER face */}
+            <div className="layer-mouth">
               <img src={currentMouth} alt={`Mouth ${currentMouthIndex + 1}`} className="character-mouth-img" />
             </div>
           </div>
