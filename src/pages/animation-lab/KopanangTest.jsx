@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './KopanangTest.css';
 
-// Import Kopanang assets with CORRECT paths
+// Import Kopanang assets
 import body01 from '../../assets/kopanang_body/kopanang_body_01.png';
 import body02 from '../../assets/kopanang_body/kopanang_body_02.png';
 import body03 from '../../assets/kopanang_body/kopanang_body_03.png';
@@ -46,18 +46,25 @@ const MOUTH_FRAMES = [
 ];
 
 function KopanangTest() {
+  // Layer selection
   const [selectedBody, setSelectedBody] = useState('body01');
   const [selectedFace, setSelectedFace] = useState('neutral');
-  const [currentMouthIndex, setCurrentMouthIndex] = useState(0);
   const [isTalking, setIsTalking] = useState(true);
-  const [talkSpeed, setTalkSpeed] = useState(150);
-  const [charScale, setCharScale] = useState(1);
+  const [currentMouthIndex, setCurrentMouthIndex] = useState(0);
+  const [talkSpeed, setTalkSpeed] = useState(200);
 
-  // Head alignment controls (developer tuning)
-  const [headWidth, setHeadWidth] = useState(55);
-  const [headTop, setHeadTop] = useState(5);
-  const [headLeft, setHeadLeft] = useState(50);
+  // Body controls
+  const [bodyScale, setBodyScale] = useState(200); // px width
+  const [bodyX, setBodyX] = useState(0);
+  const [bodyY, setBodyY] = useState(0);
+  const [bodyRotation, setBodyRotation] = useState(0);
+
+  // Head controls
+  const [headScale, setHeadScale] = useState(60); // px width
+  const [headX, setHeadX] = useState(0); // offset from center
+  const [headY, setHeadY] = useState(20); // offset from top of body
   const [headRotation, setHeadRotation] = useState(0);
+  const [headOpacity, setHeadOpacity] = useState(1);
 
   const mouthTimerRef = useRef(null);
 
@@ -75,201 +82,134 @@ function KopanangTest() {
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
 
-  // Toggle talking when selecting a face expression
-  const handleFaceSelect = (faceId) => {
-    setSelectedFace(faceId);
-    setIsTalking(false);
-  };
-
-  const handleStartTalking = () => {
-    setIsTalking(true);
-  };
-
   return (
     <div className="kopanang-test-page">
       <div className="kopanang-test-container">
         <Link to="/animation-lab" className="back-link">← Back to Animation Lab</Link>
         
         <div className="test-header">
-          <h1>🧪 Kopanang Animation Test</h1>
-          <p className="test-subtitle">Modular Layer Compositing Test</p>
-          <span className="test-badge">TECHNICAL TEST</span>
+          <h1>🧪 Kopanang Alignment Tool</h1>
+          <p className="test-subtitle">Position and scale each layer visually</p>
+          <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
-        {/* Character Stage */}
+        {/* Stage */}
         <div className="test-stage">
-          <div className="character-composite" style={{ transform: `scale(${charScale})` }}>
-            {/* Layer 1: Body */}
-            <div className="layer-body">
-              <img src={currentBody.src} alt={`Body ${selectedBody}`} className="character-body-img" />
-            </div>
-
-            {/* Layer 2: Head (face or talking face) — controlled by alignment sliders */}
-            <div 
-              className="layer-head"
+          <div className="character-canvas" style={{ width: `${bodyScale}px` }}>
+            {/* Body Layer */}
+            <img 
+              src={currentBody.src} 
+              alt="Body" 
+              className="layer-body-img"
               style={{
-                top: `${headTop}%`,
-                left: `${headLeft}%`,
-                width: `${headWidth}px`,
-                transform: `translate(-50%, -50%) rotate(${headRotation}deg)`,
+                width: '100%',
+                transform: `rotate(${bodyRotation}deg)`,
+                position: 'relative',
+                zIndex: 1,
               }}
-            >
-              {isTalking ? (
-                <img 
-                  src={MOUTH_FRAMES[currentMouthIndex]} 
-                  alt={`Talking ${currentMouthIndex + 1}`} 
-                  className="character-head-img" 
-                />
-              ) : (
-                <img 
-                  src={currentFace.src} 
-                  alt={`Face ${selectedFace}`} 
-                  className="character-head-img" 
-                />
-              )}
-            </div>
+            />
+
+            {/* Head Layer */}
+            <img 
+              src={isTalking ? MOUTH_FRAMES[currentMouthIndex] : currentFace.src}
+              alt="Head"
+              className="layer-head-img"
+              style={{
+                width: `${headScale}px`,
+                position: 'absolute',
+                top: `${headY}px`,
+                left: `calc(50% + ${headX}px)`,
+                transform: `translateX(-50%) rotate(${headRotation}deg)`,
+                zIndex: 10,
+                opacity: headOpacity,
+              }}
+            />
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="test-controls">
-          <div className="control-section">
-            <h3>🎙️ Talking Animation</h3>
-            <div className="control-buttons">
-              <button 
-                className={`test-btn ${isTalking ? 'active' : ''}`}
-                onClick={handleStartTalking}
-              >
-                ▶ Start Talking
-              </button>
-              <button 
-                className="test-btn"
-                onClick={() => setIsTalking(false)}
-              >
-                ⏹ Stop Talking
-              </button>
+        {/* ═══════════ LAYER CONTROLS ═══════════ */}
+        <div className="layer-controls">
+          {/* BODY CONTROLS */}
+          <div className="control-panel body-panel">
+            <h3>🧍 Body Layer</h3>
+            <div className="slider-row">
+              <label>Body Width:</label>
+              <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
+              <span>{bodyScale}px</span>
             </div>
-            <div className="speed-control">
-              <label>Speed:</label>
-              <input 
-                type="range" 
-                min="50" 
-                max="400" 
-                value={talkSpeed} 
-                onChange={(e) => setTalkSpeed(Number(e.target.value))}
-              />
-              <span>{talkSpeed}ms</span>
+            <div className="slider-row">
+              <label>Body Rotation:</label>
+              <input type="range" min="-20" max="20" value={bodyRotation} onChange={(e) => setBodyRotation(Number(e.target.value))} />
+              <span>{bodyRotation}°</span>
+            </div>
+            <div className="pose-buttons">
+              {BODY_OPTIONS.map(body => (
+                <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>
+                  {body.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="control-section">
-            <h3>😊 Face Expression</h3>
-            <div className="control-buttons">
+          {/* HEAD CONTROLS */}
+          <div className="control-panel head-panel">
+            <h3>👤 Head Layer</h3>
+            <div className="slider-row">
+              <label>Head Width:</label>
+              <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
+              <span>{headScale}px</span>
+            </div>
+            <div className="slider-row">
+              <label>Head Y Position:</label>
+              <input type="range" min="-100" max="200" value={headY} onChange={(e) => setHeadY(Number(e.target.value))} />
+              <span>{headY}px</span>
+            </div>
+            <div className="slider-row">
+              <label>Head X Offset:</label>
+              <input type="range" min="-100" max="100" value={headX} onChange={(e) => setHeadX(Number(e.target.value))} />
+              <span>{headX}px</span>
+            </div>
+            <div className="slider-row">
+              <label>Head Rotation:</label>
+              <input type="range" min="-45" max="45" value={headRotation} onChange={(e) => setHeadRotation(Number(e.target.value))} />
+              <span>{headRotation}°</span>
+            </div>
+            <div className="slider-row">
+              <label>Head Opacity:</label>
+              <input type="range" min="0" max="100" value={headOpacity * 100} onChange={(e) => setHeadOpacity(Number(e.target.value) / 100)} />
+              <span>{Math.round(headOpacity * 100)}%</span>
+            </div>
+            <div className="pose-buttons">
               {FACE_OPTIONS.map(face => (
-                <button 
-                  key={face.id}
-                  className={`test-btn ${selectedFace === face.id && !isTalking ? 'active' : ''}`}
-                  onClick={() => handleFaceSelect(face.id)}
-                >
+                <button key={face.id} className={`test-btn ${selectedFace === face.id && !isTalking ? 'active' : ''}`} onClick={() => { setSelectedFace(face.id); setIsTalking(false); }}>
                   {face.label}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="control-section">
-            <h3>🧍 Body Pose</h3>
-            <div className="control-buttons">
-              {BODY_OPTIONS.map(body => (
-                <button 
-                  key={body.id}
-                  className={`test-btn ${selectedBody === body.id ? 'active' : ''}`}
-                  onClick={() => setSelectedBody(body.id)}
-                >
-                  {body.label}
-                </button>
-              ))}
+          {/* TALKING CONTROLS */}
+          <div className="control-panel talk-panel">
+            <h3>🎙️ Talking</h3>
+            <div className="pose-buttons">
+              <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
+              <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
+            </div>
+            <div className="slider-row">
+              <label>Speed:</label>
+              <input type="range" min="50" max="500" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
+              <span>{talkSpeed}ms</span>
             </div>
           </div>
         </div>
 
-        {/* ═══════════ HEAD ALIGNMENT CONTROLS ═══════════ */}
-        <div className="alignment-panel">
-          <h3>🔧 Head Alignment Controls</h3>
-          <p className="alignment-hint">Use these sliders to position the head over the body's neck. Adjust until perfect, then note the values.</p>
-          
-          <div className="alignment-row">
-            <label>Head Width:</label>
-            <input 
-              type="range" 
-              min="20" 
-              max="120" 
-              value={headWidth} 
-              onChange={(e) => setHeadWidth(Number(e.target.value))}
-            />
-            <span>{headWidth}px</span>
-          </div>
-
-          <div className="alignment-row">
-            <label>Head Top:</label>
-            <input 
-              type="range" 
-              min="0" 
-              max="40" 
-              value={headTop} 
-              onChange={(e) => setHeadTop(Number(e.target.value))}
-            />
-            <span>{headTop}%</span>
-          </div>
-
-          <div className="alignment-row">
-            <label>Head Left:</label>
-            <input 
-              type="range" 
-              min="30" 
-              max="70" 
-              value={headLeft} 
-              onChange={(e) => setHeadLeft(Number(e.target.value))}
-            />
-            <span>{headLeft}%</span>
-          </div>
-
-          <div className="alignment-row">
-            <label>Head Rotation:</label>
-            <input 
-              type="range" 
-              min="-30" 
-              max="30" 
-              value={headRotation} 
-              onChange={(e) => setHeadRotation(Number(e.target.value))}
-            />
-            <span>{headRotation}°</span>
-          </div>
-        </div>
-
-        {/* Status */}
+        {/* Current values */}
         <div className="test-status">
-          <h3>Current Configuration</h3>
-          <div className="status-row">
-            <span>Body:</span>
-            <span>{currentBody.label}</span>
-          </div>
-          <div className="status-row">
-            <span>Head:</span>
-            <span>{isTalking ? `Talking ${currentMouthIndex + 1}/10` : currentFace.label}</span>
-          </div>
-          <div className="status-row">
-            <span>Head Position:</span>
-            <span>top {headTop}%, left {headLeft}%</span>
-          </div>
-          <div className="status-row">
-            <span>Head Size:</span>
-            <span>{headWidth}px</span>
-          </div>
-          <div className="status-row">
-            <span>Head Rotation:</span>
-            <span>{headRotation}°</span>
-          </div>
+          <h3>📋 Current Values (copy these for hardcoding)</h3>
+          <pre className="values-display">
+{`Body: { width: ${bodyScale}, rotation: ${bodyRotation} }
+Head: { width: ${headScale}, y: ${headY}, x: ${headX}, rotation: ${headRotation} }`}
+          </pre>
         </div>
       </div>
     </div>
