@@ -53,6 +53,10 @@ const MOUTH_FRAMES = [
 ];
 
 function KopanangTest() {
+  // Tab state
+  const [activeTab, setActiveTab] = useState('character'); // 'character', 'audio', 'effects', 'settings'
+  
+  // Character states
   const [selectedBody, setSelectedBody] = useState('body01');
   const [selectedFace, setSelectedFace] = useState('neutral');
   const [isTalking, setIsTalking] = useState(false);
@@ -61,6 +65,7 @@ function KopanangTest() {
   const [currentWalkFrame, setCurrentWalkFrame] = useState(0);
   const [talkSpeed, setTalkSpeed] = useState(250);
   const [walkSpeed, setWalkSpeed] = useState(300);
+  const [mouthOverride, setMouthOverride] = useState(false); // Manual mouth testing
 
   // Audio sync states
   const [audioFile, setAudioFile] = useState(null);
@@ -76,11 +81,11 @@ function KopanangTest() {
 
   // Particle system states
   const [particlesEnabled, setParticlesEnabled] = useState(true);
-  const [particleType, setParticleType] = useState('sparkles'); // 'sparkles', 'dust', 'confetti', 'bubbles'
+  const [particleType, setParticleType] = useState('sparkles');
   const [particleColor, setParticleColor] = useState('#ffd700');
   const [particleAmount, setParticleAmount] = useState(20);
   const [particleSpeed, setParticleSpeed] = useState(2);
-  const [particleTrigger, setParticleTrigger] = useState('talking'); // 'talking', 'walking', 'always', 'click'
+  const [particleTrigger, setParticleTrigger] = useState('talking');
   const [particles, setParticles] = useState([]);
   const [particleInterval, setParticleInterval] = useState(null);
   
@@ -128,15 +133,15 @@ function KopanangTest() {
   const animationFrameRef = useRef(null);
   const dataArrayRef = useRef(null);
 
-  // Particle generation function
-  const generateParticles = (count, type, color) => {
+  // Particle generation function - optimized with useCallback
+  const generateParticles = React.useCallback((count, type, color) => {
     const newParticles = [];
     const stageWidth = stageRef.current?.offsetWidth || 400;
     const stageHeight = stageRef.current?.offsetHeight || 400;
     
     for (let i = 0; i < count; i++) {
       const particle = {
-        id: Date.now() + i,
+        id: Date.now() + Math.random(),
         x: Math.random() * stageWidth,
         y: Math.random() * stageHeight,
         size: Math.random() * 8 + 3,
@@ -152,10 +157,10 @@ function KopanangTest() {
       newParticles.push(particle);
     }
     
-    setParticles(prev => [...prev, ...newParticles].slice(-100)); // Keep max 100 particles
-  };
+    setParticles(prev => [...prev, ...newParticles].slice(-50)); // Reduced to 50 for performance
+  }, [particleSpeed]);
 
-  // Particle trigger effect
+  // Particle trigger effect - optimized
   useEffect(() => {
     if (!particlesEnabled) {
       if (particleInterval) clearInterval(particleInterval);
@@ -179,7 +184,7 @@ function KopanangTest() {
     if (shouldGenerate()) {
       const interval = setInterval(() => {
         generateParticles(Math.floor(particleAmount / 10), particleType, particleColor);
-      }, 100);
+      }, 200); // Increased interval for performance
       setParticleInterval(interval);
     } else {
       if (particleInterval) clearInterval(particleInterval);
@@ -189,32 +194,39 @@ function KopanangTest() {
     return () => {
       if (particleInterval) clearInterval(particleInterval);
     };
-  }, [particlesEnabled, particleTrigger, particleType, particleColor, particleAmount, particleSpeed, isTalking, isWalking]);
+  }, [particlesEnabled, particleTrigger, particleType, particleColor, particleAmount, isTalking, isWalking, generateParticles]);
 
-  // Particle animation and cleanup
+  // Particle animation - using requestAnimationFrame for performance
   useEffect(() => {
-    const updateParticles = () => {
-      setParticles(prev => 
-        prev
-          .map(p => ({
-            ...p,
-            x: p.x + p.speedX,
-            y: p.y + p.speedY,
-            opacity: p.opacity - 0.005,
-            rotation: p.rotation + p.rotationSpeed,
-            lifetime: p.lifetime - 1,
-          }))
-          .filter(p => p.opacity > 0 && p.lifetime > 0)
-      );
+    let animationId;
+    let lastUpdate = 0;
+    
+    const updateParticles = (timestamp) => {
+      if (timestamp - lastUpdate > 50) { // Update every 50ms
+        setParticles(prev => 
+          prev
+            .map(p => ({
+              ...p,
+              x: p.x + p.speedX,
+              y: p.y + p.speedY,
+              opacity: p.opacity - 0.005,
+              rotation: p.rotation + p.rotationSpeed,
+              lifetime: p.lifetime - 1,
+            }))
+            .filter(p => p.opacity > 0 && p.lifetime > 0)
+        );
+        lastUpdate = timestamp;
+      }
+      animationId = requestAnimationFrame(updateParticles);
     };
     
-    const particleAnimation = setInterval(updateParticles, 50);
-    return () => clearInterval(particleAnimation);
+    animationId = requestAnimationFrame(updateParticles);
+    return () => cancelAnimationFrame(animationId);
   }, []);
 
-  // Manual mouth cycling (existing behavior)
+  // Manual mouth cycling
   useEffect(() => {
-    if (isTalking && syncMode === 'manual') {
+    if (isTalking && syncMode === 'manual' && !mouthOverride) {
       mouthTimerRef.current = setInterval(() => {
         setCurrentMouthIndex(prev => (prev + 1) % MOUTH_FRAMES.length);
       }, talkSpeed);
@@ -222,7 +234,7 @@ function KopanangTest() {
     return () => {
       if (mouthTimerRef.current) clearInterval(mouthTimerRef.current);
     };
-  }, [isTalking, talkSpeed, syncMode]);
+  }, [isTalking, talkSpeed, syncMode, mouthOverride]);
 
   // Walking animation
   useEffect(() => {
@@ -236,7 +248,7 @@ function KopanangTest() {
     };
   }, [isWalking, walkSpeed]);
 
-  // Clean up audio on unmount
+  // Clean up
   useEffect(() => {
     return () => {
       if (audioUrl) URL.revokeObjectURL(audioUrl);
@@ -279,8 +291,8 @@ function KopanangTest() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContextRef.current = new AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 512;
-      analyserRef.current.smoothingTimeConstant = 0.3;
+      analyserRef.current.fftSize = 256; // Reduced for performance
+      analyserRef.current.smoothingTimeConstant = 0.5;
       dataArrayRef.current = new Uint8Array(analyserRef.current.fftSize);
     }
     
@@ -304,9 +316,13 @@ function KopanangTest() {
       await audioRef.current.play();
       setIsAudioPlaying(true);
       setIsTalking(true);
+      setMouthOverride(false); // Disable manual override when audio plays
       
       const updateAmplitude = () => {
-        if (!analyserRef.current || !dataArrayRef.current) return;
+        if (!analyserRef.current || !dataArrayRef.current || mouthOverride) {
+          animationFrameRef.current = requestAnimationFrame(updateAmplitude);
+          return;
+        }
         
         analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
         
@@ -322,13 +338,13 @@ function KopanangTest() {
         setCurrentAmplitude(amplifiedAmplitude);
         
         if (amplifiedAmplitude > 0.35) {
-          setCurrentMouthIndex(0); // A - Open wide
+          setCurrentMouthIndex(0);
         } else if (amplifiedAmplitude > 0.18) {
-          setCurrentMouthIndex(3); // O - Round
+          setCurrentMouthIndex(3);
         } else if (amplifiedAmplitude > 0.06) {
-          setCurrentMouthIndex(1); // E - Smile
+          setCurrentMouthIndex(1);
         } else {
-          setCurrentMouthIndex(2); // I - Narrow
+          setCurrentMouthIndex(2);
         }
         
         if (audioRef.current) {
@@ -382,6 +398,12 @@ function KopanangTest() {
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
     }
+  };
+
+  const handleMouthFrameClick = (index) => {
+    setCurrentMouthIndex(index);
+    setMouthOverride(true);
+    setIsTalking(true);
   };
 
   const handleMouseDown = (e, layer) => {
@@ -524,6 +546,7 @@ function KopanangTest() {
       transform: `rotate(${particle.rotation}deg)`,
       pointerEvents: 'none',
       zIndex: 30,
+      willChange: 'transform, opacity', // Performance optimization
     };
     
     switch (particle.type) {
@@ -593,7 +616,6 @@ function KopanangTest() {
               ))}
               
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {/* Walking — FIXED container size prevents bouncing */}
                 {isWalking ? (
                   <div
                     style={{
@@ -624,7 +646,6 @@ function KopanangTest() {
                   </div>
                 ) : (
                   <>
-                    {/* Static Body */}
                     <img 
                       src={currentBody.src} 
                       alt="Body" 
@@ -639,7 +660,6 @@ function KopanangTest() {
                       onMouseDown={(e) => handleMouseDown(e, 'body')}
                     />
 
-                    {/* Face */}
                     <img 
                       src={currentFace.src}
                       alt="Face"
@@ -657,7 +677,6 @@ function KopanangTest() {
                       onMouseDown={(e) => handleMouseDown(e, 'head')}
                     />
 
-                    {/* Mouth */}
                     {isTalking && (
                       <div
                         style={{
@@ -692,392 +711,448 @@ function KopanangTest() {
             </div>
 
             <div className="drag-hint">
-              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth & Walk | <strong>✨ PARTICLES:</strong> Auto-trigger
+              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth & Walk
             </div>
           </div>
 
-          {/* RIGHT: Controls */}
+          {/* RIGHT: Controls with Tabs */}
           <div className="controls-container">
-            <div className="layer-controls">
-              {/* Audio Sync Panel */}
-              <div className="control-panel audio-panel">
-                <h3>🎵 Audio Sync</h3>
-                
-                <div className="audio-upload-area">
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    onChange={handleFileUpload}
-                    className="audio-file-input"
-                    id="audio-upload"
-                  />
-                  <label htmlFor="audio-upload" className="audio-upload-label">
-                    {audioFile ? (
-                      <span>📁 {audioFile.name}</span>
-                    ) : (
-                      <span>🎤 Click to upload audio</span>
-                    )}
-                  </label>
-                </div>
-                
-                {audioError && <div className="audio-error">{audioError}</div>}
-                
-                <audio
-                  ref={audioRef}
-                  src={audioUrl || undefined}
-                  onEnded={handleAudioEnded}
-                  style={{ display: 'none' }}
-                />
-                
-                <div className="audio-controls">
-                  <button 
-                    className={`test-btn ${isAudioPlaying ? 'active' : ''}`}
-                    onClick={isAudioPlaying ? pauseAudio : playAudio}
-                    disabled={!audioUrl}
-                  >
-                    {isAudioPlaying ? '⏸ Pause' : '▶ Play'}
-                  </button>
-                  <button 
-                    className="test-btn"
-                    onClick={stopAudio}
-                    disabled={!audioUrl}
-                  >
-                    ⏹ Stop
-                  </button>
-                </div>
-                
-                <div className="audio-progress-container">
-                  <div 
-                    className="audio-progress-bar"
-                    style={{ width: `${audioProgress}%` }}
-                  />
-                </div>
-                <div className="audio-time-display">
-                  <span>{formatTime(audioRef.current?.currentTime || 0)}</span>
-                  <span>{formatTime(audioDuration)}</span>
-                </div>
-                
-                <div className="amplitude-meter-container">
-                  <label>Amplitude:</label>
-                  <div className="amplitude-meter">
-                    <div 
-                      className="amplitude-fill"
-                      style={{ 
-                        width: `${currentAmplitude * 100}%`,
-                        backgroundColor: currentAmplitude > 0.35 ? '#ff4444' : 
-                                       currentAmplitude > 0.18 ? '#ffaa00' : '#44ff44'
-                      }}
-                    />
-                    <span className="amplitude-value">{Math.round(currentAmplitude * 100)}%</span>
-                  </div>
-                </div>
-                
-                <div className="slider-row">
-                  <label>Sensitivity:</label>
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="10" 
-                    step="0.5" 
-                    value={sensitivity} 
-                    onChange={(e) => setSensitivity(Number(e.target.value))} 
-                  />
-                  <span>{sensitivity}x</span>
-                </div>
-                
-                <div className="sync-mode-toggle">
-                  <label>Sync Mode:</label>
-                  <div className="mode-buttons">
-                    <button 
-                      className={`test-btn ${syncMode === 'audio' ? 'active' : ''}`}
-                      onClick={() => setSyncMode('audio')}
-                    >
-                      🎵 Audio Sync
-                    </button>
-                    <button 
-                      className={`test-btn ${syncMode === 'manual' ? 'active' : ''}`}
-                      onClick={() => setSyncMode('manual')}
-                    >
-                      🔄 Manual Cycle
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="slider-row">
-                  <label>Volume:</label>
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="1" 
-                    step="0.01" 
-                    value={audioVolume} 
-                    onChange={(e) => {
-                      setAudioVolume(Number(e.target.value));
-                      if (audioRef.current) audioRef.current.volume = Number(e.target.value);
-                    }} 
-                  />
-                  <span>{Math.round(audioVolume * 100)}%</span>
-                </div>
-              </div>
-
-              {/* Particle Effects Panel */}
-              <div className="control-panel particle-panel">
-                <h3>✨ Particle Effects</h3>
-                
-                <div className="particle-toggle">
-                  <button 
-                    className={`test-btn ${particlesEnabled ? 'active' : ''}`}
-                    onClick={() => setParticlesEnabled(!particlesEnabled)}
-                  >
-                    {particlesEnabled ? '✅ Enabled' : '❌ Disabled'}
-                  </button>
-                </div>
-                
-                <div className="pose-buttons">
-                  <button 
-                    className={`test-btn ${particleType === 'sparkles' ? 'active' : ''}`}
-                    onClick={() => setParticleType('sparkles')}
-                  >
-                    ✨ Sparkles
-                  </button>
-                  <button 
-                    className={`test-btn ${particleType === 'dust' ? 'active' : ''}`}
-                    onClick={() => setParticleType('dust')}
-                  >
-                    🌫️ Dust
-                  </button>
-                  <button 
-                    className={`test-btn ${particleType === 'confetti' ? 'active' : ''}`}
-                    onClick={() => setParticleType('confetti')}
-                  >
-                    🎊 Confetti
-                  </button>
-                  <button 
-                    className={`test-btn ${particleType === 'bubbles' ? 'active' : ''}`}
-                    onClick={() => setParticleType('bubbles')}
-                  >
-                    🫧 Bubbles
-                  </button>
-                </div>
-                
-                <div className="slider-row">
-                  <label>Color:</label>
-                  <input 
-                    type="color" 
-                    value={particleColor} 
-                    onChange={(e) => setParticleColor(e.target.value)}
-                    className="color-picker"
-                  />
-                </div>
-                
-                <div className="slider-row">
-                  <label>Amount:</label>
-                  <input 
-                    type="range" 
-                    min="10" 
-                    max="100" 
-                    value={particleAmount} 
-                    onChange={(e) => setParticleAmount(Number(e.target.value))} 
-                  />
-                  <span>{particleAmount}</span>
-                </div>
-                
-                <div className="slider-row">
-                  <label>Speed:</label>
-                  <input 
-                    type="range" 
-                    min="0.5" 
-                    max="5" 
-                    step="0.5" 
-                    value={particleSpeed} 
-                    onChange={(e) => setParticleSpeed(Number(e.target.value))} 
-                  />
-                  <span>{particleSpeed}x</span>
-                </div>
-                
-                <div className="sync-mode-toggle">
-                  <label>Trigger:</label>
-                  <div className="mode-buttons">
-                    <button 
-                      className={`test-btn ${particleTrigger === 'talking' ? 'active' : ''}`}
-                      onClick={() => setParticleTrigger('talking')}
-                    >
-                      🗣️ Talking
-                    </button>
-                    <button 
-                      className={`test-btn ${particleTrigger === 'walking' ? 'active' : ''}`}
-                      onClick={() => setParticleTrigger('walking')}
-                    >
-                      🚶 Walking
-                    </button>
-                    <button 
-                      className={`test-btn ${particleTrigger === 'always' ? 'active' : ''}`}
-                      onClick={() => setParticleTrigger('always')}
-                    >
-                      🔄 Always
-                    </button>
-                  </div>
-                </div>
-                
-                <button 
-                  className="test-btn burst-btn"
-                  onClick={burstParticles}
-                >
-                  💥 Burst Now
-                </button>
-              </div>
-
-              {/* Walk Panel */}
-              <div className="control-panel walk-panel">
-                <h3>🚶 Walking (2 Frames)</h3>
-                <div className="pose-buttons">
-                  <button className={`test-btn ${isWalking ? 'active' : ''}`} onClick={() => setIsWalking(true)}>▶ Start</button>
-                  <button className="test-btn" onClick={() => setIsWalking(false)}>⏹ Stop</button>
-                </div>
-                <div className="slider-row" style={{ marginTop: '8px' }}>
-                  <label>Speed:</label>
-                  <input type="range" min="100" max="800" value={walkSpeed} onChange={(e) => setWalkSpeed(Number(e.target.value))} />
-                  <span>{walkSpeed}ms</span>
-                </div>
-                <div className="slider-row">
-                  <label>Scale:</label>
-                  <input type="range" min="50" max="300" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
-                  <span>{walkScale}px</span>
-                </div>
-                <div className="slider-row">
-                  <label>Height Ratio:</label>
-                  <input type="range" min="1" max="3" step="0.1" value={walkHeightRatio} onChange={(e) => setWalkHeightRatio(Number(e.target.value))} />
-                  <span>{walkHeightRatio.toFixed(1)}</span>
-                </div>
-                <div className="slider-row">
-                  <label>Y Position:</label>
-                  <input type="range" min="-200" max="300" value={walkY} onChange={(e) => setWalkY(Number(e.target.value))} />
-                  <span>{walkY}px</span>
-                </div>
-                <div className="slider-row">
-                  <label>X Offset:</label>
-                  <input type="range" min="-200" max="200" value={walkX} onChange={(e) => setWalkX(Number(e.target.value))} />
-                  <span>{walkX}px</span>
-                </div>
-                <div className="mouth-frame-indicator">
-                  Frame: <strong>{currentWalkFrame + 1}/2</strong>
-                </div>
-              </div>
-
-              {/* Body Panel */}
-              <div className="control-panel body-panel">
-                <h3>🧍 Body</h3>
-                <div className="slider-row">
-                  <label>Width:</label>
-                  <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
-                  <span>{bodyScale}px</span>
-                </div>
-                <div className="pose-buttons">
-                  {BODY_OPTIONS.map(body => (
-                    <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>
-                      {body.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Head Panel */}
-              <div className="control-panel head-panel">
-                <h3>👤 Head</h3>
-                <div className="slider-row">
-                  <label>Width:</label>
-                  <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
-                  <span>{headScale}px</span>
-                </div>
-                <div className="pose-buttons">
-                  {FACE_OPTIONS.map(face => (
-                    <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>
-                      {face.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mouth Panel */}
-              <div className="control-panel mouth-panel">
-                <h3>👄 Mouth</h3>
-                <div className="pose-buttons">
-                  <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
-                  <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
-                </div>
-                <div className="slider-row" style={{ marginTop: '6px' }}>
-                  <label>Width:</label>
-                  <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
-                  <span>{mouthScale}px</span>
-                </div>
-                <div className="slider-row">
-                  <label>Y Position:</label>
-                  <input type="range" min="-100" max="200" value={mouthY} onChange={(e) => setMouthY(Number(e.target.value))} />
-                  <span>{mouthY}px</span>
-                </div>
-                <div className="slider-row">
-                  <label>X Offset:</label>
-                  <input type="range" min="-100" max="100" value={mouthX} onChange={(e) => setMouthX(Number(e.target.value))} />
-                  <span>{mouthX}px</span>
-                </div>
-                <div className="slider-row">
-                  <label>Rotation:</label>
-                  <input type="range" min="-45" max="45" value={mouthRotation} onChange={(e) => setMouthRotation(Number(e.target.value))} />
-                  <span>{mouthRotation}°</span>
-                </div>
-                <div className="slider-row">
-                  <label>Speed:</label>
-                  <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
-                  <span>{talkSpeed}ms</span>
-                </div>
-                <div className="mouth-frame-indicator">
-                  Frame: <strong>{currentMouth.label}</strong>
-                </div>
-              </div>
+            {/* Tab Navigation */}
+            <div className="tab-navigation">
+              <button 
+                className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`}
+                onClick={() => setActiveTab('character')}
+              >
+                🧍 Character
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'audio' ? 'active' : ''}`}
+                onClick={() => setActiveTab('audio')}
+              >
+                🎵 Audio
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'effects' ? 'active' : ''}`}
+                onClick={() => setActiveTab('effects')}
+              >
+                ✨ Effects
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
+                onClick={() => setActiveTab('settings')}
+              >
+                💾 Presets
+              </button>
             </div>
 
-            {/* Save Presets */}
-            <div className="presets-section">
-              <h3>💾 Presets</h3>
-              
-              {savedPresets.length > 0 ? (
-                <div className="presets-list">
-                  {savedPresets.map(preset => (
-                    <div key={preset.id} className="preset-item">
-                      <div className="preset-info">
-                        <strong>{preset.name}</strong>
-                        <span className="preset-detail">{preset.body} | {preset.face}</span>
-                      </div>
-                      <div className="preset-actions">
-                        <button className="test-btn" onClick={() => handleLoadPreset(preset)}>Load</button>
-                        <button className="test-btn delete-btn" onClick={() => handleDeletePreset(preset.id)}>🗑️</button>
+            {/* Tab Content */}
+            <div className="tab-content">
+              {/* Character Tab */}
+              {activeTab === 'character' && (
+                <div className="tab-panel">
+                  <div className="control-panel body-panel">
+                    <h3>🧍 Body</h3>
+                    <div className="slider-row">
+                      <label>Width:</label>
+                      <input type="range" min="50" max="400" value={bodyScale} onChange={(e) => setBodyScale(Number(e.target.value))} />
+                      <span>{bodyScale}px</span>
+                    </div>
+                    <div className="pose-buttons">
+                      {BODY_OPTIONS.map(body => (
+                        <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>
+                          {body.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="control-panel head-panel">
+                    <h3>👤 Head</h3>
+                    <div className="slider-row">
+                      <label>Width:</label>
+                      <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
+                      <span>{headScale}px</span>
+                    </div>
+                    <div className="pose-buttons">
+                      {FACE_OPTIONS.map(face => (
+                        <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>
+                          {face.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="control-panel mouth-panel">
+                    <h3>👄 Mouth</h3>
+                    <div className="pose-buttons">
+                      <button className={`test-btn ${isTalking ? 'active' : ''}`} onClick={() => setIsTalking(true)}>▶ Start</button>
+                      <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
+                    </div>
+                    
+                    {/* Manual mouth frame selection */}
+                    <div className="mouth-manual-test">
+                      <label>Test Frames:</label>
+                      <div className="pose-buttons">
+                        {MOUTH_FRAMES.map((mouth, index) => (
+                          <button 
+                            key={mouth.id} 
+                            className={`test-btn ${currentMouthIndex === index && mouthOverride ? 'active' : ''}`}
+                            onClick={() => handleMouthFrameClick(index)}
+                          >
+                            {mouth.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="no-presets">No presets saved.</p>
-              )}
+                    
+                    <div className="slider-row" style={{ marginTop: '6px' }}>
+                      <label>Width:</label>
+                      <input type="range" min="5" max="150" value={mouthScale} onChange={(e) => setMouthScale(Number(e.target.value))} />
+                      <span>{mouthScale}px</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>Y Position:</label>
+                      <input type="range" min="-100" max="200" value={mouthY} onChange={(e) => setMouthY(Number(e.target.value))} />
+                      <span>{mouthY}px</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>X Offset:</label>
+                      <input type="range" min="-100" max="100" value={mouthX} onChange={(e) => setMouthX(Number(e.target.value))} />
+                      <span>{mouthX}px</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>Rotation:</label>
+                      <input type="range" min="-45" max="45" value={mouthRotation} onChange={(e) => setMouthRotation(Number(e.target.value))} />
+                      <span>{mouthRotation}°</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>Speed:</label>
+                      <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
+                      <span>{talkSpeed}ms</span>
+                    </div>
+                    <div className="mouth-frame-indicator">
+                      Frame: <strong>{currentMouth.label}</strong> {mouthOverride && '(Manual)'}
+                    </div>
+                  </div>
 
-              {showSaveDialog ? (
-                <div className="save-dialog">
-                  <input 
-                    type="text" 
-                    placeholder="Preset name" 
-                    value={presetName}
-                    onChange={(e) => setPresetName(e.target.value)}
-                    className="preset-input"
-                    autoFocus
-                  />
-                  <div className="preset-dialog-buttons">
-                    <button className="test-btn" onClick={handleSavePreset}>✅ Save</button>
-                    <button className="test-btn" onClick={() => setShowSaveDialog(false)}>❌ Cancel</button>
+                  <div className="control-panel walk-panel">
+                    <h3>🚶 Walking</h3>
+                    <div className="pose-buttons">
+                      <button className={`test-btn ${isWalking ? 'active' : ''}`} onClick={() => setIsWalking(true)}>▶ Start</button>
+                      <button className="test-btn" onClick={() => setIsWalking(false)}>⏹ Stop</button>
+                    </div>
+                    <div className="slider-row" style={{ marginTop: '8px' }}>
+                      <label>Speed:</label>
+                      <input type="range" min="100" max="800" value={walkSpeed} onChange={(e) => setWalkSpeed(Number(e.target.value))} />
+                      <span>{walkSpeed}ms</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>Scale:</label>
+                      <input type="range" min="50" max="300" value={walkScale} onChange={(e) => setWalkScale(Number(e.target.value))} />
+                      <span>{walkScale}px</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>Height Ratio:</label>
+                      <input type="range" min="1" max="3" step="0.1" value={walkHeightRatio} onChange={(e) => setWalkHeightRatio(Number(e.target.value))} />
+                      <span>{walkHeightRatio.toFixed(1)}</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>Y Position:</label>
+                      <input type="range" min="-200" max="300" value={walkY} onChange={(e) => setWalkY(Number(e.target.value))} />
+                      <span>{walkY}px</span>
+                    </div>
+                    <div className="slider-row">
+                      <label>X Offset:</label>
+                      <input type="range" min="-200" max="200" value={walkX} onChange={(e) => setWalkX(Number(e.target.value))} />
+                      <span>{walkX}px</span>
+                    </div>
                   </div>
                 </div>
-              ) : (
-                <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>
-                  💾 Save Position
-                </button>
+              )}
+
+              {/* Audio Tab */}
+              {activeTab === 'audio' && (
+                <div className="tab-panel">
+                  <div className="control-panel audio-panel">
+                    <h3>🎵 Audio Sync</h3>
+                    
+                    <div className="audio-upload-area">
+                      <input
+                        type="file"
+                        accept="audio/*"
+                        onChange={handleFileUpload}
+                        className="audio-file-input"
+                        id="audio-upload"
+                      />
+                      <label htmlFor="audio-upload" className="audio-upload-label">
+                        {audioFile ? (
+                          <span>📁 {audioFile.name}</span>
+                        ) : (
+                          <span>🎤 Click to upload audio</span>
+                        )}
+                      </label>
+                    </div>
+                    
+                    {audioError && <div className="audio-error">{audioError}</div>}
+                    
+                    <audio
+                      ref={audioRef}
+                      src={audioUrl || undefined}
+                      onEnded={handleAudioEnded}
+                      style={{ display: 'none' }}
+                    />
+                    
+                    <div className="audio-controls">
+                      <button 
+                        className={`test-btn ${isAudioPlaying ? 'active' : ''}`}
+                        onClick={isAudioPlaying ? pauseAudio : playAudio}
+                        disabled={!audioUrl}
+                      >
+                        {isAudioPlaying ? '⏸ Pause' : '▶ Play'}
+                      </button>
+                      <button 
+                        className="test-btn"
+                        onClick={stopAudio}
+                        disabled={!audioUrl}
+                      >
+                        ⏹ Stop
+                      </button>
+                    </div>
+                    
+                    <div className="audio-progress-container">
+                      <div 
+                        className="audio-progress-bar"
+                        style={{ width: `${audioProgress}%` }}
+                      />
+                    </div>
+                    <div className="audio-time-display">
+                      <span>{formatTime(audioRef.current?.currentTime || 0)}</span>
+                      <span>{formatTime(audioDuration)}</span>
+                    </div>
+                    
+                    <div className="amplitude-meter-container">
+                      <label>Amplitude:</label>
+                      <div className="amplitude-meter">
+                        <div 
+                          className="amplitude-fill"
+                          style={{ 
+                            width: `${currentAmplitude * 100}%`,
+                            backgroundColor: currentAmplitude > 0.35 ? '#ff4444' : 
+                                           currentAmplitude > 0.18 ? '#ffaa00' : '#44ff44'
+                          }}
+                        />
+                        <span className="amplitude-value">{Math.round(currentAmplitude * 100)}%</span>
+                      </div>
+                    </div>
+                    
+                    <div className="slider-row">
+                      <label>Sensitivity:</label>
+                      <input 
+                        type="range" 
+                        min="1" 
+                        max="10" 
+                        step="0.5" 
+                        value={sensitivity} 
+                        onChange={(e) => setSensitivity(Number(e.target.value))} 
+                      />
+                      <span>{sensitivity}x</span>
+                    </div>
+                    
+                    <div className="sync-mode-toggle">
+                      <label>Sync Mode:</label>
+                      <div className="mode-buttons">
+                        <button 
+                          className={`test-btn ${syncMode === 'audio' ? 'active' : ''}`}
+                          onClick={() => setSyncMode('audio')}
+                        >
+                          🎵 Audio Sync
+                        </button>
+                        <button 
+                          className={`test-btn ${syncMode === 'manual' ? 'active' : ''}`}
+                          onClick={() => setSyncMode('manual')}
+                        >
+                          🔄 Manual Cycle
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="slider-row">
+                      <label>Volume:</label>
+                      <input 
+                        type="range" 
+                        min="0" 
+                        max="1" 
+                        step="0.01" 
+                        value={audioVolume} 
+                        onChange={(e) => {
+                          setAudioVolume(Number(e.target.value));
+                          if (audioRef.current) audioRef.current.volume = Number(e.target.value);
+                        }} 
+                      />
+                      <span>{Math.round(audioVolume * 100)}%</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Effects Tab */}
+              {activeTab === 'effects' && (
+                <div className="tab-panel">
+                  <div className="control-panel particle-panel">
+                    <h3>✨ Particle Effects</h3>
+                    
+                    <div className="particle-toggle">
+                      <button 
+                        className={`test-btn ${particlesEnabled ? 'active' : ''}`}
+                        onClick={() => setParticlesEnabled(!particlesEnabled)}
+                      >
+                        {particlesEnabled ? '✅ Enabled' : '❌ Disabled'}
+                      </button>
+                    </div>
+                    
+                    <div className="pose-buttons">
+                      <button 
+                        className={`test-btn ${particleType === 'sparkles' ? 'active' : ''}`}
+                        onClick={() => setParticleType('sparkles')}
+                      >
+                        ✨ Sparkles
+                      </button>
+                      <button 
+                        className={`test-btn ${particleType === 'dust' ? 'active' : ''}`}
+                        onClick={() => setParticleType('dust')}
+                      >
+                        🌫️ Dust
+                      </button>
+                      <button 
+                        className={`test-btn ${particleType === 'confetti' ? 'active' : ''}`}
+                        onClick={() => setParticleType('confetti')}
+                      >
+                        🎊 Confetti
+                      </button>
+                      <button 
+                        className={`test-btn ${particleType === 'bubbles' ? 'active' : ''}`}
+                        onClick={() => setParticleType('bubbles')}
+                      >
+                        🫧 Bubbles
+                      </button>
+                    </div>
+                    
+                    <div className="slider-row">
+                      <label>Color:</label>
+                      <input 
+                        type="color" 
+                        value={particleColor} 
+                        onChange={(e) => setParticleColor(e.target.value)}
+                        className="color-picker"
+                      />
+                    </div>
+                    
+                    <div className="slider-row">
+                      <label>Amount:</label>
+                      <input 
+                        type="range" 
+                        min="10" 
+                        max="100" 
+                        value={particleAmount} 
+                        onChange={(e) => setParticleAmount(Number(e.target.value))} 
+                      />
+                      <span>{particleAmount}</span>
+                    </div>
+                    
+                    <div className="slider-row">
+                      <label>Speed:</label>
+                      <input 
+                        type="range" 
+                        min="0.5" 
+                        max="5" 
+                        step="0.5" 
+                        value={particleSpeed} 
+                        onChange={(e) => setParticleSpeed(Number(e.target.value))} 
+                      />
+                      <span>{particleSpeed}x</span>
+                    </div>
+                    
+                    <div className="sync-mode-toggle">
+                      <label>Trigger:</label>
+                      <div className="mode-buttons">
+                        <button 
+                          className={`test-btn ${particleTrigger === 'talking' ? 'active' : ''}`}
+                          onClick={() => setParticleTrigger('talking')}
+                        >
+                          🗣️ Talking
+                        </button>
+                        <button 
+                          className={`test-btn ${particleTrigger === 'walking' ? 'active' : ''}`}
+                          onClick={() => setParticleTrigger('walking')}
+                        >
+                          🚶 Walking
+                        </button>
+                        <button 
+                          className={`test-btn ${particleTrigger === 'always' ? 'active' : ''}`}
+                          onClick={() => setParticleTrigger('always')}
+                        >
+                          🔄 Always
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      className="test-btn burst-btn"
+                      onClick={burstParticles}
+                    >
+                      💥 Burst Now
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Settings Tab */}
+              {activeTab === 'settings' && (
+                <div className="tab-panel">
+                  <div className="presets-section">
+                    <h3>💾 Presets</h3>
+                    
+                    {savedPresets.length > 0 ? (
+                      <div className="presets-list">
+                        {savedPresets.map(preset => (
+                          <div key={preset.id} className="preset-item">
+                            <div className="preset-info">
+                              <strong>{preset.name}</strong>
+                              <span className="preset-detail">{preset.body} | {preset.face}</span>
+                            </div>
+                            <div className="preset-actions">
+                              <button className="test-btn" onClick={() => handleLoadPreset(preset)}>Load</button>
+                              <button className="test-btn delete-btn" onClick={() => handleDeletePreset(preset.id)}>🗑️</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="no-presets">No presets saved.</p>
+                    )}
+
+                    {showSaveDialog ? (
+                      <div className="save-dialog">
+                        <input 
+                          type="text" 
+                          placeholder="Preset name" 
+                          value={presetName}
+                          onChange={(e) => setPresetName(e.target.value)}
+                          className="preset-input"
+                          autoFocus
+                        />
+                        <div className="preset-dialog-buttons">
+                          <button className="test-btn" onClick={handleSavePreset}>✅ Save</button>
+                          <button className="test-btn" onClick={() => setShowSaveDialog(false)}>❌ Cancel</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>
+                        💾 Save Position
+                      </button>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </div>
