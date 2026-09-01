@@ -66,14 +66,24 @@ function KopanangTest() {
   const [audioFile, setAudioFile] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [syncMode, setSyncMode] = useState('audio'); // 'manual' or 'audio'
+  const [syncMode, setSyncMode] = useState('audio');
   const [audioVolume, setAudioVolume] = useState(0.8);
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const [currentAmplitude, setCurrentAmplitude] = useState(0);
   const [audioError, setAudioError] = useState('');
-  const [sensitivity, setSensitivity] = useState(3); // Amplification multiplier
+  const [sensitivity, setSensitivity] = useState(3);
 
+  // Particle system states
+  const [particlesEnabled, setParticlesEnabled] = useState(true);
+  const [particleType, setParticleType] = useState('sparkles'); // 'sparkles', 'dust', 'confetti', 'bubbles'
+  const [particleColor, setParticleColor] = useState('#ffd700');
+  const [particleAmount, setParticleAmount] = useState(20);
+  const [particleSpeed, setParticleSpeed] = useState(2);
+  const [particleTrigger, setParticleTrigger] = useState('talking'); // 'talking', 'walking', 'always', 'click'
+  const [particles, setParticles] = useState([]);
+  const [particleInterval, setParticleInterval] = useState(null);
+  
   const [bodyScale, setBodyScale] = useState(200);
   const [bodyRotation, setBodyRotation] = useState(0);
   const [bodyX, setBodyX] = useState(0);
@@ -118,6 +128,90 @@ function KopanangTest() {
   const animationFrameRef = useRef(null);
   const dataArrayRef = useRef(null);
 
+  // Particle generation function
+  const generateParticles = (count, type, color) => {
+    const newParticles = [];
+    const stageWidth = stageRef.current?.offsetWidth || 400;
+    const stageHeight = stageRef.current?.offsetHeight || 400;
+    
+    for (let i = 0; i < count; i++) {
+      const particle = {
+        id: Date.now() + i,
+        x: Math.random() * stageWidth,
+        y: Math.random() * stageHeight,
+        size: Math.random() * 8 + 3,
+        speedX: (Math.random() - 0.5) * particleSpeed,
+        speedY: (Math.random() - 0.5) * particleSpeed - 1,
+        opacity: Math.random() * 0.8 + 0.2,
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 4,
+        type: type,
+        color: color,
+        lifetime: 100,
+      };
+      newParticles.push(particle);
+    }
+    
+    setParticles(prev => [...prev, ...newParticles].slice(-100)); // Keep max 100 particles
+  };
+
+  // Particle trigger effect
+  useEffect(() => {
+    if (!particlesEnabled) {
+      if (particleInterval) clearInterval(particleInterval);
+      setParticles([]);
+      return;
+    }
+    
+    const shouldGenerate = () => {
+      switch (particleTrigger) {
+        case 'talking':
+          return isTalking;
+        case 'walking':
+          return isWalking;
+        case 'always':
+          return true;
+        default:
+          return false;
+      }
+    };
+    
+    if (shouldGenerate()) {
+      const interval = setInterval(() => {
+        generateParticles(Math.floor(particleAmount / 10), particleType, particleColor);
+      }, 100);
+      setParticleInterval(interval);
+    } else {
+      if (particleInterval) clearInterval(particleInterval);
+      setParticleInterval(null);
+    }
+    
+    return () => {
+      if (particleInterval) clearInterval(particleInterval);
+    };
+  }, [particlesEnabled, particleTrigger, particleType, particleColor, particleAmount, particleSpeed, isTalking, isWalking]);
+
+  // Particle animation and cleanup
+  useEffect(() => {
+    const updateParticles = () => {
+      setParticles(prev => 
+        prev
+          .map(p => ({
+            ...p,
+            x: p.x + p.speedX,
+            y: p.y + p.speedY,
+            opacity: p.opacity - 0.005,
+            rotation: p.rotation + p.rotationSpeed,
+            lifetime: p.lifetime - 1,
+          }))
+          .filter(p => p.opacity > 0 && p.lifetime > 0)
+      );
+    };
+    
+    const particleAnimation = setInterval(updateParticles, 50);
+    return () => clearInterval(particleAnimation);
+  }, []);
+
   // Manual mouth cycling (existing behavior)
   useEffect(() => {
     if (isTalking && syncMode === 'manual') {
@@ -148,6 +242,7 @@ function KopanangTest() {
       if (audioUrl) URL.revokeObjectURL(audioUrl);
       if (audioContextRef.current) audioContextRef.current.close();
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (particleInterval) clearInterval(particleInterval);
     };
   }, [audioUrl]);
 
@@ -155,7 +250,6 @@ function KopanangTest() {
     const file = e.target.files[0];
     if (!file) return;
     
-    // Validate audio file
     if (!file.type.startsWith('audio/')) {
       setAudioError('Please upload an audio file (MP3, WAV, etc.)');
       return;
@@ -164,19 +258,16 @@ function KopanangTest() {
     setAudioError('');
     setAudioFile(file);
     
-    // Clean up previous URL
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     
     const url = URL.createObjectURL(file);
     setAudioUrl(url);
     
-    // Reset audio state
     setIsAudioPlaying(false);
     setAudioProgress(0);
     setAudioDuration(0);
     setCurrentAmplitude(0);
     
-    // Load audio metadata
     const audio = new Audio(url);
     audio.addEventListener('loadedmetadata', () => {
       setAudioDuration(audio.duration);
@@ -214,27 +305,22 @@ function KopanangTest() {
       setIsAudioPlaying(true);
       setIsTalking(true);
       
-      // Start amplitude analysis loop
       const updateAmplitude = () => {
         if (!analyserRef.current || !dataArrayRef.current) return;
         
-        // Use time-domain data for better amplitude detection
         analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
         
-        // Calculate RMS (root mean square) amplitude from time-domain data
         let sum = 0;
         for (let i = 0; i < dataArrayRef.current.length; i++) {
-          const value = (dataArrayRef.current[i] - 128) / 128; // Normalize to -1 to 1
+          const value = (dataArrayRef.current[i] - 128) / 128;
           sum += value * value;
         }
         const rms = Math.sqrt(sum / dataArrayRef.current.length);
         
-        // Apply sensitivity multiplier with dynamic gain
-        const dynamicGain = sensitivity * (1 + rms * 2); // Boost louder sounds more
+        const dynamicGain = sensitivity * (1 + rms * 2);
         const amplifiedAmplitude = Math.min(rms * dynamicGain, 1);
         setCurrentAmplitude(amplifiedAmplitude);
         
-        // Map amplitude to mouth shape with adaptive thresholds
         if (amplifiedAmplitude > 0.35) {
           setCurrentMouthIndex(0); // A - Open wide
         } else if (amplifiedAmplitude > 0.18) {
@@ -245,13 +331,11 @@ function KopanangTest() {
           setCurrentMouthIndex(2); // I - Narrow
         }
         
-        // Update progress
         if (audioRef.current) {
           const progress = (audioRef.current.currentTime / audioDuration) * 100;
           setAudioProgress(progress);
         }
         
-        // Continue loop
         animationFrameRef.current = requestAnimationFrame(updateAmplitude);
       };
       
@@ -425,6 +509,56 @@ function KopanangTest() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const burstParticles = () => {
+    generateParticles(particleAmount, particleType, particleColor);
+  };
+
+  const getParticleStyle = (particle) => {
+    const baseStyle = {
+      position: 'absolute',
+      left: `${particle.x}px`,
+      top: `${particle.y}px`,
+      width: `${particle.size}px`,
+      height: `${particle.size}px`,
+      opacity: particle.opacity,
+      transform: `rotate(${particle.rotation}deg)`,
+      pointerEvents: 'none',
+      zIndex: 30,
+    };
+    
+    switch (particle.type) {
+      case 'sparkles':
+        return {
+          ...baseStyle,
+          background: particle.color,
+          clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
+        };
+      case 'dust':
+        return {
+          ...baseStyle,
+          background: particle.color,
+          borderRadius: '50%',
+          filter: 'blur(2px)',
+        };
+      case 'confetti':
+        return {
+          ...baseStyle,
+          background: particle.color,
+          width: `${particle.size}px`,
+          height: `${particle.size * 0.5}px`,
+        };
+      case 'bubbles':
+        return {
+          ...baseStyle,
+          background: 'transparent',
+          border: `2px solid ${particle.color}`,
+          borderRadius: '50%',
+        };
+      default:
+        return baseStyle;
+    }
+  };
+
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
   const currentMouth = MOUTH_FRAMES[currentMouthIndex];
@@ -437,7 +571,7 @@ function KopanangTest() {
         
         <div className="test-header">
           <h1>🧪 Kopanang Animation Tool</h1>
-          <p className="test-subtitle">Talking + Walking + Expressions + Audio Sync</p>
+          <p className="test-subtitle">Talking + Walking + Expressions + Audio Sync + Effects</p>
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
@@ -449,6 +583,15 @@ function KopanangTest() {
               ref={stageRef}
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
+              {/* Particle Layer */}
+              {particlesEnabled && particles.map(particle => (
+                <div
+                  key={particle.id}
+                  className="particle"
+                  style={getParticleStyle(particle)}
+                />
+              ))}
+              
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
                 {/* Walking — FIXED container size prevents bouncing */}
                 {isWalking ? (
@@ -549,7 +692,7 @@ function KopanangTest() {
             </div>
 
             <div className="drag-hint">
-              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth & Walk
+              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth & Walk | <strong>✨ PARTICLES:</strong> Auto-trigger
             </div>
           </div>
 
@@ -560,7 +703,6 @@ function KopanangTest() {
               <div className="control-panel audio-panel">
                 <h3>🎵 Audio Sync</h3>
                 
-                {/* File Upload */}
                 <div className="audio-upload-area">
                   <input
                     type="file"
@@ -580,7 +722,6 @@ function KopanangTest() {
                 
                 {audioError && <div className="audio-error">{audioError}</div>}
                 
-                {/* Hidden audio element */}
                 <audio
                   ref={audioRef}
                   src={audioUrl || undefined}
@@ -588,7 +729,6 @@ function KopanangTest() {
                   style={{ display: 'none' }}
                 />
                 
-                {/* Playback Controls */}
                 <div className="audio-controls">
                   <button 
                     className={`test-btn ${isAudioPlaying ? 'active' : ''}`}
@@ -606,7 +746,6 @@ function KopanangTest() {
                   </button>
                 </div>
                 
-                {/* Progress Bar */}
                 <div className="audio-progress-container">
                   <div 
                     className="audio-progress-bar"
@@ -618,7 +757,6 @@ function KopanangTest() {
                   <span>{formatTime(audioDuration)}</span>
                 </div>
                 
-                {/* Amplitude Meter */}
                 <div className="amplitude-meter-container">
                   <label>Amplitude:</label>
                   <div className="amplitude-meter">
@@ -634,7 +772,6 @@ function KopanangTest() {
                   </div>
                 </div>
                 
-                {/* Sensitivity Control */}
                 <div className="slider-row">
                   <label>Sensitivity:</label>
                   <input 
@@ -648,7 +785,6 @@ function KopanangTest() {
                   <span>{sensitivity}x</span>
                 </div>
                 
-                {/* Sync Mode Toggle */}
                 <div className="sync-mode-toggle">
                   <label>Sync Mode:</label>
                   <div className="mode-buttons">
@@ -667,7 +803,6 @@ function KopanangTest() {
                   </div>
                 </div>
                 
-                {/* Volume Control */}
                 <div className="slider-row">
                   <label>Volume:</label>
                   <input 
@@ -683,6 +818,113 @@ function KopanangTest() {
                   />
                   <span>{Math.round(audioVolume * 100)}%</span>
                 </div>
+              </div>
+
+              {/* Particle Effects Panel */}
+              <div className="control-panel particle-panel">
+                <h3>✨ Particle Effects</h3>
+                
+                <div className="particle-toggle">
+                  <button 
+                    className={`test-btn ${particlesEnabled ? 'active' : ''}`}
+                    onClick={() => setParticlesEnabled(!particlesEnabled)}
+                  >
+                    {particlesEnabled ? '✅ Enabled' : '❌ Disabled'}
+                  </button>
+                </div>
+                
+                <div className="pose-buttons">
+                  <button 
+                    className={`test-btn ${particleType === 'sparkles' ? 'active' : ''}`}
+                    onClick={() => setParticleType('sparkles')}
+                  >
+                    ✨ Sparkles
+                  </button>
+                  <button 
+                    className={`test-btn ${particleType === 'dust' ? 'active' : ''}`}
+                    onClick={() => setParticleType('dust')}
+                  >
+                    🌫️ Dust
+                  </button>
+                  <button 
+                    className={`test-btn ${particleType === 'confetti' ? 'active' : ''}`}
+                    onClick={() => setParticleType('confetti')}
+                  >
+                    🎊 Confetti
+                  </button>
+                  <button 
+                    className={`test-btn ${particleType === 'bubbles' ? 'active' : ''}`}
+                    onClick={() => setParticleType('bubbles')}
+                  >
+                    🫧 Bubbles
+                  </button>
+                </div>
+                
+                <div className="slider-row">
+                  <label>Color:</label>
+                  <input 
+                    type="color" 
+                    value={particleColor} 
+                    onChange={(e) => setParticleColor(e.target.value)}
+                    className="color-picker"
+                  />
+                </div>
+                
+                <div className="slider-row">
+                  <label>Amount:</label>
+                  <input 
+                    type="range" 
+                    min="10" 
+                    max="100" 
+                    value={particleAmount} 
+                    onChange={(e) => setParticleAmount(Number(e.target.value))} 
+                  />
+                  <span>{particleAmount}</span>
+                </div>
+                
+                <div className="slider-row">
+                  <label>Speed:</label>
+                  <input 
+                    type="range" 
+                    min="0.5" 
+                    max="5" 
+                    step="0.5" 
+                    value={particleSpeed} 
+                    onChange={(e) => setParticleSpeed(Number(e.target.value))} 
+                  />
+                  <span>{particleSpeed}x</span>
+                </div>
+                
+                <div className="sync-mode-toggle">
+                  <label>Trigger:</label>
+                  <div className="mode-buttons">
+                    <button 
+                      className={`test-btn ${particleTrigger === 'talking' ? 'active' : ''}`}
+                      onClick={() => setParticleTrigger('talking')}
+                    >
+                      🗣️ Talking
+                    </button>
+                    <button 
+                      className={`test-btn ${particleTrigger === 'walking' ? 'active' : ''}`}
+                      onClick={() => setParticleTrigger('walking')}
+                    >
+                      🚶 Walking
+                    </button>
+                    <button 
+                      className={`test-btn ${particleTrigger === 'always' ? 'active' : ''}`}
+                      onClick={() => setParticleTrigger('always')}
+                    >
+                      🔄 Always
+                    </button>
+                  </div>
+                </div>
+                
+                <button 
+                  className="test-btn burst-btn"
+                  onClick={burstParticles}
+                >
+                  💥 Burst Now
+                </button>
               </div>
 
               {/* Walk Panel */}
