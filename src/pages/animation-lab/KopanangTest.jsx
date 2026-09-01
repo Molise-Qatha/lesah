@@ -72,6 +72,7 @@ function KopanangTest() {
   const [audioDuration, setAudioDuration] = useState(0);
   const [currentAmplitude, setCurrentAmplitude] = useState(0);
   const [audioError, setAudioError] = useState('');
+  const [sensitivity, setSensitivity] = useState(3); // Amplification multiplier
 
   const [bodyScale, setBodyScale] = useState(200);
   const [bodyRotation, setBodyRotation] = useState(0);
@@ -187,9 +188,9 @@ function KopanangTest() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContextRef.current = new AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 256;
-      analyserRef.current.smoothingTimeConstant = 0.5;
-      dataArrayRef.current = new Uint8Array(analyserRef.current.frequencyBinCount);
+      analyserRef.current.fftSize = 512;
+      analyserRef.current.smoothingTimeConstant = 0.3;
+      dataArrayRef.current = new Uint8Array(analyserRef.current.fftSize);
     }
     
     if (audioContextRef.current.state === 'suspended') {
@@ -217,25 +218,28 @@ function KopanangTest() {
       const updateAmplitude = () => {
         if (!analyserRef.current || !dataArrayRef.current) return;
         
-        analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+        // Use time-domain data for better amplitude detection
+        analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
         
-        // Calculate average amplitude (0-255)
+        // Calculate RMS (root mean square) amplitude from time-domain data
         let sum = 0;
         for (let i = 0; i < dataArrayRef.current.length; i++) {
-          sum += dataArrayRef.current[i];
+          const value = (dataArrayRef.current[i] - 128) / 128; // Normalize to -1 to 1
+          sum += value * value;
         }
-        const average = sum / dataArrayRef.current.length;
+        const rms = Math.sqrt(sum / dataArrayRef.current.length);
         
-        // Normalize to 0-1
-        const normalizedAmplitude = average / 255;
-        setCurrentAmplitude(normalizedAmplitude);
+        // Apply sensitivity multiplier with dynamic gain
+        const dynamicGain = sensitivity * (1 + rms * 2); // Boost louder sounds more
+        const amplifiedAmplitude = Math.min(rms * dynamicGain, 1);
+        setCurrentAmplitude(amplifiedAmplitude);
         
-        // Map amplitude to mouth shape
-        if (normalizedAmplitude > 0.5) {
+        // Map amplitude to mouth shape with adaptive thresholds
+        if (amplifiedAmplitude > 0.35) {
           setCurrentMouthIndex(0); // A - Open wide
-        } else if (normalizedAmplitude > 0.25) {
+        } else if (amplifiedAmplitude > 0.18) {
           setCurrentMouthIndex(3); // O - Round
-        } else if (normalizedAmplitude > 0.1) {
+        } else if (amplifiedAmplitude > 0.06) {
           setCurrentMouthIndex(1); // E - Smile
         } else {
           setCurrentMouthIndex(2); // I - Narrow
@@ -622,12 +626,26 @@ function KopanangTest() {
                       className="amplitude-fill"
                       style={{ 
                         width: `${currentAmplitude * 100}%`,
-                        backgroundColor: currentAmplitude > 0.5 ? '#ff4444' : 
-                                       currentAmplitude > 0.25 ? '#ffaa00' : '#44ff44'
+                        backgroundColor: currentAmplitude > 0.35 ? '#ff4444' : 
+                                       currentAmplitude > 0.18 ? '#ffaa00' : '#44ff44'
                       }}
                     />
+                    <span className="amplitude-value">{Math.round(currentAmplitude * 100)}%</span>
                   </div>
-                  <span className="amplitude-value">{Math.round(currentAmplitude * 100)}%</span>
+                </div>
+                
+                {/* Sensitivity Control */}
+                <div className="slider-row">
+                  <label>Sensitivity:</label>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="10" 
+                    step="0.5" 
+                    value={sensitivity} 
+                    onChange={(e) => setSensitivity(Number(e.target.value))} 
+                  />
+                  <span>{sensitivity}x</span>
                 </div>
                 
                 {/* Sync Mode Toggle */}
