@@ -2,28 +2,28 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './KopanangTest.css';
 
-// Import Kopanang body assets
-import body01 from '../../assets/kopanang_body/kopanang_body_01.png';
-import body02 from '../../assets/kopanang_body/kopanang_body_02.png';
-import body03 from '../../assets/kopanang_body/kopanang_body_03.png';
-import body04 from '../../assets/kopanang_body/kopanang_body_04.png';
-import body05 from '../../assets/kopanang_body/kopanang_body_05.png';
+// Import Kopanang body assets (standardized)
+import body01 from '../../assets/kopanang_body/kopanang_body_01_standardized.png';
+import body02 from '../../assets/kopanang_body/kopanang_body_02_standardized.png';
+import body03 from '../../assets/kopanang_body/kopanang_body_03_standardized.png';
+import body04 from '../../assets/kopanang_body/kopanang_body_04_standardized.png';
+import body05 from '../../assets/kopanang_body/kopanang_body_05_standardized.png';
 
-// Import face expressions
-import faceNeutral from '../../assets/kopanang_face/kopanang_face_neutral.png';
-import faceAngry from '../../assets/kopanang_face/kopanang_face_angry.png';
-import faceSad from '../../assets/kopanang_face/kopanang_face_sad.png';
-import faceWorried from '../../assets/kopanang_face/kopanang_face_worried.png';
+// Import face expressions (standardized)
+import faceNeutral from '../../assets/kopanang_face/kopanang_face_neutral_standardized.png';
+import faceAngry from '../../assets/kopanang_face/kopanang_face_angry_standardized.png';
+import faceSad from '../../assets/kopanang_face/kopanang_face_sad_standardized.png';
+import faceWorried from '../../assets/kopanang_face/kopanang_face_worried_standardized.png';
 
-// Import vowel mouth sprites
-import mouthA from '../../assets/kopanang_mouth_vowels/kopanang_mouth_a.png';
-import mouthE from '../../assets/kopanang_mouth_vowels/kopanang_mouth_e.png';
-import mouthI from '../../assets/kopanang_mouth_vowels/kopanang_mouth_i.png';
-import mouthO from '../../assets/kopanang_mouth_vowels/kopanang_mouth_o.png';
+// Import vowel mouth sprites (standardized)
+import mouthA from '../../assets/kopanang_mouth_vowels/kopanang_mouth_a_standardized.png';
+import mouthE from '../../assets/kopanang_mouth_vowels/kopanang_mouth_e_standardized.png';
+import mouthI from '../../assets/kopanang_mouth_vowels/kopanang_mouth_i_standardized.png';
+import mouthO from '../../assets/kopanang_mouth_vowels/kopanang_mouth_o_standardized.png';
 
-// Import 2-frame walking sprites
-import walkFrame1 from '../../assets/kopanang_walk/kopanang_walk_1.png';
-import walkFrame2 from '../../assets/kopanang_walk/kopanang_walk_2.png';
+// Import 2-frame walking sprites (standardized)
+import walkFrame1 from '../../assets/kopanang_walk/kopanang_walk_1_standardized.png';
+import walkFrame2 from '../../assets/kopanang_walk/kopanang_walk_2_standardized.png';
 
 const WALK_FRAMES = [
   { id: 'walk1', src: walkFrame1 },
@@ -54,7 +54,7 @@ const MOUTH_FRAMES = [
 
 function KopanangTest() {
   // Tab state
-  const [activeTab, setActiveTab] = useState('character'); // 'character', 'audio', 'effects', 'settings'
+  const [activeTab, setActiveTab] = useState('character');
   
   // Character states
   const [selectedBody, setSelectedBody] = useState('body01');
@@ -65,7 +65,7 @@ function KopanangTest() {
   const [currentWalkFrame, setCurrentWalkFrame] = useState(0);
   const [talkSpeed, setTalkSpeed] = useState(250);
   const [walkSpeed, setWalkSpeed] = useState(300);
-  const [mouthOverride, setMouthOverride] = useState(false); // Manual mouth testing
+  const [mouthOverride, setMouthOverride] = useState(false);
 
   // Audio sync states
   const [audioFile, setAudioFile] = useState(null);
@@ -133,7 +133,7 @@ function KopanangTest() {
   const animationFrameRef = useRef(null);
   const dataArrayRef = useRef(null);
 
-  // Particle generation function - optimized with useCallback
+  // Particle generation function
   const generateParticles = React.useCallback((count, type, color) => {
     const newParticles = [];
     const stageWidth = stageRef.current?.offsetWidth || 400;
@@ -157,10 +157,10 @@ function KopanangTest() {
       newParticles.push(particle);
     }
     
-    setParticles(prev => [...prev, ...newParticles].slice(-50)); // Reduced to 50 for performance
+    setParticles(prev => [...prev, ...newParticles].slice(-50));
   }, [particleSpeed]);
 
-  // Particle trigger effect - optimized
+  // Particle trigger effect
   useEffect(() => {
     if (!particlesEnabled) {
       if (particleInterval) clearInterval(particleInterval);
@@ -184,7 +184,7 @@ function KopanangTest() {
     if (shouldGenerate()) {
       const interval = setInterval(() => {
         generateParticles(Math.floor(particleAmount / 10), particleType, particleColor);
-      }, 200); // Increased interval for performance
+      }, 200);
       setParticleInterval(interval);
     } else {
       if (particleInterval) clearInterval(particleInterval);
@@ -196,13 +196,13 @@ function KopanangTest() {
     };
   }, [particlesEnabled, particleTrigger, particleType, particleColor, particleAmount, isTalking, isWalking, generateParticles]);
 
-  // Particle animation - using requestAnimationFrame for performance
+  // Particle animation
   useEffect(() => {
     let animationId;
     let lastUpdate = 0;
     
     const updateParticles = (timestamp) => {
-      if (timestamp - lastUpdate > 50) { // Update every 50ms
+      if (timestamp - lastUpdate > 50) {
         setParticles(prev => 
           prev
             .map(p => ({
@@ -291,7 +291,7 @@ function KopanangTest() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioContextRef.current = new AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 256; // Reduced for performance
+      analyserRef.current.fftSize = 256;
       analyserRef.current.smoothingTimeConstant = 0.5;
       dataArrayRef.current = new Uint8Array(analyserRef.current.fftSize);
     }
@@ -316,7 +316,7 @@ function KopanangTest() {
       await audioRef.current.play();
       setIsAudioPlaying(true);
       setIsTalking(true);
-      setMouthOverride(false); // Disable manual override when audio plays
+      setMouthOverride(false);
       
       const updateAmplitude = () => {
         if (!analyserRef.current || !dataArrayRef.current || mouthOverride) {
@@ -546,7 +546,7 @@ function KopanangTest() {
       transform: `rotate(${particle.rotation}deg)`,
       pointerEvents: 'none',
       zIndex: 30,
-      willChange: 'transform, opacity', // Performance optimization
+      willChange: 'transform, opacity',
     };
     
     switch (particle.type) {
