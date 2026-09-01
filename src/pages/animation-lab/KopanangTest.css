@@ -418,3 +418,194 @@
 .walk-panel h3 {
   color: #a78bfa;
 }
+/* Audio Sync Panel Styles */
+.audio-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.audio-panel h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.audio-upload-area {
+  margin-bottom: 10px;
+}
+
+.audio-file-input {
+  display: none;
+}
+
+.audio-upload-label {
+  display: block;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.audio-upload-label:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.audio-error {
+  background: #ff4444;
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.audio-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.audio-controls .test-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.audio-controls .test-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.audio-controls .test-btn.active {
+  background: #ffaa00;
+  color: #333;
+}
+
+.audio-controls .test-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.audio-progress-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.audio-progress-bar {
+  height: 100%;
+  background: #4CAF50;
+  transition: width 0.1s linear;
+}
+
+.audio-time-display {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.amplitude-meter-container {
+  margin-bottom: 10px;
+}
+
+.amplitude-meter-container label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.amplitude-meter {
+  width: 100%;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.amplitude-fill {
+  height: 100%;
+  transition: width 0.05s linear, background-color 0.3s;
+  border-radius: 10px;
+}
+
+.amplitude-value {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.sync-mode-toggle {
+  margin-bottom: 10px;
+}
+
+.sync-mode-toggle label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-buttons .test-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 11px;
+  padding: 6px;
+}
+
+.mode-buttons .test-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.mode-buttons .test-btn.active {
+  background: #4CAF50;
+  color: white;
+}
+
+.audio-panel .slider-row {
+  color: white;
+}
+
+.audio-panel .slider-row label {
+  color: white;
+  opacity: 0.9;
+}
+
+.audio-panel .slider-row span {
+  color: white;
+  opacity: 0.9;
+}
+
+.audio-panel input[type="range"] {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.audio-panel input[type="range"]::-webkit-slider-thumb {
+  background: white;
+}

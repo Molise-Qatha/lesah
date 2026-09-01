@@ -62,6 +62,17 @@ function KopanangTest() {
   const [talkSpeed, setTalkSpeed] = useState(250);
   const [walkSpeed, setWalkSpeed] = useState(300);
 
+  // Audio sync states
+  const [audioFile, setAudioFile] = useState(null);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [syncMode, setSyncMode] = useState('audio'); // 'manual' or 'audio'
+  const [audioVolume, setAudioVolume] = useState(0.8);
+  const [audioProgress, setAudioProgress] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const [currentAmplitude, setCurrentAmplitude] = useState(0);
+  const [audioError, setAudioError] = useState('');
+
   const [bodyScale, setBodyScale] = useState(200);
   const [bodyRotation, setBodyRotation] = useState(0);
   const [bodyX, setBodyX] = useState(0);
@@ -97,9 +108,18 @@ function KopanangTest() {
 
   const mouthTimerRef = useRef(null);
   const walkTimerRef = useRef(null);
+  
+  // Audio refs
+  const audioRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const audioSourceRef = useRef(null);
+  const animationFrameRef = useRef(null);
+  const dataArrayRef = useRef(null);
 
+  // Manual mouth cycling (existing behavior)
   useEffect(() => {
-    if (isTalking) {
+    if (isTalking && syncMode === 'manual') {
       mouthTimerRef.current = setInterval(() => {
         setCurrentMouthIndex(prev => (prev + 1) % MOUTH_FRAMES.length);
       }, talkSpeed);
@@ -107,8 +127,9 @@ function KopanangTest() {
     return () => {
       if (mouthTimerRef.current) clearInterval(mouthTimerRef.current);
     };
-  }, [isTalking, talkSpeed]);
+  }, [isTalking, talkSpeed, syncMode]);
 
+  // Walking animation
   useEffect(() => {
     if (isWalking) {
       walkTimerRef.current = setInterval(() => {
@@ -119,6 +140,161 @@ function KopanangTest() {
       if (walkTimerRef.current) clearInterval(walkTimerRef.current);
     };
   }, [isWalking, walkSpeed]);
+
+  // Clean up audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+      if (audioContextRef.current) audioContextRef.current.close();
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    };
+  }, [audioUrl]);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Validate audio file
+    if (!file.type.startsWith('audio/')) {
+      setAudioError('Please upload an audio file (MP3, WAV, etc.)');
+      return;
+    }
+    
+    setAudioError('');
+    setAudioFile(file);
+    
+    // Clean up previous URL
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    
+    const url = URL.createObjectURL(file);
+    setAudioUrl(url);
+    
+    // Reset audio state
+    setIsAudioPlaying(false);
+    setAudioProgress(0);
+    setAudioDuration(0);
+    setCurrentAmplitude(0);
+    
+    // Load audio metadata
+    const audio = new Audio(url);
+    audio.addEventListener('loadedmetadata', () => {
+      setAudioDuration(audio.duration);
+    });
+  };
+
+  const initializeAudioContext = () => {
+    if (!audioContextRef.current) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioContextRef.current = new AudioContext();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 256;
+      analyserRef.current.smoothingTimeConstant = 0.5;
+      dataArrayRef.current = new Uint8Array(analyserRef.current.frequencyBinCount);
+    }
+    
+    if (audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume();
+    }
+  };
+
+  const playAudio = async () => {
+    if (!audioUrl || !audioRef.current) return;
+    
+    try {
+      initializeAudioContext();
+      
+      if (!audioSourceRef.current) {
+        audioSourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+        audioSourceRef.current.connect(analyserRef.current);
+        analyserRef.current.connect(audioContextRef.current.destination);
+      }
+      
+      await audioRef.current.play();
+      setIsAudioPlaying(true);
+      setIsTalking(true);
+      
+      // Start amplitude analysis loop
+      const updateAmplitude = () => {
+        if (!analyserRef.current || !dataArrayRef.current) return;
+        
+        analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+        
+        // Calculate average amplitude (0-255)
+        let sum = 0;
+        for (let i = 0; i < dataArrayRef.current.length; i++) {
+          sum += dataArrayRef.current[i];
+        }
+        const average = sum / dataArrayRef.current.length;
+        
+        // Normalize to 0-1
+        const normalizedAmplitude = average / 255;
+        setCurrentAmplitude(normalizedAmplitude);
+        
+        // Map amplitude to mouth shape
+        if (normalizedAmplitude > 0.5) {
+          setCurrentMouthIndex(0); // A - Open wide
+        } else if (normalizedAmplitude > 0.25) {
+          setCurrentMouthIndex(3); // O - Round
+        } else if (normalizedAmplitude > 0.1) {
+          setCurrentMouthIndex(1); // E - Smile
+        } else {
+          setCurrentMouthIndex(2); // I - Narrow
+        }
+        
+        // Update progress
+        if (audioRef.current) {
+          const progress = (audioRef.current.currentTime / audioDuration) * 100;
+          setAudioProgress(progress);
+        }
+        
+        // Continue loop
+        animationFrameRef.current = requestAnimationFrame(updateAmplitude);
+      };
+      
+      updateAmplitude();
+      
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      setAudioError('Error playing audio. Please try again.');
+    }
+  };
+
+  const pauseAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsAudioPlaying(false);
+      
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    }
+  };
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsAudioPlaying(false);
+      setIsTalking(false);
+      setCurrentAmplitude(0);
+      setAudioProgress(0);
+      
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    }
+  };
+
+  const handleAudioEnded = () => {
+    setIsAudioPlaying(false);
+    setIsTalking(false);
+    setCurrentAmplitude(0);
+    setAudioProgress(0);
+    
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+  };
 
   const handleMouseDown = (e, layer) => {
     if (layer === 'mouth') return;
@@ -238,6 +414,13 @@ function KopanangTest() {
     localStorage.setItem('kopanang_presets', JSON.stringify(updated));
   };
 
+  const formatTime = (seconds) => {
+    if (!isFinite(seconds) || seconds < 0) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
   const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
   const currentMouth = MOUTH_FRAMES[currentMouthIndex];
@@ -250,7 +433,7 @@ function KopanangTest() {
         
         <div className="test-header">
           <h1>🧪 Kopanang Animation Tool</h1>
-          <p className="test-subtitle">Talking + Walking + Expressions</p>
+          <p className="test-subtitle">Talking + Walking + Expressions + Audio Sync</p>
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
@@ -369,6 +552,121 @@ function KopanangTest() {
           {/* RIGHT: Controls */}
           <div className="controls-container">
             <div className="layer-controls">
+              {/* Audio Sync Panel */}
+              <div className="control-panel audio-panel">
+                <h3>🎵 Audio Sync</h3>
+                
+                {/* File Upload */}
+                <div className="audio-upload-area">
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleFileUpload}
+                    className="audio-file-input"
+                    id="audio-upload"
+                  />
+                  <label htmlFor="audio-upload" className="audio-upload-label">
+                    {audioFile ? (
+                      <span>📁 {audioFile.name}</span>
+                    ) : (
+                      <span>🎤 Click to upload audio</span>
+                    )}
+                  </label>
+                </div>
+                
+                {audioError && <div className="audio-error">{audioError}</div>}
+                
+                {/* Hidden audio element */}
+                <audio
+                  ref={audioRef}
+                  src={audioUrl || undefined}
+                  onEnded={handleAudioEnded}
+                  style={{ display: 'none' }}
+                />
+                
+                {/* Playback Controls */}
+                <div className="audio-controls">
+                  <button 
+                    className={`test-btn ${isAudioPlaying ? 'active' : ''}`}
+                    onClick={isAudioPlaying ? pauseAudio : playAudio}
+                    disabled={!audioUrl}
+                  >
+                    {isAudioPlaying ? '⏸ Pause' : '▶ Play'}
+                  </button>
+                  <button 
+                    className="test-btn"
+                    onClick={stopAudio}
+                    disabled={!audioUrl}
+                  >
+                    ⏹ Stop
+                  </button>
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="audio-progress-container">
+                  <div 
+                    className="audio-progress-bar"
+                    style={{ width: `${audioProgress}%` }}
+                  />
+                </div>
+                <div className="audio-time-display">
+                  <span>{formatTime(audioRef.current?.currentTime || 0)}</span>
+                  <span>{formatTime(audioDuration)}</span>
+                </div>
+                
+                {/* Amplitude Meter */}
+                <div className="amplitude-meter-container">
+                  <label>Amplitude:</label>
+                  <div className="amplitude-meter">
+                    <div 
+                      className="amplitude-fill"
+                      style={{ 
+                        width: `${currentAmplitude * 100}%`,
+                        backgroundColor: currentAmplitude > 0.5 ? '#ff4444' : 
+                                       currentAmplitude > 0.25 ? '#ffaa00' : '#44ff44'
+                      }}
+                    />
+                  </div>
+                  <span className="amplitude-value">{Math.round(currentAmplitude * 100)}%</span>
+                </div>
+                
+                {/* Sync Mode Toggle */}
+                <div className="sync-mode-toggle">
+                  <label>Sync Mode:</label>
+                  <div className="mode-buttons">
+                    <button 
+                      className={`test-btn ${syncMode === 'audio' ? 'active' : ''}`}
+                      onClick={() => setSyncMode('audio')}
+                    >
+                      🎵 Audio Sync
+                    </button>
+                    <button 
+                      className={`test-btn ${syncMode === 'manual' ? 'active' : ''}`}
+                      onClick={() => setSyncMode('manual')}
+                    >
+                      🔄 Manual Cycle
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Volume Control */}
+                <div className="slider-row">
+                  <label>Volume:</label>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="1" 
+                    step="0.01" 
+                    value={audioVolume} 
+                    onChange={(e) => {
+                      setAudioVolume(Number(e.target.value));
+                      if (audioRef.current) audioRef.current.volume = Number(e.target.value);
+                    }} 
+                  />
+                  <span>{Math.round(audioVolume * 100)}%</span>
+                </div>
+              </div>
+
               {/* Walk Panel */}
               <div className="control-panel walk-panel">
                 <h3>🚶 Walking (2 Frames)</h3>
