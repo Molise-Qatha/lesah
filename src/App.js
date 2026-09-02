@@ -32,6 +32,7 @@ import ProviderProfile from './pages/ProviderProfile';
 import HoKallaEntry from './pages/HoKallaEntry';
 import AnimationLab from './pages/animation-lab/AnimationLab';
 import KopanangTest from './pages/animation-lab/KopanangTest';
+import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
 
 import './App.css';
 
@@ -78,7 +79,8 @@ function App() {
 
           {/* Animation Lab — UNLISTED development routes */}
           <Route path="/animation-lab" element={<AnimationLab />} />
-          <Route path="/animation-lab/kopanang" element={<KopanangTest />} />
+          <Route path="/animation-lab/kopanang-test" element={<KopanangTest />} />
+          <Route path="/animation-lab/scene01-camera-test" element={<Scene01CameraTest />} />
 
           {/* Service Pages */}
           <Route path="/accommodation" element={<Accommodation />} />
