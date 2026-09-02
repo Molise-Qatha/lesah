@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './AnimationLab.css';
 
 // Simple placeholder sprite data (will be replaced with actual assets later)
@@ -47,6 +47,7 @@ const placeholderSprite = {
 };
 
 function AnimationLab() {
+  const navigate = useNavigate();
   const stageRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(1);
@@ -155,6 +156,14 @@ function AnimationLab() {
     setScale(0.5);
   };
 
+  const navigateToScene01CameraTest = () => {
+    navigate('/animation-lab/scene01-camera-test');
+  };
+
+  const navigateToKopanangTest = () => {
+    navigate('/animation-lab/kopanang-test');
+  };
+
   return (
     <div className="animation-lab-page">
       <div className="animation-lab-container">
@@ -164,6 +173,21 @@ function AnimationLab() {
           <h1>🎬 Animation Lab</h1>
           <p className="animation-lab-subtitle">Sprite Animation Workshop</p>
           <span className="dev-badge">UNLISTED DEVELOPMENT AREA</span>
+        </div>
+
+        {/* Development Tools Quick Access */}
+        <div className="dev-tools-nav">
+          <h3>🧪 Development Tools</h3>
+          <div className="dev-tools-buttons">
+            <button className="dev-tool-btn" onClick={navigateToKopanangTest}>
+              🧍 Kopanang Animation Tool
+              <span className="dev-tool-desc">Character testing + Audio sync</span>
+            </button>
+            <button className="dev-tool-btn" onClick={navigateToScene01CameraTest}>
+              🎥 Scene 01 Camera Test
+              <span className="dev-tool-desc">Parallax camera system</span>
+            </button>
+          </div>
         </div>
 
         {/* Animation Stage */}
@@ -312,7 +336,7 @@ function AnimationLab() {
 
         {/* Architecture Preview */}
         <div className="architecture-preview">
-          <h3>Planned Sprite System</h3>
+          <h3>Development Progress</h3>
           <div className="arch-list">
             <div className="arch-item">✅ Sprite loading</div>
             <div className="arch-item">✅ Position control</div>
@@ -322,11 +346,15 @@ function AnimationLab() {
             <div className="arch-item">✅ Blinking</div>
             <div className="arch-item">✅ Talking (basic)</div>
             <div className="arch-item">✅ Expressions (basic)</div>
-            <div className="arch-item">🔜 Movement animation</div>
-            <div className="arch-item">🔜 Camera system</div>
-            <div className="arch-item">🔜 Parallax layers</div>
-            <div className="arch-item">🔜 Effects</div>
-            <div className="arch-item">🔜 Audio sync</div>
+            <div className="arch-item">✅ Movement animation</div>
+            <div className="arch-item">✅ Audio sync</div>
+            <div className="arch-item">✅ Audio mixer (multi-track)</div>
+            <div className="arch-item">✅ Particle effects</div>
+            <div className="arch-item">✅ Camera system (Scene 01)</div>
+            <div className="arch-item">✅ Parallax layers (Scene 01)</div>
+            <div className="arch-item">🔜 Character placement in scene</div>
+            <div className="arch-item">🔜 Scene transitions</div>
+            <div className="arch-item">🔜 Full animation timeline</div>
           </div>
         </div>
       </div>
