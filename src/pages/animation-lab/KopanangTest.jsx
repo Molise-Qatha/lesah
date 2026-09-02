@@ -53,7 +53,6 @@ const MOUTH_FRAMES = [
 ];
 
 function KopanangTest() {
-  // Tab state
   const [activeTab, setActiveTab] = useState('character');
   
   // Character states
@@ -67,7 +66,7 @@ function KopanangTest() {
   const [walkSpeed, setWalkSpeed] = useState(300);
   const [mouthOverride, setMouthOverride] = useState(false);
 
-  // Audio sync states
+  // Audio sync states (original single-track)
   const [audioFile, setAudioFile] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -78,6 +77,17 @@ function KopanangTest() {
   const [currentAmplitude, setCurrentAmplitude] = useState(0);
   const [audioError, setAudioError] = useState('');
   const [sensitivity, setSensitivity] = useState(3);
+
+  // NEW: Multi-track audio mixer states
+  const [mixerTracks, setMixerTracks] = useState([
+    { id: 'dialogue', name: 'Dialogue', file: null, url: null, volume: 0.8, muted: false, solo: false, loop: false, isPlaying: false, progress: 0, duration: 0, fadeIn: 0, fadeOut: 0 },
+    { id: 'ambient', name: 'Ambient', file: null, url: null, volume: 0.3, muted: false, solo: false, loop: true, isPlaying: false, progress: 0, duration: 0, fadeIn: 2, fadeOut: 2 },
+    { id: 'music', name: 'Music', file: null, url: null, volume: 0.5, muted: false, solo: false, loop: true, isPlaying: false, progress: 0, duration: 0, fadeIn: 1, fadeOut: 3 },
+  ]);
+  const [masterVolume, setMasterVolume] = useState(0.8);
+  const [allTracksPlaying, setAllTracksPlaying] = useState(false);
+  const mixerAudioRefs = useRef({});
+  const mixerProgressInterval = useRef(null);
 
   // Particle system states
   const [particlesEnabled, setParticlesEnabled] = useState(true);
@@ -255,8 +265,149 @@ function KopanangTest() {
       if (audioContextRef.current) audioContextRef.current.close();
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
       if (particleInterval) clearInterval(particleInterval);
+      if (mixerProgressInterval.current) clearInterval(mixerProgressInterval.current);
+      
+      // Clean up mixer audio URLs
+      mixerTracks.forEach(track => {
+        if (track.url) URL.revokeObjectURL(track.url);
+      });
     };
   }, [audioUrl]);
+
+  // MIXER FUNCTIONS
+  const handleMixerFileUpload = (trackId, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('audio/')) {
+      return;
+    }
+    
+    const url = URL.createObjectURL(file);
+    
+    setMixerTracks(prev => prev.map(track => {
+      if (track.id === trackId) {
+        // Clean up old URL
+        if (track.url) URL.revokeObjectURL(track.url);
+        return { ...track, file, url, progress: 0, duration: 0 };
+      }
+      return track;
+    }));
+  };
+
+  const playAllTracks = async () => {
+    setAllTracksPlaying(true);
+    
+    // Find if any track is soloed
+    const hasSolo = mixerTracks.some(track => track.solo);
+    
+    for (const track of mixerTracks) {
+      const audioElement = mixerAudioRefs.current[track.id];
+      if (!audioElement || !track.url) continue;
+      
+      // Skip if muted or (hasSolo and not solo)
+      if (track.muted || (hasSolo && !track.solo)) continue;
+      
+      audioElement.volume = track.volume * masterVolume;
+      audioElement.loop = track.loop;
+      
+      try {
+        await audioElement.play();
+        setMixerTracks(prev => prev.map(t => 
+          t.id === track.id ? { ...t, isPlaying: true } : t
+        ));
+      } catch (error) {
+        console.error(`Error playing ${track.name}:`, error);
+      }
+    }
+    
+    // Start progress tracking
+    if (mixerProgressInterval.current) clearInterval(mixerProgressInterval.current);
+    mixerProgressInterval.current = setInterval(() => {
+      setMixerTracks(prev => prev.map(track => {
+        const audioElement = mixerAudioRefs.current[track.id];
+        if (audioElement && audioElement.duration) {
+          const progress = (audioElement.currentTime / audioElement.duration) * 100;
+          return { ...track, progress, duration: audioElement.duration };
+        }
+        return track;
+      }));
+    }, 100);
+  };
+
+  const pauseAllTracks = () => {
+    setAllTracksPlaying(false);
+    
+    for (const track of mixerTracks) {
+      const audioElement = mixerAudioRefs.current[track.id];
+      if (audioElement) {
+        audioElement.pause();
+        setMixerTracks(prev => prev.map(t => 
+          t.id === track.id ? { ...t, isPlaying: false } : t
+        ));
+      }
+    }
+    
+    if (mixerProgressInterval.current) clearInterval(mixerProgressInterval.current);
+  };
+
+  const stopAllTracks = () => {
+    setAllTracksPlaying(false);
+    
+    for (const track of mixerTracks) {
+      const audioElement = mixerAudioRefs.current[track.id];
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+        setMixerTracks(prev => prev.map(t => 
+          t.id === track.id ? { ...t, isPlaying: false, progress: 0 } : t
+        ));
+      }
+    }
+    
+    if (mixerProgressInterval.current) clearInterval(mixerProgressInterval.current);
+  };
+
+  const toggleTrackMute = (trackId) => {
+    setMixerTracks(prev => prev.map(track => 
+      track.id === trackId ? { ...track, muted: !track.muted } : track
+    ));
+  };
+
+  const toggleTrackSolo = (trackId) => {
+    setMixerTracks(prev => prev.map(track => 
+      track.id === trackId ? { ...track, solo: !track.solo } : track
+    ));
+  };
+
+  const toggleTrackLoop = (trackId) => {
+    setMixerTracks(prev => prev.map(track => 
+      track.id === trackId ? { ...track, loop: !track.loop } : track
+    ));
+  };
+
+  const updateTrackVolume = (trackId, volume) => {
+    setMixerTracks(prev => prev.map(track => {
+      if (track.id === trackId) {
+        const audioElement = mixerAudioRefs.current[trackId];
+        if (audioElement) {
+          audioElement.volume = volume * masterVolume;
+        }
+        return { ...track, volume };
+      }
+      return track;
+    }));
+  };
+
+  const updateMasterVolume = (volume) => {
+    setMasterVolume(volume);
+    mixerTracks.forEach(track => {
+      const audioElement = mixerAudioRefs.current[track.id];
+      if (audioElement) {
+        audioElement.volume = track.volume * volume;
+      }
+    });
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -594,7 +745,7 @@ function KopanangTest() {
         
         <div className="test-header">
           <h1>🧪 Kopanang Animation Tool</h1>
-          <p className="test-subtitle">Talking + Walking + Expressions + Audio Sync + Effects</p>
+          <p className="test-subtitle">Talking + Walking + Expressions + Audio Mixer + Effects</p>
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
@@ -606,7 +757,6 @@ function KopanangTest() {
               ref={stageRef}
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
-              {/* Particle Layer */}
               {particlesEnabled && particles.map(particle => (
                 <div
                   key={particle.id}
@@ -717,7 +867,6 @@ function KopanangTest() {
 
           {/* RIGHT: Controls with Tabs */}
           <div className="controls-container">
-            {/* Tab Navigation */}
             <div className="tab-navigation">
               <button 
                 className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`}
@@ -729,7 +878,13 @@ function KopanangTest() {
                 className={`tab-btn ${activeTab === 'audio' ? 'active' : ''}`}
                 onClick={() => setActiveTab('audio')}
               >
-                🎵 Audio
+                🎵 Audio Sync
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'mixer' ? 'active' : ''}`}
+                onClick={() => setActiveTab('mixer')}
+              >
+                🎚️ Mixer
               </button>
               <button 
                 className={`tab-btn ${activeTab === 'effects' ? 'active' : ''}`}
@@ -745,7 +900,6 @@ function KopanangTest() {
               </button>
             </div>
 
-            {/* Tab Content */}
             <div className="tab-content">
               {/* Character Tab */}
               {activeTab === 'character' && (
@@ -789,7 +943,6 @@ function KopanangTest() {
                       <button className="test-btn" onClick={() => setIsTalking(false)}>⏹ Stop</button>
                     </div>
                     
-                    {/* Manual mouth frame selection */}
                     <div className="mouth-manual-test">
                       <label>Test Frames:</label>
                       <div className="pose-buttons">
@@ -870,7 +1023,7 @@ function KopanangTest() {
                 </div>
               )}
 
-              {/* Audio Tab */}
+              {/* Audio Sync Tab */}
               {activeTab === 'audio' && (
                 <div className="tab-panel">
                   <div className="control-panel audio-panel">
@@ -991,6 +1144,145 @@ function KopanangTest() {
                       />
                       <span>{Math.round(audioVolume * 100)}%</span>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* NEW: Audio Mixer Tab */}
+              {activeTab === 'mixer' && (
+                <div className="tab-panel">
+                  <div className="control-panel mixer-panel">
+                    <h3>🎚️ Audio Mixer</h3>
+                    
+                    {/* Master Controls */}
+                    <div className="master-controls">
+                      <div className="master-buttons">
+                        <button 
+                          className={`test-btn ${allTracksPlaying ? 'active' : ''}`}
+                          onClick={allTracksPlaying ? pauseAllTracks : playAllTracks}
+                        >
+                          {allTracksPlaying ? '⏸ Pause All' : '▶ Play All'}
+                        </button>
+                        <button className="test-btn" onClick={stopAllTracks}>
+                          ⏹ Stop All
+                        </button>
+                      </div>
+                      <div className="slider-row">
+                        <label>Master Volume:</label>
+                        <input 
+                          type="range" 
+                          min="0" 
+                          max="1" 
+                          step="0.01" 
+                          value={masterVolume} 
+                          onChange={(e) => updateMasterVolume(Number(e.target.value))} 
+                        />
+                        <span>{Math.round(masterVolume * 100)}%</span>
+                      </div>
+                    </div>
+                    
+                    {/* Individual Tracks */}
+                    {mixerTracks.map(track => (
+                      <div key={track.id} className="mixer-track">
+                        <div className="track-header">
+                          <h4>{track.name}</h4>
+                          <div className="track-buttons">
+                            <button 
+                              className={`track-btn ${track.muted ? 'muted' : ''}`}
+                              onClick={() => toggleTrackMute(track.id)}
+                              title="Mute"
+                            >
+                              {track.muted ? '🔇' : '🔊'}
+                            </button>
+                            <button 
+                              className={`track-btn ${track.solo ? 'solo' : ''}`}
+                              onClick={() => toggleTrackSolo(track.id)}
+                              title="Solo"
+                            >
+                              S
+                            </button>
+                            <button 
+                              className={`track-btn ${track.loop ? 'loop' : ''}`}
+                              onClick={() => toggleTrackLoop(track.id)}
+                              title="Loop"
+                            >
+                              🔁
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="track-upload">
+                          <input
+                            type="file"
+                            accept="audio/*"
+                            onChange={(e) => handleMixerFileUpload(track.id, e)}
+                            className="audio-file-input"
+                            id={`mixer-upload-${track.id}`}
+                          />
+                          <label htmlFor={`mixer-upload-${track.id}`} className="track-upload-label">
+                            {track.file ? `📁 ${track.file.name}` : `⬆️ Upload ${track.name}`}
+                          </label>
+                        </div>
+                        
+                        {/* Hidden audio elements for mixer tracks */}
+                        <audio
+                          ref={el => mixerAudioRefs.current[track.id] = el}
+                          src={track.url || undefined}
+                          style={{ display: 'none' }}
+                        />
+                        
+                        <div className="track-progress">
+                          <div 
+                            className="track-progress-bar"
+                            style={{ width: `${track.progress}%` }}
+                          />
+                        </div>
+                        
+                        <div className="slider-row">
+                          <label>Volume:</label>
+                          <input 
+                            type="range" 
+                            min="0" 
+                            max="1" 
+                            step="0.01" 
+                            value={track.volume} 
+                            onChange={(e) => updateTrackVolume(track.id, Number(e.target.value))} 
+                          />
+                          <span>{Math.round(track.volume * 100)}%</span>
+                        </div>
+                        
+                        <div className="track-fades">
+                          <div className="slider-row">
+                            <label>Fade In:</label>
+                            <input 
+                              type="range" 
+                              min="0" 
+                              max="10" 
+                              step="0.5" 
+                              value={track.fadeIn} 
+                              onChange={(e) => setMixerTracks(prev => prev.map(t => 
+                                t.id === track.id ? { ...t, fadeIn: Number(e.target.value) } : t
+                              ))} 
+                            />
+                            <span>{track.fadeIn}s</span>
+                          </div>
+                          <div className="slider-row">
+                            <label>Fade Out:</label>
+                            <input 
+                              type="range" 
+                              min="0" 
+                              max="10" 
+                              step="0.5" 
+                              value={track.fadeOut} 
+                              onChange={(e) => setMixerTracks(prev => prev.map(t => 
+                                t.id === track.id ? { ...t, fadeOut: Number(e.target.value) } : t
+                              ))} 
+                            />
+                            <span>{track.fadeOut}s</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
