@@ -22,6 +22,7 @@ const SCENE_LAYERS = [
     zIndex: 1,
     visible: true,
     slideOutX: 0,
+    layerType: 'background', // Regular parallax background
   },
   {
     id: 'mountains',
@@ -32,6 +33,7 @@ const SCENE_LAYERS = [
     zIndex: 2,
     visible: true,
     slideOutX: 0,
+    layerType: 'background',
   },
   {
     id: 'distant_forest',
@@ -42,6 +44,7 @@ const SCENE_LAYERS = [
     zIndex: 3,
     visible: true,
     slideOutX: 0,
+    layerType: 'background',
   },
   {
     id: 'clearing',
@@ -52,6 +55,10 @@ const SCENE_LAYERS = [
     zIndex: 4,
     visible: true,
     slideOutX: 0,
+    // NEW: This is a FLAT FLOOR, not a growing background
+    layerType: 'floor',
+    // No forwardScale — instead Y slides down as camera moves forward
+    floorDropY: 150, // How far down the floor slides at 100% progress
   },
   {
     id: 'landmark_tree',
@@ -61,10 +68,10 @@ const SCENE_LAYERS = [
     baseScale: 1.0,
     zIndex: 5,
     visible: true,
-    // NEW: Landmark Tree slides LEFT during final 40%
     slideOutX: -250,
     slideOutStart: 60,
     slideOutEnd: 100,
+    layerType: 'background',
   },
   {
     id: 'near_tree_01',
@@ -77,6 +84,7 @@ const SCENE_LAYERS = [
     slideOutX: -800,
     slideOutStart: 50,
     slideOutEnd: 80,
+    layerType: 'background',
   },
   {
     id: 'near_tree_02',
@@ -89,6 +97,7 @@ const SCENE_LAYERS = [
     slideOutX: 800,
     slideOutStart: 55,
     slideOutEnd: 85,
+    layerType: 'background',
   },
 ];
 
@@ -126,7 +135,22 @@ function Scene01CameraTest() {
     const parallaxX = camera.x * depthFactor;
     const parallaxY = camera.y * depthFactor * 0.5;
     
-    // Depth-based zoom — closer layers zoom more
+    // Handle FLAT FLOOR differently
+    if (layer.layerType === 'floor') {
+      // Floor does NOT scale up — it slides DOWN
+      const floorProgress = camera.forward / 100; // 0 to 1
+      const floorDrop = layer.floorDropY * floorProgress;
+      
+      // Minimal scale for floor (only slight, not growing)
+      const floorScale = layer.baseScale * (1 + (camera.zoom - 1) * 0.1);
+      
+      return {
+        transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${floorScale})`,
+        opacity: 1,
+      };
+    }
+    
+    // REGULAR BACKGROUND layers
     const zoomFactor = 1 + (camera.zoom - 1) * depthFactor;
     const scale = layer.baseScale * zoomFactor;
     
@@ -140,13 +164,11 @@ function Scene01CameraTest() {
       const end = layer.slideOutEnd;
       
       if (camera.forward > start) {
-        // Calculate progress through slide (0 to 1)
         const slideProgress = Math.min(
           (camera.forward - start) / (end - start),
           1
         );
         
-        // Ease the slide — ease-in-out
         const eased = slideProgress < 0.5 
           ? 2 * slideProgress * slideProgress 
           : 1 - Math.pow(-2 * slideProgress + 2, 2) / 2;
@@ -215,20 +237,19 @@ function Scene01CameraTest() {
     if (!autoPlay) return;
     
     autoPlayStartTime.current = Date.now();
-    const duration = 12000; // 12 seconds for full journey
+    const duration = 12000;
     
     const animateCamera = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
       const progress = Math.min(elapsed / duration, 1);
       
-      // Ease in-out
       const eased = progress < 0.5 
         ? 2 * progress * progress 
         : 1 - Math.pow(-2 * progress + 2, 2) / 2;
       
       setCamera(prev => ({
         ...prev,
-        forward: eased * 100, // Go all the way to 100
+        forward: eased * 100,
         x: Math.sin(eased * Math.PI) * 30,
         zoom: 1 + eased * 0.5,
       }));
@@ -355,6 +376,10 @@ function Scene01CameraTest() {
                     <div className="layer-debug-info">
                       <span>{layer.name}</span>
                       <span>Depth: {layer.depth}</span>
+                      <span>Type: {layer.layerType || 'background'}</span>
+                      {layer.layerType === 'floor' && (
+                        <span>Floor Drop: {layer.floorDropY}px</span>
+                      )}
                       {layer.slideOutX !== 0 && (
                         <span>
                           Slide: {layer.slideOutX > 0 ? '→' : '←'} {Math.abs(layer.slideOutX)}px
@@ -450,6 +475,9 @@ function Scene01CameraTest() {
                   />
                   <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
                   <span className="depth-value">({layer.depth})</span>
+                  <span className="layer-type-label">
+                    {layer.layerType === 'floor' ? '🟫 Floor' : '🏞️ BG'}
+                  </span>
                 </label>
               ))}
             </div>
