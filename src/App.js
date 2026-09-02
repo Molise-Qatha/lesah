@@ -79,7 +79,7 @@ function App() {
 
           {/* Animation Lab — UNLISTED development routes */}
           <Route path="/animation-lab" element={<AnimationLab />} />
-          <Route path="/animation-lab/kopanang-test" element={<KopanangTest />} />
+          <Route path="/animation-lab/kopanang" element={<KopanangTest />} />
           <Route path="/animation-lab/scene01-camera-test" element={<Scene01CameraTest />} />
 
           {/* Service Pages */}

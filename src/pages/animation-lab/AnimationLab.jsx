@@ -156,12 +156,13 @@ function AnimationLab() {
     setScale(0.5);
   };
 
+  // FIXED: Navigation paths match App.js routes
   const navigateToScene01CameraTest = () => {
     navigate('/animation-lab/scene01-camera-test');
   };
 
   const navigateToKopanangTest = () => {
-    navigate('/animation-lab/kopanang-test');
+    navigate('/animation-lab/kopanang');
   };
 
   return (
