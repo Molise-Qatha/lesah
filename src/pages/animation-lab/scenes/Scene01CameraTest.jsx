@@ -1,4 +1,3 @@
-// src/pages/animation-lab/scenes/Scene01CameraTest.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './Scene01CameraTest.css';
@@ -13,7 +12,6 @@ import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
 // Scene layer configuration
-// 🛠️ FIX: Added 'forwardScale' and 'yOffset' for depth-based zooming
 const SCENE_LAYERS = [
   {
     id: 'sky',
@@ -21,10 +19,9 @@ const SCENE_LAYERS = [
     src: skyImg,
     depth: 0.05,
     baseScale: 1.0,
-    forwardScale: 1.05, // Barely grows
-    yOffset: 0,
     zIndex: 1,
     visible: true,
+    slideOutX: 0, // No slide — this is background
   },
   {
     id: 'mountains',
@@ -32,10 +29,9 @@ const SCENE_LAYERS = [
     src: mountainsImg,
     depth: 0.1,
     baseScale: 1.0,
-    forwardScale: 1.15, // Grows very slightly
-    yOffset: 0,
     zIndex: 2,
     visible: true,
+    slideOutX: 0,
   },
   {
     id: 'distant_forest',
@@ -43,10 +39,9 @@ const SCENE_LAYERS = [
     src: forestImg,
     depth: 0.2,
     baseScale: 1.0,
-    forwardScale: 1.3,
-    yOffset: 0,
     zIndex: 3,
     visible: true,
+    slideOutX: 0,
   },
   {
     id: 'clearing',
@@ -54,10 +49,9 @@ const SCENE_LAYERS = [
     src: clearingImg,
     depth: 0.4,
     baseScale: 1.0,
-    forwardScale: 1.6, // Grows noticeably
-    yOffset: 0,
     zIndex: 4,
     visible: true,
+    slideOutX: 0,
   },
   {
     id: 'landmark_tree',
@@ -65,10 +59,9 @@ const SCENE_LAYERS = [
     src: landmarkImg,
     depth: 0.65,
     baseScale: 1.0,
-    forwardScale: 2.2, // Grows fast
-    yOffset: 0,
     zIndex: 5,
     visible: true,
+    slideOutX: 0,
   },
   {
     id: 'near_tree_01',
@@ -76,10 +69,11 @@ const SCENE_LAYERS = [
     src: nearTree01Img,
     depth: 0.85,
     baseScale: 1.15,
-    forwardScale: 3.0, // Grows very fast
-    yOffset: 0,
     zIndex: 6,
     visible: true,
+    slideOutX: -800, // Slides LEFT as camera passes
+    slideOutStart: 50, // Start sliding at 50% forward progress
+    slideOutEnd: 80, // Finish sliding at 80% forward progress
   },
   {
     id: 'near_tree_02',
@@ -87,67 +81,87 @@ const SCENE_LAYERS = [
     src: nearTree02Img,
     depth: 1.0,
     baseScale: 1.25,
-    forwardScale: 4.0, // Grows fastest
-    yOffset: 0,
     zIndex: 7,
     visible: true,
+    slideOutX: 800, // Slides RIGHT as camera passes
+    slideOutStart: 55,
+    slideOutEnd: 85,
   },
 ];
 
-// 🛠️ FIX: Smooth Ease In-Out Cubic function
-const easeInOutCubic = (t) => {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-};
-
 function Scene01CameraTest() {
+  // Camera state
   const [camera, setCamera] = useState({
-    x: 0, 
-    y: 0, 
-    zoom: 1.0, 
-    forward: 0, // 0 to 100
+    x: 0,
+    y: 0,
+    zoom: 1.0,
+    forward: 0,
   });
 
+  // Debug mode
   const [debugMode, setDebugMode] = useState(false);
   const [layerVisibility, setLayerVisibility] = useState(
     SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: true }), {})
   );
 
+  // Auto-camera animation
   const [autoPlay, setAutoPlay] = useState(false);
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
   
+  // Refs
   const sceneRef = useRef(null);
   const animationFrameRef = useRef(null);
-  const autoPlayFrameRef = useRef(null);
   const keysPressed = useRef({});
   const autoPlayStartTime = useRef(null);
+  const autoPlayFrameRef = useRef(null);
 
-  // 🛠️ FIX: Calculate layer position and scale using DEPTH ZOOM
+  // Calculate layer position and scale based on camera
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
-    const progress = camera.forward / 100; // 0.0 to 1.0
     
-    // Parallax offset (keeps slight sideways movement)
+    // Parallax offset
     const parallaxX = camera.x * depthFactor;
     const parallaxY = camera.y * depthFactor * 0.5;
     
-    // 🛠️ THE BIG FIX: Calculate scale based on forward progress
-    // Closer layers (higher depth) grow faster
-    const forwardScale = 1 + progress * (layer.forwardScale - 1);
-    const baseScale = layer.baseScale;
-    const scale = baseScale * forwardScale;
+    // Depth-based zoom — closer layers zoom more
+    const zoomFactor = 1 + (camera.zoom - 1) * depthFactor;
+    const scale = layer.baseScale * zoomFactor;
     
-    // 🛠️ THE BIG FIX: Calculate vertical offset to push the scene UP as it grows
-    // (This simulates moving forward without sliding off-screen)
-    const forwardOffsetY = progress * 100 * depthFactor; 
+    // Forward movement — closer layers move more
+    const forwardOffset = camera.forward * depthFactor * 2;
+    
+    // Slide out logic for near trees
+    let slideX = 0;
+    if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
+      const start = layer.slideOutStart;
+      const end = layer.slideOutEnd;
+      
+      if (camera.forward > start) {
+        // Calculate progress through slide (0 to 1)
+        const slideProgress = Math.min(
+          (camera.forward - start) / (end - start),
+          1
+        );
+        
+        // Ease the slide
+        const eased = slideProgress < 0.5 
+          ? 2 * slideProgress * slideProgress 
+          : 1 - Math.pow(-2 * slideProgress + 2, 2) / 2;
+        
+        slideX = layer.slideOutX * eased;
+      }
+    }
     
     return {
-      transform: `translate(${parallaxX}px, ${parallaxY - forwardOffsetY}px) scale(${scale})`,
+      transform: `translate(${parallaxX - forwardOffset + slideX}px, ${parallaxY}px) scale(${scale})`,
       opacity: 1,
     };
   }, [camera]);
 
+  // Manual camera controls
   const handleKeyDown = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = true;
+    
     if (e.key === 'ArrowUp') keysPressed.current['w'] = true;
     if (e.key === 'ArrowDown') keysPressed.current['s'] = true;
     if (e.key === 'ArrowLeft') keysPressed.current['a'] = true;
@@ -156,43 +170,31 @@ function Scene01CameraTest() {
 
   const handleKeyUp = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = false;
+    
     if (e.key === 'ArrowUp') keysPressed.current['w'] = false;
     if (e.key === 'ArrowDown') keysPressed.current['s'] = false;
     if (e.key === 'ArrowLeft') keysPressed.current['a'] = false;
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
+  // Camera movement loop
   useEffect(() => {
-    const moveCamera = () => {
+    const handleKeyFrame = () => {
       const speed = 0.5 * cameraSpeed;
-      let moved = false;
       
       if (keysPressed.current['w']) {
         setCamera(prev => ({ ...prev, forward: Math.min(prev.forward + speed, 100) }));
-        moved = true;
       }
       if (keysPressed.current['s']) {
         setCamera(prev => ({ ...prev, forward: Math.max(prev.forward - speed, 0) }));
-        moved = true;
       }
       if (keysPressed.current['a']) {
         setCamera(prev => ({ ...prev, x: prev.x - speed }));
-        moved = true;
       }
       if (keysPressed.current['d']) {
         setCamera(prev => ({ ...prev, x: prev.x + speed }));
-        moved = true;
       }
       
-      if (moved || autoPlay) {
-        animationFrameRef.current = requestAnimationFrame(moveCamera);
-      }
-    };
-    
-    const handleKeyFrame = () => {
-      if (Object.values(keysPressed.current).some(Boolean) || autoPlay) {
-        moveCamera();
-      }
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     };
     
@@ -203,27 +205,29 @@ function Scene01CameraTest() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [cameraSpeed, autoPlay]);
+  }, [cameraSpeed]);
 
-  // 🛠️ FIX: Auto-play now goes from 0 to 100 using a smooth cubic ease
+  // Auto-play camera animation
   useEffect(() => {
     if (!autoPlay) return;
     
     autoPlayStartTime.current = Date.now();
-    const duration = 12000; // 12 seconds for a slower, cinematic journey
+    const duration = 12000; // 12 seconds for full journey
     
     const animateCamera = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
       const progress = Math.min(elapsed / duration, 1);
       
-      // 🛠️ FIX: Use true ease in-out cubic
-      const eased = easeInOutCubic(progress);
+      // Ease in-out
+      const eased = progress < 0.5 
+        ? 2 * progress * progress 
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
       
       setCamera(prev => ({
         ...prev,
-        forward: eased * 100, // 🛠️ Goes all the way to 100%
-        x: Math.sin(eased * Math.PI) * 15, 
-        zoom: 1 + eased * 0.2,
+        forward: eased * 100, // Go all the way to 100
+        x: Math.sin(eased * Math.PI) * 30, // Slight lateral sway
+        zoom: 1 + eased * 0.5, // Progressive zoom
       }));
       
       if (progress < 1) {
@@ -242,15 +246,17 @@ function Scene01CameraTest() {
     };
   }, [autoPlay]);
 
+  // Mouse wheel zoom
   const handleWheel = useCallback((e) => {
     e.preventDefault();
     const zoomDelta = -e.deltaY * 0.001;
     setCamera(prev => ({
       ...prev,
-      zoom: Math.max(0.5, Math.min(2.0, prev.zoom + zoomDelta)),
+      zoom: Math.max(0.5, Math.min(2.5, prev.zoom + zoomDelta)),
     }));
   }, []);
 
+  // Mouse drag for camera movement
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0, cameraX: 0, cameraY: 0 });
 
@@ -266,8 +272,10 @@ function Scene01CameraTest() {
 
   const handleMouseMove = (e) => {
     if (!isDragging) return;
+    
     const dx = e.clientX - dragStart.current.x;
     const dy = e.clientY - dragStart.current.y;
+    
     setCamera(prev => ({
       ...prev,
       x: dragStart.current.cameraX + dx,
@@ -279,10 +287,12 @@ function Scene01CameraTest() {
     setIsDragging(false);
   };
 
+  // Reset camera
   const resetCamera = () => {
     setCamera({ x: 0, y: 0, zoom: 1.0, forward: 0 });
   };
 
+  // Toggle layer visibility
   const toggleLayer = (layerId) => {
     setLayerVisibility(prev => ({
       ...prev,
@@ -310,11 +320,15 @@ function Scene01CameraTest() {
           <span className="test-badge">CAMERA TEST</span>
         </div>
 
-        {/* 🛠️ FIX: Removed drag/pan event listeners from viewport to let auto-play work */}
+        {/* Scene Viewport */}
         <div 
           className="scene-viewport"
           ref={sceneRef}
           onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
         >
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
@@ -338,6 +352,9 @@ function Scene01CameraTest() {
                     <div className="layer-debug-info">
                       <span>{layer.name}</span>
                       <span>Depth: {layer.depth}</span>
+                      {layer.slideOutX !== 0 && (
+                        <span>Slide: {layer.slideOutX > 0 ? '→' : '←'} {Math.abs(layer.slideOutX)}px</span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -411,8 +428,10 @@ function Scene01CameraTest() {
             <p><kbd>A</kbd> Left</p>
             <p><kbd>D</kbd> Right</p>
             <p><kbd>Scroll</kbd> Zoom</p>
+            <p><kbd>Drag</kbd> Pan</p>
           </div>
           
+          {/* Debug Layer Toggles */}
           {debugMode && (
             <div className="debug-layers">
               <h4>Layer Visibility</h4>
@@ -423,7 +442,7 @@ function Scene01CameraTest() {
                     checked={layerVisibility[layer.id]}
                     onChange={() => toggleLayer(layer.id)}
                   />
-                  <span>{layer.visible ? '✓' : '✗'} {layer.name}</span>
+                  <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
                   <span className="depth-value">({layer.depth})</span>
                 </label>
               ))}
