@@ -21,7 +21,7 @@ const SCENE_LAYERS = [
     baseScale: 1.0,
     zIndex: 1,
     visible: true,
-    slideOutX: 0, // No slide — this is background
+    slideOutX: 0,
   },
   {
     id: 'mountains',
@@ -61,7 +61,10 @@ const SCENE_LAYERS = [
     baseScale: 1.0,
     zIndex: 5,
     visible: true,
-    slideOutX: 0,
+    // NEW: Landmark Tree slides LEFT during final 40%
+    slideOutX: -250,
+    slideOutStart: 60,
+    slideOutEnd: 100,
   },
   {
     id: 'near_tree_01',
@@ -71,9 +74,9 @@ const SCENE_LAYERS = [
     baseScale: 1.15,
     zIndex: 6,
     visible: true,
-    slideOutX: -800, // Slides LEFT as camera passes
-    slideOutStart: 50, // Start sliding at 50% forward progress
-    slideOutEnd: 80, // Finish sliding at 80% forward progress
+    slideOutX: -800,
+    slideOutStart: 50,
+    slideOutEnd: 80,
   },
   {
     id: 'near_tree_02',
@@ -83,7 +86,7 @@ const SCENE_LAYERS = [
     baseScale: 1.25,
     zIndex: 7,
     visible: true,
-    slideOutX: 800, // Slides RIGHT as camera passes
+    slideOutX: 800,
     slideOutStart: 55,
     slideOutEnd: 85,
   },
@@ -130,7 +133,7 @@ function Scene01CameraTest() {
     // Forward movement — closer layers move more
     const forwardOffset = camera.forward * depthFactor * 2;
     
-    // Slide out logic for near trees
+    // Slide out logic for ALL layers with slideOutX
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
       const start = layer.slideOutStart;
@@ -143,7 +146,7 @@ function Scene01CameraTest() {
           1
         );
         
-        // Ease the slide
+        // Ease the slide — ease-in-out
         const eased = slideProgress < 0.5 
           ? 2 * slideProgress * slideProgress 
           : 1 - Math.pow(-2 * slideProgress + 2, 2) / 2;
@@ -226,8 +229,8 @@ function Scene01CameraTest() {
       setCamera(prev => ({
         ...prev,
         forward: eased * 100, // Go all the way to 100
-        x: Math.sin(eased * Math.PI) * 30, // Slight lateral sway
-        zoom: 1 + eased * 0.5, // Progressive zoom
+        x: Math.sin(eased * Math.PI) * 30,
+        zoom: 1 + eased * 0.5,
       }));
       
       if (progress < 1) {
@@ -353,7 +356,10 @@ function Scene01CameraTest() {
                       <span>{layer.name}</span>
                       <span>Depth: {layer.depth}</span>
                       {layer.slideOutX !== 0 && (
-                        <span>Slide: {layer.slideOutX > 0 ? '→' : '←'} {Math.abs(layer.slideOutX)}px</span>
+                        <span>
+                          Slide: {layer.slideOutX > 0 ? '→' : '←'} {Math.abs(layer.slideOutX)}px
+                          ({layer.slideOutStart}%-{layer.slideOutEnd}%)
+                        </span>
                       )}
                     </div>
                   )}
