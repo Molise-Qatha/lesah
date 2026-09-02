@@ -22,7 +22,7 @@ const SCENE_LAYERS = [
     zIndex: 1,
     visible: true,
     slideOutX: 0,
-    layerType: 'background', // Regular parallax background
+    layerType: 'background',
   },
   {
     id: 'mountains',
@@ -55,10 +55,8 @@ const SCENE_LAYERS = [
     zIndex: 4,
     visible: true,
     slideOutX: 0,
-    // NEW: This is a FLAT FLOOR, not a growing background
     layerType: 'floor',
-    // No forwardScale — instead Y slides down as camera moves forward
-    floorDropY: 150, // How far down the floor slides at 100% progress
+    floorDropY: 300, // Final: slides down 300px at 100% progress
   },
   {
     id: 'landmark_tree',
@@ -135,14 +133,13 @@ function Scene01CameraTest() {
     const parallaxX = camera.x * depthFactor;
     const parallaxY = camera.y * depthFactor * 0.5;
     
-    // Handle FLAT FLOOR differently
+    // Handle FLAT FLOOR differently — slides down like a treadmill
     if (layer.layerType === 'floor') {
-      // Floor does NOT scale up — it slides DOWN
       const floorProgress = camera.forward / 100; // 0 to 1
-      const floorDrop = layer.floorDropY * floorProgress;
+      const floorDrop = layer.floorDropY * floorProgress; // 0 to 300px
       
-      // Minimal scale for floor (only slight, not growing)
-      const floorScale = layer.baseScale * (1 + (camera.zoom - 1) * 0.1);
+      // Minimal scale for floor — stays flat, doesn't grow
+      const floorScale = layer.baseScale * (1 + (camera.zoom - 1) * 0.05);
       
       return {
         transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${floorScale})`,
@@ -157,7 +154,7 @@ function Scene01CameraTest() {
     // Forward movement — closer layers move more
     const forwardOffset = camera.forward * depthFactor * 2;
     
-    // Slide out logic for ALL layers with slideOutX
+    // Slide out logic for layers with slideOutX
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
       const start = layer.slideOutStart;
@@ -237,7 +234,7 @@ function Scene01CameraTest() {
     if (!autoPlay) return;
     
     autoPlayStartTime.current = Date.now();
-    const duration = 12000;
+    const duration = 12000; // 12 seconds for full journey
     
     const animateCamera = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
