@@ -56,7 +56,7 @@ const SCENE_LAYERS = [
     visible: true,
     slideOutX: 0,
     layerType: 'floor',
-    floorDropY: 400, // Increased so it slides further down
+    floorDropY: 400,
   },
   {
     id: 'landmark_tree',
@@ -66,9 +66,9 @@ const SCENE_LAYERS = [
     baseScale: 1.0,
     zIndex: 5,
     visible: true,
-    slideOutX: -300, // Slides left
-    slideOutStart: 40,
-    slideOutEnd: 80,
+    slideOutX: -400,
+    slideOutStart: 35,
+    slideOutEnd: 65,
     layerType: 'background',
   },
   {
@@ -76,12 +76,12 @@ const SCENE_LAYERS = [
     name: 'Near Tree 01',
     src: nearTree01Img,
     depth: 0.85,
-    baseScale: 1.15,
+    baseScale: 1.10,
     zIndex: 6,
     visible: true,
-    slideOutX: -600, // Slides left
-    slideOutStart: 30,
-    slideOutEnd: 70,
+    slideOutX: -900,
+    slideOutStart: 20,
+    slideOutEnd: 45,
     layerType: 'background',
   },
   {
@@ -89,21 +89,19 @@ const SCENE_LAYERS = [
     name: 'Near Tree 02',
     src: nearTree02Img,
     depth: 1.0,
-    baseScale: 1.25,
+    baseScale: 1.20,
     zIndex: 7,
     visible: true,
-    slideOutX: 600, // Slides right
-    slideOutStart: 35,
-    slideOutEnd: 75,
+    slideOutX: 900,
+    slideOutStart: 25,
+    slideOutEnd: 50,
     layerType: 'background',
   },
 ];
 
-// Cinematic camera path
 const CAMERA_PATH = {
   start: { forward: 0, x: 0, y: 0, zoom: 1.0 },
-  // 🛠️ FIX: End at 100, not 85, so the camera truly reaches the clearing!
-  end: { forward: 100, x: 0, y: 0, zoom: 1.45 }, 
+  end: { forward: 100, x: 0, y: 0, zoom: 1.45 },
   duration: 14000,
   easeInDuration: 0.20,
   easeOutDuration: 0.35,
@@ -147,31 +145,24 @@ function Scene01CameraTest() {
     return midProgress;
   }, []);
 
-  // 🛠️ THE CRITICAL FIX: Get layer transform with TRUE depth push
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
     const progress = camera.forward / 100;
 
-    // Parallax offset
     const parallaxX = camera.x * depthFactor;
     const parallaxY = camera.y * depthFactor * 0.5;
 
-    // 🛠️ FIX: Remove the "conveyor belt" horizontal forwardOffset
-    // Instead, use depth-based SCALING.
     const zoomFactor = 1 + (camera.zoom - 1) * depthFactor;
     let scale = layer.baseScale * zoomFactor;
 
-    // Handle FLAT FLOOR
     if (layer.layerType === 'floor') {
       const floorDrop = layer.floorDropY * progress;
-      
       return {
         transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${scale})`,
         opacity: 1,
       };
     }
 
-    // 🛠️ NEW: Slide layers OUT to the side when the camera passes them
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
       const start = layer.slideOutStart;
@@ -253,7 +244,6 @@ function Scene01CameraTest() {
       const forward = CAMERA_PATH.start.forward + 
         (CAMERA_PATH.end.forward - CAMERA_PATH.start.forward) * easedProgress;
       
-      // 🛠️ FIX: Remove the sideways "sine sway" that makes it feel like a boat rocking
       const x = CAMERA_PATH.start.x + 
         (CAMERA_PATH.end.x - CAMERA_PATH.start.x) * easedProgress;
       
@@ -286,41 +276,13 @@ function Scene01CameraTest() {
     };
   }, [autoPlay, cinematicEase]);
 
-  const handleWheel = useCallback((e) => {
-    e.preventDefault();
-    const zoomDelta = -e.deltaY * 0.001;
-    setCamera(prev => ({
-      ...prev,
-      zoom: Math.max(0.5, Math.min(2.5, prev.zoom + zoomDelta)),
-    }));
-  }, []);
-
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStart = useRef({ x: 0, y: 0, cameraX: 0, cameraY: 0 });
-
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    dragStart.current = {
-      x: e.clientX,
-      y: e.clientY,
-      cameraX: camera.x,
-      cameraY: camera.y,
-    };
+  // 🛠️ NEW: Zoom In/Out buttons instead of mouse scroll
+  const handleZoomIn = () => {
+    setCamera(prev => ({ ...prev, zoom: Math.min(prev.zoom + 0.1, 2.5) }));
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    const dx = e.clientX - dragStart.current.x;
-    const dy = e.clientY - dragStart.current.y;
-    setCamera(prev => ({
-      ...prev,
-      x: dragStart.current.cameraX + dx,
-      y: dragStart.current.cameraY + dy,
-    }));
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
+  const handleZoomOut = () => {
+    setCamera(prev => ({ ...prev, zoom: Math.max(prev.zoom - 0.1, 0.5) }));
   };
 
   const resetCamera = () => {
@@ -362,11 +324,6 @@ function Scene01CameraTest() {
         <div 
           className="scene-viewport"
           ref={sceneRef}
-          onWheel={handleWheel}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
         >
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
@@ -431,6 +388,12 @@ function Scene01CameraTest() {
               <label>Zoom:</label>
               <span>{camera.zoom.toFixed(2)}x</span>
             </div>
+          </div>
+
+          {/* 🛠️ NEW: Zoom Buttons */}
+          <div className="camera-buttons">
+            <button className="camera-btn zoom-btn" onClick={handleZoomIn}>🔍 Zoom In</button>
+            <button className="camera-btn zoom-btn" onClick={handleZoomOut}>🔍 Zoom Out</button>
           </div>
           
           <div className="camera-buttons">
