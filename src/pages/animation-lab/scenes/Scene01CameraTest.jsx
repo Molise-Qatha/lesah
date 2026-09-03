@@ -11,12 +11,12 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// 🛠️ HONEST FIX: Only increased slideOutX so the trees pass out of the way
+// 🛠️ FIX: Changed floorDropY from 400 to -200
 const SCENE_LAYERS = [
   { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, baseScale: 1.0, zIndex: 1, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, baseScale: 1.0, zIndex: 2, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, baseScale: 1.0, zIndex: 3, visible: true, slideOutX: 0, layerType: 'background' },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: 400 },
+  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: -200 },
   { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -800, slideOutStart: 30, slideOutEnd: 50, layerType: 'background' },
   { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -1500, slideOutStart: 15, slideOutEnd: 35, layerType: 'background' },
   { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 1500, slideOutStart: 20, slideOutEnd: 40, layerType: 'background' },
@@ -24,7 +24,7 @@ const SCENE_LAYERS = [
 
 const CAMERA_PATH = {
   start: { forward: 0, x: 0, y: 0, zoom: 1.0 },
-  end: { forward: 100, x: 0, y: 0, zoom: 1.6 }, // 🛠️ Slightly increased zoom for a richer push
+  end: { forward: 100, x: 0, y: 0, zoom: 1.6 },
   duration: 14000,
   easeInDuration: 0.20,
   easeOutDuration: 0.35,
@@ -79,6 +79,7 @@ function Scene01CameraTest() {
     let scale = layer.baseScale * zoomFactor;
 
     if (layer.layerType === 'floor') {
+      // 🛠️ FIX: Using negative floorDropY so the floor stays visible at the bottom
       const floorDrop = layer.floorDropY * progress;
       return {
         transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${scale})`,
