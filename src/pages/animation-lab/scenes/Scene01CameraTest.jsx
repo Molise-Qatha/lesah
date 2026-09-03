@@ -22,18 +22,17 @@ const SCENE_LAYERS = [
   { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, zIndex: 7, visible: true, depth: 1.0, baseScale: 1.25 },
 ];
 
-// 🛠️ CAMERA DOLLY PARAMETERS (This is the magic)
+// Camera dolly range — NO COLLISION, camera passes through
 const CAMERA_DOLLY = {
-  startZ: 100, // Distance from the scene (far back)
-  endZ: 0,     // Distance when inside the character area
+  startZ: 0,      // Far back — all layers visible
+  endZ: 100,      // Deep in the forest — near layers passed
 };
 
 function Scene01CameraTest() {
-  // 🛠️ Our camera has: X (Left/Right), Y (Up/Down), and **Z** (Forward/Backward)
   const [camera, setCamera] = useState({
     x: 0,
     y: 0,
-    z: CAMERA_DOLLY.startZ, // Start at the back
+    z: CAMERA_DOLLY.startZ,
   });
 
   const [debugMode, setDebugMode] = useState(false);
@@ -49,25 +48,41 @@ function Scene01CameraTest() {
   const autoPlayStartTime = useRef(null);
   const autoPlayFrameRef = useRef(null);
 
-  // 🛠️ Perspective Projection (Closer layers appear bigger, farther layers appear smaller)
+  // FIXED: Camera passes through layers — no Math.max wall
   const getLayerTransform = useCallback((layer) => {
-    const relativeDistance = layer.depth * 100; // How far is this layer from the camera's 0 point?
-    const layerZ = Math.max(relativeDistance - camera.z, 10); // Can't go below 10 units away
-
-    // Perspective scaling: 100 / layerZ
-    const scale = (100 / layerZ) * layer.baseScale;
-
-    // Parallax x and y offset (moves slightly slower for distant layers)
-    const parallaxX = camera.x * (100 / layerZ);
-    const parallaxY = camera.y * (100 / layerZ);
+    // Each layer's z-distance from camera
+    // When camera.z > layer depth, camera has PASSED that layer
+    const layerZPosition = layer.depth * 100;
+    const cameraPassed = camera.z > layerZPosition;
     
-    // Flat floor handling (Clearing slides down as camera moves forward)
-    const forwardProgress = 1 - (camera.z / CAMERA_DOLLY.startZ);
-    const clearingDrop = layer.id === 'clearing' ? forwardProgress * 400 : 0;
-
+    // If camera has passed the layer, push it far away and behind
+    let effectiveZ;
+    if (cameraPassed) {
+      // Layer is now BEHIND the camera — push it away and fade out
+      const passedDistance = camera.z - layerZPosition;
+      effectiveZ = -passedDistance * 5; // Negative Z = behind camera
+    } else {
+      // Layer is still ahead — normal depth
+      effectiveZ = layerZPosition - camera.z;
+    }
+    
+    // Perspective scale — closer = bigger
+    const scale = (100 / Math.max(effectiveZ, 1)) * layer.baseScale;
+    
+    // Parallax offset
+    const parallaxX = camera.x * (100 / Math.max(effectiveZ, 1));
+    const parallaxY = camera.y * (100 / Math.max(effectiveZ, 1));
+    
+    // Floor drop for clearing
+    const forwardProgress = camera.z / CAMERA_DOLLY.endZ;
+    const clearingDrop = layer.id === 'clearing' ? forwardProgress * layer.floorDropY : 0;
+    
+    // Opacity fade when passed
+    const opacity = cameraPassed ? Math.max(0, 1 - (camera.z - layerZPosition) / 30) : 1;
+    
     return {
       transform: `translate(${parallaxX}px, ${parallaxY + clearingDrop}px) scale(${scale})`,
-      opacity: 1,
+      opacity: opacity,
     };
   }, [camera]);
 
@@ -87,22 +102,22 @@ function Scene01CameraTest() {
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
-  // 🛠️ KEYBOARD MOVEMENT: W/S controls Z-Axis, A/D controls X-Axis
+  // Keyboard movement — continuous dolly, no collision
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = cameraSpeed;
       
       if (keysPressed.current['w']) {
-        setCamera(prev => ({ ...prev, z: Math.max(prev.z - speed, CAMERA_DOLLY.endZ) })); // Move Forward
+        setCamera(prev => ({ ...prev, z: Math.min(prev.z + speed, CAMERA_DOLLY.endZ) }));
       }
       if (keysPressed.current['s']) {
-        setCamera(prev => ({ ...prev, z: Math.min(prev.z + speed, CAMERA_DOLLY.startZ) })); // Move Backward
+        setCamera(prev => ({ ...prev, z: Math.max(prev.z - speed, CAMERA_DOLLY.startZ) }));
       }
       if (keysPressed.current['a']) {
-        setCamera(prev => ({ ...prev, x: prev.x - speed }));
+        setCamera(prev => ({ ...prev, x: prev.x - speed * 0.5 }));
       }
       if (keysPressed.current['d']) {
-        setCamera(prev => ({ ...prev, x: prev.x + speed }));
+        setCamera(prev => ({ ...prev, x: prev.x + speed * 0.5 }));
       }
       
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
@@ -117,25 +132,32 @@ function Scene01CameraTest() {
     };
   }, [cameraSpeed]);
 
-  // 🛠️ AUTO CINEMATIC: Smoothly moves Z from 100 to 0 (The Dolly)
+  // Auto cinematic dolly
   useEffect(() => {
     if (!autoPlay) return;
     
     autoPlayStartTime.current = Date.now();
-    const duration = 12000;
+    const duration = 14000; // 14 seconds
     
     const animateCamera = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
       const rawProgress = Math.min(elapsed / duration, 1);
       
-      // Smooth easing (starts slow, speeds up, ends slow)
-      const eased = rawProgress < 0.5 
-        ? 2 * rawProgress * rawProgress 
-        : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+      // Smooth cinematic easing
+      const eased = rawProgress < 0.3
+        ? 0.5 * (rawProgress / 0.3) * (rawProgress / 0.3)
+        : rawProgress > 0.7
+          ? 1 - 0.5 * ((1 - rawProgress) / 0.3) * ((1 - rawProgress) / 0.3)
+          : rawProgress;
       
-      const newZ = CAMERA_DOLLY.startZ - (eased * (CAMERA_DOLLY.startZ - CAMERA_DOLLY.endZ));
+      const newZ = CAMERA_DOLLY.startZ + eased * (CAMERA_DOLLY.endZ - CAMERA_DOLLY.startZ);
       
-      setCamera(prev => ({ ...prev, z: newZ, x: Math.sin(eased * Math.PI) * 15 }));
+      setCamera(prev => ({
+        ...prev,
+        z: newZ,
+        x: Math.sin(eased * Math.PI) * 10, // Subtle sway
+        y: Math.sin(eased * Math.PI * 2) * 3, // Slight vertical drift
+      }));
       
       if (rawProgress < 1) {
         autoPlayFrameRef.current = requestAnimationFrame(animateCamera);
@@ -207,7 +229,8 @@ function Scene01CameraTest() {
                     <div className="layer-debug-info">
                       <span>{layer.name}</span>
                       <span>Depth: {layer.depth}</span>
-                      <span>Z-Dist: {Math.max(layer.depth * 100 - camera.z, 10).toFixed(0)}</span>
+                      <span>Camera Z: {camera.z.toFixed(1)}</span>
+                      <span>{camera.z > layer.depth * 100 ? 'PASSED' : 'AHEAD'}</span>
                     </div>
                   )}
                 </div>
@@ -235,6 +258,10 @@ function Scene01CameraTest() {
             <div className="camera-stat">
               <label>Z (Forward/Back):</label>
               <span>{camera.z.toFixed(1)}</span>
+            </div>
+            <div className="camera-stat">
+              <label>Progress:</label>
+              <span>{((camera.z / CAMERA_DOLLY.endZ) * 100).toFixed(0)}%</span>
             </div>
           </div>
           
