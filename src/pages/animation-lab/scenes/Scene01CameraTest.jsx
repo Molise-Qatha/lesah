@@ -11,7 +11,7 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// Scene layer configuration
+// Scene layer configuration — DO NOT MODIFY
 const SCENE_LAYERS = [
   {
     id: 'sky',
@@ -56,7 +56,7 @@ const SCENE_LAYERS = [
     visible: true,
     slideOutX: 0,
     layerType: 'floor',
-    floorDropY: 300, // Final: slides down 300px at 100% progress
+    floorDropY: 300,
   },
   {
     id: 'landmark_tree',
@@ -67,8 +67,8 @@ const SCENE_LAYERS = [
     zIndex: 5,
     visible: true,
     slideOutX: -250,
-    slideOutStart: 60,
-    slideOutEnd: 100,
+    slideOutStart: 55,
+    slideOutEnd: 85,
     layerType: 'background',
   },
   {
@@ -80,8 +80,8 @@ const SCENE_LAYERS = [
     zIndex: 6,
     visible: true,
     slideOutX: -800,
-    slideOutStart: 50,
-    slideOutEnd: 80,
+    slideOutStart: 45,
+    slideOutEnd: 75,
     layerType: 'background',
   },
   {
@@ -93,19 +93,42 @@ const SCENE_LAYERS = [
     zIndex: 7,
     visible: true,
     slideOutX: 800,
-    slideOutStart: 55,
-    slideOutEnd: 85,
+    slideOutStart: 50,
+    slideOutEnd: 80,
     layerType: 'background',
   },
 ];
 
-function Scene01CameraTest() {
-  // Camera state
-  const [camera, setCamera] = useState({
+// Cinematic camera path configuration
+const CAMERA_PATH = {
+  // Start position (wide establishing shot)
+  start: {
+    forward: 0,
     x: 0,
     y: 0,
     zoom: 1.0,
-    forward: 0,
+  },
+  // End position (at the clearing, looking deeper into forest)
+  end: {
+    forward: 85, // Not 100 — stops at a natural point near the clearing
+    x: 15,       // Slight right drift for natural feel
+    y: -10,      // Very slight upward drift
+    zoom: 1.45,  // Moderate zoom — not too close
+  },
+  // Movement timing
+  duration: 14000, // 14 seconds — slow and cinematic
+  // Easing configuration
+  easeInDuration: 0.20,   // 20% of the journey for ease-in
+  easeOutDuration: 0.35,  // 35% of the journey for ease-out (slow stop)
+};
+
+function Scene01CameraTest() {
+  // Camera state
+  const [camera, setCamera] = useState({
+    x: CAMERA_PATH.start.x,
+    y: CAMERA_PATH.start.y,
+    zoom: CAMERA_PATH.start.zoom,
+    forward: CAMERA_PATH.start.forward,
   });
 
   // Debug mode
@@ -125,7 +148,37 @@ function Scene01CameraTest() {
   const autoPlayStartTime = useRef(null);
   const autoPlayFrameRef = useRef(null);
 
-  // Calculate layer position and scale based on camera
+  // Custom cinematic easing — smooth ease-in-out with slow stop
+  const cinematicEase = useCallback((t) => {
+    // t goes from 0 to 1
+    // Clamp t
+    const clampedT = Math.max(0, Math.min(1, t));
+    
+    // Ease-in phase
+    if (clampedT < CAMERA_PATH.easeInDuration) {
+      const phaseT = clampedT / CAMERA_PATH.easeInDuration;
+      return 0.5 * phaseT * phaseT; // Quadratic ease-in
+    }
+    
+    // Ease-out phase (longer for slow stop)
+    if (clampedT > 1 - CAMERA_PATH.easeOutDuration) {
+      const phaseT = (clampedT - (1 - CAMERA_PATH.easeOutDuration)) / CAMERA_PATH.easeOutDuration;
+      return 1 - 0.5 * (1 - phaseT) * (1 - phaseT); // Quadratic ease-out
+    }
+    
+    // Middle phase — smooth linear with slight sine wave
+    const midStart = CAMERA_PATH.easeInDuration;
+    const midEnd = 1 - CAMERA_PATH.easeOutDuration;
+    const midProgress = (clampedT - midStart) / (midEnd - midStart);
+    
+    // Base linear interpolation
+    const linearValue = 0.5 * (midStart * midStart) + 
+      midProgress * (1 - 0.5 * CAMERA_PATH.easeOutDuration * CAMERA_PATH.easeOutDuration - 0.5 * midStart * midStart);
+    
+    return linearValue;
+  }, []);
+
+  // Calculate layer position based on camera
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
     
@@ -133,12 +186,10 @@ function Scene01CameraTest() {
     const parallaxX = camera.x * depthFactor;
     const parallaxY = camera.y * depthFactor * 0.5;
     
-    // Handle FLAT FLOOR differently — slides down like a treadmill
+    // Handle FLAT FLOOR
     if (layer.layerType === 'floor') {
-      const floorProgress = camera.forward / 100; // 0 to 1
-      const floorDrop = layer.floorDropY * floorProgress; // 0 to 300px
-      
-      // Minimal scale for floor — stays flat, doesn't grow
+      const floorProgress = camera.forward / 100;
+      const floorDrop = layer.floorDropY * floorProgress;
       const floorScale = layer.baseScale * (1 + (camera.zoom - 1) * 0.05);
       
       return {
@@ -147,29 +198,21 @@ function Scene01CameraTest() {
       };
     }
     
-    // REGULAR BACKGROUND layers
+    // Regular backgrounds
     const zoomFactor = 1 + (camera.zoom - 1) * depthFactor;
     const scale = layer.baseScale * zoomFactor;
-    
-    // Forward movement — closer layers move more
     const forwardOffset = camera.forward * depthFactor * 2;
     
-    // Slide out logic for layers with slideOutX
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
       const start = layer.slideOutStart;
       const end = layer.slideOutEnd;
       
       if (camera.forward > start) {
-        const slideProgress = Math.min(
-          (camera.forward - start) / (end - start),
-          1
-        );
-        
+        const slideProgress = Math.min((camera.forward - start) / (end - start), 1);
         const eased = slideProgress < 0.5 
           ? 2 * slideProgress * slideProgress 
           : 1 - Math.pow(-2 * slideProgress + 2, 2) / 2;
-        
         slideX = layer.slideOutX * eased;
       }
     }
@@ -180,10 +223,9 @@ function Scene01CameraTest() {
     };
   }, [camera]);
 
-  // Manual camera controls
+  // Manual controls
   const handleKeyDown = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = true;
-    
     if (e.key === 'ArrowUp') keysPressed.current['w'] = true;
     if (e.key === 'ArrowDown') keysPressed.current['s'] = true;
     if (e.key === 'ArrowLeft') keysPressed.current['a'] = true;
@@ -192,17 +234,16 @@ function Scene01CameraTest() {
 
   const handleKeyUp = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = false;
-    
     if (e.key === 'ArrowUp') keysPressed.current['w'] = false;
     if (e.key === 'ArrowDown') keysPressed.current['s'] = false;
     if (e.key === 'ArrowLeft') keysPressed.current['a'] = false;
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
-  // Camera movement loop
+  // Manual camera loop
   useEffect(() => {
     const handleKeyFrame = () => {
-      const speed = 0.5 * cameraSpeed;
+      const speed = 0.4 * cameraSpeed;
       
       if (keysPressed.current['w']) {
         setCamera(prev => ({ ...prev, forward: Math.min(prev.forward + speed, 100) }));
@@ -229,29 +270,42 @@ function Scene01CameraTest() {
     };
   }, [cameraSpeed]);
 
-  // Auto-play camera animation
+  // Auto-play cinematic camera
   useEffect(() => {
     if (!autoPlay) return;
     
     autoPlayStartTime.current = Date.now();
-    const duration = 12000; // 12 seconds for full journey
     
     const animateCamera = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
-      const progress = Math.min(elapsed / duration, 1);
+      const rawProgress = Math.min(elapsed / CAMERA_PATH.duration, 1);
       
-      const eased = progress < 0.5 
-        ? 2 * progress * progress 
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      // Apply cinematic easing
+      const easedProgress = cinematicEase(rawProgress);
       
-      setCamera(prev => ({
-        ...prev,
-        forward: eased * 100,
-        x: Math.sin(eased * Math.PI) * 30,
-        zoom: 1 + eased * 0.5,
-      }));
+      // Interpolate camera position with subtle natural drift
+      const forward = CAMERA_PATH.start.forward + 
+        (CAMERA_PATH.end.forward - CAMERA_PATH.start.forward) * easedProgress;
       
-      if (progress < 1) {
+      const x = CAMERA_PATH.start.x + 
+        (CAMERA_PATH.end.x - CAMERA_PATH.start.x) * easedProgress +
+        Math.sin(easedProgress * Math.PI * 2) * 3; // Subtle sine sway
+      
+      const y = CAMERA_PATH.start.y + 
+        (CAMERA_PATH.end.y - CAMERA_PATH.start.y) * easedProgress +
+        Math.sin(easedProgress * Math.PI * 3) * 2; // Very slight vertical drift
+      
+      const zoom = CAMERA_PATH.start.zoom + 
+        (CAMERA_PATH.end.zoom - CAMERA_PATH.start.zoom) * easedProgress;
+      
+      setCamera({
+        forward,
+        x,
+        y,
+        zoom,
+      });
+      
+      if (rawProgress < 1) {
         autoPlayFrameRef.current = requestAnimationFrame(animateCamera);
       } else {
         setAutoPlay(false);
@@ -265,7 +319,7 @@ function Scene01CameraTest() {
         cancelAnimationFrame(autoPlayFrameRef.current);
       }
     };
-  }, [autoPlay]);
+  }, [autoPlay, cinematicEase]);
 
   // Mouse wheel zoom
   const handleWheel = useCallback((e) => {
@@ -277,7 +331,7 @@ function Scene01CameraTest() {
     }));
   }, []);
 
-  // Mouse drag for camera movement
+  // Mouse drag
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0, cameraX: 0, cameraY: 0 });
 
@@ -293,10 +347,8 @@ function Scene01CameraTest() {
 
   const handleMouseMove = (e) => {
     if (!isDragging) return;
-    
     const dx = e.clientX - dragStart.current.x;
     const dy = e.clientY - dragStart.current.y;
-    
     setCamera(prev => ({
       ...prev,
       x: dragStart.current.cameraX + dx,
@@ -308,12 +360,17 @@ function Scene01CameraTest() {
     setIsDragging(false);
   };
 
-  // Reset camera
+  // Reset
   const resetCamera = () => {
-    setCamera({ x: 0, y: 0, zoom: 1.0, forward: 0 });
+    setCamera({
+      x: CAMERA_PATH.start.x,
+      y: CAMERA_PATH.start.y,
+      zoom: CAMERA_PATH.start.zoom,
+      forward: CAMERA_PATH.start.forward,
+    });
   };
 
-  // Toggle layer visibility
+  // Toggle layer
   const toggleLayer = (layerId) => {
     setLayerVisibility(prev => ({
       ...prev,
@@ -337,7 +394,7 @@ function Scene01CameraTest() {
         
         <div className="scene-header">
           <h1>🎥 Scene 01 Camera Test</h1>
-          <p className="scene-subtitle">Parallax Camera System — Forest Establishing Shot</p>
+          <p className="scene-subtitle">Cinematic Parallax Camera — Forest Opening Shot</p>
           <span className="test-badge">CAMERA TEST</span>
         </div>
 
@@ -374,14 +431,8 @@ function Scene01CameraTest() {
                       <span>{layer.name}</span>
                       <span>Depth: {layer.depth}</span>
                       <span>Type: {layer.layerType || 'background'}</span>
-                      {layer.layerType === 'floor' && (
-                        <span>Floor Drop: {layer.floorDropY}px</span>
-                      )}
                       {layer.slideOutX !== 0 && (
-                        <span>
-                          Slide: {layer.slideOutX > 0 ? '→' : '←'} {Math.abs(layer.slideOutX)}px
-                          ({layer.slideOutStart}%-{layer.slideOutEnd}%)
-                        </span>
+                        <span>Slide: {layer.slideOutX}px</span>
                       )}
                     </div>
                   )}
@@ -430,7 +481,7 @@ function Scene01CameraTest() {
                 if (!autoPlay) resetCamera();
               }}
             >
-              {autoPlay ? '⏸ Stop Auto' : '▶ Auto Demo'}
+              {autoPlay ? '⏸ Stop Auto' : '▶ Play Cinematic'}
             </button>
             <button className="camera-btn" onClick={resetCamera}>
               🔄 Reset
@@ -459,7 +510,6 @@ function Scene01CameraTest() {
             <p><kbd>Drag</kbd> Pan</p>
           </div>
           
-          {/* Debug Layer Toggles */}
           {debugMode && (
             <div className="debug-layers">
               <h4>Layer Visibility</h4>
@@ -472,9 +522,6 @@ function Scene01CameraTest() {
                   />
                   <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
                   <span className="depth-value">({layer.depth})</span>
-                  <span className="layer-type-label">
-                    {layer.layerType === 'floor' ? '🟫 Floor' : '🏞️ BG'}
-                  </span>
                 </label>
               ))}
             </div>
