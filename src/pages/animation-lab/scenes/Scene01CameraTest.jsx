@@ -16,14 +16,14 @@ const SCENE_LAYERS = [
   { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, baseScale: 1.0, zIndex: 2, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, baseScale: 1.0, zIndex: 3, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: 400 },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -600, slideOutStart: 30, slideOutEnd: 50, layerType: 'background' },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -1200, slideOutStart: 15, slideOutEnd: 35, layerType: 'background' },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 1200, slideOutStart: 20, slideOutEnd: 40, layerType: 'background' },
+  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -600, slideOutStart: 60, slideOutEnd: 90, layerType: 'background' },
+  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -1200, slideOutStart: 50, slideOutEnd: 80, layerType: 'background' },
+  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 1200, slideOutStart: 55, slideOutEnd: 85, layerType: 'background' },
 ];
 
 const CAMERA_PATH = {
   start: { forward: 0, x: 0, y: 0, zoom: 1.0 },
-  end: { forward: 100, x: 0, y: 0, zoom: 1.2 }, // 🛠️ Reduced zoom limit
+  end: { forward: 100, x: 0, y: 0, zoom: 1.65 }, // 🛠️ Brought back the stronger push
   duration: 14000,
   easeInDuration: 0.20,
   easeOutDuration: 0.35,
@@ -74,7 +74,7 @@ function Scene01CameraTest() {
     const parallaxX = camera.x * depthFactor;
     const parallaxY = camera.y * depthFactor * 0.5;
 
-    // 🛠️ Low zoom limit
+    // 🛠️ Strong zoom factor again
     const zoomFactor = 1 + (camera.zoom - 1) * depthFactor;
     let scale = layer.baseScale * zoomFactor;
 
@@ -198,7 +198,7 @@ function Scene01CameraTest() {
   }, [autoPlay, cinematicEase]);
 
   const handleZoomIn = () => {
-    setCamera(prev => ({ ...prev, zoom: Math.min(prev.zoom + 0.1, 1.3) })); // 🛠️ Cap at 1.3
+    setCamera(prev => ({ ...prev, zoom: Math.min(prev.zoom + 0.1, 1.65) })); // 🛠️ Matches the cinematic end zoom
   };
 
   const handleZoomOut = () => {
