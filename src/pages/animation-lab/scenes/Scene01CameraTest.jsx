@@ -11,7 +11,7 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// Scene layer configuration — DO NOT MODIFY
+// Scene layer configuration
 const SCENE_LAYERS = [
   {
     id: 'sky',
@@ -56,7 +56,7 @@ const SCENE_LAYERS = [
     visible: true,
     slideOutX: 0,
     layerType: 'floor',
-    floorDropY: 300,
+    floorDropY: 400, // Increased so it slides further down
   },
   {
     id: 'landmark_tree',
@@ -66,9 +66,9 @@ const SCENE_LAYERS = [
     baseScale: 1.0,
     zIndex: 5,
     visible: true,
-    slideOutX: -250,
-    slideOutStart: 55,
-    slideOutEnd: 85,
+    slideOutX: -300, // Slides left
+    slideOutStart: 40,
+    slideOutEnd: 80,
     layerType: 'background',
   },
   {
@@ -79,9 +79,9 @@ const SCENE_LAYERS = [
     baseScale: 1.15,
     zIndex: 6,
     visible: true,
-    slideOutX: -800,
-    slideOutStart: 45,
-    slideOutEnd: 75,
+    slideOutX: -600, // Slides left
+    slideOutStart: 30,
+    slideOutEnd: 70,
     layerType: 'background',
   },
   {
@@ -92,38 +92,24 @@ const SCENE_LAYERS = [
     baseScale: 1.25,
     zIndex: 7,
     visible: true,
-    slideOutX: 800,
-    slideOutStart: 50,
-    slideOutEnd: 80,
+    slideOutX: 600, // Slides right
+    slideOutStart: 35,
+    slideOutEnd: 75,
     layerType: 'background',
   },
 ];
 
-// Cinematic camera path configuration
+// Cinematic camera path
 const CAMERA_PATH = {
-  // Start position (wide establishing shot)
-  start: {
-    forward: 0,
-    x: 0,
-    y: 0,
-    zoom: 1.0,
-  },
-  // End position (at the clearing, looking deeper into forest)
-  end: {
-    forward: 85, // Not 100 — stops at a natural point near the clearing
-    x: 15,       // Slight right drift for natural feel
-    y: -10,      // Very slight upward drift
-    zoom: 1.45,  // Moderate zoom — not too close
-  },
-  // Movement timing
-  duration: 14000, // 14 seconds — slow and cinematic
-  // Easing configuration
-  easeInDuration: 0.20,   // 20% of the journey for ease-in
-  easeOutDuration: 0.35,  // 35% of the journey for ease-out (slow stop)
+  start: { forward: 0, x: 0, y: 0, zoom: 1.0 },
+  // 🛠️ FIX: End at 100, not 85, so the camera truly reaches the clearing!
+  end: { forward: 100, x: 0, y: 0, zoom: 1.45 }, 
+  duration: 14000,
+  easeInDuration: 0.20,
+  easeOutDuration: 0.35,
 };
 
 function Scene01CameraTest() {
-  // Camera state
   const [camera, setCamera] = useState({
     x: CAMERA_PATH.start.x,
     y: CAMERA_PATH.start.y,
@@ -131,83 +117,66 @@ function Scene01CameraTest() {
     forward: CAMERA_PATH.start.forward,
   });
 
-  // Debug mode
   const [debugMode, setDebugMode] = useState(false);
   const [layerVisibility, setLayerVisibility] = useState(
     SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: true }), {})
   );
 
-  // Auto-camera animation
   const [autoPlay, setAutoPlay] = useState(false);
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
   
-  // Refs
   const sceneRef = useRef(null);
   const animationFrameRef = useRef(null);
   const keysPressed = useRef({});
   const autoPlayStartTime = useRef(null);
   const autoPlayFrameRef = useRef(null);
 
-  // Custom cinematic easing — smooth ease-in-out with slow stop
   const cinematicEase = useCallback((t) => {
-    // t goes from 0 to 1
-    // Clamp t
     const clampedT = Math.max(0, Math.min(1, t));
-    
-    // Ease-in phase
     if (clampedT < CAMERA_PATH.easeInDuration) {
       const phaseT = clampedT / CAMERA_PATH.easeInDuration;
-      return 0.5 * phaseT * phaseT; // Quadratic ease-in
+      return 0.5 * phaseT * phaseT;
     }
-    
-    // Ease-out phase (longer for slow stop)
     if (clampedT > 1 - CAMERA_PATH.easeOutDuration) {
       const phaseT = (clampedT - (1 - CAMERA_PATH.easeOutDuration)) / CAMERA_PATH.easeOutDuration;
-      return 1 - 0.5 * (1 - phaseT) * (1 - phaseT); // Quadratic ease-out
+      return 1 - 0.5 * (1 - phaseT) * (1 - phaseT);
     }
-    
-    // Middle phase — smooth linear with slight sine wave
     const midStart = CAMERA_PATH.easeInDuration;
     const midEnd = 1 - CAMERA_PATH.easeOutDuration;
     const midProgress = (clampedT - midStart) / (midEnd - midStart);
-    
-    // Base linear interpolation
-    const linearValue = 0.5 * (midStart * midStart) + 
-      midProgress * (1 - 0.5 * CAMERA_PATH.easeOutDuration * CAMERA_PATH.easeOutDuration - 0.5 * midStart * midStart);
-    
-    return linearValue;
+    return midProgress;
   }, []);
 
-  // Calculate layer position based on camera
+  // 🛠️ THE CRITICAL FIX: Get layer transform with TRUE depth push
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
-    
+    const progress = camera.forward / 100;
+
     // Parallax offset
     const parallaxX = camera.x * depthFactor;
     const parallaxY = camera.y * depthFactor * 0.5;
-    
+
+    // 🛠️ FIX: Remove the "conveyor belt" horizontal forwardOffset
+    // Instead, use depth-based SCALING.
+    const zoomFactor = 1 + (camera.zoom - 1) * depthFactor;
+    let scale = layer.baseScale * zoomFactor;
+
     // Handle FLAT FLOOR
     if (layer.layerType === 'floor') {
-      const floorProgress = camera.forward / 100;
-      const floorDrop = layer.floorDropY * floorProgress;
-      const floorScale = layer.baseScale * (1 + (camera.zoom - 1) * 0.05);
+      const floorDrop = layer.floorDropY * progress;
       
       return {
-        transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${floorScale})`,
+        transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${scale})`,
         opacity: 1,
       };
     }
-    
-    // Regular backgrounds
-    const zoomFactor = 1 + (camera.zoom - 1) * depthFactor;
-    const scale = layer.baseScale * zoomFactor;
-    const forwardOffset = camera.forward * depthFactor * 2;
-    
+
+    // 🛠️ NEW: Slide layers OUT to the side when the camera passes them
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
       const start = layer.slideOutStart;
       const end = layer.slideOutEnd;
-      
+
       if (camera.forward > start) {
         const slideProgress = Math.min((camera.forward - start) / (end - start), 1);
         const eased = slideProgress < 0.5 
@@ -216,14 +185,13 @@ function Scene01CameraTest() {
         slideX = layer.slideOutX * eased;
       }
     }
-    
+
     return {
-      transform: `translate(${parallaxX - forwardOffset + slideX}px, ${parallaxY}px) scale(${scale})`,
+      transform: `translate(${parallaxX + slideX}px, ${parallaxY}px) scale(${scale})`,
       opacity: 1,
     };
   }, [camera]);
 
-  // Manual controls
   const handleKeyDown = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = true;
     if (e.key === 'ArrowUp') keysPressed.current['w'] = true;
@@ -280,20 +248,17 @@ function Scene01CameraTest() {
       const elapsed = Date.now() - autoPlayStartTime.current;
       const rawProgress = Math.min(elapsed / CAMERA_PATH.duration, 1);
       
-      // Apply cinematic easing
       const easedProgress = cinematicEase(rawProgress);
       
-      // Interpolate camera position with subtle natural drift
       const forward = CAMERA_PATH.start.forward + 
         (CAMERA_PATH.end.forward - CAMERA_PATH.start.forward) * easedProgress;
       
+      // 🛠️ FIX: Remove the sideways "sine sway" that makes it feel like a boat rocking
       const x = CAMERA_PATH.start.x + 
-        (CAMERA_PATH.end.x - CAMERA_PATH.start.x) * easedProgress +
-        Math.sin(easedProgress * Math.PI * 2) * 3; // Subtle sine sway
+        (CAMERA_PATH.end.x - CAMERA_PATH.start.x) * easedProgress;
       
       const y = CAMERA_PATH.start.y + 
-        (CAMERA_PATH.end.y - CAMERA_PATH.start.y) * easedProgress +
-        Math.sin(easedProgress * Math.PI * 3) * 2; // Very slight vertical drift
+        (CAMERA_PATH.end.y - CAMERA_PATH.start.y) * easedProgress;
       
       const zoom = CAMERA_PATH.start.zoom + 
         (CAMERA_PATH.end.zoom - CAMERA_PATH.start.zoom) * easedProgress;
@@ -321,7 +286,6 @@ function Scene01CameraTest() {
     };
   }, [autoPlay, cinematicEase]);
 
-  // Mouse wheel zoom
   const handleWheel = useCallback((e) => {
     e.preventDefault();
     const zoomDelta = -e.deltaY * 0.001;
@@ -331,7 +295,6 @@ function Scene01CameraTest() {
     }));
   }, []);
 
-  // Mouse drag
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0, cameraX: 0, cameraY: 0 });
 
@@ -360,7 +323,6 @@ function Scene01CameraTest() {
     setIsDragging(false);
   };
 
-  // Reset
   const resetCamera = () => {
     setCamera({
       x: CAMERA_PATH.start.x,
@@ -370,7 +332,6 @@ function Scene01CameraTest() {
     });
   };
 
-  // Toggle layer
   const toggleLayer = (layerId) => {
     setLayerVisibility(prev => ({
       ...prev,
@@ -398,7 +359,6 @@ function Scene01CameraTest() {
           <span className="test-badge">CAMERA TEST</span>
         </div>
 
-        {/* Scene Viewport */}
         <div 
           className="scene-viewport"
           ref={sceneRef}
