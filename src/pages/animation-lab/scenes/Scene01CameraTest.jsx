@@ -11,8 +11,6 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// 🛠️ 1. Z-AXIS SPACING: Layer 1 at Z=0, up to Layer 7 at Z=-600
-// 🛠️ 2. COMPENSATORY SCALING: Layers further back are scaled UP so they look normal from the start
 const SCENE_LAYERS = [
   { id: 'sky', name: 'Sky', src: skyImg, zDepth: 0, baseScale: 1.0, zIndex: 1, visible: true },
   { id: 'mountains', name: 'Mountains', src: mountainsImg, zDepth: -100, baseScale: 1.5, zIndex: 2, visible: true },
@@ -23,10 +21,9 @@ const SCENE_LAYERS = [
   { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, zDepth: -600, baseScale: 4.0, zIndex: 7, visible: true },
 ];
 
-// 🛠️ 3. CAMERA MOVEMENT: Starts at Z=0, moves into the negative numbers
 const CAMERA_PATH = {
-  startZ: 0,       // Start at the front
-  endZ: -650,      // Travel all the way past the last layer
+  startZ: 0,
+  endZ: -650,
   duration: 12000,
 };
 
@@ -50,29 +47,19 @@ function Scene01CameraTest() {
   const autoPlayStartTime = useRef(null);
   const autoPlayFrameRef = useRef(null);
 
-  // 🛠️ TRUE 3D PROJECTION: Distance = Layer Z - Camera Z
-  // If the camera passes the layer (distance becomes negative), the layer naturally clips out.
   const getLayerTransform = useCallback((layer) => {
     const distance = layer.zDepth - camera.z;
-
-    // Distance = 0 means the camera is right on top of the layer. 
-    // We use a very small positive number to prevent the scale from being infinity.
     const safeDistance = Math.max(distance, 1);
 
-    // Perspective divide: Larger distance = Smaller scale, Smaller distance = Larger scale
-    // Because layers far back are scaled up (compensated), they will look correct at the start.
     const perspectiveScale = 100 / safeDistance;
     const scale = perspectiveScale * layer.baseScale;
 
-    // Parallax based on distance
     const parallaxX = camera.x * perspectiveScale;
     const parallaxY = camera.y * perspectiveScale * 0.5;
 
-    // 🛠️ 4. OPACITY/FADING: When the camera passes a layer (distance <= 0), it's behind us.
-    // We gently fade it out before that happens to make it look natural.
     let opacity = 1;
     if (distance < 50) {
-      opacity = Math.max(0, distance / 50); // Fades from 1 to 0 as it gets too close/behind
+      opacity = Math.max(0, distance / 50);
     }
 
     return {
@@ -97,7 +84,6 @@ function Scene01CameraTest() {
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
-  // 🛠️ MANUAL CONTROLS: W/S moves camera along Z-axis, A/D moves X-axis
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = cameraSpeed;
@@ -127,7 +113,6 @@ function Scene01CameraTest() {
     };
   }, [cameraSpeed]);
 
-  // 🛠️ AUTO PLAY: Smooth Z-Dolly moving into the negative numbers
   useEffect(() => {
     if (!autoPlay) return;
     
@@ -146,7 +131,7 @@ function Scene01CameraTest() {
       setCamera(prev => ({ 
         ...prev, 
         z: newZ,
-        x: Math.sin(eased * Math.PI) * 10 // Subtle natural sway
+        x: Math.sin(eased * Math.PI) * 10 
       }));
       
       if (rawProgress < 1) {
@@ -164,6 +149,15 @@ function Scene01CameraTest() {
       }
     };
   }, [autoPlay]);
+
+  // 🛠️ NEW: Zoom In/Out Buttons (Direct Z control)
+  const handleZoomIn = () => {
+    setCamera(prev => ({ ...prev, z: Math.max(prev.z - 10, CAMERA_PATH.endZ) }));
+  };
+
+  const handleZoomOut = () => {
+    setCamera(prev => ({ ...prev, z: Math.min(prev.z + 10, CAMERA_PATH.startZ) }));
+  };
 
   const resetCamera = () => {
     setCamera({ x: 0, y: 0, z: CAMERA_PATH.startZ });
@@ -196,7 +190,8 @@ function Scene01CameraTest() {
           <span className="test-badge">CAMERA TEST</span>
         </div>
 
-        <div className="scene-viewport">
+        {/* 🛠️ FIXED: Added background color to mask dark gaps between layers */}
+        <div className="scene-viewport" style={{ backgroundColor: '#D2B48C' }}>
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
               layerVisibility[layer.id] && (
@@ -253,6 +248,12 @@ function Scene01CameraTest() {
               <label>Y-Pan:</label>
               <span>{camera.y.toFixed(1)}</span>
             </div>
+          </div>
+          
+          {/* 🛠️ NEW: Zoom Controls */}
+          <div className="camera-buttons">
+            <button className="camera-btn zoom-btn" onClick={handleZoomIn}>🔍 Zoom In</button>
+            <button className="camera-btn zoom-btn" onClick={handleZoomOut}>🔍 Zoom Out</button>
           </div>
           
           <div className="camera-buttons">
