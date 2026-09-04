@@ -11,31 +11,26 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// 🛠️ TRUE 2.5D LAYER CONFIGURATION (Each layer has a real Z-Depth)
+// 🛠️ 1. Z-AXIS SPACING: Layer 1 at Z=0, up to Layer 7 at Z=-600
+// 🛠️ 2. COMPENSATORY SCALING: Layers further back are scaled UP so they look normal from the start
 const SCENE_LAYERS = [
-  { id: 'sky', name: 'Sky', src: skyImg, zIndex: 1, visible: true, zDepth: 1000, baseScale: 1.0 },
-  { id: 'mountains', name: 'Mountains', src: mountainsImg, zIndex: 2, visible: true, zDepth: 800, baseScale: 1.0 },
-  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, zIndex: 3, visible: true, zDepth: 600, baseScale: 1.0 },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, zIndex: 4, visible: true, zDepth: 400, baseScale: 1.0 },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, zIndex: 5, visible: true, zDepth: 200, baseScale: 1.0 },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, zIndex: 6, visible: true, zDepth: 100, baseScale: 1.15 },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, zIndex: 7, visible: true, zDepth: 50, baseScale: 1.25 },
+  { id: 'sky', name: 'Sky', src: skyImg, zDepth: 0, baseScale: 1.0, zIndex: 1, visible: true },
+  { id: 'mountains', name: 'Mountains', src: mountainsImg, zDepth: -100, baseScale: 1.5, zIndex: 2, visible: true },
+  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, zDepth: -200, baseScale: 2.0, zIndex: 3, visible: true },
+  { id: 'clearing', name: 'Clearing', src: clearingImg, zDepth: -300, baseScale: 2.5, zIndex: 4, visible: true },
+  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, zDepth: -400, baseScale: 3.0, zIndex: 5, visible: true },
+  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, zDepth: -500, baseScale: 3.5, zIndex: 6, visible: true },
+  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, zDepth: -600, baseScale: 4.0, zIndex: 7, visible: true },
 ];
 
-// 🛠️ CAMERA DOLLY PATH
+// 🛠️ 3. CAMERA MOVEMENT: Starts at Z=0, moves into the negative numbers
 const CAMERA_PATH = {
-  startZ: 950, // Start far back
-  endZ: 250,   // End near the clearing, before the Near Trees block the view
-  duration: 14000,
-  easeInDuration: 0.20,
-  easeOutDuration: 0.35,
+  startZ: 0,       // Start at the front
+  endZ: -650,      // Travel all the way past the last layer
+  duration: 12000,
 };
 
-// 🛠️ CAMERA CLIPPING CONSTANT
-const CLIP_DISTANCE = 30; // Anything closer than 30 units is clamped so it doesn't become a huge blob
-
 function Scene01CameraTest() {
-  // 🛠️ Camera moves along the Z-axis (forward/backward)
   const [camera, setCamera] = useState({
     x: 0,
     y: 0,
@@ -55,32 +50,34 @@ function Scene01CameraTest() {
   const autoPlayStartTime = useRef(null);
   const autoPlayFrameRef = useRef(null);
 
-  // 🛠️ TRUE Z-Axis Perspective Projection with Camera Clipping
+  // 🛠️ TRUE 3D PROJECTION: Distance = Layer Z - Camera Z
+  // If the camera passes the layer (distance becomes negative), the layer naturally clips out.
   const getLayerTransform = useCallback((layer) => {
     const distance = layer.zDepth - camera.z;
 
-    // 🛠️ CAMERA CLIPPING: Prevent the scale from blowing up into a giant blob
-    const safeDistance = Math.max(distance, CLIP_DISTANCE);
+    // Distance = 0 means the camera is right on top of the layer. 
+    // We use a very small positive number to prevent the scale from being infinity.
+    const safeDistance = Math.max(distance, 1);
 
-    // Perspective Formula: scale = 100 / safeDistance
+    // Perspective divide: Larger distance = Smaller scale, Smaller distance = Larger scale
+    // Because layers far back are scaled up (compensated), they will look correct at the start.
     const perspectiveScale = 100 / safeDistance;
     const scale = perspectiveScale * layer.baseScale;
 
-    // Perspective Parallax: Closer layers shift more horizontally
+    // Parallax based on distance
     const parallaxX = camera.x * perspectiveScale;
     const parallaxY = camera.y * perspectiveScale * 0.5;
 
-    // 🛠️ FIX: The Clearing must act like a flat floor
-    let floorDrop = 0;
-    if (layer.id === 'clearing') {
-      // As the camera moves forward (camera.z decreases), the floor drops down
-      const forwardProgress = 1 - (camera.z / CAMERA_PATH.startZ);
-      floorDrop = forwardProgress * 300; // Adjust this number to change how fast it sinks
+    // 🛠️ 4. OPACITY/FADING: When the camera passes a layer (distance <= 0), it's behind us.
+    // We gently fade it out before that happens to make it look natural.
+    let opacity = 1;
+    if (distance < 50) {
+      opacity = Math.max(0, distance / 50); // Fades from 1 to 0 as it gets too close/behind
     }
 
     return {
-      transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${scale})`,
-      opacity: 1,
+      transform: `translate(${parallaxX}px, ${parallaxY}px) scale(${scale})`,
+      opacity: opacity,
     };
   }, [camera]);
 
@@ -130,7 +127,7 @@ function Scene01CameraTest() {
     };
   }, [cameraSpeed]);
 
-  // 🛠️ AUTO PLAY: Smooth Z-Dolly
+  // 🛠️ AUTO PLAY: Smooth Z-Dolly moving into the negative numbers
   useEffect(() => {
     if (!autoPlay) return;
     
@@ -195,7 +192,7 @@ function Scene01CameraTest() {
         
         <div className="scene-header">
           <h1>🎥 Scene 01 Camera Test</h1>
-          <p className="scene-subtitle">True 2.5D Z-Axis Camera — Forest Dolly</p>
+          <p className="scene-subtitle">True 3D Coordinate Camera — Forest Fly-Through</p>
           <span className="test-badge">CAMERA TEST</span>
         </div>
 
@@ -222,7 +219,8 @@ function Scene01CameraTest() {
                     <div className="layer-debug-info">
                       <span>{layer.name}</span>
                       <span>Z-Depth: {layer.zDepth}</span>
-                      <span>Distance: {Math.max(layer.zDepth - camera.z, CLIP_DISTANCE).toFixed(0)}</span>
+                      <span>Camera Z: {camera.z.toFixed(0)}</span>
+                      <span>Dist: {Math.max(layer.zDepth - camera.z, 1).toFixed(0)}</span>
                     </div>
                   )}
                 </div>
