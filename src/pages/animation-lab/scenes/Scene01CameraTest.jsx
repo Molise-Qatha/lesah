@@ -11,12 +11,12 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// Scene layer configuration (UNTOUCHED)
+// Scene layer configuration (UNTOUCHED - Shot 1 Locked)
 const SCENE_LAYERS = [
   { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, baseScale: 1.0, zIndex: 1, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, baseScale: 1.0, zIndex: 2, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, baseScale: 1.0, zIndex: 3, visible: true, slideOutX: 0, layerType: 'background' },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: -100 },
+  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: 400 },
   { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -600, slideOutStart: 50, slideOutEnd: 90, layerType: 'background' },
   { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -1200, slideOutStart: 40, slideOutEnd: 80, layerType: 'background' },
   { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 1200, slideOutStart: 45, slideOutEnd: 85, layerType: 'background' },
@@ -110,33 +110,25 @@ function Scene01CameraTest() {
     };
   }, [camera]);
 
-  // ✅ Shot 2: Fixes the flat ground and blocked trees
+  // ✅ Shot 2: The floor falls flat underneath the camera
   const getLockedLayerTransform = useCallback((layer) => {
-    // We continue from 100% progress
-    const progress = 1.0; 
     const depthFactor = layer.depth;
+    const scale = layer.baseScale * (1 + (shot2Zoom - 1) * depthFactor);
     
-    // 🛠️ CONTINUE sliding the trees outwards
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
-      slideX = layer.slideOutX; // We are past the end, so full slide out
+      slideX = layer.slideOutX;
     }
 
-    // 🛠️ USE the SAME Zoom logic for the second shot
-    const zoomFactor = 1 + (shot2Zoom - 1) * depthFactor;
-    const scale = layer.baseScale * zoomFactor;
-
-    // 🛠️ FIX: The Floor stays FLAT. It slides DOWN out of the way.
     if (layer.layerType === 'floor') {
-      // This negative offset makes the ground look like it's lying flat and moving under the camera
-      const floorDrop = -layer.floorDropY * shot2Zoom; 
+      // 🛠️ CRITICAL FIX: Use the base floorDropY (400) * zoom to blow it WAY down off the screen
+      const floorDrop = layer.floorDropY * shot2Zoom; 
       return {
         transform: `translate(0px, ${floorDrop}px) scale(${scale})`,
         opacity: 1,
       };
     }
 
-    // Trees and backgrounds continue their parallax and scale
     return {
       transform: `translate(${slideX}px, 0px) scale(${scale})`,
       opacity: 1,
