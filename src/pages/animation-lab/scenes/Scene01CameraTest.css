@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-/* 🛠️ FIXED LAYOUT: Full screen Flexbox with Side Panel */
+/* 🛠️ SIDE-BY-SIDE LAYOUT: Scene takes left, Controls take right */
 .scene01-container {
   display: flex;
   height: 100vh;
@@ -23,32 +23,33 @@
   overflow: hidden;
 }
 
-/* 🛠️ CRITICAL FIX: Use 100% / 100% instead of 0 / 0! */
+/* 🛠️ CRITICAL FIX: Give the stage a REAL width/height so images center properly */
 .scene-stage {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100%;
-  height: 100%;
+  width: 800px;
+  height: 600px;
   transform: translate(-50%, -50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Scene Layers */
 .scene-layer {
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   transform-origin: center center;
   will-change: transform;
   transition: transform 0.05s linear;
 }
 
 .scene-layer-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
-  max-width: none;
-  width: auto;
-  height: auto;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -234,11 +235,6 @@ kbd {
 
 .depth-value {
   color: #ffd700;
-  font-size: 11px;
-}
-
-.scale-speed {
-  color: #4CAF50;
   font-size: 11px;
 }
 
