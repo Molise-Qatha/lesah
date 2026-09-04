@@ -5,68 +5,22 @@
   background: #0f0f0f;
   font-family: 'Segoe UI', system-ui, sans-serif;
   color: #e0e0e0;
-  padding: 20px;
+  padding: 0; /* Removed padding so we have full width */
+  overflow: hidden; /* Prevent page scrolling */
 }
 
 .scene01-container {
-  max-width: 1200px; /* Changed to 1200px so there is room for the side panel! */
-  margin: 0 auto;
+  display: flex; /* Main container becomes a Flexbox */
+  height: 100vh; /* Force full height */
+  width: 100vw;  /* Force full width */
 }
 
-.back-link {
-  color: #888;
-  text-decoration: none;
-  font-size: 0.85rem;
-  display: inline-block;
-  margin-bottom: 15px;
-  transition: color 0.2s;
-}
-
-.back-link:hover { color: #fff; }
-
-.scene-header {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.scene-header h1 {
-  font-size: 1.8rem;
-  margin: 0 0 5px;
-  color: #fff;
-}
-
-.scene-subtitle {
-  color: #aaa;
-  margin: 0 0 10px;
-}
-
-.test-badge {
-  display: inline-block;
-  background: #1565C0;
-  color: #fff;
-  padding: 3px 12px;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-/* 🛠️ NEW: Scene Layout (Side-by-Side) */
-.scene-layout {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-
-/* Scene Stage */
+/* 🛠️ MAIN SCENE (Left Side - Flex: 1) */
 .scene-viewport {
-  flex: 1;
+  flex: 1; /* Takes up all remaining space */
   position: relative;
-  width: 100%;
-  height: 600px;
+  height: 100vh;
   background: #D2B48C;
-  border: 1px solid #444;
-  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -77,6 +31,23 @@
   width: 800px;
   height: 600px;
   transform: translate(-50%, -50%);
+}
+
+/* 🛠️ CAMERA CONTROLS (Right Side - Fixed Width) */
+.camera-controls {
+  width: 300px; /* Fixed width for controls */
+  height: 100vh;
+  background: #222;
+  border-left: 1px solid #333;
+  padding: 20px;
+  overflow-y: auto; /* Allows scrolling inside ONLY if controls are too tall */
+  flex-shrink: 0;
+}
+
+/* 🛠️ Hide this header on larger screens to avoid clutter */
+.back-link,
+.scene-header {
+  display: none; 
 }
 
 /* Layer Base Styles */
@@ -113,16 +84,7 @@
   pointer-events: none;
 }
 
-/* 🛠️ Controls (Side Panel) */
-.camera-controls {
-  width: 320px;
-  flex-shrink: 0;
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 20px;
-}
-
+/* Inner Controls Styling */
 .camera-controls-header {
   display: flex;
   justify-content: space-between;
@@ -154,7 +116,7 @@
 
 .camera-info {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Reduced to 3 columns for side panel */
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-bottom: 15px;
 }
@@ -269,13 +231,22 @@ kbd {
   font-size: 0.7rem;
 }
 
-/* 🛠️ Responsive: Stack on small screens */
-@media (max-width: 900px) {
-  .scene-layout {
+/* 🛠️ Mobile: Stack on top for small screens */
+@media (max-width: 768px) {
+  .scene01-container {
     flex-direction: column;
+    overflow: auto;
+    height: auto;
+  }
+  
+  .scene-viewport {
+    height: 400px;
   }
   
   .camera-controls {
     width: 100%;
+    height: auto;
+    border-left: none;
+    border-top: 1px solid #333;
   }
 }
