@@ -20,55 +20,42 @@ const SCENE_LAYERS = [
   { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, zIndex: 7, visible: true },
 ];
 
-const CAMERA_PATH = {
-  startForward: 0,
-  endForward: 85,
-  duration: 14000,
-  easeInDuration: 0.20,
-  easeOutDuration: 0.35,
-};
-
 function Scene01CameraTest() {
-  // 🛠️ MANUAL LAYER SETTINGS: Everyone starts at X=0, Y=0, Scale=1
+  // 🛠️ MANUAL CAMERA STATE: Just X, Y, and Zoom (Forward is controlled by user)
+  const [camera, setCamera] = useState({ x: 0, y: 0, forward: 0 });
+
+  // 🛠️ LAYER SETTINGS: Individual X, Y, Scale for every layer
   const [layerPositions, setLayerPositions] = useState(
     SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
   );
 
-  const [camera, setCamera] = useState({ forward: CAMERA_PATH.startForward, x: 0, y: 0 });
-  const [debugMode, setDebugMode] = useState(true); // Start in Debug mode so you can edit!
-  const [autoPlay, setAutoPlay] = useState(false);
+  const [debugMode, setDebugMode] = useState(true); // Start in edit mode
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
-  
+  const [linkScale, setLinkScale] = useState(false); // 🛠️ Link Mountains + Distant Forest scale
+
   const animationFrameRef = useRef(null);
   const keysPressed = useRef({});
-  const autoPlayStartTime = useRef(null);
-  const autoPlayFrameRef = useRef(null);
 
-  // ------------------------------------------------------------------
-  // 🛠️ CORE MATH: Automatically calculates how much layers should move 
-  // based on their depth, PLUS adds your manual offsets.
-  // ------------------------------------------------------------------
+  // 🛠️ CORE MATH: User controls everything
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
     const manualPos = layerPositions[layer.id];
 
-    // Camera parallax (from camera movement)
+    // Parallax from camera X/Y
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
 
-    // The "Forward" push
+    // Forward is just a user-controlled slider now (no automation)
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
 
-    // 🛠️ FINAL LAYER POSITION = Manual X/Y/Scale + Camera Parallax
     const finalX = manualPos.x + cameraX - forwardOffset;
     const finalY = manualPos.y + cameraY;
     const finalScale = manualPos.scale;
 
-    // For the ground, we push it down so it can act like a flat floor
     let groundOffset = 0;
     if (layer.isGround) {
-      groundOffset = forwardProgress * 300; // Flat drop
+      groundOffset = forwardProgress * 300;
     }
 
     return {
@@ -78,12 +65,20 @@ function Scene01CameraTest() {
     };
   }, [camera, layerPositions]);
 
-  // 🛠️ Handler to update a specific layer's position
   const updateLayerPosition = (layerId, axis, value) => {
-    setLayerPositions(prev => ({
-      ...prev,
-      [layerId]: { ...prev[layerId], [axis]: value }
-    }));
+    // 🛠️ SPECIAL: If Link Scale is on, move Mountains and Forest together
+    if (linkScale && axis === 'scale' && (layerId === 'mountains' || layerId === 'distant_forest')) {
+      setLayerPositions(prev => ({
+        ...prev,
+        mountains: { ...prev.mountains, scale: value },
+        distant_forest: { ...prev.distant_forest, scale: value },
+      }));
+    } else {
+      setLayerPositions(prev => ({
+        ...prev,
+        [layerId]: { ...prev[layerId], [axis]: value }
+      }));
+    }
   };
 
   const handleKeyDown = useCallback((e) => {
@@ -102,7 +97,7 @@ function Scene01CameraTest() {
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
-  // Manual forward movement
+  // Manual movement loop
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = 0.4 * cameraSpeed;
@@ -116,45 +111,12 @@ function Scene01CameraTest() {
     return () => { if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current); };
   }, [cameraSpeed]);
 
-  // Cinematic Auto-play
-  useEffect(() => {
-    if (!autoPlay) return;
-    autoPlayStartTime.current = Date.now();
-    const animateCamera = () => {
-      const elapsed = Date.now() - autoPlayStartTime.current;
-      const rawProgress = Math.min(elapsed / CAMERA_PATH.duration, 1);
-      
-      const clampedT = Math.max(0, Math.min(1, rawProgress));
-      const eased = clampedT < CAMERA_PATH.easeInDuration 
-        ? 0.5 * (clampedT / CAMERA_PATH.easeInDuration) * (clampedT / CAMERA_PATH.easeInDuration)
-        : clampedT > 1 - CAMERA_PATH.easeOutDuration
-          ? 1 - 0.5 * (1 - (clampedT - (1 - CAMERA_PATH.easeOutDuration)) / CAMERA_PATH.easeOutDuration) * (1 - (clampedT - (1 - CAMERA_PATH.easeOutDuration)) / CAMERA_PATH.easeOutDuration)
-          : clampedT;
-      
-      setCamera(prev => ({ 
-        ...prev, 
-        forward: CAMERA_PATH.startForward + (CAMERA_PATH.endForward - CAMERA_PATH.startForward) * eased 
-      }));
-      
-      if (rawProgress < 1) autoPlayFrameRef.current = requestAnimationFrame(animateCamera);
-      else setAutoPlay(false);
-    };
-    autoPlayFrameRef.current = requestAnimationFrame(animateCamera);
-    return () => { if (autoPlayFrameRef.current) cancelAnimationFrame(autoPlayFrameRef.current); };
-  }, [autoPlay]);
-
   const resetCamera = () => {
-    setCamera({ forward: CAMERA_PATH.startForward, x: 0, y: 0 });
+    setCamera({ x: 0, y: 0, forward: 0 });
+    setLayerPositions(
+      SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
+    );
   };
-
-  const toggleLayer = (layerId) => {
-    setLayerVisibility(prev => ({ ...prev, [layerId]: !prev[layerId] }));
-  };
-
-  // We need this! (I forgot to declare it above)
-  const [layerVisibility, setLayerVisibility] = useState(
-    SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: true }), {})
-  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -170,72 +132,71 @@ function Scene01CameraTest() {
       <div className="scene01-container">
         
         {/* Scene Viewport */}
-        <div className="scene-viewport" style={{ cursor: debugMode ? 'grab' : 'default' }}>
+        <div className="scene-viewport">
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
-              layerVisibility[layer.id] && (
-                <div
-                  key={layer.id}
-                  className="scene-layer"
-                  style={{ zIndex: layer.zIndex, ...getLayerTransform(layer) }}
-                >
-                  <img src={layer.src} alt={layer.name} className="scene-layer-img" draggable={false} />
-                </div>
-              )
+              <div key={layer.id} className="scene-layer" style={{ zIndex: layer.zIndex, ...getLayerTransform(layer) }}>
+                <img src={layer.src} alt={layer.name} className="scene-layer-img" draggable={false} />
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Camera Controls */}
+        {/* 🛠️ FULL MANUAL CONTROLS */}
         <div className="camera-controls">
           <div className="camera-controls-header">
-            <h3>Layer Editor</h3>
+            <h3>Manual Editor</h3>
             <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>
-              🐛 Edit Mode
+              🐛 Toggle Controls
             </button>
           </div>
 
-          {/* 🛠️ LAYER EDITOR: Drag to change specific layer positions */}
+          {/* 🛠️ Manual Camera Controls */}
+          <div className="camera-stat-group">
+            <strong>Camera Parallax</strong>
+            <label>Camera X (Left/Right): <input type="range" min="-200" max="200" value={camera.x} onChange={(e) => setCamera(prev => ({ ...prev, x: Number(e.target.value) }))} /></label>
+            <label>Camera Y (Up/Down): <input type="range" min="-200" max="200" value={camera.y} onChange={(e) => setCamera(prev => ({ ...prev, y: Number(e.target.value) }))} /></label>
+            <label>Forward (Zoom Dolly): <input type="range" min="0" max="100" value={camera.forward} onChange={(e) => setCamera(prev => ({ ...prev, forward: Number(e.target.value) }))} /></label>
+          </div>
+
+          {/* 🛠️ Layer Editor */}
           {debugMode && (
             <div className="layer-editor">
+              <div className="layer-editor-header">
+                <strong>Layer Positions</strong>
+                <label className="link-scale-label">
+                  <input type="checkbox" checked={linkScale} onChange={() => setLinkScale(!linkScale)} />
+                  Link Mountains + Forest Scale
+                </label>
+              </div>
+
               {SCENE_LAYERS.map(layer => (
                 <div key={layer.id} className="layer-editor-item">
                   <strong>{layer.name}</strong>
                   <label>X: <input type="range" min="-500" max="500" value={layerPositions[layer.id].x} onChange={(e) => updateLayerPosition(layer.id, 'x', Number(e.target.value))} /></label>
                   <label>Y: <input type="range" min="-300" max="500" value={layerPositions[layer.id].y} onChange={(e) => updateLayerPosition(layer.id, 'y', Number(e.target.value))} /></label>
-                  <label>Scale: <input type="range" min="0.5" max="3" step="0.1" value={layerPositions[layer.id].scale} onChange={(e) => updateLayerPosition(layer.id, 'scale', Number(e.target.value))} /></label>
+                  <label>Scale: <input type="range" min="0.5" max="4" step="0.1" value={layerPositions[layer.id].scale} onChange={(e) => updateLayerPosition(layer.id, 'scale', Number(e.target.value))} /></label>
                 </div>
               ))}
             </div>
           )}
 
-          {!debugMode && (
-            <>
-              <div className="camera-info">
-                <div className="camera-stat">
-                  <label>Forward:</label>
-                  <span>{camera.forward.toFixed(1)}</span>
-                </div>
-                <div className="camera-stat">
-                  <label>X:</label>
-                  <span>{camera.x.toFixed(1)}</span>
-                </div>
-              </div>
-              
-              <div className="camera-buttons">
-                <button className={`camera-btn ${autoPlay ? 'active' : ''}`} onClick={() => { setAutoPlay(!autoPlay); if (!autoPlay) resetCamera(); }}>
-                  {autoPlay ? '⏸ Stop Auto' : '▶ Play Cinematic'}
-                </button>
-                <button className="camera-btn" onClick={resetCamera}>🔄 Reset</button>
-              </div>
+          <div className="camera-buttons">
+            <button className="camera-btn" onClick={resetCamera}>🔄 Reset All</button>
+          </div>
+          
+          <div className="slider-row">
+            <label>Speed:</label>
+            <input type="range" min="0.1" max="3" step="0.1" value={cameraSpeed} onChange={(e) => setCameraSpeed(Number(e.target.value))} />
+            <span>{cameraSpeed}x</span>
+          </div>
 
-              <div className="slider-row">
-                <label>Speed:</label>
-                <input type="range" min="0.1" max="3" step="0.1" value={cameraSpeed} onChange={(e) => setCameraSpeed(Number(e.target.value))} />
-                <span>{cameraSpeed}x</span>
-              </div>
-            </>
-          )}
+          <div className="keyboard-hints">
+            <p><kbd>W</kbd> Push Forward</p>
+            <p><kbd>S</kbd> Pull Back</p>
+            <p><kbd>A</kbd> Left</p>
+            <p><kbd>D</kbd> Right</p>
+          </div>
         </div>
       </div>
     </div>

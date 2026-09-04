@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import LandingPage from './pages/LandingPage';
 import Footer from './components/Footer';
@@ -36,6 +36,20 @@ import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
 
 import './App.css';
 
+// 🛠️ NEW: A layout wrapper to hide Header/Footer ONLY on specific pages
+function AppLayout({ children }) {
+  const location = useLocation();
+  const isSceneTest = location.pathname === '/animation-lab/scene01-camera-test';
+
+  return (
+    <div className="App">
+      {!isSceneTest && <Header />}
+      {children}
+      {!isSceneTest && <Footer />}
+    </div>
+  );
+}
+
 // Protected route wrapper for admin-only pages
 function AdminRoute({ children }) {
   const token = localStorage.getItem('access_token');
@@ -71,8 +85,8 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Header />
+      {/* 🛠️ We wrap the whole app in the AppLayout */}
+      <AppLayout>
         <Routes>
           {/* Home Page */}
           <Route path="/" element={<LandingPage />} />
@@ -80,6 +94,7 @@ function App() {
           {/* Animation Lab — UNLISTED development routes */}
           <Route path="/animation-lab" element={<AnimationLab />} />
           <Route path="/animation-lab/kopanang" element={<KopanangTest />} />
+          {/* 🛠️ This one now runs inside AppLayout, so Header/Footer are hidden */}
           <Route path="/animation-lab/scene01-camera-test" element={<Scene01CameraTest />} />
 
           {/* Service Pages */}
@@ -141,8 +156,7 @@ function App() {
             }
           />
         </Routes>
-        <Footer />
-      </div>
+      </AppLayout>
     </Router>
   );
 }

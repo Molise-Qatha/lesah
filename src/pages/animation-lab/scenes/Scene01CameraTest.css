@@ -1,9 +1,8 @@
 /* src/pages/animation-lab/scenes/Scene01CameraTest.css */
 
 .scene01-page {
-  min-height: 100vh;
-  background: #1a1a2e;
-  padding: 0;
+  height: 100vh;
+  background: #000;
   overflow: hidden;
 }
 
@@ -13,7 +12,6 @@
   width: 100vw;
 }
 
-/* Scene Viewport (Left) */
 .scene-viewport {
   flex: 1;
   position: relative;
@@ -31,7 +29,6 @@
   transform: translate(-50%, -50%);
 }
 
-/* Scene Layers */
 .scene-layer {
   position: absolute;
   top: 0;
@@ -52,9 +49,9 @@
   -webkit-user-drag: none;
 }
 
-/* Camera Controls (Right Side) */
+/* Controls Panel */
 .camera-controls {
-  width: 380px;
+  width: 400px;
   height: 100vh;
   background: #16213e;
   border-left: 1px solid #333;
@@ -68,12 +65,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .camera-controls-header h3 {
   margin: 0;
   color: #ffffff;
+  font-size: 20px;
 }
 
 .debug-toggle {
@@ -84,90 +82,61 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  transition: all 0.3s;
 }
 
 .debug-toggle.active {
   background: #e94560;
 }
 
-.camera-info {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.camera-stat {
+/* Camera Stat Group */
+.camera-stat-group {
   background: #0f3460;
-  padding: 10px;
-  border-radius: 4px;
-  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
 }
 
-.camera-stat label {
+.camera-stat-group > strong {
   display: block;
-  font-size: 11px;
-  color: #cccccc;
-  margin-bottom: 4px;
-}
-
-.camera-stat span {
+  margin-bottom: 10px;
   font-size: 14px;
-  font-weight: bold;
-  color: #ffffff;
+  color: #ffd700;
 }
 
-.camera-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.camera-btn {
-  flex: 1;
-  background: #533483;
-  color: #ffffff;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.camera-btn.active {
-  background: #e94560;
-}
-
-.slider-row {
+.camera-stat-group label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  color: #ffffff;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 8px;
 }
 
-.slider-row input[type="range"] {
+.camera-stat-group input[type="range"] {
   flex: 1;
 }
 
-.keyboard-hints {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.keyboard-hints p {
-  margin: 0;
-  font-size: 12px;
-  color: #cccccc;
-}
-
-/* 🛠️ LAYER EDITOR STYLES */
+/* Layer Editor */
 .layer-editor {
-  max-height: 600px;
+  max-height: 400px;
   overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.layer-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #ffd700;
+}
+
+.link-scale-label {
+  font-size: 12px;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .layer-editor-item {
@@ -196,18 +165,62 @@
   flex: 1;
 }
 
-@media (max-width: 768px) {
-  .scene01-container {
-    flex-direction: column;
-    height: auto;
-  }
-  
-  .scene-viewport {
-    height: 400px;
-  }
-  
-  .camera-controls {
-    width: 100%;
-    height: auto;
-  }
+/* Buttons */
+.camera-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.camera-btn {
+  flex: 1;
+  background: #533483;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.camera-btn:hover {
+  background: #6b4fa0;
+}
+
+/* Sliders */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+}
+
+/* Keyboard */
+.keyboard-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.keyboard-hints p {
+  margin: 0;
+  font-size: 12px;
+  color: #cccccc;
+}
+
+kbd {
+  display: inline-block;
+  background: #0f3460;
+  border: 1px solid #533483;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #ffffff;
 }
