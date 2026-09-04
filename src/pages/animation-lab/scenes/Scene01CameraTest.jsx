@@ -11,32 +11,20 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// 🛠️ TASK A: Added multiple duplicates of trees so there are NO black voids
+// 🛠️ Sky pushed far back, clearing gets rotated
 const SCENE_LAYERS = [
-  { id: 'sky', name: 'Sky', src: skyImg, zDepth: 0, baseScale: 1.0, zIndex: 1, visible: true },
-  { id: 'mountains', name: 'Mountains', src: mountainsImg, zDepth: -100, baseScale: 1.5, zIndex: 2, visible: true },
-  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, zDepth: -200, baseScale: 2.0, zIndex: 3, visible: true },
-  
-  // Clearing (Still sliding down, NOT rotated)
-  { id: 'clearing', name: 'Clearing', src: clearingImg, zDepth: -300, baseScale: 2.5, zIndex: 4, visible: true },
-
-  // 🛠️ DENSITY: Multiple copies of Landmark Tree
-  { id: 'landmark_tree_a', name: 'Landmark Tree A', src: landmarkImg, zDepth: -400, baseScale: 3.0, zIndex: 5, visible: true },
-  { id: 'landmark_tree_b', name: 'Landmark Tree B', src: landmarkImg, zDepth: -450, baseScale: 3.3, zIndex: 5, visible: true },
-
-  // 🛠️ DENSITY: Multiple copies of Near Tree 01 (Left)
-  { id: 'near_tree_01_a', name: 'Near Tree 01 A', src: nearTree01Img, zDepth: -500, baseScale: 3.5, zIndex: 6, visible: true },
-  { id: 'near_tree_01_b', name: 'Near Tree 01 B', src: nearTree01Img, zDepth: -550, baseScale: 3.8, zIndex: 6, visible: true },
-  { id: 'near_tree_01_c', name: 'Near Tree 01 C', src: nearTree01Img, zDepth: -600, baseScale: 4.0, zIndex: 6, visible: true },
-
-  // 🛠️ DENSITY: Multiple copies of Near Tree 02 (Right)
-  { id: 'near_tree_02_a', name: 'Near Tree 02 A', src: nearTree02Img, zDepth: -520, baseScale: 3.6, zIndex: 7, visible: true },
-  { id: 'near_tree_02_b', name: 'Near Tree 02 B', src: nearTree02Img, zDepth: -580, baseScale: 3.9, zIndex: 7, visible: true },
+  { id: 'sky', name: 'Sky', src: skyImg, zDepth: -1000, baseScale: 5.0, zIndex: 1, visible: true, isSky: true },
+  { id: 'mountains', name: 'Mountains', src: mountainsImg, zDepth: -800, baseScale: 3.5, zIndex: 2, visible: true },
+  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, zDepth: -600, baseScale: 3.0, zIndex: 3, visible: true },
+  { id: 'clearing', name: 'Clearing', src: clearingImg, zDepth: -300, baseScale: 2.5, zIndex: 4, visible: true, isGround: true },
+  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, zDepth: -400, baseScale: 3.0, zIndex: 5, visible: true },
+  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, zDepth: -500, baseScale: 3.5, zIndex: 6, visible: true },
+  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, zDepth: -600, baseScale: 4.0, zIndex: 7, visible: true },
 ];
 
 const CAMERA_PATH = {
   startZ: 0,
-  endZ: -650, // Travel through ALL the duplicated trees
+  endZ: -650,
   duration: 12000,
 };
 
@@ -60,7 +48,6 @@ function Scene01CameraTest() {
   const autoPlayStartTime = useRef(null);
   const autoPlayFrameRef = useRef(null);
 
-  // 🛠️ TASK A: Added `blur` to hide flatness, and opacity still fades them out
   const getLayerTransform = useCallback((layer) => {
     const distance = layer.zDepth - camera.z;
     const safeDistance = Math.max(distance, 1);
@@ -74,12 +61,19 @@ function Scene01CameraTest() {
     let opacity = 1;
     let blur = 0;
 
-    // 🛠️ BLUR EFFECT: As layers get closer than 80 units, they smoothly blur and fade
     if (distance < 80) {
-      // Blur goes from 0 to 15px as they pass the camera
       blur = Math.max(0, (80 - distance) / 80) * 15;
-      // Opacity goes from 1 to 0 so they smoothly disappear
       opacity = Math.max(0, distance / 80);
+    }
+
+    // 🛠️ GROUND: Slides down and applies rotateX(90deg) via a separate wrapper
+    if (layer.isGround) {
+      const floorDrop = (1 - (camera.z / CAMERA_PATH.startZ)) * 100; // Push it below the screen
+      return {
+        transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${scale})`,
+        opacity: opacity,
+        filter: `blur(${blur}px)`,
+      };
     }
 
     return {
@@ -202,25 +196,37 @@ function Scene01CameraTest() {
   return (
     <div className="scene01-page">
       <div className="scene01-container">
-        <div className="scene-viewport" style={{ backgroundColor: '#D2B48C' }}>
+        <div className="scene-viewport">
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
               layerVisibility[layer.id] && (
                 <div
                   key={layer.id}
-                  className="scene-layer"
+                  className={`scene-layer ${layer.isSky ? 'sky-fill-layer' : ''}`}
                   style={{
                     zIndex: layer.zIndex,
                     ...getLayerTransform(layer),
                   }}
                 >
-                  <img
-                    src={layer.src}
-                    alt={layer.name}
-                    className="scene-layer-img"
-                    draggable={false}
-                    style={{ filter: getLayerTransform(layer).filter }} // Apply the blur here
-                  />
+                  {/* 🛠️ GROUND: Wrap it in a 3D perspective wrapper to rotate X */}
+                  {layer.isGround ? (
+                    <div className="ground-wrapper">
+                      <img
+                        src={layer.src}
+                        alt={layer.name}
+                        className="scene-layer-img"
+                        draggable={false}
+                        style={{ transform: 'rotateX(90deg)', transformOrigin: 'bottom center' }}
+                      />
+                    </div>
+                  ) : (
+                    <img
+                      src={layer.src}
+                      alt={layer.name}
+                      className={`scene-layer-img ${layer.isSky ? 'sky-fill' : ''}`}
+                      draggable={false}
+                    />
+                  )}
                   
                   {debugMode && (
                     <div className="layer-debug-info">

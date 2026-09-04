@@ -2,7 +2,7 @@
 
 .scene01-page {
   min-height: 100vh;
-  background: #0f0f0f;
+  background: #000; /* Pure black background, NO dust */
   font-family: 'Segoe UI', system-ui, sans-serif;
   color: #e0e0e0;
   padding: 0;
@@ -19,14 +19,16 @@
   display: none;
 }
 
+/* 🛠️ SCENE: No perspective here. Black background. */
 .scene-viewport {
   flex: 1;
   position: relative;
   height: 100vh;
-  background: #D2B48C;
+  background: #000; /* Removed #D2B48C dust! */
   overflow: hidden;
 }
 
+/* 🛠️ FIXED: Sky layer fills the ENTIRE screen and stays behind everything */
 .scene-stage {
   position: absolute;
   top: 50%;
@@ -36,15 +38,6 @@
   transform: translate(-50%, -50%);
 }
 
-/* 🛠️ Important: This allows the CSS filter to work on the image */
-.scene-layer-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  will-change: transform, opacity, filter;
-}
-
 .scene-layer {
   position: absolute;
   top: 0;
@@ -52,7 +45,36 @@
   width: 100%;
   height: 100%;
   transform-origin: center center;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
+}
+
+.scene-layer-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* 🛠️ SPECIAL: Sky must cover the whole screen, or the black shows. 
+   We won't use 'object-fit: contain' for it, we'll make it fill. */
+.scene-layer-img.sky-fill {
+  object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 🛠️ SPECIAL: Ground layer wrapper. This is the ONLY place we use 3D rotation. */
+.ground-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  perspective: 800px; /* ONLY on the ground wrapper */
 }
 
 .layer-debug-info {
