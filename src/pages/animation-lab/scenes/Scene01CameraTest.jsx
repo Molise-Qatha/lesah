@@ -11,92 +11,15 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// Scene layer configuration
+// Scene layer configuration (UNTOUCHED)
 const SCENE_LAYERS = [
-  {
-    id: 'sky',
-    name: 'Sky',
-    src: skyImg,
-    depth: 0.05,
-    baseScale: 1.0,
-    zIndex: 1,
-    visible: true,
-    slideOutX: 0,
-    layerType: 'background',
-  },
-  {
-    id: 'mountains',
-    name: 'Mountains',
-    src: mountainsImg,
-    depth: 0.1,
-    baseScale: 1.0,
-    zIndex: 2,
-    visible: true,
-    slideOutX: 0,
-    layerType: 'background',
-  },
-  {
-    id: 'distant_forest',
-    name: 'Distant Forest',
-    src: forestImg,
-    depth: 0.2,
-    baseScale: 1.0,
-    zIndex: 3,
-    visible: true,
-    slideOutX: 0,
-    layerType: 'background',
-  },
-  {
-    id: 'clearing',
-    name: 'Clearing',
-    src: clearingImg,
-    depth: 0.4,
-    baseScale: 1.0,
-    zIndex: 4,
-    visible: true,
-    slideOutX: 0,
-    layerType: 'floor',
-    floorDropY: 400,
-  },
-  {
-    id: 'landmark_tree',
-    name: 'Landmark Tree',
-    src: landmarkImg,
-    depth: 0.65,
-    baseScale: 1.0,
-    zIndex: 5,
-    visible: true,
-    slideOutX: -400,
-    slideOutStart: 35,
-    slideOutEnd: 65,
-    layerType: 'background',
-  },
-  {
-    id: 'near_tree_01',
-    name: 'Near Tree 01',
-    src: nearTree01Img,
-    depth: 0.85,
-    baseScale: 1.10,
-    zIndex: 6,
-    visible: true,
-    slideOutX: -900,
-    slideOutStart: 20,
-    slideOutEnd: 45,
-    layerType: 'background',
-  },
-  {
-    id: 'near_tree_02',
-    name: 'Near Tree 02',
-    src: nearTree02Img,
-    depth: 1.0,
-    baseScale: 1.20,
-    zIndex: 7,
-    visible: true,
-    slideOutX: 900,
-    slideOutStart: 25,
-    slideOutEnd: 50,
-    layerType: 'background',
-  },
+  { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, baseScale: 1.0, zIndex: 1, visible: true, slideOutX: 0, layerType: 'background' },
+  { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, baseScale: 1.0, zIndex: 2, visible: true, slideOutX: 0, layerType: 'background' },
+  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, baseScale: 1.0, zIndex: 3, visible: true, slideOutX: 0, layerType: 'background' },
+  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: 400 },
+  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -400, slideOutStart: 35, slideOutEnd: 65, layerType: 'background' },
+  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -900, slideOutStart: 20, slideOutEnd: 45, layerType: 'background' },
+  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 900, slideOutStart: 25, slideOutEnd: 50, layerType: 'background' },
 ];
 
 const CAMERA_PATH = {
@@ -108,6 +31,7 @@ const CAMERA_PATH = {
 };
 
 function Scene01CameraTest() {
+  // 🛠️ Shot 1 Camera State (UNTOUCHED)
   const [camera, setCamera] = useState({
     x: CAMERA_PATH.start.x,
     y: CAMERA_PATH.start.y,
@@ -115,6 +39,12 @@ function Scene01CameraTest() {
     forward: CAMERA_PATH.start.forward,
   });
 
+  // 🛠️ NEW: Shot 2 Camera State (PURE ZOOM)
+  const [shot2Zoom, setShot2Zoom] = useState(1.0);
+
+  // 🛠️ NEW: Control which shot we are playing
+  const [activeShot, setActiveShot] = useState(1); // 1 = Push In, 2 = Cut & Zoom
+  
   const [debugMode, setDebugMode] = useState(false);
   const [layerVisibility, setLayerVisibility] = useState(
     SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: true }), {})
@@ -145,6 +75,7 @@ function Scene01CameraTest() {
     return midProgress;
   }, []);
 
+  // 🛠️ Shot 1: Get layer transform (NO CHANGES - EXACTLY AS YOU WANT IT)
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
     const progress = camera.forward / 100;
@@ -183,6 +114,26 @@ function Scene01CameraTest() {
     };
   }, [camera]);
 
+  // 🛠️ Shot 2: LOCK the scene and just Zoom In
+  const getLockedLayerTransform = useCallback((layer) => {
+    // We are locked at 100% forward, layers are placed perfectly
+    const depthFactor = layer.depth;
+    const zoomFactor = 1 + (shot2Zoom - 1) * depthFactor;
+    const scale = layer.baseScale * zoomFactor;
+    
+    // Since slideOut is done, hold them at their final slide position
+    let slideX = 0;
+    if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
+      const slideProgress = 1; // We are at 100% forward
+      slideX = layer.slideOutX * slideProgress;
+    }
+
+    return {
+      transform: `translate(${slideX}px, 0px) scale(${scale})`,
+      opacity: 1,
+    };
+  }, [shot2Zoom]);
+
   const handleKeyDown = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = true;
     if (e.key === 'ArrowUp') keysPressed.current['w'] = true;
@@ -199,9 +150,11 @@ function Scene01CameraTest() {
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
-  // Manual camera loop
+  // 🛠️ Shot 1: Manual camera loop (Only works if we are in Shot 1)
   useEffect(() => {
     const handleKeyFrame = () => {
+      if (activeShot !== 1) return;
+      
       const speed = 0.4 * cameraSpeed;
       
       if (keysPressed.current['w']) {
@@ -227,47 +180,51 @@ function Scene01CameraTest() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [cameraSpeed]);
+  }, [cameraSpeed, activeShot]);
 
-  // Auto-play cinematic camera
+  // 🛠️ Auto-play loop: Plays Shot 1, then CUTS to Shot 2 and plays that
   useEffect(() => {
     if (!autoPlay) return;
     
     autoPlayStartTime.current = Date.now();
+    const shot1Duration = CAMERA_PATH.duration;
     
-    const animateCamera = () => {
+    const animateSequence = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
-      const rawProgress = Math.min(elapsed / CAMERA_PATH.duration, 1);
+
+      // SHOT 1: 0 to 14 seconds
+      if (elapsed < shot1Duration) {
+        setActiveShot(1);
+        const rawProgress = Math.min(elapsed / shot1Duration, 1);
+        const easedProgress = cinematicEase(rawProgress);
+        
+        setCamera({
+          forward: easedProgress * 100,
+          x: 0, y: 0,
+          zoom: 1.45 * easedProgress, 
+        });
+      } 
+      // 🛠️ SHOT 2: CUT & ZOOM (14 to 28 seconds)
+      else {
+        setActiveShot(2);
+        const shot2Progress = Math.min((elapsed - shot1Duration) / 10, 1); // 10 seconds for Shot 2
+        
+        // A slightly different ease: slow, then rush
+        const easedShot2 = shot2Progress < 0.5 
+          ? 2 * shot2Progress * shot2Progress 
+          : 1 - Math.pow(-2 * shot2Progress + 2, 2) / 2;
+        
+        setShot2Zoom(1.0 + (easedShot2 * 1.5)); // Zooms from 1.0 to 2.5x
+      }
       
-      const easedProgress = cinematicEase(rawProgress);
-      
-      const forward = CAMERA_PATH.start.forward + 
-        (CAMERA_PATH.end.forward - CAMERA_PATH.start.forward) * easedProgress;
-      
-      const x = CAMERA_PATH.start.x + 
-        (CAMERA_PATH.end.x - CAMERA_PATH.start.x) * easedProgress;
-      
-      const y = CAMERA_PATH.start.y + 
-        (CAMERA_PATH.end.y - CAMERA_PATH.start.y) * easedProgress;
-      
-      const zoom = CAMERA_PATH.start.zoom + 
-        (CAMERA_PATH.end.zoom - CAMERA_PATH.start.zoom) * easedProgress;
-      
-      setCamera({
-        forward,
-        x,
-        y,
-        zoom,
-      });
-      
-      if (rawProgress < 1) {
-        autoPlayFrameRef.current = requestAnimationFrame(animateCamera);
+      if (elapsed < shot1Duration + 10000) {
+        autoPlayFrameRef.current = requestAnimationFrame(animateSequence);
       } else {
         setAutoPlay(false);
       }
     };
     
-    autoPlayFrameRef.current = requestAnimationFrame(animateCamera);
+    autoPlayFrameRef.current = requestAnimationFrame(animateSequence);
     
     return () => {
       if (autoPlayFrameRef.current) {
@@ -276,22 +233,31 @@ function Scene01CameraTest() {
     };
   }, [autoPlay, cinematicEase]);
 
-  // 🛠️ NEW: Zoom In/Out buttons instead of mouse scroll
   const handleZoomIn = () => {
-    setCamera(prev => ({ ...prev, zoom: Math.min(prev.zoom + 0.1, 2.5) }));
+    if (activeShot === 1) {
+      setCamera(prev => ({ ...prev, zoom: Math.min(prev.zoom + 0.1, 2.5) }));
+    } else {
+      setShot2Zoom(prev => Math.min(prev + 0.1, 2.5));
+    }
   };
 
   const handleZoomOut = () => {
-    setCamera(prev => ({ ...prev, zoom: Math.max(prev.zoom - 0.1, 0.5) }));
+    if (activeShot === 1) {
+      setCamera(prev => ({ ...prev, zoom: Math.max(prev.zoom - 0.1, 0.5) }));
+    } else {
+      setShot2Zoom(prev => Math.max(prev - 0.1, 1.0));
+    }
   };
 
   const resetCamera = () => {
+    setActiveShot(1);
     setCamera({
       x: CAMERA_PATH.start.x,
       y: CAMERA_PATH.start.y,
       zoom: CAMERA_PATH.start.zoom,
       forward: CAMERA_PATH.start.forward,
     });
+    setShot2Zoom(1.0);
   };
 
   const toggleLayer = (layerId) => {
@@ -333,7 +299,8 @@ function Scene01CameraTest() {
                   className="scene-layer"
                   style={{
                     zIndex: layer.zIndex,
-                    ...getLayerTransform(layer),
+                    // 🛠️ CHOOSE WHICH SHOT TO RENDER
+                    ...(activeShot === 1 ? getLayerTransform(layer) : getLockedLayerTransform(layer)),
                   }}
                 >
                   <img
@@ -373,24 +340,19 @@ function Scene01CameraTest() {
           
           <div className="camera-info">
             <div className="camera-stat">
-              <label>Forward:</label>
+              <label>Active Shot:</label>
+              <span>{activeShot}</span>
+            </div>
+            <div className="camera-stat">
+              <label>Forward (Shot 1):</label>
               <span>{camera.forward.toFixed(1)}</span>
             </div>
             <div className="camera-stat">
-              <label>X:</label>
-              <span>{camera.x.toFixed(1)}</span>
-            </div>
-            <div className="camera-stat">
-              <label>Y:</label>
-              <span>{camera.y.toFixed(1)}</span>
-            </div>
-            <div className="camera-stat">
-              <label>Zoom:</label>
-              <span>{camera.zoom.toFixed(2)}x</span>
+              <label>Zoom (Shot 2):</label>
+              <span>{shot2Zoom.toFixed(2)}x</span>
             </div>
           </div>
 
-          {/* 🛠️ NEW: Zoom Buttons */}
           <div className="camera-buttons">
             <button className="camera-btn zoom-btn" onClick={handleZoomIn}>🔍 Zoom In</button>
             <button className="camera-btn zoom-btn" onClick={handleZoomOut}>🔍 Zoom Out</button>
@@ -429,8 +391,7 @@ function Scene01CameraTest() {
             <p><kbd>S</kbd> Backward</p>
             <p><kbd>A</kbd> Left</p>
             <p><kbd>D</kbd> Right</p>
-            <p><kbd>Scroll</kbd> Zoom</p>
-            <p><kbd>Drag</kbd> Pan</p>
+            <p><kbd>Zoom</kbd> Buttons</p>
           </div>
           
           {debugMode && (
