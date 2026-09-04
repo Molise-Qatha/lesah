@@ -150,7 +150,6 @@ function Scene01CameraTest() {
     };
   }, [autoPlay]);
 
-  // 🛠️ NEW: Zoom In/Out Buttons (Direct Z control)
   const handleZoomIn = () => {
     setCamera(prev => ({ ...prev, z: Math.max(prev.z - 10, CAMERA_PATH.endZ) }));
   };
@@ -190,123 +189,127 @@ function Scene01CameraTest() {
           <span className="test-badge">CAMERA TEST</span>
         </div>
 
-        {/* 🛠️ FIXED: Added background color to mask dark gaps between layers */}
-        <div className="scene-viewport" style={{ backgroundColor: '#D2B48C' }}>
-          <div className="scene-stage">
-            {SCENE_LAYERS.map(layer => (
-              layerVisibility[layer.id] && (
-                <div
-                  key={layer.id}
-                  className="scene-layer"
-                  style={{
-                    zIndex: layer.zIndex,
-                    ...getLayerTransform(layer),
-                  }}
-                >
-                  <img
-                    src={layer.src}
-                    alt={layer.name}
-                    className="scene-layer-img"
-                    draggable={false}
-                  />
-                  
-                  {debugMode && (
-                    <div className="layer-debug-info">
-                      <span>{layer.name}</span>
-                      <span>Z-Depth: {layer.zDepth}</span>
-                      <span>Camera Z: {camera.z.toFixed(0)}</span>
-                      <span>Dist: {Math.max(layer.zDepth - camera.z, 1).toFixed(0)}</span>
-                    </div>
-                  )}
-                </div>
-              )
-            ))}
-          </div>
-        </div>
-
-        <div className="camera-controls">
-          <div className="camera-controls-header">
-            <h3>Camera Controls</h3>
-            <button 
-              className={`debug-toggle ${debugMode ? 'active' : ''}`}
-              onClick={() => setDebugMode(!debugMode)}
-            >
-              🐛 Debug
-            </button>
-          </div>
-          
-          <div className="camera-info">
-            <div className="camera-stat">
-              <label>Z-Dolly:</label>
-              <span>{camera.z.toFixed(1)}</span>
-            </div>
-            <div className="camera-stat">
-              <label>X-Sway:</label>
-              <span>{camera.x.toFixed(1)}</span>
-            </div>
-            <div className="camera-stat">
-              <label>Y-Pan:</label>
-              <span>{camera.y.toFixed(1)}</span>
-            </div>
-          </div>
-          
-          {/* 🛠️ NEW: Zoom Controls */}
-          <div className="camera-buttons">
-            <button className="camera-btn zoom-btn" onClick={handleZoomIn}>🔍 Zoom In</button>
-            <button className="camera-btn zoom-btn" onClick={handleZoomOut}>🔍 Zoom Out</button>
-          </div>
-          
-          <div className="camera-buttons">
-            <button 
-              className={`camera-btn ${autoPlay ? 'active' : ''}`}
-              onClick={() => {
-                setAutoPlay(!autoPlay);
-                if (!autoPlay) resetCamera();
-              }}
-            >
-              {autoPlay ? '⏸ Stop Auto' : '▶ Play Cinematic'}
-            </button>
-            <button className="camera-btn" onClick={resetCamera}>
-              🔄 Reset
-            </button>
-          </div>
-          
-          <div className="slider-row">
-            <label>Speed:</label>
-            <input 
-              type="range" 
-              min="0.1" 
-              max="3" 
-              step="0.1" 
-              value={cameraSpeed} 
-              onChange={(e) => setCameraSpeed(Number(e.target.value))} 
-            />
-            <span>{cameraSpeed}x</span>
-          </div>
-          
-          <div className="keyboard-hints">
-            <p><kbd>W</kbd> Dolly Forward</p>
-            <p><kbd>S</kbd> Dolly Backward</p>
-            <p><kbd>A</kbd> Left</p>
-            <p><kbd>D</kbd> Right</p>
-          </div>
-          
-          {debugMode && (
-            <div className="debug-layers">
-              <h4>Layer Visibility</h4>
+        {/* 🛠️ NEW: Side-by-side layout */}
+        <div className="scene-layout">
+          {/* MAIN SCENE (Left) */}
+          <div className="scene-viewport" style={{ backgroundColor: '#D2B48C' }}>
+            <div className="scene-stage">
               {SCENE_LAYERS.map(layer => (
-                <label key={layer.id} className="layer-toggle">
-                  <input
-                    type="checkbox"
-                    checked={layerVisibility[layer.id]}
-                    onChange={() => toggleLayer(layer.id)}
-                  />
-                  <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
-                  <span className="depth-value">({layer.zDepth})</span>
-                </label>
+                layerVisibility[layer.id] && (
+                  <div
+                    key={layer.id}
+                    className="scene-layer"
+                    style={{
+                      zIndex: layer.zIndex,
+                      ...getLayerTransform(layer),
+                    }}
+                  >
+                    <img
+                      src={layer.src}
+                      alt={layer.name}
+                      className="scene-layer-img"
+                      draggable={false}
+                    />
+                    
+                    {debugMode && (
+                      <div className="layer-debug-info">
+                        <span>{layer.name}</span>
+                        <span>Z-Depth: {layer.zDepth}</span>
+                        <span>Camera Z: {camera.z.toFixed(0)}</span>
+                        <span>Dist: {Math.max(layer.zDepth - camera.z, 1).toFixed(0)}</span>
+                      </div>
+                    )}
+                  </div>
+                )
               ))}
             </div>
-          )}
+          </div>
+
+          {/* CAMERA CONTROLS (Right Panel) */}
+          <div className="camera-controls">
+            <div className="camera-controls-header">
+              <h3>Camera Controls</h3>
+              <button 
+                className={`debug-toggle ${debugMode ? 'active' : ''}`}
+                onClick={() => setDebugMode(!debugMode)}
+              >
+                🐛 Debug
+              </button>
+            </div>
+            
+            <div className="camera-info">
+              <div className="camera-stat">
+                <label>Z-Dolly:</label>
+                <span>{camera.z.toFixed(1)}</span>
+              </div>
+              <div className="camera-stat">
+                <label>X-Sway:</label>
+                <span>{camera.x.toFixed(1)}</span>
+              </div>
+              <div className="camera-stat">
+                <label>Y-Pan:</label>
+                <span>{camera.y.toFixed(1)}</span>
+              </div>
+            </div>
+            
+            {/* Zoom Controls */}
+            <div className="camera-buttons">
+              <button className="camera-btn zoom-btn" onClick={handleZoomIn}>🔍 Zoom In</button>
+              <button className="camera-btn zoom-btn" onClick={handleZoomOut}>🔍 Zoom Out</button>
+            </div>
+            
+            <div className="camera-buttons">
+              <button 
+                className={`camera-btn ${autoPlay ? 'active' : ''}`}
+                onClick={() => {
+                  setAutoPlay(!autoPlay);
+                  if (!autoPlay) resetCamera();
+                }}
+              >
+                {autoPlay ? '⏸ Stop Auto' : '▶ Play Cinematic'}
+              </button>
+              <button className="camera-btn" onClick={resetCamera}>
+                🔄 Reset
+              </button>
+            </div>
+            
+            <div className="slider-row">
+              <label>Speed:</label>
+              <input 
+                type="range" 
+                min="0.1" 
+                max="3" 
+                step="0.1" 
+                value={cameraSpeed} 
+                onChange={(e) => setCameraSpeed(Number(e.target.value))} 
+              />
+              <span>{cameraSpeed}x</span>
+            </div>
+            
+            <div className="keyboard-hints">
+              <p><kbd>W</kbd> Dolly Forward</p>
+              <p><kbd>S</kbd> Dolly Backward</p>
+              <p><kbd>A</kbd> Left</p>
+              <p><kbd>D</kbd> Right</p>
+            </div>
+            
+            {debugMode && (
+              <div className="debug-layers">
+                <h4>Layer Visibility</h4>
+                {SCENE_LAYERS.map(layer => (
+                  <label key={layer.id} className="layer-toggle">
+                    <input
+                      type="checkbox"
+                      checked={layerVisibility[layer.id]}
+                      onChange={() => toggleLayer(layer.id)}
+                    />
+                    <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
+                    <span className="depth-value">({layer.zDepth})</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
