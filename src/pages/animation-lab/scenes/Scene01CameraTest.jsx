@@ -16,10 +16,10 @@ const SCENE_LAYERS = [
   { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, baseScale: 1.0, zIndex: 1, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, baseScale: 1.0, zIndex: 2, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, baseScale: 1.0, zIndex: 3, visible: true, slideOutX: 0, layerType: 'background' },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: 400 },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -400, slideOutStart: 35, slideOutEnd: 65, layerType: 'background' },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -900, slideOutStart: 20, slideOutEnd: 45, layerType: 'background' },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 900, slideOutStart: 25, slideOutEnd: 50, layerType: 'background' },
+  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: -100 },
+  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -600, slideOutStart: 50, slideOutEnd: 90, layerType: 'background' },
+  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -1200, slideOutStart: 40, slideOutEnd: 80, layerType: 'background' },
+  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 1200, slideOutStart: 45, slideOutEnd: 85, layerType: 'background' },
 ];
 
 const CAMERA_PATH = {
@@ -31,7 +31,6 @@ const CAMERA_PATH = {
 };
 
 function Scene01CameraTest() {
-  // 🛠️ Shot 1 Camera State (UNTOUCHED)
   const [camera, setCamera] = useState({
     x: CAMERA_PATH.start.x,
     y: CAMERA_PATH.start.y,
@@ -39,11 +38,8 @@ function Scene01CameraTest() {
     forward: CAMERA_PATH.start.forward,
   });
 
-  // 🛠️ NEW: Shot 2 Camera State (PURE ZOOM)
   const [shot2Zoom, setShot2Zoom] = useState(1.0);
-
-  // 🛠️ NEW: Control which shot we are playing
-  const [activeShot, setActiveShot] = useState(1); // 1 = Push In, 2 = Cut & Zoom
+  const [activeShot, setActiveShot] = useState(1);
   
   const [debugMode, setDebugMode] = useState(false);
   const [layerVisibility, setLayerVisibility] = useState(
@@ -75,7 +71,7 @@ function Scene01CameraTest() {
     return midProgress;
   }, []);
 
-  // 🛠️ Shot 1: Get layer transform (NO CHANGES - EXACTLY AS YOU WANT IT)
+  // ✅ Shot 1: EXACTLY AS YOU WANT IT (100%)
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
     const progress = camera.forward / 100;
@@ -114,20 +110,33 @@ function Scene01CameraTest() {
     };
   }, [camera]);
 
-  // 🛠️ Shot 2: LOCK the scene and just Zoom In
+  // ✅ Shot 2: Fixes the flat ground and blocked trees
   const getLockedLayerTransform = useCallback((layer) => {
-    // We are locked at 100% forward, layers are placed perfectly
+    // We continue from 100% progress
+    const progress = 1.0; 
     const depthFactor = layer.depth;
-    const zoomFactor = 1 + (shot2Zoom - 1) * depthFactor;
-    const scale = layer.baseScale * zoomFactor;
     
-    // Since slideOut is done, hold them at their final slide position
+    // 🛠️ CONTINUE sliding the trees outwards
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
-      const slideProgress = 1; // We are at 100% forward
-      slideX = layer.slideOutX * slideProgress;
+      slideX = layer.slideOutX; // We are past the end, so full slide out
     }
 
+    // 🛠️ USE the SAME Zoom logic for the second shot
+    const zoomFactor = 1 + (shot2Zoom - 1) * depthFactor;
+    const scale = layer.baseScale * zoomFactor;
+
+    // 🛠️ FIX: The Floor stays FLAT. It slides DOWN out of the way.
+    if (layer.layerType === 'floor') {
+      // This negative offset makes the ground look like it's lying flat and moving under the camera
+      const floorDrop = -layer.floorDropY * shot2Zoom; 
+      return {
+        transform: `translate(0px, ${floorDrop}px) scale(${scale})`,
+        opacity: 1,
+      };
+    }
+
+    // Trees and backgrounds continue their parallax and scale
     return {
       transform: `translate(${slideX}px, 0px) scale(${scale})`,
       opacity: 1,
@@ -150,7 +159,7 @@ function Scene01CameraTest() {
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
-  // 🛠️ Shot 1: Manual camera loop (Only works if we are in Shot 1)
+  // Manual camera loop (Shot 1 only)
   useEffect(() => {
     const handleKeyFrame = () => {
       if (activeShot !== 1) return;
@@ -182,7 +191,7 @@ function Scene01CameraTest() {
     };
   }, [cameraSpeed, activeShot]);
 
-  // 🛠️ Auto-play loop: Plays Shot 1, then CUTS to Shot 2 and plays that
+  // Auto-play: Shot 1 (Push In) -> Shot 2 (Zoom with flat ground)
   useEffect(() => {
     if (!autoPlay) return;
     
@@ -192,7 +201,7 @@ function Scene01CameraTest() {
     const animateSequence = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
 
-      // SHOT 1: 0 to 14 seconds
+      // Shot 1
       if (elapsed < shot1Duration) {
         setActiveShot(1);
         const rawProgress = Math.min(elapsed / shot1Duration, 1);
@@ -204,17 +213,17 @@ function Scene01CameraTest() {
           zoom: 1.45 * easedProgress, 
         });
       } 
-      // 🛠️ SHOT 2: CUT & ZOOM (14 to 28 seconds)
+      // Shot 2 (CUT AND ZOOM)
       else {
         setActiveShot(2);
-        const shot2Progress = Math.min((elapsed - shot1Duration) / 10, 1); // 10 seconds for Shot 2
+        const shot2Progress = Math.min((elapsed - shot1Duration) / 10, 1); // 10 seconds
         
-        // A slightly different ease: slow, then rush
         const easedShot2 = shot2Progress < 0.5 
           ? 2 * shot2Progress * shot2Progress 
           : 1 - Math.pow(-2 * shot2Progress + 2, 2) / 2;
         
-        setShot2Zoom(1.0 + (easedShot2 * 1.5)); // Zooms from 1.0 to 2.5x
+        // Shot 2 goes from 1.0 to 2.0x
+        setShot2Zoom(1.0 + (easedShot2 * 1.0)); 
       }
       
       if (elapsed < shot1Duration + 10000) {
@@ -237,7 +246,7 @@ function Scene01CameraTest() {
     if (activeShot === 1) {
       setCamera(prev => ({ ...prev, zoom: Math.min(prev.zoom + 0.1, 2.5) }));
     } else {
-      setShot2Zoom(prev => Math.min(prev + 0.1, 2.5));
+      setShot2Zoom(prev => Math.min(prev + 0.1, 2.0));
     }
   };
 
@@ -299,7 +308,6 @@ function Scene01CameraTest() {
                   className="scene-layer"
                   style={{
                     zIndex: layer.zIndex,
-                    // 🛠️ CHOOSE WHICH SHOT TO RENDER
                     ...(activeShot === 1 ? getLayerTransform(layer) : getLockedLayerTransform(layer)),
                   }}
                 >
@@ -315,9 +323,6 @@ function Scene01CameraTest() {
                       <span>{layer.name}</span>
                       <span>Depth: {layer.depth}</span>
                       <span>Type: {layer.layerType || 'background'}</span>
-                      {layer.slideOutX !== 0 && (
-                        <span>Slide: {layer.slideOutX}px</span>
-                      )}
                     </div>
                   )}
                 </div>
@@ -326,7 +331,6 @@ function Scene01CameraTest() {
           </div>
         </div>
 
-        {/* Camera Controls */}
         <div className="camera-controls">
           <div className="camera-controls-header">
             <h3>Camera Controls</h3>
