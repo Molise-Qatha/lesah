@@ -11,9 +11,8 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// 🛠️ Sky pushed far back, clearing gets rotated
+// 🛠️ FIX: Sky is REMOVED from the traveling layers. It will be a fixed background.
 const SCENE_LAYERS = [
-  { id: 'sky', name: 'Sky', src: skyImg, zDepth: -1000, baseScale: 5.0, zIndex: 1, visible: true, isSky: true },
   { id: 'mountains', name: 'Mountains', src: mountainsImg, zDepth: -800, baseScale: 3.5, zIndex: 2, visible: true },
   { id: 'distant_forest', name: 'Distant Forest', src: forestImg, zDepth: -600, baseScale: 3.0, zIndex: 3, visible: true },
   { id: 'clearing', name: 'Clearing', src: clearingImg, zDepth: -300, baseScale: 2.5, zIndex: 4, visible: true, isGround: true },
@@ -66,9 +65,9 @@ function Scene01CameraTest() {
       opacity = Math.max(0, distance / 80);
     }
 
-    // 🛠️ GROUND: Slides down and applies rotateX(90deg) via a separate wrapper
+    // 🛠️ GROUND: Slide down, rotate flat, and keep it under our feet
     if (layer.isGround) {
-      const floorDrop = (1 - (camera.z / CAMERA_PATH.startZ)) * 100; // Push it below the screen
+      const floorDrop = (1 - (camera.z / CAMERA_PATH.startZ)) * 150; // Push down
       return {
         transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${scale})`,
         opacity: opacity,
@@ -196,19 +195,25 @@ function Scene01CameraTest() {
   return (
     <div className="scene01-page">
       <div className="scene01-container">
+        
+        {/* 🛠️ FIX: Fixed Sky Background that NEVER moves */}
+        <div className="fixed-sky-bg">
+          <img src={skyImg} alt="Sky" className="fixed-sky-img" />
+        </div>
+
+        {/* Traveling Scene Layers */}
         <div className="scene-viewport">
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
               layerVisibility[layer.id] && (
                 <div
                   key={layer.id}
-                  className={`scene-layer ${layer.isSky ? 'sky-fill-layer' : ''}`}
+                  className={`scene-layer`}
                   style={{
                     zIndex: layer.zIndex,
                     ...getLayerTransform(layer),
                   }}
                 >
-                  {/* 🛠️ GROUND: Wrap it in a 3D perspective wrapper to rotate X */}
                   {layer.isGround ? (
                     <div className="ground-wrapper">
                       <img
@@ -223,7 +228,7 @@ function Scene01CameraTest() {
                     <img
                       src={layer.src}
                       alt={layer.name}
-                      className={`scene-layer-img ${layer.isSky ? 'sky-fill' : ''}`}
+                      className="scene-layer-img"
                       draggable={false}
                     />
                   )}
@@ -241,6 +246,7 @@ function Scene01CameraTest() {
           </div>
         </div>
 
+        {/* Camera Controls */}
         <div className="camera-controls">
           <div className="camera-controls-header">
             <h3>Camera Controls</h3>
