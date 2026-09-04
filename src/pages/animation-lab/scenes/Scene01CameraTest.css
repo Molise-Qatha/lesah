@@ -1,27 +1,35 @@
 /* src/pages/animation-lab/scenes/Scene01CameraTest.css */
 
+/* Base Page */
 .scene01-page {
   min-height: 100vh;
   background: #0f0f0f;
   font-family: 'Segoe UI', system-ui, sans-serif;
   color: #e0e0e0;
-  padding: 0; /* Removed padding so we have full width */
-  overflow: hidden; /* Prevent page scrolling */
+  padding: 0;
+  overflow: hidden;
 }
 
+/* Main Container (Flexbox) */
 .scene01-container {
-  display: flex; /* Main container becomes a Flexbox */
-  height: 100vh; /* Force full height */
-  width: 100vw;  /* Force full width */
+  display: flex;
+  height: 100vh;
+  width: 100vw;
 }
 
-/* 🛠️ MAIN SCENE (Left Side - Flex: 1) */
+/* Hide Header on Desktop for full immersion */
+.back-link, .scene-header {
+  display: none;
+}
+
+/* 🛠️ SCENE STAGE - Supports 3D Transforms! */
 .scene-viewport {
-  flex: 1; /* Takes up all remaining space */
+  flex: 1;
   position: relative;
   height: 100vh;
   background: #D2B48C;
   overflow: hidden;
+  perspective: 1000px; /* ESSENTIAL for 3D rotation */
 }
 
 .scene-stage {
@@ -31,26 +39,10 @@
   width: 800px;
   height: 600px;
   transform: translate(-50%, -50%);
+  transform-style: preserve-3d; /* ESSENTIAL for 3D rotation */
 }
 
-/* 🛠️ CAMERA CONTROLS (Right Side - Fixed Width) */
-.camera-controls {
-  width: 300px; /* Fixed width for controls */
-  height: 100vh;
-  background: #222;
-  border-left: 1px solid #333;
-  padding: 20px;
-  overflow-y: auto; /* Allows scrolling inside ONLY if controls are too tall */
-  flex-shrink: 0;
-}
-
-/* 🛠️ Hide this header on larger screens to avoid clutter */
-.back-link,
-.scene-header {
-  display: none; 
-}
-
-/* Layer Base Styles */
+/* Layers */
 .scene-layer {
   position: absolute;
   top: 0;
@@ -58,7 +50,8 @@
   width: 100%;
   height: 100%;
   transform-origin: center center;
-  will-change: transform;
+  will-change: transform, opacity;
+  transition: filter 0.1s linear;
 }
 
 .scene-layer-img {
@@ -84,7 +77,17 @@
   pointer-events: none;
 }
 
-/* Inner Controls Styling */
+/* 🛠️ CAMERA CONTROLS (Side Panel) */
+.camera-controls {
+  width: 320px;
+  height: 100vh;
+  background: #222;
+  border-left: 1px solid #333;
+  padding: 20px;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
 .camera-controls-header {
   display: flex;
   justify-content: space-between;
@@ -231,7 +234,7 @@ kbd {
   font-size: 0.7rem;
 }
 
-/* 🛠️ Mobile: Stack on top for small screens */
+/* Responsive Stack on Mobile */
 @media (max-width: 768px) {
   .scene01-container {
     flex-direction: column;

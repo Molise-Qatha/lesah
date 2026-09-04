@@ -11,20 +11,32 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
+// 🛠️ FINAL LAYERS: Duplicated trees, Compensatory Scaling, Flat Ground
 const SCENE_LAYERS = [
+  // Background (No duplicates)
   { id: 'sky', name: 'Sky', src: skyImg, zDepth: 0, baseScale: 1.0, zIndex: 1, visible: true },
   { id: 'mountains', name: 'Mountains', src: mountainsImg, zDepth: -100, baseScale: 1.5, zIndex: 2, visible: true },
   { id: 'distant_forest', name: 'Distant Forest', src: forestImg, zDepth: -200, baseScale: 2.0, zIndex: 3, visible: true },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, zDepth: -300, baseScale: 2.5, zIndex: 4, visible: true },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, zDepth: -400, baseScale: 3.0, zIndex: 5, visible: true },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, zDepth: -500, baseScale: 3.5, zIndex: 6, visible: true },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, zDepth: -600, baseScale: 4.0, zIndex: 7, visible: true },
+
+  // 🛠️ FLAT GROUND: Rotated flat, extends deep into the background
+  { id: 'clearing', name: 'Clearing', src: clearingImg, zDepth: -150, baseScale: 4.0, zIndex: 4, visible: true, isGround: true },
+
+  // 🛠️ DUPLICATED TREES: Multiple layers for density
+  { id: 'landmark_tree_a', name: 'Landmark Tree A', src: landmarkImg, zDepth: -250, baseScale: 2.8, zIndex: 5, visible: true },
+  { id: 'landmark_tree_b', name: 'Landmark Tree B', src: landmarkImg, zDepth: -350, baseScale: 3.2, zIndex: 5, visible: true },
+  
+  { id: 'near_tree_01_a', name: 'Near Tree 01 A', src: nearTree01Img, zDepth: -450, baseScale: 3.0, zIndex: 6, visible: true },
+  { id: 'near_tree_01_b', name: 'Near Tree 01 B', src: nearTree01Img, zDepth: -520, baseScale: 3.6, zIndex: 6, visible: true },
+  { id: 'near_tree_01_c', name: 'Near Tree 01 C', src: nearTree01Img, zDepth: -580, baseScale: 3.8, zIndex: 6, visible: true },
+
+  { id: 'near_tree_02_a', name: 'Near Tree 02 A', src: nearTree02Img, zDepth: -480, baseScale: 3.4, zIndex: 7, visible: true },
+  { id: 'near_tree_02_b', name: 'Near Tree 02 B', src: nearTree02Img, zDepth: -550, baseScale: 3.8, zIndex: 7, visible: true },
 ];
 
 const CAMERA_PATH = {
   startZ: 0,
-  endZ: -650,
-  duration: 12000,
+  endZ: -600, // Travel through all the duplicated trees
+  duration: 14000,
 };
 
 function Scene01CameraTest() {
@@ -51,20 +63,39 @@ function Scene01CameraTest() {
     const distance = layer.zDepth - camera.z;
     const safeDistance = Math.max(distance, 1);
 
+    // Perspective
     const perspectiveScale = 100 / safeDistance;
     const scale = perspectiveScale * layer.baseScale;
 
+    // Parallax
     const parallaxX = camera.x * perspectiveScale;
     const parallaxY = camera.y * perspectiveScale * 0.5;
 
     let opacity = 1;
-    if (distance < 50) {
-      opacity = Math.max(0, distance / 50);
+    let blur = 0;
+
+    // 🛠️ DISTANCE EFFECTS: Close layers blur and fade out to hide flatness
+    if (distance < 80) {
+      // Blur the layer (using CSS filter)
+      blur = Math.max(0, (80 - distance) / 80) * 10; // 0 to 10px blur
+      // Fade it out so it never looks like a solid wall
+      opacity = Math.max(0, distance / 80);
+    }
+
+    // 🛠️ GROUND LAYER SPECIAL HANDLING
+    if (layer.isGround) {
+      // We rotate it 90 degrees on X-axis, push it down the Y-axis
+      return {
+        transform: `translate(${parallaxX}px, ${parallaxY + 250}px) rotateX(90deg) scale(${scale})`,
+        opacity: opacity,
+        filter: `blur(${blur}px)`,
+      };
     }
 
     return {
       transform: `translate(${parallaxX}px, ${parallaxY}px) scale(${scale})`,
       opacity: opacity,
+      filter: `blur(${blur}px)`,
     };
   }, [camera]);
 
@@ -185,11 +216,11 @@ function Scene01CameraTest() {
         
         <div className="scene-header">
           <h1>🎥 Scene 01 Camera Test</h1>
-          <p className="scene-subtitle">True 3D Coordinate Camera — Forest Fly-Through</p>
+          <p className="scene-subtitle">True 3D Environment Camera — Forest Fly-Through</p>
           <span className="test-badge">CAMERA TEST</span>
         </div>
 
-        {/* 🛠️ NEW: Side-by-side layout */}
+        {/* 🛠️ FINAL: Side-by-side layout */}
         <div className="scene-layout">
           {/* MAIN SCENE (Left) */}
           <div className="scene-viewport" style={{ backgroundColor: '#D2B48C' }}>
@@ -209,6 +240,7 @@ function Scene01CameraTest() {
                       alt={layer.name}
                       className="scene-layer-img"
                       draggable={false}
+                      style={{ transform: layer.isGround ? 'rotateX(90deg)' : 'none' }}
                     />
                     
                     {debugMode && (
