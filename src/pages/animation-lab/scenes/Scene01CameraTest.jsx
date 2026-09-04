@@ -12,7 +12,6 @@ import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
 // Scene layer configuration
-// 🛠️ scaleSpeed rebalanced: Near trees grow just enough to frame edges, not block.
 const SCENE_LAYERS = [
   { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, baseScale: 1.0, zIndex: 1, visible: true, scaleSpeed: 0.05 },
   { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, baseScale: 1.0, zIndex: 2, visible: true, scaleSpeed: 0.12 },
@@ -23,11 +22,10 @@ const SCENE_LAYERS = [
   { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.25, zIndex: 7, visible: true, scaleSpeed: 1.4 },
 ];
 
-// 🛠️ Camera stops at the "Perfect View" (Zoom: 60)
 const CAMERA_ZOOM = {
   startZoom: 0,     
-  endZoom: 60,      // 🛠️ The Perfect View
-  maxZoom: 100,     // Manual Zoom can go up to 100
+  endZoom: 60,      
+  maxZoom: 100,     
   duration: 12000,  
   easeInDuration: 0.25,   
   easeOutDuration: 0.45,  
@@ -185,133 +183,117 @@ function Scene01CameraTest() {
 
   return (
     <div className="scene01-page">
+      {/* Scene Layout (Side-by-side) */}
       <div className="scene01-container">
-        <div className="scene-header">
-          <h1>🎥 Scene 01 Camera Test</h1>
-          <p className="scene-subtitle">Scale-Based Zoom — Forest Opening Shot</p>
-          <span className="test-badge">CAMERA TEST</span>
+        
+        {/* Left: Scene */}
+        <div className="scene-viewport">
+          <div className="scene-stage">
+            {SCENE_LAYERS.map(layer => (
+              layerVisibility[layer.id] && (
+                <div
+                  key={layer.id}
+                  className="scene-layer"
+                  style={{
+                    zIndex: layer.zIndex,
+                    ...getLayerTransform(layer),
+                  }}
+                >
+                  <img
+                    src={layer.src}
+                    alt={layer.name}
+                    className="scene-layer-img"
+                    draggable={false}
+                  />
+                </div>
+              )
+            ))}
+          </div>
         </div>
 
-        {/* 🛠️ SIDE-BY-SIDE LAYOUT */}
-        <div className="scene-layout">
-          {/* Scene Viewport (Left) */}
-          <div className="scene-viewport" style={{ backgroundColor: '#000' }}>
-            <div className="scene-stage">
+        {/* Right: Camera Controls */}
+        <div className="camera-controls">
+          <div className="camera-controls-header">
+            <h3>Camera Controls</h3>
+            <button 
+              className={`debug-toggle ${debugMode ? 'active' : ''}`}
+              onClick={() => setDebugMode(!debugMode)}
+            >
+              🐛 Debug
+            </button>
+          </div>
+          
+          <div className="camera-info">
+            <div className="camera-stat">
+              <label>Zoom:</label>
+              <span>{camera.zoom.toFixed(1)}</span>
+            </div>
+            <div className="camera-stat">
+              <label>Progress:</label>
+              <span>{((camera.zoom / CAMERA_ZOOM.maxZoom) * 100).toFixed(0)}%</span>
+            </div>
+            <div className="camera-stat">
+              <label>X:</label>
+              <span>{camera.x.toFixed(1)}</span>
+            </div>
+            <div className="camera-stat">
+              <label>Y:</label>
+              <span>{camera.y.toFixed(1)}</span>
+            </div>
+          </div>
+          
+          <div className="camera-buttons">
+            <button 
+              className={`camera-btn ${autoPlay ? 'active' : ''}`}
+              onClick={() => {
+                setAutoPlay(!autoPlay);
+                if (!autoPlay) resetCamera();
+              }}
+            >
+              {autoPlay ? '⏸ Stop Auto' : '▶ Play Cinematic'}
+            </button>
+            <button className="camera-btn" onClick={resetCamera}>
+              🔄 Reset
+            </button>
+          </div>
+          
+          <div className="slider-row">
+            <label>Speed:</label>
+            <input 
+              type="range" 
+              min="0.1" 
+              max="3" 
+              step="0.1" 
+              value={cameraSpeed} 
+              onChange={(e) => setCameraSpeed(Number(e.target.value))} 
+            />
+            <span>{cameraSpeed}x</span>
+          </div>
+          
+          <div className="keyboard-hints">
+            <p><kbd>W</kbd> Zoom In</p>
+            <p><kbd>S</kbd> Zoom Out</p>
+            <p><kbd>A</kbd> Left</p>
+            <p><kbd>D</kbd> Right</p>
+          </div>
+          
+          {debugMode && (
+            <div className="debug-layers">
+              <h4>Layer Visibility</h4>
               {SCENE_LAYERS.map(layer => (
-                layerVisibility[layer.id] && (
-                  <div
-                    key={layer.id}
-                    className="scene-layer"
-                    style={{
-                      zIndex: layer.zIndex,
-                      ...getLayerTransform(layer),
-                    }}
-                  >
-                    <img
-                      src={layer.src}
-                      alt={layer.name}
-                      className="scene-layer-img"
-                      draggable={false}
-                    />
-                    
-                    {debugMode && (
-                      <div className="layer-debug-info">
-                        <span>{layer.name}</span>
-                        <span>Depth: {layer.depth}</span>
-                        <span>Scale Speed: {layer.scaleSpeed}</span>
-                        <span>Scale: {(layer.baseScale + (camera.zoom / CAMERA_ZOOM.maxZoom) * layer.scaleSpeed).toFixed(2)}x</span>
-                      </div>
-                    )}
-                  </div>
-                )
+                <label key={layer.id} className="layer-toggle">
+                  <input
+                    type="checkbox"
+                    checked={layerVisibility[layer.id]}
+                    onChange={() => toggleLayer(layer.id)}
+                  />
+                  <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
+                  <span className="depth-value">({layer.depth})</span>
+                  <span className="scale-speed">Scale: {layer.scaleSpeed}x</span>
+                </label>
               ))}
             </div>
-          </div>
-
-          {/* 🛠️ Camera Controls (Right Side) */}
-          <div className="camera-controls">
-            <div className="camera-controls-header">
-              <h3>Camera Controls</h3>
-              <button 
-                className={`debug-toggle ${debugMode ? 'active' : ''}`}
-                onClick={() => setDebugMode(!debugMode)}
-              >
-                🐛 Debug
-              </button>
-            </div>
-            
-            <div className="camera-info">
-              <div className="camera-stat">
-                <label>Zoom:</label>
-                <span>{camera.zoom.toFixed(1)}</span>
-              </div>
-              <div className="camera-stat">
-                <label>Progress:</label>
-                <span>{((camera.zoom / CAMERA_ZOOM.maxZoom) * 100).toFixed(0)}%</span>
-              </div>
-              <div className="camera-stat">
-                <label>X:</label>
-                <span>{camera.x.toFixed(1)}</span>
-              </div>
-              <div className="camera-stat">
-                <label>Y:</label>
-                <span>{camera.y.toFixed(1)}</span>
-              </div>
-            </div>
-            
-            <div className="camera-buttons">
-              <button 
-                className={`camera-btn ${autoPlay ? 'active' : ''}`}
-                onClick={() => {
-                  setAutoPlay(!autoPlay);
-                  if (!autoPlay) resetCamera();
-                }}
-              >
-                {autoPlay ? '⏸ Stop Auto' : '▶ Play Cinematic'}
-              </button>
-              <button className="camera-btn" onClick={resetCamera}>
-                🔄 Reset
-              </button>
-            </div>
-            
-            <div className="slider-row">
-              <label>Speed:</label>
-              <input 
-                type="range" 
-                min="0.1" 
-                max="3" 
-                step="0.1" 
-                value={cameraSpeed} 
-                onChange={(e) => setCameraSpeed(Number(e.target.value))} 
-              />
-              <span>{cameraSpeed}x</span>
-            </div>
-            
-            <div className="keyboard-hints">
-              <p><kbd>W</kbd> Zoom In</p>
-              <p><kbd>S</kbd> Zoom Out</p>
-              <p><kbd>A</kbd> Left</p>
-              <p><kbd>D</kbd> Right</p>
-            </div>
-            
-            {debugMode && (
-              <div className="debug-layers">
-                <h4>Layer Visibility</h4>
-                {SCENE_LAYERS.map(layer => (
-                  <label key={layer.id} className="layer-toggle">
-                    <input
-                      type="checkbox"
-                      checked={layerVisibility[layer.id]}
-                      onChange={() => toggleLayer(layer.id)}
-                    />
-                    <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
-                    <span className="depth-value">({layer.depth})</span>
-                    <span className="scale-speed">Scale: {layer.scaleSpeed}x</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>

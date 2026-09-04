@@ -7,45 +7,11 @@
   overflow: hidden;
 }
 
-/* 🛠️ SIDE-BY-SIDE CONTAINER */
+/* 🛠️ FIXED LAYOUT: Full screen Flexbox with Side Panel */
 .scene01-container {
   display: flex;
   height: 100vh;
   width: 100vw;
-}
-
-/* Scene Header */
-.scene-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 100;
-  pointer-events: none;
-  padding: 10px;
-}
-
-.scene-header h1 {
-  color: #ffffff;
-  margin: 0 0 8px 0;
-  font-size: 28px;
-}
-
-.scene-subtitle {
-  color: #cccccc;
-  margin: 0 0 8px 0;
-  font-size: 16px;
-}
-
-.test-badge {
-  display: inline-block;
-  background: #ffd700;
-  color: #333333;
-  padding: 4px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
 }
 
 /* Scene Viewport (Left) */
@@ -53,16 +19,21 @@
   flex: 1;
   position: relative;
   height: 100vh;
-  background: #000000;
+  background: #000;
   overflow: hidden;
 }
 
+/* 🛠️ CRITICAL FIX: Use 100% / 100% instead of 0 / 0! */
 .scene-stage {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 0;
-  height: 0;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Scene Layers */
@@ -97,7 +68,7 @@
   pointer-events: none;
 }
 
-/* 🛠️ Camera Controls (Right Side) */
+/* 🛠️ CAMERA CONTROLS (Right Side) */
 .camera-controls {
   width: 320px;
   height: 100vh;
