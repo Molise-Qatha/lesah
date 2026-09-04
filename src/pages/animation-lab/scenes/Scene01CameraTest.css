@@ -1,105 +1,111 @@
-/* src/pages/animation-lab/scenes/Scene01CameraTest.css */
-
 .scene01-page {
   min-height: 100vh;
-  background: #000; /* Pure black background, NO dust */
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  color: #e0e0e0;
-  padding: 0;
-  overflow: hidden;
+  background: #1a1a2e;
+  padding: 20px;
 }
 
 .scene01-container {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.back-link {
+  color: #ffffff;
+  text-decoration: none;
+  margin-bottom: 20px;
+  display: inline-block;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.back-link:hover {
+  opacity: 1;
 }
 
 .scene-header {
-  display: none;
+  margin-bottom: 20px;
 }
 
-/* 🛠️ SCENE: No perspective here. Black background. */
+.scene-header h1 {
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  font-size: 28px;
+}
+
+.scene-subtitle {
+  color: #cccccc;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.test-badge {
+  display: inline-block;
+  background: #ffd700;
+  color: #333333;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Scene Viewport */
 .scene-viewport {
-  flex: 1;
   position: relative;
-  height: 100vh;
-  background: #000; /* Removed #D2B48C dust! */
+  width: 100%;
+  height: 600px;
+  background: #000000;
+  border-radius: 8px;
   overflow: hidden;
+  margin-bottom: 20px;
 }
 
-/* 🛠️ FIXED: Sky layer fills the ENTIRE screen and stays behind everything */
 .scene-stage {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 800px;
-  height: 600px;
-  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
 }
 
+/* Scene Layers */
 .scene-layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   transform-origin: center center;
-  will-change: transform, opacity, filter;
+  will-change: transform;
+  transition: transform 0.05s linear;
 }
 
 .scene-layer-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
   display: block;
+  max-width: none;
+  width: auto;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-/* 🛠️ SPECIAL: Sky must cover the whole screen, or the black shows. 
-   We won't use 'object-fit: contain' for it, we'll make it fill. */
-.scene-layer-img.sky-fill {
-  object-fit: cover;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* 🛠️ SPECIAL: Ground layer wrapper. This is the ONLY place we use 3D rotation. */
-.ground-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100vw;
-  height: 100vh;
-  transform: translate(-50%, -50%);
-  perspective: 800px; /* ONLY on the ground wrapper */
-}
-
+/* Layer Debug Info */
 .layer-debug-info {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(0,0,0,0.7);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 0.7rem;
-  z-index: 999;
+  font-size: 11px;
   display: flex;
   flex-direction: column;
+  gap: 2px;
   pointer-events: none;
 }
 
+/* Camera Controls */
 .camera-controls {
-  width: 320px;
-  height: 100vh;
-  background: #222;
-  border-left: 1px solid #333;
+  background: #16213e;
+  border-radius: 8px;
   padding: 20px;
-  flex-shrink: 0;
-  overflow-y: auto;
+  color: #ffffff;
 }
 
 .camera-controls-header {
@@ -111,53 +117,50 @@
 
 .camera-controls-header h3 {
   margin: 0;
-  font-size: 1.2rem;
-  color: #fff;
+  color: #ffffff;
 }
 
 .debug-toggle {
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 6px 12px;
-  border-radius: 6px;
-  color: #aaa;
+  background: #0f3460;
+  color: #ffffff;
+  border: 1px solid #533483;
+  padding: 8px 16px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 12px;
+  transition: all 0.3s;
 }
 
 .debug-toggle.active {
-  background: #ff9800;
-  color: #fff;
-  border-color: #ff9800;
+  background: #e94560;
+  border-color: #e94560;
 }
 
 .camera-info {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 15px;
 }
 
 .camera-stat {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 6px;
+  background: #0f3460;
   padding: 10px;
+  border-radius: 4px;
   text-align: center;
 }
 
 .camera-stat label {
   display: block;
-  font-size: 0.7rem;
-  color: #888;
-  text-transform: uppercase;
+  font-size: 11px;
+  color: #cccccc;
   margin-bottom: 4px;
 }
 
 .camera-stat span {
-  font-size: 1.2rem;
+  font-size: 14px;
   font-weight: bold;
-  color: #fff;
+  color: #ffffff;
 }
 
 .camera-buttons {
@@ -168,30 +171,45 @@
 
 .camera-btn {
   flex: 1;
-  padding: 12px;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 0.9rem;
+  background: #533483;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 14px;
+  transition: all 0.3s;
 }
 
-.camera-btn:hover { background: #3a3a3a; }
-.camera-btn.active { background: #2e7d32; border-color: #4caf50; }
+.camera-btn:hover {
+  background: #6b4fa0;
+}
+
+.camera-btn.active {
+  background: #e94560;
+}
 
 .slider-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
-  font-size: 0.85rem;
-  color: #aaa;
+  color: #ffffff;
+}
+
+.slider-row label {
+  min-width: 60px;
+  font-size: 12px;
 }
 
 .slider-row input[type="range"] {
   flex: 1;
+}
+
+.slider-row span {
+  min-width: 40px;
+  text-align: right;
+  font-size: 12px;
 }
 
 .keyboard-hints {
@@ -203,82 +221,63 @@
 
 .keyboard-hints p {
   margin: 0;
-  font-size: 0.8rem;
-  color: #aaa;
+  font-size: 12px;
+  color: #cccccc;
 }
 
 kbd {
-  background: #333;
-  border: 1px solid #555;
-  border-radius: 4px;
+  display: inline-block;
+  background: #0f3460;
+  border: 1px solid #533483;
   padding: 2px 6px;
-  font-size: 0.75rem;
-  color: #fff;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #ffffff;
 }
 
+/* Debug Layers */
 .debug-layers {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 15px;
+  border-top: 1px solid #533483;
+  padding-top: 15px;
 }
 
 .debug-layers h4 {
-  margin: 0 0 10px;
-  color: #888;
-  font-size: 0.85rem;
-  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  color: #ffd700;
+  font-size: 14px;
 }
 
 .layer-toggle {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 0;
-  font-size: 0.85rem;
+  padding: 6px 0;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.layer-toggle input[type="checkbox"] {
   cursor: pointer;
 }
 
-.layer-toggle input {
-  margin: 0;
-}
-
 .depth-value {
-  color: #555;
-  font-size: 0.7rem;
+  color: #ffd700;
+  font-size: 11px;
 }
 
+.scale-speed {
+  color: #4CAF50;
+  font-size: 11px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .scene01-container {
-    flex-direction: column;
-    overflow: auto;
-    height: auto;
-  }
-  
   .scene-viewport {
     height: 400px;
   }
   
-  .camera-controls {
-    width: 100%;
-    height: auto;
-    border-left: none;
-    border-top: 1px solid #333;
+  .camera-info {
+    grid-template-columns: repeat(2, 1fr);
   }
-}
-/* 🛠️ FIX: Fixed Sky Layer (Never moves, fills the screen) */
-.fixed-sky-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.fixed-sky-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }

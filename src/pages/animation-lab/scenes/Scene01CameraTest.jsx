@@ -11,27 +11,96 @@ import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
 import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
-// 🛠️ FIX: Sky is REMOVED from the traveling layers. It will be a fixed background.
+// Scene layer configuration
+// scaleSpeed controls how fast each layer grows during zoom
 const SCENE_LAYERS = [
-  { id: 'mountains', name: 'Mountains', src: mountainsImg, zDepth: -800, baseScale: 3.5, zIndex: 2, visible: true },
-  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, zDepth: -600, baseScale: 3.0, zIndex: 3, visible: true },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, zDepth: -300, baseScale: 2.5, zIndex: 4, visible: true, isGround: true },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, zDepth: -400, baseScale: 3.0, zIndex: 5, visible: true },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, zDepth: -500, baseScale: 3.5, zIndex: 6, visible: true },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, zDepth: -600, baseScale: 4.0, zIndex: 7, visible: true },
+  {
+    id: 'sky',
+    name: 'Sky',
+    src: skyImg,
+    depth: 0.05,
+    baseScale: 1.0,
+    zIndex: 1,
+    visible: true,
+    scaleSpeed: 0.05, // Barely grows — extremely far
+  },
+  {
+    id: 'mountains',
+    name: 'Mountains',
+    src: mountainsImg,
+    depth: 0.1,
+    baseScale: 1.0,
+    zIndex: 2,
+    visible: true,
+    scaleSpeed: 0.1, // Very slow growth
+  },
+  {
+    id: 'distant_forest',
+    name: 'Distant Forest',
+    src: forestImg,
+    depth: 0.2,
+    baseScale: 1.0,
+    zIndex: 3,
+    visible: true,
+    scaleSpeed: 0.2, // Slow growth
+  },
+  {
+    id: 'clearing',
+    name: 'Clearing',
+    src: clearingImg,
+    depth: 0.4,
+    baseScale: 1.0,
+    zIndex: 4,
+    visible: true,
+    scaleSpeed: 0.4, // Moderate growth
+  },
+  {
+    id: 'landmark_tree',
+    name: 'Landmark Tree',
+    src: landmarkImg,
+    depth: 0.65,
+    baseScale: 1.0,
+    zIndex: 5,
+    visible: true,
+    scaleSpeed: 0.8, // Noticeable growth
+  },
+  {
+    id: 'near_tree_01',
+    name: 'Near Tree 01',
+    src: nearTree01Img,
+    depth: 0.85,
+    baseScale: 1.15,
+    zIndex: 6,
+    visible: true,
+    scaleSpeed: 1.5, // Fast growth
+  },
+  {
+    id: 'near_tree_02',
+    name: 'Near Tree 02',
+    src: nearTree02Img,
+    depth: 1.0,
+    baseScale: 1.25,
+    zIndex: 7,
+    visible: true,
+    scaleSpeed: 2.0, // Fastest growth — closest to camera
+  },
 ];
 
-const CAMERA_PATH = {
-  startZ: 0,
-  endZ: -650,
-  duration: 12000,
+// Camera zoom configuration
+const CAMERA_ZOOM = {
+  startZoom: 0,     // Start at no zoom
+  endZoom: 100,     // Full zoom-in value
+  duration: 14000,  // 14 seconds cinematic
+  easeInDuration: 0.20,   // 20% ease-in
+  easeOutDuration: 0.35,  // 35% ease-out (slow stop)
 };
 
 function Scene01CameraTest() {
+  // Camera state — single zoom variable drives everything
   const [camera, setCamera] = useState({
-    x: 0,
-    y: 0,
-    z: CAMERA_PATH.startZ,
+    zoom: CAMERA_ZOOM.startZoom, // 0 to 100
+    x: 0, // Manual pan X
+    y: 0, // Manual pan Y
   });
 
   const [debugMode, setDebugMode] = useState(false);
@@ -47,41 +116,55 @@ function Scene01CameraTest() {
   const autoPlayStartTime = useRef(null);
   const autoPlayFrameRef = useRef(null);
 
+  // Cinematic easing
+  const cinematicEase = useCallback((t) => {
+    const clampedT = Math.max(0, Math.min(1, t));
+    
+    // Ease-in phase
+    if (clampedT < CAMERA_ZOOM.easeInDuration) {
+      const phaseT = clampedT / CAMERA_ZOOM.easeInDuration;
+      return 0.5 * phaseT * phaseT;
+    }
+    
+    // Ease-out phase
+    if (clampedT > 1 - CAMERA_ZOOM.easeOutDuration) {
+      const phaseT = (clampedT - (1 - CAMERA_ZOOM.easeOutDuration)) / CAMERA_ZOOM.easeOutDuration;
+      return 1 - 0.5 * (1 - phaseT) * (1 - phaseT);
+    }
+    
+    // Middle — smooth linear
+    const midStart = CAMERA_ZOOM.easeInDuration;
+    const midEnd = 1 - CAMERA_ZOOM.easeOutDuration;
+    const midProgress = (clampedT - midStart) / (midEnd - midStart);
+    
+    const easeInValue = 0.5 * midStart * midStart;
+    const easeOutTarget = 1 - 0.5 * CAMERA_ZOOM.easeOutDuration * CAMERA_ZOOM.easeOutDuration;
+    
+    return easeInValue + midProgress * (easeOutTarget - easeInValue);
+  }, []);
+
+  // PURE SCALE-BASED TRANSFORM
+  // Each layer scales at its own speed based on depth
   const getLayerTransform = useCallback((layer) => {
-    const distance = layer.zDepth - camera.z;
-    const safeDistance = Math.max(distance, 1);
-
-    const perspectiveScale = 100 / safeDistance;
-    const scale = perspectiveScale * layer.baseScale;
-
-    const parallaxX = camera.x * perspectiveScale;
-    const parallaxY = camera.y * perspectiveScale * 0.5;
-
-    let opacity = 1;
-    let blur = 0;
-
-    if (distance < 80) {
-      blur = Math.max(0, (80 - distance) / 80) * 15;
-      opacity = Math.max(0, distance / 80);
-    }
-
-    // 🛠️ GROUND: Slide down, rotate flat, and keep it under our feet
-    if (layer.isGround) {
-      const floorDrop = (1 - (camera.z / CAMERA_PATH.startZ)) * 150; // Push down
-      return {
-        transform: `translate(${parallaxX}px, ${parallaxY + floorDrop}px) scale(${scale})`,
-        opacity: opacity,
-        filter: `blur(${blur}px)`,
-      };
-    }
-
+    // Zoom progress: 0 to 1
+    const zoomProgress = camera.zoom / CAMERA_ZOOM.endZoom;
+    
+    // Scale = baseScale + (zoomProgress * scaleSpeed)
+    // Foreground grows fast, background grows slow
+    const scale = layer.baseScale + (zoomProgress * layer.scaleSpeed);
+    
+    // Minimal parallax from manual pan — preserves existing left/right movement
+    const parallaxX = camera.x * layer.depth;
+    const parallaxY = camera.y * layer.depth * 0.5;
+    
     return {
       transform: `translate(${parallaxX}px, ${parallaxY}px) scale(${scale})`,
-      opacity: opacity,
-      filter: `blur(${blur}px)`,
+      opacity: 1,
+      transformOrigin: 'center center',
     };
   }, [camera]);
 
+  // Manual controls
   const handleKeyDown = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = true;
     if (e.key === 'ArrowUp') keysPressed.current['w'] = true;
@@ -98,21 +181,22 @@ function Scene01CameraTest() {
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
+  // Manual camera loop
   useEffect(() => {
     const handleKeyFrame = () => {
-      const speed = cameraSpeed;
+      const speed = 0.6 * cameraSpeed;
       
       if (keysPressed.current['w']) {
-        setCamera(prev => ({ ...prev, z: Math.max(prev.z - speed, CAMERA_PATH.endZ) }));
+        setCamera(prev => ({ ...prev, zoom: Math.min(prev.zoom + speed, CAMERA_ZOOM.endZoom) }));
       }
       if (keysPressed.current['s']) {
-        setCamera(prev => ({ ...prev, z: Math.min(prev.z + speed, CAMERA_PATH.startZ) }));
+        setCamera(prev => ({ ...prev, zoom: Math.max(prev.zoom - speed, CAMERA_ZOOM.startZoom) }));
       }
       if (keysPressed.current['a']) {
-        setCamera(prev => ({ ...prev, x: prev.x - speed }));
+        setCamera(prev => ({ ...prev, x: prev.x - speed * 0.5 }));
       }
       if (keysPressed.current['d']) {
-        setCamera(prev => ({ ...prev, x: prev.x + speed }));
+        setCamera(prev => ({ ...prev, x: prev.x + speed * 0.5 }));
       }
       
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
@@ -127,6 +211,7 @@ function Scene01CameraTest() {
     };
   }, [cameraSpeed]);
 
+  // Auto-play cinematic zoom
   useEffect(() => {
     if (!autoPlay) return;
     
@@ -134,19 +219,18 @@ function Scene01CameraTest() {
     
     const animateCamera = () => {
       const elapsed = Date.now() - autoPlayStartTime.current;
-      const rawProgress = Math.min(elapsed / CAMERA_PATH.duration, 1);
+      const rawProgress = Math.min(elapsed / CAMERA_ZOOM.duration, 1);
       
-      const eased = rawProgress < 0.5 
-        ? 2 * rawProgress * rawProgress 
-        : 1 - Math.pow(-2 * rawProgress + 2, 2) / 2;
+      const easedProgress = cinematicEase(rawProgress);
       
-      const newZ = CAMERA_PATH.startZ - (eased * (CAMERA_PATH.startZ - CAMERA_PATH.endZ));
+      const zoom = CAMERA_ZOOM.startZoom + 
+        (CAMERA_ZOOM.endZoom - CAMERA_ZOOM.startZoom) * easedProgress;
       
-      setCamera(prev => ({ 
-        ...prev, 
-        z: newZ,
-        x: Math.sin(eased * Math.PI) * 10 
-      }));
+      // Subtle natural sway
+      const x = Math.sin(easedProgress * Math.PI * 2) * 8;
+      const y = Math.sin(easedProgress * Math.PI * 3) * 3;
+      
+      setCamera({ zoom, x, y });
       
       if (rawProgress < 1) {
         autoPlayFrameRef.current = requestAnimationFrame(animateCamera);
@@ -162,20 +246,14 @@ function Scene01CameraTest() {
         cancelAnimationFrame(autoPlayFrameRef.current);
       }
     };
-  }, [autoPlay]);
+  }, [autoPlay, cinematicEase]);
 
-  const handleZoomIn = () => {
-    setCamera(prev => ({ ...prev, z: Math.max(prev.z - 10, CAMERA_PATH.endZ) }));
-  };
-
-  const handleZoomOut = () => {
-    setCamera(prev => ({ ...prev, z: Math.min(prev.z + 10, CAMERA_PATH.startZ) }));
-  };
-
+  // Reset
   const resetCamera = () => {
-    setCamera({ x: 0, y: 0, z: CAMERA_PATH.startZ });
+    setCamera({ zoom: CAMERA_ZOOM.startZoom, x: 0, y: 0 });
   };
 
+  // Toggle layer
   const toggleLayer = (layerId) => {
     setLayerVisibility(prev => ({
       ...prev,
@@ -195,49 +273,40 @@ function Scene01CameraTest() {
   return (
     <div className="scene01-page">
       <div className="scene01-container">
+        <Link to="/animation-lab" className="back-link">← Back to Animation Lab</Link>
         
-        {/* 🛠️ FIX: Fixed Sky Background that NEVER moves */}
-        <div className="fixed-sky-bg">
-          <img src={skyImg} alt="Sky" className="fixed-sky-img" />
+        <div className="scene-header">
+          <h1>🎥 Scene 01 Camera Test</h1>
+          <p className="scene-subtitle">Scale-Based Zoom — Forest Opening Shot</p>
+          <span className="test-badge">CAMERA TEST</span>
         </div>
 
-        {/* Traveling Scene Layers */}
+        {/* Scene Viewport */}
         <div className="scene-viewport">
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
               layerVisibility[layer.id] && (
                 <div
                   key={layer.id}
-                  className={`scene-layer`}
+                  className="scene-layer"
                   style={{
                     zIndex: layer.zIndex,
                     ...getLayerTransform(layer),
                   }}
                 >
-                  {layer.isGround ? (
-                    <div className="ground-wrapper">
-                      <img
-                        src={layer.src}
-                        alt={layer.name}
-                        className="scene-layer-img"
-                        draggable={false}
-                        style={{ transform: 'rotateX(90deg)', transformOrigin: 'bottom center' }}
-                      />
-                    </div>
-                  ) : (
-                    <img
-                      src={layer.src}
-                      alt={layer.name}
-                      className="scene-layer-img"
-                      draggable={false}
-                    />
-                  )}
+                  <img
+                    src={layer.src}
+                    alt={layer.name}
+                    className="scene-layer-img"
+                    draggable={false}
+                  />
                   
                   {debugMode && (
                     <div className="layer-debug-info">
                       <span>{layer.name}</span>
-                      <span>Z-Depth: {layer.zDepth}</span>
-                      <span>Dist: {Math.max(layer.zDepth - camera.z, 1).toFixed(0)}</span>
+                      <span>Depth: {layer.depth}</span>
+                      <span>Scale Speed: {layer.scaleSpeed}</span>
+                      <span>Current Scale: {(layer.baseScale + (camera.zoom / CAMERA_ZOOM.endZoom) * layer.scaleSpeed).toFixed(2)}x</span>
                     </div>
                   )}
                 </div>
@@ -260,22 +329,21 @@ function Scene01CameraTest() {
           
           <div className="camera-info">
             <div className="camera-stat">
-              <label>Z-Dolly:</label>
-              <span>{camera.z.toFixed(1)}</span>
+              <label>Zoom:</label>
+              <span>{camera.zoom.toFixed(1)}</span>
             </div>
             <div className="camera-stat">
-              <label>X-Sway:</label>
+              <label>Progress:</label>
+              <span>{((camera.zoom / CAMERA_ZOOM.endZoom) * 100).toFixed(0)}%</span>
+            </div>
+            <div className="camera-stat">
+              <label>X:</label>
               <span>{camera.x.toFixed(1)}</span>
             </div>
             <div className="camera-stat">
-              <label>Y-Pan:</label>
+              <label>Y:</label>
               <span>{camera.y.toFixed(1)}</span>
             </div>
-          </div>
-          
-          <div className="camera-buttons">
-            <button className="camera-btn zoom-btn" onClick={handleZoomIn}>🔍 Zoom In</button>
-            <button className="camera-btn zoom-btn" onClick={handleZoomOut}>🔍 Zoom Out</button>
           </div>
           
           <div className="camera-buttons">
@@ -307,8 +375,8 @@ function Scene01CameraTest() {
           </div>
           
           <div className="keyboard-hints">
-            <p><kbd>W</kbd> Dolly Forward</p>
-            <p><kbd>S</kbd> Dolly Backward</p>
+            <p><kbd>W</kbd> Zoom In</p>
+            <p><kbd>S</kbd> Zoom Out</p>
             <p><kbd>A</kbd> Left</p>
             <p><kbd>D</kbd> Right</p>
           </div>
@@ -324,7 +392,8 @@ function Scene01CameraTest() {
                     onChange={() => toggleLayer(layer.id)}
                   />
                   <span>{layerVisibility[layer.id] ? '✓' : '✗'} {layer.name}</span>
-                  <span className="depth-value">({layer.zDepth})</span>
+                  <span className="depth-value">({layer.depth})</span>
+                  <span className="scale-speed">Scale: {layer.scaleSpeed}x</span>
                 </label>
               ))}
             </div>
