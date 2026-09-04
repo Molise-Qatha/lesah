@@ -17,9 +17,10 @@ const SCENE_LAYERS = [
   { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, baseScale: 1.0, zIndex: 2, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, baseScale: 1.0, zIndex: 3, visible: true, slideOutX: 0, layerType: 'background' },
   { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, baseScale: 1.0, zIndex: 4, visible: true, slideOutX: 0, layerType: 'floor', floorDropY: 400 },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -600, slideOutStart: 50, slideOutEnd: 90, layerType: 'background' },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -1200, slideOutStart: 40, slideOutEnd: 80, layerType: 'background' },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 1200, slideOutStart: 45, slideOutEnd: 85, layerType: 'background' },
+  // 🛠️ Updated slideOutX to be MUCH larger so top branches fly completely off screen
+  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, baseScale: 1.0, zIndex: 5, visible: true, slideOutX: -3000, slideOutStart: 50, slideOutEnd: 90, layerType: 'background' },
+  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, baseScale: 1.10, zIndex: 6, visible: true, slideOutX: -4000, slideOutStart: 40, slideOutEnd: 80, layerType: 'background' },
+  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, baseScale: 1.20, zIndex: 7, visible: true, slideOutX: 4000, slideOutStart: 45, slideOutEnd: 85, layerType: 'background' },
 ];
 
 const CAMERA_PATH = {
@@ -110,18 +111,18 @@ function Scene01CameraTest() {
     };
   }, [camera]);
 
-  // ✅ Shot 2: The floor falls flat underneath the camera
+  // ✅ Shot 2: Force trees completely off-screen, floor flat, mountains/sky clear
   const getLockedLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
     const scale = layer.baseScale * (1 + (shot2Zoom - 1) * depthFactor);
     
+    // 🛠️ FIX: Force full slide-out so top branches leave the screen
     let slideX = 0;
     if (layer.slideOutX !== 0 && layer.slideOutStart !== undefined) {
-      slideX = layer.slideOutX;
+      slideX = layer.slideOutX; // At 100% forward, we are fully slid out
     }
 
     if (layer.layerType === 'floor') {
-      // 🛠️ CRITICAL FIX: Use the base floorDropY (400) * zoom to blow it WAY down off the screen
       const floorDrop = layer.floorDropY * shot2Zoom; 
       return {
         transform: `translate(0px, ${floorDrop}px) scale(${scale})`,
