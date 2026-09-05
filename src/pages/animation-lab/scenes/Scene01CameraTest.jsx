@@ -11,17 +11,17 @@ import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
 import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
 
 const SCENE_LAYERS = [
-  { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, zIndex: 1, visible: true },
-  { id: 'mountains', name: 'Mountains', src: mountainsImg, depth: 0.1, zIndex: 2, visible: true },
-  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, zIndex: 3, visible: true },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, zIndex: 4, visible: true, isGround: true },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, zIndex: 5, visible: true },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, zIndex: 6, visible: true },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, zIndex: 7, visible: true },
+  { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, zIndex: 1, defaultVisible: true },
+  { id: 'mountains', name: 'Distant Mountains', src: mountainsImg, depth: 0.1, zIndex: 2, defaultVisible: true },
+  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, zIndex: 3, defaultVisible: false },
+  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, zIndex: 4, defaultVisible: false, isGround: true },
+  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, zIndex: 5, defaultVisible: false },
+  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, zIndex: 6, defaultVisible: false },
+  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, zIndex: 7, defaultVisible: false },
 ];
 
 function Scene01CameraTest() {
-  // 🛠️ MANUAL CAMERA STATE: Just X, Y, and Zoom (Forward is controlled by user)
+  // 🛠️ MANUAL CAMERA STATE: Just X, Y, and Forward
   const [camera, setCamera] = useState({ x: 0, y: 0, forward: 0 });
 
   // 🛠️ LAYER SETTINGS: Individual X, Y, Scale for every layer
@@ -29,9 +29,14 @@ function Scene01CameraTest() {
     SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
   );
 
-  const [debugMode, setDebugMode] = useState(true); // Start in edit mode
+  // 🛠️ NEW: Asset visibility state
+  const [layerVisibility, setLayerVisibility] = useState(
+    SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layer.defaultVisible }), {})
+  );
+
+  const [debugMode, setDebugMode] = useState(true);
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
-  const [linkScale, setLinkScale] = useState(false); // 🛠️ Link Mountains + Distant Forest scale
+  const [linkScale, setLinkScale] = useState(false);
 
   const animationFrameRef = useRef(null);
   const keysPressed = useRef({});
@@ -41,11 +46,9 @@ function Scene01CameraTest() {
     const depthFactor = layer.depth;
     const manualPos = layerPositions[layer.id];
 
-    // Parallax from camera X/Y
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
 
-    // Forward is just a user-controlled slider now (no automation)
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
 
@@ -66,7 +69,6 @@ function Scene01CameraTest() {
   }, [camera, layerPositions]);
 
   const updateLayerPosition = (layerId, axis, value) => {
-    // 🛠️ SPECIAL: If Link Scale is on, move Mountains and Forest together
     if (linkScale && axis === 'scale' && (layerId === 'mountains' || layerId === 'distant_forest')) {
       setLayerPositions(prev => ({
         ...prev,
@@ -79,6 +81,14 @@ function Scene01CameraTest() {
         [layerId]: { ...prev[layerId], [axis]: value }
       }));
     }
+  };
+
+  // 🛠️ NEW: Toggle asset visibility
+  const toggleLayerVisibility = (layerId) => {
+    setLayerVisibility(prev => ({
+      ...prev,
+      [layerId]: !prev[layerId]
+    }));
   };
 
   const handleKeyDown = useCallback((e) => {
@@ -116,6 +126,17 @@ function Scene01CameraTest() {
     setLayerPositions(
       SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
     );
+    // Reset visibility to defaults
+    setLayerVisibility(
+      SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layer.defaultVisible }), {})
+    );
+  };
+
+  // 🛠️ NEW: Show only specific layers (quick presets)
+  const showOnly = (layerIds) => {
+    setLayerVisibility(
+      SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layerIds.includes(layer.id) }), {})
+    );
   };
 
   useEffect(() => {
@@ -135,9 +156,11 @@ function Scene01CameraTest() {
         <div className="scene-viewport">
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
-              <div key={layer.id} className="scene-layer" style={{ zIndex: layer.zIndex, ...getLayerTransform(layer) }}>
-                <img src={layer.src} alt={layer.name} className="scene-layer-img" draggable={false} />
-              </div>
+              layerVisibility[layer.id] && (
+                <div key={layer.id} className="scene-layer" style={{ zIndex: layer.zIndex, ...getLayerTransform(layer) }}>
+                  <img src={layer.src} alt={layer.name} className="scene-layer-img" draggable={false} />
+                </div>
+              )
             ))}
           </div>
         </div>
@@ -149,6 +172,37 @@ function Scene01CameraTest() {
             <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>
               🐛 Toggle Controls
             </button>
+          </div>
+
+          {/* 🛠️ NEW: Asset Visibility Panel */}
+          <div className="asset-visibility-panel">
+            <div className="asset-visibility-header">
+              <strong>🎨 Asset Visibility</strong>
+            </div>
+            
+            <div className="asset-quick-presets">
+              <button onClick={() => showOnly(['sky', 'mountains'])}>🌄 Opening Shot</button>
+              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest'])}>🌲 Add Forest</button>
+              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest', 'clearing'])}>🏞️ Add Clearing</button>
+              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest', 'clearing', 'landmark_tree'])}>🌳 Add Landmark</button>
+              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest', 'clearing', 'landmark_tree', 'near_tree_01', 'near_tree_02'])}>🎬 Full Scene</button>
+            </div>
+
+            <div className="asset-list">
+              {SCENE_LAYERS.map(layer => (
+                <label key={layer.id} className="asset-toggle-item">
+                  <input 
+                    type="checkbox" 
+                    checked={layerVisibility[layer.id]} 
+                    onChange={() => toggleLayerVisibility(layer.id)}
+                  />
+                  <span className="asset-toggle-label">{layer.name}</span>
+                  <span className="asset-toggle-status">
+                    {layerVisibility[layer.id] ? '✅ Visible' : '👁️ Hidden'}
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
 
           {/* 🛠️ Manual Camera Controls */}
