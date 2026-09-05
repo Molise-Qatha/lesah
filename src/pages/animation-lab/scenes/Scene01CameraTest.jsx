@@ -38,19 +38,19 @@ function Scene01CameraTest() {
 
   // Recording State
   const [isRecording, setIsRecording] = useState(false);
-  const mediaRecorderRef = useRef(null);
+  const isRecordingRef = useRef(false); // 🛠️ NEW: Ref for frame loop
   const canvasRef = useRef(null);
   const animationFrameRef = useRef(null);
   const keysPressed = useRef({});
   const muxerRef = useRef(null);
   const videoEncoderRef = useRef(null);
-  const recordingFramesRef = useRef([]);
 
   // Preload all images
   const imagesRef = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
+    console.log('🖼️ Loading images...');
     let loaded = 0;
     const total = SCENE_LAYERS.length;
     
@@ -58,7 +58,14 @@ function Scene01CameraTest() {
       const img = new Image();
       img.onload = () => {
         loaded++;
-        if (loaded === total) setImagesLoaded(true);
+        console.log(`✅ Image loaded: ${layer.name} (${loaded}/${total})`);
+        if (loaded === total) {
+          console.log('🎨 All images loaded!');
+          setImagesLoaded(true);
+        }
+      };
+      img.onerror = (e) => {
+        console.error(`❌ Image failed to load: ${layer.name}`, e);
       };
       img.src = layer.src;
       imagesRef.current[layer.id] = img;
@@ -182,7 +189,14 @@ function Scene01CameraTest() {
   // Canvas Drawing Function
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !imagesLoaded) return;
+    if (!canvas) {
+      console.warn('⚠️ Canvas not found');
+      return;
+    }
+    if (!imagesLoaded) {
+      console.warn('⚠️ Images not loaded yet');
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
@@ -223,6 +237,7 @@ function Scene01CameraTest() {
   // Animation loop for canvas
   useEffect(() => {
     let canvasAnimationFrame;
+    console.log('🔄 Canvas animation loop starting...');
     
     const animateCanvas = () => {
       drawSceneToCanvas();
@@ -230,20 +245,35 @@ function Scene01CameraTest() {
     };
     
     animateCanvas();
+    console.log('✅ Canvas animation loop running');
     
-    return () => cancelAnimationFrame(canvasAnimationFrame);
+    return () => {
+      console.log('🛑 Canvas animation loop stopping');
+      cancelAnimationFrame(canvasAnimationFrame);
+    };
   }, [drawSceneToCanvas]);
 
   // MP4 Recording Functions
   const startRecording = async () => {
+    console.log('🎬 START RECORDING called');
     try {
       const canvas = canvasRef.current;
-      if (!canvas) return;
+      if (!canvas) {
+        console.error('❌ Canvas not found');
+        return;
+      }
+      console.log('✅ Canvas found:', canvas.width, 'x', canvas.height);
+
+      // Force a draw first
+      drawSceneToCanvas();
+      console.log('✅ Canvas drawn');
 
       const stream = canvas.captureStream(60);
       const track = stream.getVideoTracks()[0];
+      console.log('✅ Canvas stream captured:', track);
 
       // Create MP4 muxer
+      console.log('📦 Creating Muxer...');
       const muxer = new Muxer({
         target: new ArrayBufferTarget(),
         video: {
@@ -253,19 +283,24 @@ function Scene01CameraTest() {
         },
         fastStart: 'in-memory'
       });
+      console.log('✅ Muxer created');
 
       muxerRef.current = muxer;
 
       // Create video encoder
+      console.log('🎥 Creating VideoEncoder...');
       const videoEncoder = new VideoEncoder({
         output: (chunk, meta) => {
+          console.log('📦 Encoder output! Chunk size:', chunk.byteLength, 'meta:', meta);
           muxer.addVideoChunk(chunk, meta);
         },
-        error: (e) => console.error('Encoder error:', e)
+        error: (e) => console.error('❌ Encoder error:', e)
       });
 
       videoEncoderRef.current = videoEncoder;
-      
+      console.log('✅ VideoEncoder created');
+
+      console.log('⚙️ Configuring encoder...');
       videoEncoder.configure({
         codec: 'avc1.42001f',
         width: canvas.width,
@@ -273,67 +308,109 @@ function Scene01CameraTest() {
         bitrate: 5_000_000,
         framerate: 60
       });
+      console.log('✅ Encoder configured, state:', videoEncoder.state);
 
       // Start recording frames
       let frameNumber = 0;
       const frameRate = 60;
       const frameInterval = 1000 / frameRate;
 
+      isRecordingRef.current = true;
+      console.log('✅ isRecordingRef set to true');
+
       const processFrame = async () => {
         if (!videoEncoderRef.current || videoEncoderRef.current.state !== 'configured') {
-          requestAnimationFrame(processFrame);
+          console.log('⏳ Encoder not ready, state:', videoEncoderRef.current?.state);
+          if (isRecordingRef.current) {
+            requestAnimationFrame(processFrame);
+          }
           return;
         }
 
         if (videoEncoderRef.current.encodeQueueSize > 2) {
-          requestAnimationFrame(processFrame);
+          console.log('⏳ Encoder queue full, waiting...');
+          if (isRecordingRef.current) {
+            requestAnimationFrame(processFrame);
+          }
           return;
         }
 
-        const frame = new VideoFrame(canvas, { timestamp: frameNumber * frameInterval * 1000 });
-        videoEncoderRef.current.encode(frame);
-        frame.close();
-        frameNumber++;
+        try {
+          const frame = new VideoFrame(canvas, { timestamp: frameNumber * frameInterval * 1000 });
+          videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 60 === 0 });
+          frame.close();
+          frameNumber++;
+          console.log(`🎞️ Encoded frame #${frameNumber}`);
+        } catch (error) {
+          console.error('❌ Frame encoding failed:', error);
+        }
 
-        if (isRecording) {
+        if (isRecordingRef.current) {
           requestAnimationFrame(processFrame);
+        } else {
+          console.log('🛑 Frame loop stopping (isRecordingRef is false)');
         }
       };
 
+      console.log('🚀 Starting frame loop...');
       requestAnimationFrame(processFrame);
       setIsRecording(true);
+      console.log('✅ Recording started!');
 
     } catch (error) {
-      console.error('Error starting recording:', error);
+      console.error('❌ Error starting recording:', error);
     }
   };
 
   const stopRecording = async () => {
+    console.log('⏹️ STOP RECORDING called');
+    isRecordingRef.current = false;
+    console.log('✅ isRecordingRef set to false');
+
     if (videoEncoderRef.current && videoEncoderRef.current.state === 'configured') {
       try {
+        console.log('⏳ Flushing encoder...');
         await videoEncoderRef.current.flush();
+        console.log('✅ Encoder flushed');
+        
+        console.log('📦 Finalizing muxer...');
         muxerRef.current.finalize();
+        console.log('✅ Muxer finalized');
         
         const { buffer } = muxerRef.current.target;
+        console.log('✅ Buffer size:', buffer.byteLength);
+        
         const blob = new Blob([buffer], { type: 'video/mp4' });
+        console.log('✅ Blob created, size:', blob.size);
+        
         const url = URL.createObjectURL(blob);
+        console.log('✅ Object URL created:', url);
+        
         const a = document.createElement('a');
         a.href = url;
         a.download = `lesah-scene01-${Date.now()}.mp4`;
         a.click();
+        console.log('✅ Download triggered');
+        
         URL.revokeObjectURL(url);
+        console.log('✅ URL revoked');
       } catch (error) {
-        console.error('Error finalizing recording:', error);
+        console.error('❌ Error finalizing recording:', error);
       }
+    } else {
+      console.warn('⚠️ Encoder not in configured state:', videoEncoderRef.current?.state);
     }
     
     if (videoEncoderRef.current) {
+      console.log('🛑 Closing encoder...');
       videoEncoderRef.current.close();
       videoEncoderRef.current = null;
+      console.log('✅ Encoder closed');
     }
     
     muxerRef.current = null;
     setIsRecording(false);
+    console.log('✅ Recording stopped');
   };
 
   // Cleanup on unmount
