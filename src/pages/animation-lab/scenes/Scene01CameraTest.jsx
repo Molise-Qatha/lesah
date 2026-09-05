@@ -21,15 +21,10 @@ const SCENE_LAYERS = [
 ];
 
 function Scene01CameraTest() {
-  // 🛠️ MANUAL CAMERA STATE: Just X, Y, and Forward
   const [camera, setCamera] = useState({ x: 0, y: 0, forward: 0 });
-
-  // 🛠️ LAYER SETTINGS: Individual X, Y, Scale for every layer
   const [layerPositions, setLayerPositions] = useState(
     SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
   );
-
-  // 🛠️ Asset visibility state
   const [layerVisibility, setLayerVisibility] = useState(
     SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layer.defaultVisible }), {})
   );
@@ -37,21 +32,35 @@ function Scene01CameraTest() {
   const [debugMode, setDebugMode] = useState(true);
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
   const [linkScale, setLinkScale] = useState(false);
-  
-  // 🛠️ NEW: Unlimited Mode
   const [unlimitedMode, setUnlimitedMode] = useState(false);
 
   // 🛠️ NEW: Recording State
   const [isRecording, setIsRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const mediaRecorderRef = useRef(null);
-  const sceneViewportRef = useRef(null);
-  const streamRef = useRef(null);
-
+  const canvasRef = useRef(null);
   const animationFrameRef = useRef(null);
   const keysPressed = useRef({});
 
-  // 🛠️ NEW: Range limits based on mode
+  // 🛠️ Preload all images
+  const imagesRef = useRef({});
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    let loaded = 0;
+    const total = SCENE_LAYERS.length;
+    
+    SCENE_LAYERS.forEach(layer => {
+      const img = new Image();
+      img.onload = () => {
+        loaded++;
+        if (loaded === total) setImagesLoaded(true);
+      };
+      img.src = layer.src;
+      imagesRef.current[layer.id] = img;
+    });
+  }, []);
+
   const rangeLimits = unlimitedMode ? {
     cameraX: 10000,
     cameraY: 10000,
@@ -68,17 +77,13 @@ function Scene01CameraTest() {
     scale: 4
   };
 
-  // 🛠️ CORE MATH: User controls everything
   const getLayerTransform = useCallback((layer) => {
     const depthFactor = layer.depth;
     const manualPos = layerPositions[layer.id];
-
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
-
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
-
     const finalX = manualPos.x + cameraX - forwardOffset;
     const finalY = manualPos.y + cameraY;
     const finalScale = manualPos.scale;
@@ -110,7 +115,6 @@ function Scene01CameraTest() {
     }
   };
 
-  // 🛠️ Toggle asset visibility
   const toggleLayerVisibility = (layerId) => {
     setLayerVisibility(prev => ({
       ...prev,
@@ -138,21 +142,17 @@ function Scene01CameraTest() {
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = 0.4 * cameraSpeed;
-      
-      // 🛠️ NEW: In unlimited mode, movement goes to infinity
       if (unlimitedMode) {
         if (keysPressed.current['w']) setCamera(prev => ({ ...prev, forward: prev.forward + speed }));
         if (keysPressed.current['s']) setCamera(prev => ({ ...prev, forward: prev.forward - speed }));
         if (keysPressed.current['a']) setCamera(prev => ({ ...prev, x: prev.x - speed }));
         if (keysPressed.current['d']) setCamera(prev => ({ ...prev, x: prev.x + speed }));
       } else {
-        // Limited mode - keep within bounds
         if (keysPressed.current['w']) setCamera(prev => ({ ...prev, forward: Math.min(prev.forward + speed, rangeLimits.forward) }));
         if (keysPressed.current['s']) setCamera(prev => ({ ...prev, forward: Math.max(prev.forward - speed, -rangeLimits.forward) }));
         if (keysPressed.current['a']) setCamera(prev => ({ ...prev, x: Math.min(prev.x - speed, -rangeLimits.cameraX) }));
         if (keysPressed.current['d']) setCamera(prev => ({ ...prev, x: Math.min(prev.x + speed, rangeLimits.cameraX) }));
       }
-      
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     };
     animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
@@ -164,39 +164,80 @@ function Scene01CameraTest() {
     setLayerPositions(
       SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
     );
-    // Reset visibility to defaults
     setLayerVisibility(
       SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layer.defaultVisible }), {})
     );
   };
 
-  // 🛠️ Show only specific layers (quick presets)
   const showOnly = (layerIds) => {
     setLayerVisibility(
       SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layerIds.includes(layer.id) }), {})
     );
   };
 
-  // 🛠️ NEW: Recording Functions
+  // 🛠️ NEW: Canvas Drawing Function
+  const drawSceneToCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !imagesLoaded) return;
+
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Clear canvas
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw each visible layer
+    SCENE_LAYERS.forEach(layer => {
+      if (!layerVisibility[layer.id]) return;
+      
+      const img = imagesRef.current[layer.id];
+      if (!img) return;
+
+      const transform = getLayerTransform(layer);
+      
+      // Parse the transform string to get values
+      const translateMatch = transform.transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
+      const scaleMatch = transform.transform.match(/scale\(([\d.]+)\)/);
+      
+      if (!translateMatch || !scaleMatch) return;
+
+      const x = parseFloat(translateMatch[1]);
+      const y = parseFloat(translateMatch[2]);
+      const scale = parseFloat(scaleMatch[1]);
+
+      // Draw image centered
+      ctx.save();
+      ctx.translate(width / 2 + x, height / 2 + y);
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, -width / 2, -height / 2, width, height);
+      ctx.restore();
+    });
+  }, [layerVisibility, layerPositions, camera, imagesLoaded, getLayerTransform]);
+
+  // 🛠️ NEW: Animation loop for canvas
+  useEffect(() => {
+    let canvasAnimationFrame;
+    
+    const animateCanvas = () => {
+      drawSceneToCanvas();
+      canvasAnimationFrame = requestAnimationFrame(animateCanvas);
+    };
+    
+    animateCanvas();
+    
+    return () => cancelAnimationFrame(canvasAnimationFrame);
+  }, [drawSceneToCanvas]);
+
+  // 🛠️ NEW: Recording Functions (Canvas-based - no permission needed)
   const startRecording = async () => {
     try {
-      const viewport = sceneViewportRef.current;
-      if (!viewport) return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          displaySurface: 'browser',
-        },
-        audio: false,
-        preferCurrentTab: true
-      });
-
-      // Try to capture just the viewport element
-      const canvasStream = viewport.captureStream(60);
-      
-      streamRef.current = canvasStream;
-      
-      const mediaRecorder = new MediaRecorder(canvasStream, {
+      const stream = canvas.captureStream(60);
+      const mediaRecorder = new MediaRecorder(stream, {
         mimeType: 'video/webm;codecs=vp9'
       });
 
@@ -222,12 +263,6 @@ function Scene01CameraTest() {
 
       mediaRecorder.start();
       setIsRecording(true);
-
-      // Stop recording when user stops sharing
-      stream.getVideoTracks()[0].addEventListener('ended', () => {
-        stopRecording();
-      });
-
     } catch (error) {
       console.error('Error starting recording:', error);
     }
@@ -246,9 +281,6 @@ function Scene01CameraTest() {
       if (mediaRecorderRef.current && isRecording) {
         mediaRecorderRef.current.stop();
       }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
     };
   }, [isRecording]);
 
@@ -266,7 +298,7 @@ function Scene01CameraTest() {
       <div className="scene01-container">
         
         {/* Scene Viewport */}
-        <div className="scene-viewport" ref={sceneViewportRef}>
+        <div className="scene-viewport">
           <div className="scene-stage">
             {SCENE_LAYERS.map(layer => (
               layerVisibility[layer.id] && (
@@ -276,7 +308,16 @@ function Scene01CameraTest() {
               )
             ))}
           </div>
-          {/* 🛠️ NEW: Recording Indicator */}
+          
+          {/* 🛠️ Hidden Canvas for recording */}
+          <canvas 
+            ref={canvasRef} 
+            width={1280} 
+            height={720} 
+            style={{ display: 'none' }} 
+          />
+          
+          {/* Recording Indicator */}
           {isRecording && (
             <div className="recording-indicator">
               <span className="rec-dot"></span>
@@ -285,7 +326,7 @@ function Scene01CameraTest() {
           )}
         </div>
 
-        {/* 🛠️ FULL MANUAL CONTROLS */}
+        {/* FULL MANUAL CONTROLS */}
         <div className="camera-controls">
           <div className="camera-controls-header">
             <h3>Manual Editor</h3>
@@ -294,7 +335,7 @@ function Scene01CameraTest() {
             </button>
           </div>
 
-          {/* 🛠️ NEW: Unlimited Mode Toggle + Record Button */}
+          {/* Unlimited Mode Toggle + Record Button */}
           <div className="unlimited-mode-section">
             <div className="unlimited-mode-toggle">
               <label>
@@ -321,7 +362,7 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* 🛠️ Asset Visibility Panel */}
+          {/* Asset Visibility Panel */}
           <div className="asset-visibility-panel">
             <div className="asset-visibility-header">
               <strong>🎨 Asset Visibility</strong>
@@ -352,13 +393,13 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* 🛠️ Manual Camera Controls */}
+          {/* Manual Camera Controls */}
           <div className="camera-stat-group">
             <strong>Camera Parallax</strong>
             <label>Camera X (Left/Right): 
               <input 
                 type="range" 
-                min={unlimitedMode ? -rangeLimits.cameraX : -rangeLimits.cameraX} 
+                min={-rangeLimits.cameraX} 
                 max={rangeLimits.cameraX} 
                 value={camera.x} 
                 onChange={(e) => setCamera(prev => ({ ...prev, x: Number(e.target.value) }))} 
@@ -367,7 +408,7 @@ function Scene01CameraTest() {
             <label>Camera Y (Up/Down): 
               <input 
                 type="range" 
-                min={unlimitedMode ? -rangeLimits.cameraY : -rangeLimits.cameraY} 
+                min={-rangeLimits.cameraY} 
                 max={rangeLimits.cameraY} 
                 value={camera.y} 
                 onChange={(e) => setCamera(prev => ({ ...prev, y: Number(e.target.value) }))} 
@@ -389,7 +430,7 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* 🛠️ Layer Editor */}
+          {/* Layer Editor */}
           {debugMode && (
             <div className="layer-editor">
               <div className="layer-editor-header">

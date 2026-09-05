@@ -49,7 +49,7 @@
   -webkit-user-drag: none;
 }
 
-/* 🛠️ NEW: Recording Indicator */
+/* Recording Indicator */
 .recording-indicator {
   position: absolute;
   top: 20px;
@@ -118,7 +118,7 @@
   background: #e94560;
 }
 
-/* 🛠️ NEW: Unlimited Mode Section */
+/* Unlimited Mode Section */
 .unlimited-mode-section {
   background: #0f3460;
   padding: 12px;
@@ -188,7 +188,7 @@
   50% { opacity: 0.7; }
 }
 
-/* 🛠️ NEW: Camera Position Display */
+/* Camera Position Display */
 .camera-position-display {
   display: flex;
   justify-content: space-between;
