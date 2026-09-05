@@ -48,7 +48,7 @@ function Scene01CameraTest() {
   // Preload all images
   const imagesRef = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const imagesLoadedRef = useRef(false); // 🛠️ FIX: ref for imagesLoaded
+  const imagesLoadedRef = useRef(false);
 
   useEffect(() => {
     console.log('🖼️ Loading images...');
@@ -62,7 +62,7 @@ function Scene01CameraTest() {
         console.log(`✅ Image loaded: ${layer.name} (${loaded}/${total})`);
         if (loaded === total) {
           console.log('🎨 All images loaded!');
-          imagesLoadedRef.current = true; // 🛠️ FIX: Update ref immediately
+          imagesLoadedRef.current = true;
           setImagesLoaded(true);
         }
       };
@@ -188,17 +188,11 @@ function Scene01CameraTest() {
     );
   };
 
-  // Canvas Drawing Function - 🛠️ FIX: Use ref for imagesLoaded
+  // Canvas Drawing Function
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) {
-      console.warn('⚠️ Canvas not found');
-      return;
-    }
-    if (!imagesLoadedRef.current) {
-      console.warn('⚠️ Images not loaded yet');
-      return;
-    }
+    if (!canvas) return;
+    if (!imagesLoadedRef.current) return;
 
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
@@ -234,12 +228,11 @@ function Scene01CameraTest() {
       ctx.drawImage(img, -width / 2, -height / 2, width, height);
       ctx.restore();
     });
-  }, [layerVisibility, layerPositions, camera, getLayerTransform]); // 🛠️ FIX: removed imagesLoaded dependency
+  }, [layerVisibility, layerPositions, camera, getLayerTransform]);
 
-  // Animation loop for canvas - 🛠️ FIX: Add imagesLoaded to dependencies
+  // Animation loop for canvas
   useEffect(() => {
     let canvasAnimationFrame;
-    console.log('🔄 Canvas animation loop starting...');
     
     const animateCanvas = () => {
       drawSceneToCanvas();
@@ -247,13 +240,9 @@ function Scene01CameraTest() {
     };
     
     animateCanvas();
-    console.log('✅ Canvas animation loop running');
     
-    return () => {
-      console.log('🛑 Canvas animation loop stopping');
-      cancelAnimationFrame(canvasAnimationFrame);
-    };
-  }, [drawSceneToCanvas]); // 🛠️ FIX: will re-run when drawSceneToCanvas changes
+    return () => cancelAnimationFrame(canvasAnimationFrame);
+  }, [drawSceneToCanvas]);
 
   // MP4 Recording Functions
   const startRecording = async () => {
@@ -269,10 +258,6 @@ function Scene01CameraTest() {
       // Force a draw first
       drawSceneToCanvas();
       console.log('✅ Canvas drawn');
-
-      const stream = canvas.captureStream(60);
-      const track = stream.getVideoTracks()[0];
-      console.log('✅ Canvas stream captured:', track);
 
       // Create MP4 muxer
       console.log('📦 Creating Muxer...');
@@ -308,13 +293,14 @@ function Scene01CameraTest() {
         width: canvas.width,
         height: canvas.height,
         bitrate: 5_000_000,
-        framerate: 60
+        framerate: 15 // 🛠️ FIX: Reduced from 60 to 15fps
       });
       console.log('✅ Encoder configured, state:', videoEncoder.state);
 
-      // Start recording frames
+      // Start recording frames with real-time timestamps
+      const recordingStartTime = performance.now(); // 🛠️ FIX: Use real time
       let frameNumber = 0;
-      const frameRate = 60;
+      const frameRate = 15;
       const frameInterval = 1000 / frameRate;
 
       isRecordingRef.current = true;
@@ -322,7 +308,6 @@ function Scene01CameraTest() {
 
       const processFrame = async () => {
         if (!videoEncoderRef.current || videoEncoderRef.current.state !== 'configured') {
-          console.log('⏳ Encoder not ready, state:', videoEncoderRef.current?.state);
           if (isRecordingRef.current) {
             requestAnimationFrame(processFrame);
           }
@@ -330,7 +315,6 @@ function Scene01CameraTest() {
         }
 
         if (videoEncoderRef.current.encodeQueueSize > 2) {
-          console.log('⏳ Encoder queue full, waiting...');
           if (isRecordingRef.current) {
             requestAnimationFrame(processFrame);
           }
@@ -338,11 +322,15 @@ function Scene01CameraTest() {
         }
 
         try {
-          const frame = new VideoFrame(canvas, { timestamp: frameNumber * frameInterval * 1000 });
-          videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 60 === 0 });
+          // 🛠️ FIX: Use actual elapsed time for timestamp
+          const elapsedTime = performance.now() - recordingStartTime;
+          const timestamp = elapsedTime * 1000; // Convert to microseconds
+          
+          const frame = new VideoFrame(canvas, { timestamp });
+          videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 15 === 0 });
           frame.close();
           frameNumber++;
-          console.log(`🎞️ Encoded frame #${frameNumber}`);
+          console.log(`🎞️ Encoded frame #${frameNumber} at ${elapsedTime.toFixed(0)}ms`);
         } catch (error) {
           console.error('❌ Frame encoding failed:', error);
         }
@@ -350,7 +338,7 @@ function Scene01CameraTest() {
         if (isRecordingRef.current) {
           requestAnimationFrame(processFrame);
         } else {
-          console.log('🛑 Frame loop stopping (isRecordingRef is false)');
+          console.log('🛑 Frame loop stopping');
         }
       };
 
