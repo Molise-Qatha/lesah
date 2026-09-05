@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Scene01CameraTest.css';
+import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 
 // Import scene assets
 import skyImg from '../../../assets/scene01/scene01_sky.png';
@@ -34,15 +35,17 @@ function Scene01CameraTest() {
   const [linkScale, setLinkScale] = useState(false);
   const [unlimitedMode, setUnlimitedMode] = useState(false);
 
-  // 🛠️ NEW: Recording State
+  // Recording State
   const [isRecording, setIsRecording] = useState(false);
-  const [recordedChunks, setRecordedChunks] = useState([]);
   const mediaRecorderRef = useRef(null);
   const canvasRef = useRef(null);
   const animationFrameRef = useRef(null);
   const keysPressed = useRef({});
+  const muxerRef = useRef(null);
+  const videoEncoderRef = useRef(null);
+  const recordingFramesRef = useRef([]);
 
-  // 🛠️ Preload all images
+  // Preload all images
   const imagesRef = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
@@ -175,7 +178,7 @@ function Scene01CameraTest() {
     );
   };
 
-  // 🛠️ NEW: Canvas Drawing Function
+  // Canvas Drawing Function
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imagesLoaded) return;
@@ -216,7 +219,7 @@ function Scene01CameraTest() {
     });
   }, [layerVisibility, layerPositions, camera, imagesLoaded, getLayerTransform]);
 
-  // 🛠️ NEW: Animation loop for canvas
+  // Animation loop for canvas
   useEffect(() => {
     let canvasAnimationFrame;
     
@@ -230,59 +233,119 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(canvasAnimationFrame);
   }, [drawSceneToCanvas]);
 
-  // 🛠️ NEW: Recording Functions (Canvas-based - no permission needed)
+  // MP4 Recording Functions
   const startRecording = async () => {
     try {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
       const stream = canvas.captureStream(60);
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp9'
+      const track = stream.getVideoTracks()[0];
+
+      // Create MP4 muxer
+      const muxer = new Muxer({
+        target: new ArrayBufferTarget(),
+        video: {
+          codec: 'avc',
+          width: canvas.width,
+          height: canvas.height
+        },
+        fastStart: 'in-memory'
       });
 
-      mediaRecorderRef.current = mediaRecorder;
-      setRecordedChunks([]);
+      muxerRef.current = muxer;
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          setRecordedChunks(prev => [...prev, event.data]);
+      // Create video encoder
+      const videoEncoder = new VideoEncoder({
+        output: (chunk, meta) => {
+          muxer.addVideoChunk(chunk, meta);
+        },
+        error: (e) => console.error('Encoder error:', e)
+      });
+
+      videoEncoderRef.current = videoEncoder;
+      
+      videoEncoder.configure({
+        codec: 'avc1.42001f',
+        width: canvas.width,
+        height: canvas.height,
+        bitrate: 5_000_000,
+        framerate: 60
+      });
+
+      // Start recording frames
+      let frameNumber = 0;
+      const frameRate = 60;
+      const frameInterval = 1000 / frameRate;
+
+      const processFrame = async () => {
+        if (!videoEncoderRef.current || videoEncoderRef.current.state !== 'configured') {
+          requestAnimationFrame(processFrame);
+          return;
+        }
+
+        if (videoEncoderRef.current.encodeQueueSize > 2) {
+          requestAnimationFrame(processFrame);
+          return;
+        }
+
+        const frame = new VideoFrame(canvas, { timestamp: frameNumber * frameInterval * 1000 });
+        videoEncoderRef.current.encode(frame);
+        frame.close();
+        frameNumber++;
+
+        if (isRecording) {
+          requestAnimationFrame(processFrame);
         }
       };
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `lesah-scene01-${Date.now()}.webm`;
-        a.click();
-        URL.revokeObjectURL(url);
-        setRecordedChunks([]);
-      };
-
-      mediaRecorder.start();
+      requestAnimationFrame(processFrame);
       setIsRecording(true);
+
     } catch (error) {
       console.error('Error starting recording:', error);
     }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
+  const stopRecording = async () => {
+    if (videoEncoderRef.current && videoEncoderRef.current.state === 'configured') {
+      try {
+        await videoEncoderRef.current.flush();
+        muxerRef.current.finalize();
+        
+        const { buffer } = muxerRef.current.target;
+        const blob = new Blob([buffer], { type: 'video/mp4' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `lesah-scene01-${Date.now()}.mp4`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error finalizing recording:', error);
+      }
     }
+    
+    if (videoEncoderRef.current) {
+      videoEncoderRef.current.close();
+      videoEncoderRef.current = null;
+    }
+    
+    muxerRef.current = null;
+    setIsRecording(false);
   };
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (mediaRecorderRef.current && isRecording) {
-        mediaRecorderRef.current.stop();
+      if (videoEncoderRef.current && videoEncoderRef.current.state === 'configured') {
+        videoEncoderRef.current.close();
+      }
+      if (muxerRef.current) {
+        muxerRef.current = null;
       }
     };
-  }, [isRecording]);
+  }, []);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -309,7 +372,7 @@ function Scene01CameraTest() {
             ))}
           </div>
           
-          {/* 🛠️ Hidden Canvas for recording */}
+          {/* Hidden Canvas for recording */}
           <canvas 
             ref={canvasRef} 
             width={1280} 
