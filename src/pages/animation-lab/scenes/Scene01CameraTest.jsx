@@ -1,3 +1,4 @@
+/* global VideoEncoder, VideoFrame */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Scene01CameraTest.css';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
