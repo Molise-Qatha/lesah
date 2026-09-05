@@ -38,7 +38,7 @@ function Scene01CameraTest() {
 
   // Recording State
   const [isRecording, setIsRecording] = useState(false);
-  const isRecordingRef = useRef(false); // 🛠️ NEW: Ref for frame loop
+  const isRecordingRef = useRef(false);
   const canvasRef = useRef(null);
   const animationFrameRef = useRef(null);
   const keysPressed = useRef({});
@@ -48,6 +48,7 @@ function Scene01CameraTest() {
   // Preload all images
   const imagesRef = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const imagesLoadedRef = useRef(false); // 🛠️ FIX: ref for imagesLoaded
 
   useEffect(() => {
     console.log('🖼️ Loading images...');
@@ -61,6 +62,7 @@ function Scene01CameraTest() {
         console.log(`✅ Image loaded: ${layer.name} (${loaded}/${total})`);
         if (loaded === total) {
           console.log('🎨 All images loaded!');
+          imagesLoadedRef.current = true; // 🛠️ FIX: Update ref immediately
           setImagesLoaded(true);
         }
       };
@@ -186,14 +188,14 @@ function Scene01CameraTest() {
     );
   };
 
-  // Canvas Drawing Function
+  // Canvas Drawing Function - 🛠️ FIX: Use ref for imagesLoaded
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) {
       console.warn('⚠️ Canvas not found');
       return;
     }
-    if (!imagesLoaded) {
+    if (!imagesLoadedRef.current) {
       console.warn('⚠️ Images not loaded yet');
       return;
     }
@@ -232,9 +234,9 @@ function Scene01CameraTest() {
       ctx.drawImage(img, -width / 2, -height / 2, width, height);
       ctx.restore();
     });
-  }, [layerVisibility, layerPositions, camera, imagesLoaded, getLayerTransform]);
+  }, [layerVisibility, layerPositions, camera, getLayerTransform]); // 🛠️ FIX: removed imagesLoaded dependency
 
-  // Animation loop for canvas
+  // Animation loop for canvas - 🛠️ FIX: Add imagesLoaded to dependencies
   useEffect(() => {
     let canvasAnimationFrame;
     console.log('🔄 Canvas animation loop starting...');
@@ -251,7 +253,7 @@ function Scene01CameraTest() {
       console.log('🛑 Canvas animation loop stopping');
       cancelAnimationFrame(canvasAnimationFrame);
     };
-  }, [drawSceneToCanvas]);
+  }, [drawSceneToCanvas]); // 🛠️ FIX: will re-run when drawSceneToCanvas changes
 
   // MP4 Recording Functions
   const startRecording = async () => {
