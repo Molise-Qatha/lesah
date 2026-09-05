@@ -49,6 +49,36 @@
   -webkit-user-drag: none;
 }
 
+/* 🛠️ NEW: Recording Indicator */
+.recording-indicator {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ff0000;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.rec-dot {
+  width: 12px;
+  height: 12px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
 /* Controls Panel */
 .camera-controls {
   width: 400px;
@@ -88,7 +118,90 @@
   background: #e94560;
 }
 
-/* 🛠️ NEW: Asset Visibility Panel */
+/* 🛠️ NEW: Unlimited Mode Section */
+.unlimited-mode-section {
+  background: #0f3460;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.unlimited-mode-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.unlimited-mode-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.unlimited-mode-toggle input[type="checkbox"] {
+  accent-color: #e94560;
+  cursor: pointer;
+}
+
+.unlimited-label {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.unlimited-hint {
+  font-size: 11px;
+  color: #888;
+}
+
+.record-section {
+  display: flex;
+  gap: 10px;
+}
+
+.record-btn {
+  flex: 1;
+  background: #1a1a2e;
+  color: #ffffff;
+  border: 1px solid #533483;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.record-btn:hover {
+  background: #533483;
+}
+
+.record-btn.recording {
+  background: #e94560;
+  border-color: #e94560;
+  animation: pulse-recording 1s infinite;
+}
+
+@keyframes pulse-recording {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* 🛠️ NEW: Camera Position Display */
+.camera-position-display {
+  display: flex;
+  justify-content: space-between;
+  background: #1a1a2e;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #ffd700;
+  font-family: monospace;
+}
+
+/* Asset Visibility Panel */
 .asset-visibility-panel {
   background: #0f3460;
   padding: 12px;
