@@ -51,7 +51,6 @@ function Scene01CameraTest() {
   const imagesLoadedRef = useRef(false);
 
   useEffect(() => {
-    console.log('🖼️ Loading images...');
     let loaded = 0;
     const total = SCENE_LAYERS.length;
     
@@ -59,15 +58,10 @@ function Scene01CameraTest() {
       const img = new Image();
       img.onload = () => {
         loaded++;
-        console.log(`✅ Image loaded: ${layer.name} (${loaded}/${total})`);
         if (loaded === total) {
-          console.log('🎨 All images loaded!');
           imagesLoadedRef.current = true;
           setImagesLoaded(true);
         }
-      };
-      img.onerror = (e) => {
-        console.error(`❌ Image failed to load: ${layer.name}`, e);
       };
       img.src = layer.src;
       imagesRef.current[layer.id] = img;
@@ -198,11 +192,9 @@ function Scene01CameraTest() {
     const width = canvas.width;
     const height = canvas.height;
 
-    // Clear canvas
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw each visible layer
     SCENE_LAYERS.forEach(layer => {
       if (!layerVisibility[layer.id]) return;
       
@@ -211,7 +203,6 @@ function Scene01CameraTest() {
 
       const transform = getLayerTransform(layer);
       
-      // Parse the transform string to get values
       const translateMatch = transform.transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
       const scaleMatch = transform.transform.match(/scale\(([\d.]+)\)/);
       
@@ -221,7 +212,6 @@ function Scene01CameraTest() {
       const y = parseFloat(translateMatch[2]);
       const scale = parseFloat(scaleMatch[1]);
 
-      // Draw image centered
       ctx.save();
       ctx.translate(width / 2 + x, height / 2 + y);
       ctx.scale(scale, scale);
@@ -266,7 +256,8 @@ function Scene01CameraTest() {
         video: {
           codec: 'avc',
           width: canvas.width,
-          height: canvas.height
+          height: canvas.height,
+          firstTimestampBehavior: 'offset'  // 🛠️ FIX: This is the correct placement!
         },
         fastStart: 'in-memory'
       });
@@ -278,7 +269,6 @@ function Scene01CameraTest() {
       console.log('🎥 Creating VideoEncoder...');
       const videoEncoder = new VideoEncoder({
         output: (chunk, meta) => {
-          console.log('📦 Encoder output! Chunk size:', chunk.byteLength, 'meta:', meta);
           muxer.addVideoChunk(chunk, meta);
         },
         error: (e) => console.error('❌ Encoder error:', e)
@@ -293,15 +283,14 @@ function Scene01CameraTest() {
         width: canvas.width,
         height: canvas.height,
         bitrate: 5_000_000,
-        framerate: 15 // 🛠️ FIX: Reduced from 60 to 15fps
+        framerate: 15
       });
       console.log('✅ Encoder configured, state:', videoEncoder.state);
 
-      // Start recording frames with real-time timestamps
-      const recordingStartTime = performance.now(); // 🛠️ FIX: Use real time
+      // Start recording frames
       let frameNumber = 0;
       const frameRate = 15;
-      const frameInterval = 1000 / frameRate;
+      const frameInterval = 1000000 / frameRate; // microseconds per frame
 
       isRecordingRef.current = true;
       console.log('✅ isRecordingRef set to true');
@@ -322,15 +311,12 @@ function Scene01CameraTest() {
         }
 
         try {
-          // 🛠️ FIX: Use actual elapsed time for timestamp
-          const elapsedTime = performance.now() - recordingStartTime;
-          const timestamp = elapsedTime * 1000; // Convert to microseconds
+          const timestamp = frameNumber * frameInterval;
           
           const frame = new VideoFrame(canvas, { timestamp });
           videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 15 === 0 });
           frame.close();
           frameNumber++;
-          console.log(`🎞️ Encoded frame #${frameNumber} at ${elapsedTime.toFixed(0)}ms`);
         } catch (error) {
           console.error('❌ Frame encoding failed:', error);
         }
