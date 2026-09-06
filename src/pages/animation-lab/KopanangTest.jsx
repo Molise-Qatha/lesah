@@ -120,6 +120,17 @@ function KopanangTest() {
   const [walkX, setWalkX] = useState(0);
   const [walkHeightRatio, setWalkHeightRatio] = useState(1.8);
 
+  // 🛠️ NEW: Anime Technique States
+  const [squash, setSquash] = useState({ x: 1, y: 1 });
+  const [bobbing, setBobbing] = useState(true);
+  const [steppedFPS, setSteppedFPS] = useState(true);
+  const [celShading, setCelShading] = useState(false);
+  const [colorGrade, setColorGrade] = useState('none');
+  const [softGlow, setSoftGlow] = useState(false);
+  const [pivotRotate, setPivotRotate] = useState(false);
+  const [bodyPivotX, setBodyPivotX] = useState(0);
+  const [bodyPivotY, setBodyPivotY] = useState(0);
+
   const [savedPresets, setSavedPresets] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('kopanang_presets') || '[]');
@@ -142,6 +153,11 @@ function KopanangTest() {
   const audioSourceRef = useRef(null);
   const animationFrameRef = useRef(null);
   const dataArrayRef = useRef(null);
+
+  // 🛠️ NEW: Anime animation refs
+  const squashTimerRef = useRef(null);
+  const bobbingFrameRef = useRef(null);
+  const steppedPoseIntervalRef = useRef(null);
 
   // Particle generation function
   const generateParticles = React.useCallback((count, type, color) => {
@@ -258,6 +274,55 @@ function KopanangTest() {
     };
   }, [isWalking, walkSpeed]);
 
+  // 🛠️ NEW: Stepped Frame Rate Effect (Character updates at 10fps)
+  useEffect(() => {
+    if (steppedFPS) {
+      // Character poses update at 10fps (every 100ms)
+      steppedPoseIntervalRef.current = setInterval(() => {
+        // This forces a re-render at a stepped rate
+        setCurrentMouthIndex(prev => prev);
+      }, 100);
+    }
+    return () => {
+      if (steppedPoseIntervalRef.current) clearInterval(steppedPoseIntervalRef.current);
+    };
+  }, [steppedFPS]);
+
+  // 🛠️ NEW: Bopping Idle Animation (Sine-wave breathing)
+  useEffect(() => {
+    if (!bobbing) return;
+    
+    const animateBobbing = (timestamp) => {
+      const breathe = Math.sin(timestamp * 0.003) * 3;
+      if (stageRef.current) {
+        const characterCanvas = stageRef.current.querySelector('.character-canvas');
+        if (characterCanvas) {
+          characterCanvas.style.transform = `translateY(${breathe}px)`;
+        }
+      }
+      bobbingFrameRef.current = requestAnimationFrame(animateBobbing);
+    };
+    
+    bobbingFrameRef.current = requestAnimationFrame(animateBobbing);
+    return () => {
+      if (bobbingFrameRef.current) cancelAnimationFrame(bobbingFrameRef.current);
+    };
+  }, [bobbing]);
+
+  // 🛠️ NEW: Trigger Squash and Stretch
+  const triggerSquash = (direction = 'impact') => {
+    if (direction === 'impact') {
+      setSquash({ x: 1.02, y: 0.98 });
+    } else if (direction === 'stretch') {
+      setSquash({ x: 0.98, y: 1.02 });
+    }
+    
+    if (squashTimerRef.current) clearTimeout(squashTimerRef.current);
+    squashTimerRef.current = setTimeout(() => {
+      setSquash({ x: 1, y: 1 });
+    }, 100);
+  };
+
   // Clean up
   useEffect(() => {
     return () => {
@@ -266,6 +331,9 @@ function KopanangTest() {
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
       if (particleInterval) clearInterval(particleInterval);
       if (mixerProgressInterval.current) clearInterval(mixerProgressInterval.current);
+      if (squashTimerRef.current) clearTimeout(squashTimerRef.current);
+      if (bobbingFrameRef.current) cancelAnimationFrame(bobbingFrameRef.current);
+      if (steppedPoseIntervalRef.current) clearInterval(steppedPoseIntervalRef.current);
       
       // Clean up mixer audio URLs
       mixerTracks.forEach(track => {
@@ -684,6 +752,7 @@ function KopanangTest() {
 
   const burstParticles = () => {
     generateParticles(particleAmount, particleType, particleColor);
+    triggerSquash('impact'); // 🛠️ NEW: Squash on burst
   };
 
   const getParticleStyle = (particle) => {
@@ -745,7 +814,7 @@ function KopanangTest() {
         
         <div className="test-header">
           <h1>🧪 Kopanang Animation Tool</h1>
-          <p className="test-subtitle">Talking + Walking + Expressions + Audio Mixer + Effects</p>
+          <p className="test-subtitle">Talking + Walking + Expressions + Audio Mixer + Effects + Anime Techniques</p>
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
@@ -757,6 +826,17 @@ function KopanangTest() {
               ref={stageRef}
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
+              {/* 🛠️ NEW: Cel-Shading / Color Grading Filters */}
+              {celShading && (
+                <div className="cel-shading-overlay" />
+              )}
+              {softGlow && (
+                <div className="soft-glow-overlay" />
+              )}
+              {colorGrade !== 'none' && (
+                <div className={`color-grade-${colorGrade}`} />
+              )}
+              
               {particlesEnabled && particles.map(particle => (
                 <div
                   key={particle.id}
@@ -780,6 +860,7 @@ function KopanangTest() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      transform: `scale(${squash.x}, ${squash.y})`,
                     }}
                   >
                     <img
@@ -802,10 +883,11 @@ function KopanangTest() {
                       className="layer-body-img draggable"
                       style={{
                         width: '100%',
-                        transform: `translate(${bodyX}px, ${bodyY}px) rotate(${bodyRotation}deg)`,
+                        transform: `translate(${bodyX}px, ${bodyY}px) rotate(${bodyRotation}deg) scale(${squash.x}, ${squash.y})`,
                         position: 'relative',
                         zIndex: 1,
                         cursor: 'grab',
+                        transformOrigin: `${bodyPivotX}px ${bodyPivotY}px`, // 🛠️ NEW: Pivot point
                       }}
                       onMouseDown={(e) => handleMouseDown(e, 'body')}
                     />
@@ -819,7 +901,7 @@ function KopanangTest() {
                         position: 'absolute',
                         top: `${headY}px`,
                         left: `calc(50% + ${headX}px)`,
-                        transform: `translateX(-50%) rotate(${headRotation}deg)`,
+                        transform: `translateX(-50%) rotate(${headRotation}deg) scale(${squash.x}, ${squash.y})`,
                         zIndex: 10,
                         cursor: 'grab',
                         pointerEvents: 'auto',
@@ -897,6 +979,12 @@ function KopanangTest() {
                 onClick={() => setActiveTab('settings')}
               >
                 💾 Presets
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'anime' ? 'active' : ''}`}
+                onClick={() => setActiveTab('anime')}
+              >
+                🎨 Anime
               </button>
             </div>
 
@@ -1148,7 +1236,7 @@ function KopanangTest() {
                 </div>
               )}
 
-              {/* NEW: Audio Mixer Tab */}
+              {/* Audio Mixer Tab */}
               {activeTab === 'mixer' && (
                 <div className="tab-panel">
                   <div className="control-panel mixer-panel">
@@ -1443,6 +1531,139 @@ function KopanangTest() {
                         💾 Save Position
                       </button>
                     )}
+                  </div>
+                </div>
+              )}
+
+              {/* 🛠️ NEW: Anime Techniques Tab */}
+              {activeTab === 'anime' && (
+                <div className="tab-panel">
+                  <div className="control-panel anime-panel">
+                    <h3>🎨 Anime Techniques</h3>
+                    
+                    <div className="anime-section">
+                      <h4>🔄 Bopping Idle (Breathing)</h4>
+                      <button 
+                        className={`test-btn ${bobbing ? 'active' : ''}`}
+                        onClick={() => setBobbing(!bobbing)}
+                      >
+                        {bobbing ? '✅ Enabled' : '❌ Disabled'}
+                      </button>
+                    </div>
+
+                    <div className="anime-section">
+                      <h4>🎞️ Stepped Frame Rate (Anime Look)</h4>
+                      <button 
+                        className={`test-btn ${steppedFPS ? 'active' : ''}`}
+                        onClick={() => setSteppedFPS(!steppedFPS)}
+                      >
+                        {steppedFPS ? '✅ Enabled (10fps poses)' : '❌ Disabled (60fps poses)'}
+                      </button>
+                    </div>
+
+                    <div className="anime-section">
+                      <h4>🎨 Cel-Shading</h4>
+                      <button 
+                        className={`test-btn ${celShading ? 'active' : ''}`}
+                        onClick={() => setCelShading(!celShading)}
+                      >
+                        {celShading ? '✅ Enabled' : '❌ Disabled'}
+                      </button>
+                    </div>
+
+                    <div className="anime-section">
+                      <h4>✨ Soft Glow</h4>
+                      <button 
+                        className={`test-btn ${softGlow ? 'active' : ''}`}
+                        onClick={() => setSoftGlow(!softGlow)}
+                      >
+                        {softGlow ? '✅ Enabled' : '❌ Disabled'}
+                      </button>
+                    </div>
+
+                    <div className="anime-section">
+                      <h4>🎨 Color Grading</h4>
+                      <div className="pose-buttons">
+                        <button 
+                          className={`test-btn ${colorGrade === 'none' ? 'active' : ''}`}
+                          onClick={() => setColorGrade('none')}
+                        >
+                          None
+                        </button>
+                        <button 
+                          className={`test-btn ${colorGrade === 'warm' ? 'active' : ''}`}
+                          onClick={() => setColorGrade('warm')}
+                        >
+                          🌅 Warm
+                        </button>
+                        <button 
+                          className={`test-btn ${colorGrade === 'cool' ? 'active' : ''}`}
+                          onClick={() => setColorGrade('cool')}
+                        >
+                          🌙 Cool
+                        </button>
+                        <button 
+                          className={`test-btn ${colorGrade === 'dramatic' ? 'active' : ''}`}
+                          onClick={() => setColorGrade('dramatic')}
+                        >
+                          🎭 Dramatic
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="anime-section">
+                      <h4>💥 Squash & Stretch</h4>
+                      <div className="pose-buttons">
+                        <button 
+                          className="test-btn"
+                          onClick={() => triggerSquash('impact')}
+                        >
+                          💥 Impact
+                        </button>
+                        <button 
+                          className="test-btn"
+                          onClick={() => triggerSquash('stretch')}
+                        >
+                          🚀 Stretch
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="anime-section">
+                      <h4>📌 Pivot Rotation</h4>
+                      <button 
+                        className={`test-btn ${pivotRotate ? 'active' : ''}`}
+                        onClick={() => setPivotRotate(!pivotRotate)}
+                      >
+                        {pivotRotate ? '✅ Enabled' : '❌ Disabled'}
+                      </button>
+                      {pivotRotate && (
+                        <>
+                          <div className="slider-row">
+                            <label>Pivot X:</label>
+                            <input 
+                              type="range" 
+                              min="-100" 
+                              max="100" 
+                              value={bodyPivotX} 
+                              onChange={(e) => setBodyPivotX(Number(e.target.value))} 
+                            />
+                            <span>{bodyPivotX}px</span>
+                          </div>
+                          <div className="slider-row">
+                            <label>Pivot Y:</label>
+                            <input 
+                              type="range" 
+                              min="-100" 
+                              max="100" 
+                              value={bodyPivotY} 
+                              onChange={(e) => setBodyPivotY(Number(e.target.value))} 
+                            />
+                            <span>{bodyPivotY}px</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
