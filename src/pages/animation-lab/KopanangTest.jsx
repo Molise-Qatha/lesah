@@ -78,7 +78,7 @@ function KopanangTest() {
   const [audioError, setAudioError] = useState('');
   const [sensitivity, setSensitivity] = useState(3);
 
-  // NEW: Multi-track audio mixer states
+  // Multi-track audio mixer states
   const [mixerTracks, setMixerTracks] = useState([
     { id: 'dialogue', name: 'Dialogue', file: null, url: null, volume: 0.8, muted: false, solo: false, loop: false, isPlaying: false, progress: 0, duration: 0, fadeIn: 0, fadeOut: 0 },
     { id: 'ambient', name: 'Ambient', file: null, url: null, volume: 0.3, muted: false, solo: false, loop: true, isPlaying: false, progress: 0, duration: 0, fadeIn: 2, fadeOut: 2 },
@@ -120,6 +120,15 @@ function KopanangTest() {
   const [walkX, setWalkX] = useState(0);
   const [walkHeightRatio, setWalkHeightRatio] = useState(1.8);
 
+  // 🛠️ NEW: Movement / Keyframe Animation States
+  const [startX, setStartX] = useState(0);
+  const [endX, setEndX] = useState(200);
+  const [moveDuration, setMoveDuration] = useState(3);
+  const [isMoving, setIsMoving] = useState(false);
+  const [moveProgress, setMoveProgress] = useState(0);
+  const moveAnimationFrameRef = useRef(null);
+  const moveStartTimeRef = useRef(null);
+  
   // 🛠️ NEW: Anime Technique States
   const [squash, setSquash] = useState({ x: 1, y: 1 });
   const [bobbing, setBobbing] = useState(true);
@@ -154,7 +163,7 @@ function KopanangTest() {
   const animationFrameRef = useRef(null);
   const dataArrayRef = useRef(null);
 
-  // 🛠️ NEW: Anime animation refs
+  // Anime animation refs
   const squashTimerRef = useRef(null);
   const bobbingFrameRef = useRef(null);
   const steppedPoseIntervalRef = useRef(null);
@@ -199,7 +208,7 @@ function KopanangTest() {
         case 'talking':
           return isTalking;
         case 'walking':
-          return isWalking;
+          return isWalking || isMoving;
         case 'always':
           return true;
         default:
@@ -220,7 +229,7 @@ function KopanangTest() {
     return () => {
       if (particleInterval) clearInterval(particleInterval);
     };
-  }, [particlesEnabled, particleTrigger, particleType, particleColor, particleAmount, isTalking, isWalking, generateParticles]);
+  }, [particlesEnabled, particleTrigger, particleType, particleColor, particleAmount, isTalking, isWalking, isMoving, generateParticles]);
 
   // Particle animation
   useEffect(() => {
@@ -262,9 +271,9 @@ function KopanangTest() {
     };
   }, [isTalking, talkSpeed, syncMode, mouthOverride]);
 
-  // Walking animation
+  // Walking animation (manual + movement)
   useEffect(() => {
-    if (isWalking) {
+    if ((isWalking || isMoving) && (syncMode === 'manual' || isMoving)) {
       walkTimerRef.current = setInterval(() => {
         setCurrentWalkFrame(prev => (prev + 1) % WALK_FRAMES.length);
       }, walkSpeed);
@@ -272,55 +281,58 @@ function KopanangTest() {
     return () => {
       if (walkTimerRef.current) clearInterval(walkTimerRef.current);
     };
-  }, [isWalking, walkSpeed]);
+  }, [isWalking, isMoving, walkSpeed, syncMode]);
 
-  // 🛠️ NEW: Stepped Frame Rate Effect (Character updates at 10fps)
-  useEffect(() => {
-    if (steppedFPS) {
-      // Character poses update at 10fps (every 100ms)
-      steppedPoseIntervalRef.current = setInterval(() => {
-        // This forces a re-render at a stepped rate
-        setCurrentMouthIndex(prev => prev);
-      }, 100);
-    }
-    return () => {
-      if (steppedPoseIntervalRef.current) clearInterval(steppedPoseIntervalRef.current);
-    };
-  }, [steppedFPS]);
-
-  // 🛠️ NEW: Bopping Idle Animation (Sine-wave breathing)
-  useEffect(() => {
-    if (!bobbing) return;
+  // 🛠️ NEW: Movement Animation (Keyframe)
+  const startMovement = () => {
+    if (isMoving) return;
     
-    const animateBobbing = (timestamp) => {
-      const breathe = Math.sin(timestamp * 0.003) * 3;
-      if (stageRef.current) {
-        const characterCanvas = stageRef.current.querySelector('.character-canvas');
-        if (characterCanvas) {
-          characterCanvas.style.transform = `translateY(${breathe}px)`;
-        }
+    setIsMoving(true);
+    setIsWalking(true);
+    setMoveProgress(0);
+    moveStartTimeRef.current = performance.now();
+    
+    const animateMovement = (currentTime) => {
+      if (!moveStartTimeRef.current) return;
+      
+      const elapsed = currentTime - moveStartTimeRef.current;
+      const progress = Math.min(elapsed / (moveDuration * 1000), 1);
+      
+      setMoveProgress(progress);
+      
+      // Calculate new X position
+      const newX = startX + (endX - startX) * progress;
+      setBodyX(newX);
+      setWalkX(newX);
+      
+      if (progress < 1) {
+        moveAnimationFrameRef.current = requestAnimationFrame(animateMovement);
+      } else {
+        setIsMoving(false);
+        setIsWalking(false);
       }
-      bobbingFrameRef.current = requestAnimationFrame(animateBobbing);
     };
     
-    bobbingFrameRef.current = requestAnimationFrame(animateBobbing);
-    return () => {
-      if (bobbingFrameRef.current) cancelAnimationFrame(bobbingFrameRef.current);
-    };
-  }, [bobbing]);
+    moveAnimationFrameRef.current = requestAnimationFrame(animateMovement);
+  };
 
-  // 🛠️ NEW: Trigger Squash and Stretch
-  const triggerSquash = (direction = 'impact') => {
-    if (direction === 'impact') {
-      setSquash({ x: 1.02, y: 0.98 });
-    } else if (direction === 'stretch') {
-      setSquash({ x: 0.98, y: 1.02 });
+  const stopMovement = () => {
+    if (moveAnimationFrameRef.current) {
+      cancelAnimationFrame(moveAnimationFrameRef.current);
     }
-    
-    if (squashTimerRef.current) clearTimeout(squashTimerRef.current);
-    squashTimerRef.current = setTimeout(() => {
-      setSquash({ x: 1, y: 1 });
-    }, 100);
+    setIsMoving(false);
+    setIsWalking(false);
+  };
+
+  const resetMovement = () => {
+    if (moveAnimationFrameRef.current) {
+      cancelAnimationFrame(moveAnimationFrameRef.current);
+    }
+    setIsMoving(false);
+    setIsWalking(false);
+    setMoveProgress(0);
+    setBodyX(startX);
+    setWalkX(startX);
   };
 
   // Clean up
@@ -334,6 +346,7 @@ function KopanangTest() {
       if (squashTimerRef.current) clearTimeout(squashTimerRef.current);
       if (bobbingFrameRef.current) cancelAnimationFrame(bobbingFrameRef.current);
       if (steppedPoseIntervalRef.current) clearInterval(steppedPoseIntervalRef.current);
+      if (moveAnimationFrameRef.current) cancelAnimationFrame(moveAnimationFrameRef.current);
       
       // Clean up mixer audio URLs
       mixerTracks.forEach(track => {
@@ -347,15 +360,12 @@ function KopanangTest() {
     const file = e.target.files[0];
     if (!file) return;
     
-    if (!file.type.startsWith('audio/')) {
-      return;
-    }
+    if (!file.type.startsWith('audio/')) return;
     
     const url = URL.createObjectURL(file);
     
     setMixerTracks(prev => prev.map(track => {
       if (track.id === trackId) {
-        // Clean up old URL
         if (track.url) URL.revokeObjectURL(track.url);
         return { ...track, file, url, progress: 0, duration: 0 };
       }
@@ -366,14 +376,12 @@ function KopanangTest() {
   const playAllTracks = async () => {
     setAllTracksPlaying(true);
     
-    // Find if any track is soloed
     const hasSolo = mixerTracks.some(track => track.solo);
     
     for (const track of mixerTracks) {
       const audioElement = mixerAudioRefs.current[track.id];
       if (!audioElement || !track.url) continue;
       
-      // Skip if muted or (hasSolo and not solo)
       if (track.muted || (hasSolo && !track.solo)) continue;
       
       audioElement.volume = track.volume * masterVolume;
@@ -389,7 +397,6 @@ function KopanangTest() {
       }
     }
     
-    // Start progress tracking
     if (mixerProgressInterval.current) clearInterval(mixerProgressInterval.current);
     mixerProgressInterval.current = setInterval(() => {
       setMixerTracks(prev => prev.map(track => {
@@ -706,6 +713,9 @@ function KopanangTest() {
       walkX: Math.round(walkX),
       walkY: Math.round(walkY),
       walkHeightRatio,
+      startX: Math.round(startX),
+      endX: Math.round(endX),
+      moveDuration,
     };
     
     const updated = [...savedPresets, preset];
@@ -735,6 +745,9 @@ function KopanangTest() {
     if (preset.walkX !== undefined) setWalkX(preset.walkX);
     if (preset.walkY !== undefined) setWalkY(preset.walkY);
     if (preset.walkHeightRatio) setWalkHeightRatio(preset.walkHeightRatio);
+    if (preset.startX !== undefined) setStartX(preset.startX);
+    if (preset.endX !== undefined) setEndX(preset.endX);
+    if (preset.moveDuration !== undefined) setMoveDuration(preset.moveDuration);
   };
 
   const handleDeletePreset = (presetId) => {
@@ -752,7 +765,20 @@ function KopanangTest() {
 
   const burstParticles = () => {
     generateParticles(particleAmount, particleType, particleColor);
-    triggerSquash('impact'); // 🛠️ NEW: Squash on burst
+    triggerSquash('impact');
+  };
+
+  const triggerSquash = (direction = 'impact') => {
+    if (direction === 'impact') {
+      setSquash({ x: 1.02, y: 0.98 });
+    } else if (direction === 'stretch') {
+      setSquash({ x: 0.98, y: 1.02 });
+    }
+    
+    if (squashTimerRef.current) clearTimeout(squashTimerRef.current);
+    squashTimerRef.current = setTimeout(() => {
+      setSquash({ x: 1, y: 1 });
+    }, 100);
   };
 
   const getParticleStyle = (particle) => {
@@ -814,7 +840,7 @@ function KopanangTest() {
         
         <div className="test-header">
           <h1>🧪 Kopanang Animation Tool</h1>
-          <p className="test-subtitle">Talking + Walking + Expressions + Audio Mixer + Effects + Anime Techniques</p>
+          <p className="test-subtitle">Talking + Walking + Expressions + Audio Mixer + Effects + Anime Techniques + Movement</p>
           <span className="test-badge">DEVELOPER TOOL</span>
         </div>
 
@@ -826,16 +852,9 @@ function KopanangTest() {
               ref={stageRef}
               style={{ cursor: draggingLayer ? 'grabbing' : 'default' }}
             >
-              {/* 🛠️ NEW: Cel-Shading / Color Grading Filters */}
-              {celShading && (
-                <div className="cel-shading-overlay" />
-              )}
-              {softGlow && (
-                <div className="soft-glow-overlay" />
-              )}
-              {colorGrade !== 'none' && (
-                <div className={`color-grade-${colorGrade}`} />
-              )}
+              {celShading && <div className="cel-shading-overlay" />}
+              {softGlow && <div className="soft-glow-overlay" />}
+              {colorGrade !== 'none' && <div className={`color-grade-${colorGrade}`} />}
               
               {particlesEnabled && particles.map(particle => (
                 <div
@@ -846,7 +865,7 @@ function KopanangTest() {
               ))}
               
               <div className="character-canvas" style={{ width: `${bodyScale}px`, position: 'relative' }}>
-                {isWalking ? (
+                {isWalking || isMoving ? (
                   <div
                     style={{
                       width: `${walkScale}px`,
@@ -887,7 +906,7 @@ function KopanangTest() {
                         position: 'relative',
                         zIndex: 1,
                         cursor: 'grab',
-                        transformOrigin: `${bodyPivotX}px ${bodyPivotY}px`, // 🛠️ NEW: Pivot point
+                        transformOrigin: `${bodyPivotX}px ${bodyPivotY}px`,
                       }}
                       onMouseDown={(e) => handleMouseDown(e, 'body')}
                     />
@@ -943,49 +962,20 @@ function KopanangTest() {
             </div>
 
             <div className="drag-hint">
-              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth & Walk
+              💡 <strong>DRAG:</strong> Body & Head | <strong>SLIDERS:</strong> Mouth & Walk | <strong>MOVEMENT:</strong> Set Start/End X
             </div>
           </div>
 
           {/* RIGHT: Controls with Tabs */}
           <div className="controls-container">
             <div className="tab-navigation">
-              <button 
-                className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`}
-                onClick={() => setActiveTab('character')}
-              >
-                🧍 Character
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'audio' ? 'active' : ''}`}
-                onClick={() => setActiveTab('audio')}
-              >
-                🎵 Audio Sync
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'mixer' ? 'active' : ''}`}
-                onClick={() => setActiveTab('mixer')}
-              >
-                🎚️ Mixer
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'effects' ? 'active' : ''}`}
-                onClick={() => setActiveTab('effects')}
-              >
-                ✨ Effects
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
-                onClick={() => setActiveTab('settings')}
-              >
-                💾 Presets
-              </button>
-              <button 
-                className={`tab-btn ${activeTab === 'anime' ? 'active' : ''}`}
-                onClick={() => setActiveTab('anime')}
-              >
-                🎨 Anime
-              </button>
+              <button className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`} onClick={() => setActiveTab('character')}>🧍 Character</button>
+              <button className={`tab-btn ${activeTab === 'audio' ? 'active' : ''}`} onClick={() => setActiveTab('audio')}>🎵 Audio Sync</button>
+              <button className={`tab-btn ${activeTab === 'mixer' ? 'active' : ''}`} onClick={() => setActiveTab('mixer')}>🎚️ Mixer</button>
+              <button className={`tab-btn ${activeTab === 'effects' ? 'active' : ''}`} onClick={() => setActiveTab('effects')}>✨ Effects</button>
+              <button className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>💾 Presets</button>
+              <button className={`tab-btn ${activeTab === 'anime' ? 'active' : ''}`} onClick={() => setActiveTab('anime')}>🎨 Anime</button>
+              <button className={`tab-btn ${activeTab === 'movement' ? 'active' : ''}`} onClick={() => setActiveTab('movement')}>🚶 Movement</button>
             </div>
 
             <div className="tab-content">
@@ -1001,9 +991,7 @@ function KopanangTest() {
                     </div>
                     <div className="pose-buttons">
                       {BODY_OPTIONS.map(body => (
-                        <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>
-                          {body.label}
-                        </button>
+                        <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>{body.label}</button>
                       ))}
                     </div>
                   </div>
@@ -1017,9 +1005,7 @@ function KopanangTest() {
                     </div>
                     <div className="pose-buttons">
                       {FACE_OPTIONS.map(face => (
-                        <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>
-                          {face.label}
-                        </button>
+                        <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>{face.label}</button>
                       ))}
                     </div>
                   </div>
@@ -1035,13 +1021,7 @@ function KopanangTest() {
                       <label>Test Frames:</label>
                       <div className="pose-buttons">
                         {MOUTH_FRAMES.map((mouth, index) => (
-                          <button 
-                            key={mouth.id} 
-                            className={`test-btn ${currentMouthIndex === index && mouthOverride ? 'active' : ''}`}
-                            onClick={() => handleMouthFrameClick(index)}
-                          >
-                            {mouth.label}
-                          </button>
+                          <button key={mouth.id} className={`test-btn ${currentMouthIndex === index && mouthOverride ? 'active' : ''}`} onClick={() => handleMouthFrameClick(index)}>{mouth.label}</button>
                         ))}
                       </div>
                     </div>
@@ -1071,9 +1051,7 @@ function KopanangTest() {
                       <input type="range" min="100" max="600" value={talkSpeed} onChange={(e) => setTalkSpeed(Number(e.target.value))} />
                       <span>{talkSpeed}ms</span>
                     </div>
-                    <div className="mouth-frame-indicator">
-                      Frame: <strong>{currentMouth.label}</strong> {mouthOverride && '(Manual)'}
-                    </div>
+                    <div className="mouth-frame-indicator">Frame: <strong>{currentMouth.label}</strong> {mouthOverride && '(Manual)'}</div>
                   </div>
 
                   <div className="control-panel walk-panel">
@@ -1118,53 +1096,25 @@ function KopanangTest() {
                     <h3>🎵 Audio Sync</h3>
                     
                     <div className="audio-upload-area">
-                      <input
-                        type="file"
-                        accept="audio/*"
-                        onChange={handleFileUpload}
-                        className="audio-file-input"
-                        id="audio-upload"
-                      />
+                      <input type="file" accept="audio/*" onChange={handleFileUpload} className="audio-file-input" id="audio-upload" />
                       <label htmlFor="audio-upload" className="audio-upload-label">
-                        {audioFile ? (
-                          <span>📁 {audioFile.name}</span>
-                        ) : (
-                          <span>🎤 Click to upload audio</span>
-                        )}
+                        {audioFile ? <span>📁 {audioFile.name}</span> : <span>🎤 Click to upload audio</span>}
                       </label>
                     </div>
                     
                     {audioError && <div className="audio-error">{audioError}</div>}
                     
-                    <audio
-                      ref={audioRef}
-                      src={audioUrl || undefined}
-                      onEnded={handleAudioEnded}
-                      style={{ display: 'none' }}
-                    />
+                    <audio ref={audioRef} src={audioUrl || undefined} onEnded={handleAudioEnded} style={{ display: 'none' }} />
                     
                     <div className="audio-controls">
-                      <button 
-                        className={`test-btn ${isAudioPlaying ? 'active' : ''}`}
-                        onClick={isAudioPlaying ? pauseAudio : playAudio}
-                        disabled={!audioUrl}
-                      >
+                      <button className={`test-btn ${isAudioPlaying ? 'active' : ''}`} onClick={isAudioPlaying ? pauseAudio : playAudio} disabled={!audioUrl}>
                         {isAudioPlaying ? '⏸ Pause' : '▶ Play'}
                       </button>
-                      <button 
-                        className="test-btn"
-                        onClick={stopAudio}
-                        disabled={!audioUrl}
-                      >
-                        ⏹ Stop
-                      </button>
+                      <button className="test-btn" onClick={stopAudio} disabled={!audioUrl}>⏹ Stop</button>
                     </div>
                     
                     <div className="audio-progress-container">
-                      <div 
-                        className="audio-progress-bar"
-                        style={{ width: `${audioProgress}%` }}
-                      />
+                      <div className="audio-progress-bar" style={{ width: `${audioProgress}%` }} />
                     </div>
                     <div className="audio-time-display">
                       <span>{formatTime(audioRef.current?.currentTime || 0)}</span>
@@ -1174,62 +1124,28 @@ function KopanangTest() {
                     <div className="amplitude-meter-container">
                       <label>Amplitude:</label>
                       <div className="amplitude-meter">
-                        <div 
-                          className="amplitude-fill"
-                          style={{ 
-                            width: `${currentAmplitude * 100}%`,
-                            backgroundColor: currentAmplitude > 0.35 ? '#ff4444' : 
-                                           currentAmplitude > 0.18 ? '#ffaa00' : '#44ff44'
-                          }}
-                        />
+                        <div className="amplitude-fill" style={{ width: `${currentAmplitude * 100}%`, backgroundColor: currentAmplitude > 0.35 ? '#ff4444' : currentAmplitude > 0.18 ? '#ffaa00' : '#44ff44' }} />
                         <span className="amplitude-value">{Math.round(currentAmplitude * 100)}%</span>
                       </div>
                     </div>
                     
                     <div className="slider-row">
                       <label>Sensitivity:</label>
-                      <input 
-                        type="range" 
-                        min="1" 
-                        max="10" 
-                        step="0.5" 
-                        value={sensitivity} 
-                        onChange={(e) => setSensitivity(Number(e.target.value))} 
-                      />
+                      <input type="range" min="1" max="10" step="0.5" value={sensitivity} onChange={(e) => setSensitivity(Number(e.target.value))} />
                       <span>{sensitivity}x</span>
                     </div>
                     
                     <div className="sync-mode-toggle">
                       <label>Sync Mode:</label>
                       <div className="mode-buttons">
-                        <button 
-                          className={`test-btn ${syncMode === 'audio' ? 'active' : ''}`}
-                          onClick={() => setSyncMode('audio')}
-                        >
-                          🎵 Audio Sync
-                        </button>
-                        <button 
-                          className={`test-btn ${syncMode === 'manual' ? 'active' : ''}`}
-                          onClick={() => setSyncMode('manual')}
-                        >
-                          🔄 Manual Cycle
-                        </button>
+                        <button className={`test-btn ${syncMode === 'audio' ? 'active' : ''}`} onClick={() => setSyncMode('audio')}>🎵 Audio Sync</button>
+                        <button className={`test-btn ${syncMode === 'manual' ? 'active' : ''}`} onClick={() => setSyncMode('manual')}>🔄 Manual Cycle</button>
                       </div>
                     </div>
                     
                     <div className="slider-row">
                       <label>Volume:</label>
-                      <input 
-                        type="range" 
-                        min="0" 
-                        max="1" 
-                        step="0.01" 
-                        value={audioVolume} 
-                        onChange={(e) => {
-                          setAudioVolume(Number(e.target.value));
-                          if (audioRef.current) audioRef.current.volume = Number(e.target.value);
-                        }} 
-                      />
+                      <input type="range" min="0" max="1" step="0.01" value={audioVolume} onChange={(e) => { setAudioVolume(Number(e.target.value)); if (audioRef.current) audioRef.current.volume = Number(e.target.value); }} />
                       <span>{Math.round(audioVolume * 100)}%</span>
                     </div>
                   </div>
@@ -1242,130 +1158,59 @@ function KopanangTest() {
                   <div className="control-panel mixer-panel">
                     <h3>🎚️ Audio Mixer</h3>
                     
-                    {/* Master Controls */}
                     <div className="master-controls">
                       <div className="master-buttons">
-                        <button 
-                          className={`test-btn ${allTracksPlaying ? 'active' : ''}`}
-                          onClick={allTracksPlaying ? pauseAllTracks : playAllTracks}
-                        >
+                        <button className={`test-btn ${allTracksPlaying ? 'active' : ''}`} onClick={allTracksPlaying ? pauseAllTracks : playAllTracks}>
                           {allTracksPlaying ? '⏸ Pause All' : '▶ Play All'}
                         </button>
-                        <button className="test-btn" onClick={stopAllTracks}>
-                          ⏹ Stop All
-                        </button>
+                        <button className="test-btn" onClick={stopAllTracks}>⏹ Stop All</button>
                       </div>
                       <div className="slider-row">
                         <label>Master Volume:</label>
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="1" 
-                          step="0.01" 
-                          value={masterVolume} 
-                          onChange={(e) => updateMasterVolume(Number(e.target.value))} 
-                        />
+                        <input type="range" min="0" max="1" step="0.01" value={masterVolume} onChange={(e) => updateMasterVolume(Number(e.target.value))} />
                         <span>{Math.round(masterVolume * 100)}%</span>
                       </div>
                     </div>
                     
-                    {/* Individual Tracks */}
                     {mixerTracks.map(track => (
                       <div key={track.id} className="mixer-track">
                         <div className="track-header">
                           <h4>{track.name}</h4>
                           <div className="track-buttons">
-                            <button 
-                              className={`track-btn ${track.muted ? 'muted' : ''}`}
-                              onClick={() => toggleTrackMute(track.id)}
-                              title="Mute"
-                            >
-                              {track.muted ? '🔇' : '🔊'}
-                            </button>
-                            <button 
-                              className={`track-btn ${track.solo ? 'solo' : ''}`}
-                              onClick={() => toggleTrackSolo(track.id)}
-                              title="Solo"
-                            >
-                              S
-                            </button>
-                            <button 
-                              className={`track-btn ${track.loop ? 'loop' : ''}`}
-                              onClick={() => toggleTrackLoop(track.id)}
-                              title="Loop"
-                            >
-                              🔁
-                            </button>
+                            <button className={`track-btn ${track.muted ? 'muted' : ''}`} onClick={() => toggleTrackMute(track.id)} title="Mute">{track.muted ? '🔇' : '🔊'}</button>
+                            <button className={`track-btn ${track.solo ? 'solo' : ''}`} onClick={() => toggleTrackSolo(track.id)} title="Solo">S</button>
+                            <button className={`track-btn ${track.loop ? 'loop' : ''}`} onClick={() => toggleTrackLoop(track.id)} title="Loop">🔁</button>
                           </div>
                         </div>
                         
                         <div className="track-upload">
-                          <input
-                            type="file"
-                            accept="audio/*"
-                            onChange={(e) => handleMixerFileUpload(track.id, e)}
-                            className="audio-file-input"
-                            id={`mixer-upload-${track.id}`}
-                          />
+                          <input type="file" accept="audio/*" onChange={(e) => handleMixerFileUpload(track.id, e)} className="audio-file-input" id={`mixer-upload-${track.id}`} />
                           <label htmlFor={`mixer-upload-${track.id}`} className="track-upload-label">
                             {track.file ? `📁 ${track.file.name}` : `⬆️ Upload ${track.name}`}
                           </label>
                         </div>
                         
-                        {/* Hidden audio elements for mixer tracks */}
-                        <audio
-                          ref={el => mixerAudioRefs.current[track.id] = el}
-                          src={track.url || undefined}
-                          style={{ display: 'none' }}
-                        />
+                        <audio ref={el => mixerAudioRefs.current[track.id] = el} src={track.url || undefined} style={{ display: 'none' }} />
                         
                         <div className="track-progress">
-                          <div 
-                            className="track-progress-bar"
-                            style={{ width: `${track.progress}%` }}
-                          />
+                          <div className="track-progress-bar" style={{ width: `${track.progress}%` }} />
                         </div>
                         
                         <div className="slider-row">
                           <label>Volume:</label>
-                          <input 
-                            type="range" 
-                            min="0" 
-                            max="1" 
-                            step="0.01" 
-                            value={track.volume} 
-                            onChange={(e) => updateTrackVolume(track.id, Number(e.target.value))} 
-                          />
+                          <input type="range" min="0" max="1" step="0.01" value={track.volume} onChange={(e) => updateTrackVolume(track.id, Number(e.target.value))} />
                           <span>{Math.round(track.volume * 100)}%</span>
                         </div>
                         
                         <div className="track-fades">
                           <div className="slider-row">
                             <label>Fade In:</label>
-                            <input 
-                              type="range" 
-                              min="0" 
-                              max="10" 
-                              step="0.5" 
-                              value={track.fadeIn} 
-                              onChange={(e) => setMixerTracks(prev => prev.map(t => 
-                                t.id === track.id ? { ...t, fadeIn: Number(e.target.value) } : t
-                              ))} 
-                            />
+                            <input type="range" min="0" max="10" step="0.5" value={track.fadeIn} onChange={(e) => setMixerTracks(prev => prev.map(t => t.id === track.id ? { ...t, fadeIn: Number(e.target.value) } : t))} />
                             <span>{track.fadeIn}s</span>
                           </div>
                           <div className="slider-row">
                             <label>Fade Out:</label>
-                            <input 
-                              type="range" 
-                              min="0" 
-                              max="10" 
-                              step="0.5" 
-                              value={track.fadeOut} 
-                              onChange={(e) => setMixerTracks(prev => prev.map(t => 
-                                t.id === track.id ? { ...t, fadeOut: Number(e.target.value) } : t
-                              ))} 
-                            />
+                            <input type="range" min="0" max="10" step="0.5" value={track.fadeOut} onChange={(e) => setMixerTracks(prev => prev.map(t => t.id === track.id ? { ...t, fadeOut: Number(e.target.value) } : t))} />
                             <span>{track.fadeOut}s</span>
                           </div>
                         </div>
@@ -1382,106 +1227,45 @@ function KopanangTest() {
                     <h3>✨ Particle Effects</h3>
                     
                     <div className="particle-toggle">
-                      <button 
-                        className={`test-btn ${particlesEnabled ? 'active' : ''}`}
-                        onClick={() => setParticlesEnabled(!particlesEnabled)}
-                      >
+                      <button className={`test-btn ${particlesEnabled ? 'active' : ''}`} onClick={() => setParticlesEnabled(!particlesEnabled)}>
                         {particlesEnabled ? '✅ Enabled' : '❌ Disabled'}
                       </button>
                     </div>
                     
                     <div className="pose-buttons">
-                      <button 
-                        className={`test-btn ${particleType === 'sparkles' ? 'active' : ''}`}
-                        onClick={() => setParticleType('sparkles')}
-                      >
-                        ✨ Sparkles
-                      </button>
-                      <button 
-                        className={`test-btn ${particleType === 'dust' ? 'active' : ''}`}
-                        onClick={() => setParticleType('dust')}
-                      >
-                        🌫️ Dust
-                      </button>
-                      <button 
-                        className={`test-btn ${particleType === 'confetti' ? 'active' : ''}`}
-                        onClick={() => setParticleType('confetti')}
-                      >
-                        🎊 Confetti
-                      </button>
-                      <button 
-                        className={`test-btn ${particleType === 'bubbles' ? 'active' : ''}`}
-                        onClick={() => setParticleType('bubbles')}
-                      >
-                        🫧 Bubbles
-                      </button>
+                      <button className={`test-btn ${particleType === 'sparkles' ? 'active' : ''}`} onClick={() => setParticleType('sparkles')}>✨ Sparkles</button>
+                      <button className={`test-btn ${particleType === 'dust' ? 'active' : ''}`} onClick={() => setParticleType('dust')}>🌫️ Dust</button>
+                      <button className={`test-btn ${particleType === 'confetti' ? 'active' : ''}`} onClick={() => setParticleType('confetti')}>🎊 Confetti</button>
+                      <button className={`test-btn ${particleType === 'bubbles' ? 'active' : ''}`} onClick={() => setParticleType('bubbles')}>🫧 Bubbles</button>
                     </div>
                     
                     <div className="slider-row">
                       <label>Color:</label>
-                      <input 
-                        type="color" 
-                        value={particleColor} 
-                        onChange={(e) => setParticleColor(e.target.value)}
-                        className="color-picker"
-                      />
+                      <input type="color" value={particleColor} onChange={(e) => setParticleColor(e.target.value)} className="color-picker" />
                     </div>
                     
                     <div className="slider-row">
                       <label>Amount:</label>
-                      <input 
-                        type="range" 
-                        min="10" 
-                        max="100" 
-                        value={particleAmount} 
-                        onChange={(e) => setParticleAmount(Number(e.target.value))} 
-                      />
+                      <input type="range" min="10" max="100" value={particleAmount} onChange={(e) => setParticleAmount(Number(e.target.value))} />
                       <span>{particleAmount}</span>
                     </div>
                     
                     <div className="slider-row">
                       <label>Speed:</label>
-                      <input 
-                        type="range" 
-                        min="0.5" 
-                        max="5" 
-                        step="0.5" 
-                        value={particleSpeed} 
-                        onChange={(e) => setParticleSpeed(Number(e.target.value))} 
-                      />
+                      <input type="range" min="0.5" max="5" step="0.5" value={particleSpeed} onChange={(e) => setParticleSpeed(Number(e.target.value))} />
                       <span>{particleSpeed}x</span>
                     </div>
                     
                     <div className="sync-mode-toggle">
                       <label>Trigger:</label>
                       <div className="mode-buttons">
-                        <button 
-                          className={`test-btn ${particleTrigger === 'talking' ? 'active' : ''}`}
-                          onClick={() => setParticleTrigger('talking')}
-                        >
-                          🗣️ Talking
-                        </button>
-                        <button 
-                          className={`test-btn ${particleTrigger === 'walking' ? 'active' : ''}`}
-                          onClick={() => setParticleTrigger('walking')}
-                        >
-                          🚶 Walking
-                        </button>
-                        <button 
-                          className={`test-btn ${particleTrigger === 'always' ? 'active' : ''}`}
-                          onClick={() => setParticleTrigger('always')}
-                        >
-                          🔄 Always
-                        </button>
+                        <button className={`test-btn ${particleTrigger === 'talking' ? 'active' : ''}`} onClick={() => setParticleTrigger('talking')}>🗣️ Talking</button>
+                        <button className={`test-btn ${particleTrigger === 'walking' ? 'active' : ''}`} onClick={() => setParticleTrigger('walking')}>🚶 Walking</button>
+                        <button className={`test-btn ${particleTrigger === 'always' ? 'active' : ''}`} onClick={() => setParticleTrigger('always')}>🔄 Always</button>
                       </div>
                     </div>
                     
-                    <button 
-                      className="test-btn burst-btn"
-                      onClick={burstParticles}
-                    >
-                      💥 Burst Now
-                    </button>
+                    <button className="test-btn burst-btn" onClick={burstParticles}>💥 Burst Now</button>
                   </div>
                 </div>
               )}
@@ -1513,29 +1297,20 @@ function KopanangTest() {
 
                     {showSaveDialog ? (
                       <div className="save-dialog">
-                        <input 
-                          type="text" 
-                          placeholder="Preset name" 
-                          value={presetName}
-                          onChange={(e) => setPresetName(e.target.value)}
-                          className="preset-input"
-                          autoFocus
-                        />
+                        <input type="text" placeholder="Preset name" value={presetName} onChange={(e) => setPresetName(e.target.value)} className="preset-input" autoFocus />
                         <div className="preset-dialog-buttons">
                           <button className="test-btn" onClick={handleSavePreset}>✅ Save</button>
                           <button className="test-btn" onClick={() => setShowSaveDialog(false)}>❌ Cancel</button>
                         </div>
                       </div>
                     ) : (
-                      <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>
-                        💾 Save Position
-                      </button>
+                      <button className="save-preset-btn" onClick={() => setShowSaveDialog(true)}>💾 Save Position</button>
                     )}
                   </div>
                 </div>
               )}
 
-              {/* 🛠️ NEW: Anime Techniques Tab */}
+              {/* Anime Techniques Tab */}
               {activeTab === 'anime' && (
                 <div className="tab-panel">
                   <div className="control-panel anime-panel">
@@ -1543,40 +1318,28 @@ function KopanangTest() {
                     
                     <div className="anime-section">
                       <h4>🔄 Bopping Idle (Breathing)</h4>
-                      <button 
-                        className={`test-btn ${bobbing ? 'active' : ''}`}
-                        onClick={() => setBobbing(!bobbing)}
-                      >
+                      <button className={`test-btn ${bobbing ? 'active' : ''}`} onClick={() => setBobbing(!bobbing)}>
                         {bobbing ? '✅ Enabled' : '❌ Disabled'}
                       </button>
                     </div>
 
                     <div className="anime-section">
                       <h4>🎞️ Stepped Frame Rate (Anime Look)</h4>
-                      <button 
-                        className={`test-btn ${steppedFPS ? 'active' : ''}`}
-                        onClick={() => setSteppedFPS(!steppedFPS)}
-                      >
+                      <button className={`test-btn ${steppedFPS ? 'active' : ''}`} onClick={() => setSteppedFPS(!steppedFPS)}>
                         {steppedFPS ? '✅ Enabled (10fps poses)' : '❌ Disabled (60fps poses)'}
                       </button>
                     </div>
 
                     <div className="anime-section">
                       <h4>🎨 Cel-Shading</h4>
-                      <button 
-                        className={`test-btn ${celShading ? 'active' : ''}`}
-                        onClick={() => setCelShading(!celShading)}
-                      >
+                      <button className={`test-btn ${celShading ? 'active' : ''}`} onClick={() => setCelShading(!celShading)}>
                         {celShading ? '✅ Enabled' : '❌ Disabled'}
                       </button>
                     </div>
 
                     <div className="anime-section">
                       <h4>✨ Soft Glow</h4>
-                      <button 
-                        className={`test-btn ${softGlow ? 'active' : ''}`}
-                        onClick={() => setSoftGlow(!softGlow)}
-                      >
+                      <button className={`test-btn ${softGlow ? 'active' : ''}`} onClick={() => setSoftGlow(!softGlow)}>
                         {softGlow ? '✅ Enabled' : '❌ Disabled'}
                       </button>
                     </div>
@@ -1584,85 +1347,104 @@ function KopanangTest() {
                     <div className="anime-section">
                       <h4>🎨 Color Grading</h4>
                       <div className="pose-buttons">
-                        <button 
-                          className={`test-btn ${colorGrade === 'none' ? 'active' : ''}`}
-                          onClick={() => setColorGrade('none')}
-                        >
-                          None
-                        </button>
-                        <button 
-                          className={`test-btn ${colorGrade === 'warm' ? 'active' : ''}`}
-                          onClick={() => setColorGrade('warm')}
-                        >
-                          🌅 Warm
-                        </button>
-                        <button 
-                          className={`test-btn ${colorGrade === 'cool' ? 'active' : ''}`}
-                          onClick={() => setColorGrade('cool')}
-                        >
-                          🌙 Cool
-                        </button>
-                        <button 
-                          className={`test-btn ${colorGrade === 'dramatic' ? 'active' : ''}`}
-                          onClick={() => setColorGrade('dramatic')}
-                        >
-                          🎭 Dramatic
-                        </button>
+                        <button className={`test-btn ${colorGrade === 'none' ? 'active' : ''}`} onClick={() => setColorGrade('none')}>None</button>
+                        <button className={`test-btn ${colorGrade === 'warm' ? 'active' : ''}`} onClick={() => setColorGrade('warm')}>🌅 Warm</button>
+                        <button className={`test-btn ${colorGrade === 'cool' ? 'active' : ''}`} onClick={() => setColorGrade('cool')}>🌙 Cool</button>
+                        <button className={`test-btn ${colorGrade === 'dramatic' ? 'active' : ''}`} onClick={() => setColorGrade('dramatic')}>🎭 Dramatic</button>
                       </div>
                     </div>
 
                     <div className="anime-section">
                       <h4>💥 Squash & Stretch</h4>
                       <div className="pose-buttons">
-                        <button 
-                          className="test-btn"
-                          onClick={() => triggerSquash('impact')}
-                        >
-                          💥 Impact
-                        </button>
-                        <button 
-                          className="test-btn"
-                          onClick={() => triggerSquash('stretch')}
-                        >
-                          🚀 Stretch
-                        </button>
+                        <button className="test-btn" onClick={() => triggerSquash('impact')}>💥 Impact</button>
+                        <button className="test-btn" onClick={() => triggerSquash('stretch')}>🚀 Stretch</button>
                       </div>
                     </div>
 
                     <div className="anime-section">
                       <h4>📌 Pivot Rotation</h4>
-                      <button 
-                        className={`test-btn ${pivotRotate ? 'active' : ''}`}
-                        onClick={() => setPivotRotate(!pivotRotate)}
-                      >
+                      <button className={`test-btn ${pivotRotate ? 'active' : ''}`} onClick={() => setPivotRotate(!pivotRotate)}>
                         {pivotRotate ? '✅ Enabled' : '❌ Disabled'}
                       </button>
                       {pivotRotate && (
                         <>
                           <div className="slider-row">
                             <label>Pivot X:</label>
-                            <input 
-                              type="range" 
-                              min="-100" 
-                              max="100" 
-                              value={bodyPivotX} 
-                              onChange={(e) => setBodyPivotX(Number(e.target.value))} 
-                            />
+                            <input type="range" min="-100" max="100" value={bodyPivotX} onChange={(e) => setBodyPivotX(Number(e.target.value))} />
                             <span>{bodyPivotX}px</span>
                           </div>
                           <div className="slider-row">
                             <label>Pivot Y:</label>
-                            <input 
-                              type="range" 
-                              min="-100" 
-                              max="100" 
-                              value={bodyPivotY} 
-                              onChange={(e) => setBodyPivotY(Number(e.target.value))} 
-                            />
+                            <input type="range" min="-100" max="100" value={bodyPivotY} onChange={(e) => setBodyPivotY(Number(e.target.value))} />
                             <span>{bodyPivotY}px</span>
                           </div>
                         </>
                       )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 🛠️ NEW: Movement Tab */}
+              {activeTab === 'movement' && (
+                <div className="tab-panel">
+                  <div className="control-panel movement-panel">
+                    <h3>🚶 Movement (Keyframe)</h3>
+                    
+                    <div className="movement-section">
+                      <h4>📍 Position</h4>
+                      <div className="slider-row">
+                        <label>Start X:</label>
+                        <input type="range" min="-500" max="500" value={startX} onChange={(e) => setStartX(Number(e.target.value))} />
+                        <span>{startX}px</span>
+                      </div>
+                      <div className="slider-row">
+                        <label>End X:</label>
+                        <input type="range" min="-500" max="500" value={endX} onChange={(e) => setEndX(Number(e.target.value))} />
+                        <span>{endX}px</span>
+                      </div>
+                    </div>
+
+                    <div className="movement-section">
+                      <h4>⏱️ Timing</h4>
+                      <div className="slider-row">
+                        <label>Duration:</label>
+                        <input type="range" min="0.5" max="10" step="0.5" value={moveDuration} onChange={(e) => setMoveDuration(Number(e.target.value))} />
+                        <span>{moveDuration}s</span>
+                      </div>
+                      <div className="slider-row">
+                        <label>Walk Speed:</label>
+                        <input type="range" min="100" max="800" value={walkSpeed} onChange={(e) => setWalkSpeed(Number(e.target.value))} />
+                        <span>{walkSpeed}ms</span>
+                      </div>
+                    </div>
+
+                    <div className="movement-section">
+                      <h4>🎬 Controls</h4>
+                      <div className="pose-buttons">
+                        <button className={`test-btn ${isMoving ? 'active' : ''}`} onClick={startMovement} disabled={isMoving}>
+                          ▶ Play Animation
+                        </button>
+                        <button className="test-btn" onClick={stopMovement} disabled={!isMoving}>
+                          ⏹ Stop
+                        </button>
+                        <button className="test-btn" onClick={resetMovement}>
+                          🔄 Reset
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="movement-progress">
+                      <label>Progress:</label>
+                      <div className="progress-bar-container">
+                        <div className="progress-bar-fill" style={{ width: `${moveProgress * 100}%` }} />
+                      </div>
+                      <span>{Math.round(moveProgress * 100)}%</span>
+                    </div>
+
+                    <div className="movement-hint">
+                      💡 Set Start X and End X, then click "Play Animation" to see Kopanang walk from point A to point B.
                     </div>
                   </div>
                 </div>
