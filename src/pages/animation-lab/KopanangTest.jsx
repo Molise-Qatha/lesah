@@ -978,7 +978,7 @@ function KopanangTest() {
                       onMouseDown={(e) => handleMouseDown(e, 'body')}
                     />
 
-                    {/* Only show head for Kopanang */}
+                    {/* Only show head for Kopanang (Lerato's body includes her face) */}
                     {selectedCharacter === 'kopanang' && (
                       <img 
                         src={currentFace.src}
@@ -998,8 +998,8 @@ function KopanangTest() {
                       />
                     )}
 
-                    {/* Only show mouth for Kopanang */}
-                    {selectedCharacter === 'kopanang' && isTalking && (
+                    {/* Show mouth for BOTH characters when talking */}
+                    {isTalking && (
                       <div
                         style={{
                           width: `${mouthScale}px`,
