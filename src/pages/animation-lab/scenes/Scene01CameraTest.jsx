@@ -3,40 +3,87 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Scene01CameraTest.css';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 
-// Import scene assets
-import skyImg from '../../../assets/scene01/scene01_sky.png';
-import mountainsImg from '../../../assets/scene01/scene01_distant_mountains.png';
-import forestImg from '../../../assets/scene01/scene01_distant_forest.png';
-import clearingImg from '../../../assets/scene01/scene01_clearing.png';
-import landmarkImg from '../../../assets/scene01/scene01_tree_landmark.png';
-import nearTree01Img from '../../../assets/scene01/scene01_tree_near_01.png';
-import nearTree02Img from '../../../assets/scene01/scene01_tree_near_02.png';
+// Scene Assets
+import backgroundImg from '../../../assets/scene01/background.png';
+
+// Kopanang sit frames
+import ksit1 from '../../../assets/Kopanang_sit/ksit_1.png';
+import ksit2 from '../../../assets/Kopanang_sit/ksit_2.png';
+import ksit3 from '../../../assets/Kopanang_sit/ksit_3.png';
+import ksit4 from '../../../assets/Kopanang_sit/ksit_4.png';
+import ksit5 from '../../../assets/Kopanang_sit/ksit_5.png';
+import ksit6 from '../../../assets/Kopanang_sit/ksit_6.png';
+import ksit7 from '../../../assets/Kopanang_sit/ksit_7.png';
+import ksit8 from '../../../assets/Kopanang_sit/ksit_8.png';
+
+// Lerato sit frames
+import lsit1 from '../../../assets/lerato_sit/sit_1.png';
+import lsit2 from '../../../assets/lerato_sit/sit_2.png';
+import lsit3 from '../../../assets/lerato_sit/sit_3.png';
+import lsit4 from '../../../assets/lerato_sit/sit_4.png';
+import lsit5 from '../../../assets/lerato_sit/sit_5.png';
+
+// Shared mouth sprites
+import mouthA from '../../../assets/mouth/mouth_a.png';
+import mouthE from '../../../assets/mouth/mouth_e.png';
+import mouthI from '../../../assets/mouth/mouth_i.png';
+import mouthO from '../../../assets/mouth/mouth_o.png';
+import mouthU from '../../../assets/mouth/mouth_u.png';
 
 const SCENE_LAYERS = [
-  { id: 'sky', name: 'Sky', src: skyImg, depth: 0.05, zIndex: 1, defaultVisible: true },
-  { id: 'mountains', name: 'Distant Mountains', src: mountainsImg, depth: 0.1, zIndex: 2, defaultVisible: true },
-  { id: 'distant_forest', name: 'Distant Forest', src: forestImg, depth: 0.2, zIndex: 3, defaultVisible: false },
-  { id: 'clearing', name: 'Clearing', src: clearingImg, depth: 0.4, zIndex: 4, defaultVisible: false, isGround: true },
-  { id: 'landmark_tree', name: 'Landmark Tree', src: landmarkImg, depth: 0.65, zIndex: 5, defaultVisible: false },
-  { id: 'near_tree_01', name: 'Near Tree 01', src: nearTree01Img, depth: 0.85, zIndex: 6, defaultVisible: false },
-  { id: 'near_tree_02', name: 'Near Tree 02', src: nearTree02Img, depth: 1.0, zIndex: 7, defaultVisible: false },
+  { id: 'background', name: 'Background', src: backgroundImg, depth: 1.0, zIndex: 0, defaultVisible: true },
+];
+
+const KOPANANG_SIT = [
+  { id: 'ksit1', label: 'Sit 1', src: ksit1 },
+  { id: 'ksit2', label: 'Sit 2', src: ksit2 },
+  { id: 'ksit3', label: 'Sit 3', src: ksit3 },
+  { id: 'ksit4', label: 'Sit 4', src: ksit4 },
+  { id: 'ksit5', label: 'Sit 5', src: ksit5 },
+  { id: 'ksit6', label: 'Sit 6', src: ksit6 },
+  { id: 'ksit7', label: 'Sit 7', src: ksit7 },
+  { id: 'ksit8', label: 'Sit 8', src: ksit8 },
+];
+
+const LERATO_SIT = [
+  { id: 'sit1', label: 'Sit 1', src: lsit1 },
+  { id: 'sit2', label: 'Sit 2', src: lsit2 },
+  { id: 'sit3', label: 'Sit 3', src: lsit3 },
+  { id: 'sit4', label: 'Sit 4', src: lsit4 },
+  { id: 'sit5', label: 'Sit 5', src: lsit5 },
+];
+
+const MOUTH_FRAMES = [
+  { id: 'A', label: 'A', src: mouthA },
+  { id: 'E', label: 'E', src: mouthE },
+  { id: 'I', label: 'I', src: mouthI },
+  { id: 'O', label: 'O', src: mouthO },
+  { id: 'U', label: 'U', src: mouthU },
 ];
 
 function Scene01CameraTest() {
   const [camera, setCamera] = useState({ x: 0, y: 0, forward: 0 });
-  const [layerPositions, setLayerPositions] = useState(
-    SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
-  );
-  const [layerVisibility, setLayerVisibility] = useState(
-    SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layer.defaultVisible }), {})
-  );
+  const [layerVisibility, setLayerVisibility] = useState({
+    background: true,
+    kopanang: true,
+    lerato: true,
+  });
+
+  // Character state
+  const [selectedKopanangPose, setSelectedKopanangPose] = useState('ksit1');
+  const [selectedLeratoPose, setSelectedLeratoPose] = useState('sit1');
+  const [kopanangPos, setKopanangPos] = useState({ x: 0, y: 0, scale: 1 });
+  const [leratoPos, setLeratoPos] = useState({ x: 0, y: 0, scale: 1 });
+  const [kopanangTalking, setKopanangTalking] = useState(false);
+  const [leratoTalking, setLeratoTalking] = useState(false);
+  const [mouthIndex, setMouthIndex] = useState(0);
+  const mouthTimerRef = useRef(null);
 
   const [debugMode, setDebugMode] = useState(true);
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
   const [linkScale, setLinkScale] = useState(false);
   const [unlimitedMode, setUnlimitedMode] = useState(false);
 
-  // Recording State
   const [isRecording, setIsRecording] = useState(false);
   const isRecordingRef = useRef(false);
   const canvasRef = useRef(null);
@@ -52,9 +99,9 @@ function Scene01CameraTest() {
 
   useEffect(() => {
     let loaded = 0;
-    const total = SCENE_LAYERS.length;
+    const total = SCENE_LAYERS.length + KOPANANG_SIT.length + LERATO_SIT.length + MOUTH_FRAMES.length;
     
-    SCENE_LAYERS.forEach(layer => {
+    const loadImage = (src) => {
       const img = new Image();
       img.onload = () => {
         loaded++;
@@ -63,8 +110,21 @@ function Scene01CameraTest() {
           setImagesLoaded(true);
         }
       };
-      img.src = layer.src;
-      imagesRef.current[layer.id] = img;
+      img.src = src;
+      return img;
+    };
+
+    SCENE_LAYERS.forEach(layer => {
+      imagesRef.current[layer.id] = loadImage(layer.src);
+    });
+    KOPANANG_SIT.forEach(pose => {
+      imagesRef.current[`kopanang_${pose.id}`] = loadImage(pose.src);
+    });
+    LERATO_SIT.forEach(pose => {
+      imagesRef.current[`lerato_${pose.id}`] = loadImage(pose.src);
+    });
+    MOUTH_FRAMES.forEach(mouth => {
+      imagesRef.current[`mouth_${mouth.id}`] = loadImage(mouth.src);
     });
   }, []);
 
@@ -84,49 +144,34 @@ function Scene01CameraTest() {
     scale: 4
   };
 
-  const getLayerTransform = useCallback((layer) => {
-    const depthFactor = layer.depth;
-    const manualPos = layerPositions[layer.id];
+  // Camera transform for background
+  const getBackgroundTransform = useCallback(() => {
+    const depthFactor = 1.0;
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
-    const finalX = manualPos.x + cameraX - forwardOffset;
-    const finalY = manualPos.y + cameraY;
-    const finalScale = manualPos.scale;
-
-    let groundOffset = 0;
-    if (layer.isGround) {
-      groundOffset = forwardProgress * 300;
-    }
 
     return {
-      transform: `translate(${finalX}px, ${finalY + groundOffset}px) scale(${finalScale})`,
+      transform: `translate(${cameraX - forwardOffset}px, ${cameraY}px) scale(1)`,
       opacity: 1,
       transformOrigin: 'center center',
     };
-  }, [camera, layerPositions]);
+  }, [camera]);
 
-  const updateLayerPosition = (layerId, axis, value) => {
-    if (linkScale && axis === 'scale' && (layerId === 'mountains' || layerId === 'distant_forest')) {
-      setLayerPositions(prev => ({
-        ...prev,
-        mountains: { ...prev.mountains, scale: value },
-        distant_forest: { ...prev.distant_forest, scale: value },
-      }));
-    } else {
-      setLayerPositions(prev => ({
-        ...prev,
-        [layerId]: { ...prev[layerId], [axis]: value }
-      }));
-    }
-  };
+  // Character transforms (they move with camera but also have their own offset)
+  const getCharacterTransform = (character, pos) => {
+    const depthFactor = 0.8; // characters are in mid-ground
+    const cameraX = camera.x * depthFactor;
+    const cameraY = camera.y * depthFactor * 0.5;
+    const forwardProgress = camera.forward / 100;
+    const forwardOffset = forwardProgress * depthFactor * 2;
 
-  const toggleLayerVisibility = (layerId) => {
-    setLayerVisibility(prev => ({
-      ...prev,
-      [layerId]: !prev[layerId]
-    }));
+    return {
+      transform: `translate(${pos.x + cameraX - forwardOffset}px, ${pos.y + cameraY}px) scale(${pos.scale})`,
+      opacity: 1,
+      transformOrigin: 'center bottom',
+    };
   };
 
   const handleKeyDown = useCallback((e) => {
@@ -145,261 +190,206 @@ function Scene01CameraTest() {
     if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
-  // Manual movement loop
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = 0.4 * cameraSpeed;
+      const currentCamera = { ...camera };
       if (unlimitedMode) {
-        if (keysPressed.current['w']) setCamera(prev => ({ ...prev, forward: prev.forward + speed }));
-        if (keysPressed.current['s']) setCamera(prev => ({ ...prev, forward: prev.forward - speed }));
-        if (keysPressed.current['a']) setCamera(prev => ({ ...prev, x: prev.x - speed }));
-        if (keysPressed.current['d']) setCamera(prev => ({ ...prev, x: prev.x + speed }));
+        if (keysPressed.current['w']) currentCamera.forward += speed;
+        if (keysPressed.current['s']) currentCamera.forward -= speed;
+        if (keysPressed.current['a']) currentCamera.x -= speed;
+        if (keysPressed.current['d']) currentCamera.x += speed;
       } else {
-        if (keysPressed.current['w']) setCamera(prev => ({ ...prev, forward: Math.min(prev.forward + speed, rangeLimits.forward) }));
-        if (keysPressed.current['s']) setCamera(prev => ({ ...prev, forward: Math.max(prev.forward - speed, -rangeLimits.forward) }));
-        if (keysPressed.current['a']) setCamera(prev => ({ ...prev, x: Math.min(prev.x - speed, -rangeLimits.cameraX) }));
-        if (keysPressed.current['d']) setCamera(prev => ({ ...prev, x: Math.min(prev.x + speed, rangeLimits.cameraX) }));
+        if (keysPressed.current['w']) currentCamera.forward = Math.min(currentCamera.forward + speed, rangeLimits.forward);
+        if (keysPressed.current['s']) currentCamera.forward = Math.max(currentCamera.forward - speed, -rangeLimits.forward);
+        if (keysPressed.current['a']) currentCamera.x = Math.max(currentCamera.x - speed, -rangeLimits.cameraX);
+        if (keysPressed.current['d']) currentCamera.x = Math.min(currentCamera.x + speed, rangeLimits.cameraX);
       }
+      setCamera(currentCamera);
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     };
     animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
-    return () => { if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current); };
+    return () => cancelAnimationFrame(animationFrameRef.current);
   }, [cameraSpeed, unlimitedMode, rangeLimits]);
 
-  const resetCamera = () => {
-    setCamera({ x: 0, y: 0, forward: 0 });
-    setLayerPositions(
-      SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: { x: 0, y: 0, scale: 1 } }), {})
-    );
-    setLayerVisibility(
-      SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layer.defaultVisible }), {})
-    );
-  };
+  // Mouth animation loop
+  useEffect(() => {
+    if (kopanangTalking || leratoTalking) {
+      mouthTimerRef.current = setInterval(() => {
+        setMouthIndex(prev => (prev + 1) % MOUTH_FRAMES.length);
+      }, 200);
+    }
+    return () => {
+      if (mouthTimerRef.current) clearInterval(mouthTimerRef.current);
+    };
+  }, [kopanangTalking, leratoTalking]);
 
-  const showOnly = (layerIds) => {
-    setLayerVisibility(
-      SCENE_LAYERS.reduce((acc, layer) => ({ ...acc, [layer.id]: layerIds.includes(layer.id) }), {})
-    );
-  };
-
-  // Canvas Drawing Function
+  // Draw to canvas for recording (and for preview as well? Actually we are using DOM for preview, but canvas for recording)
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    if (!imagesLoadedRef.current) return;
+    if (!canvas || !imagesLoadedRef.current) return;
 
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
 
+    // Clear
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, width, height);
 
-    SCENE_LAYERS.forEach(layer => {
-      if (!layerVisibility[layer.id]) return;
-      
-      const img = imagesRef.current[layer.id];
-      if (!img) return;
-
-      const transform = getLayerTransform(layer);
-      
-      const translateMatch = transform.transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
-      const scaleMatch = transform.transform.match(/scale\(([\d.]+)\)/);
-      
-      if (!translateMatch || !scaleMatch) return;
-
-      const x = parseFloat(translateMatch[1]);
-      const y = parseFloat(translateMatch[2]);
-      const scale = parseFloat(scaleMatch[1]);
-
+    // Draw background
+    const bgImg = imagesRef.current['background'];
+    if (layerVisibility.background && bgImg) {
+      const bgTransform = getBackgroundTransform();
+      // Parse transform (simplified: we just draw with offsets)
+      const translateMatch = bgTransform.transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
+      const tx = translateMatch ? parseFloat(translateMatch[1]) : 0;
+      const ty = translateMatch ? parseFloat(translateMatch[2]) : 0;
       ctx.save();
-      ctx.translate(width / 2 + x, height / 2 + y);
-      ctx.scale(scale, scale);
-      ctx.drawImage(img, -width / 2, -height / 2, width, height);
+      ctx.translate(width / 2 + tx, height / 2 + ty);
+      ctx.drawImage(bgImg, -width, -height, width * 2, height * 2);
       ctx.restore();
-    });
-  }, [layerVisibility, layerPositions, camera, getLayerTransform]);
+    }
 
-  // Animation loop for canvas
+    // Draw Kopanang
+    const kopImg = imagesRef.current[`kopanang_${selectedKopanangPose}`];
+    if (layerVisibility.kopanang && kopImg) {
+      const pos = kopanangPos;
+      const depth = 0.8;
+      const camX = camera.x * depth;
+      const camY = camera.y * depth * 0.5;
+      const forwardProgress = camera.forward / 100;
+      const forwardOff = forwardProgress * depth * 2;
+      const finalX = pos.x + camX - forwardOff;
+      const finalY = pos.y + camY;
+      ctx.save();
+      ctx.translate(width / 2 + finalX, height / 2 + finalY);
+      ctx.scale(pos.scale, pos.scale);
+      ctx.drawImage(kopImg, -kopImg.width / 2, -kopImg.height / 2);
+      ctx.restore();
+    }
+
+    // Draw Lerato
+    const lerImg = imagesRef.current[`lerato_${selectedLeratoPose}`];
+    if (layerVisibility.lerato && lerImg) {
+      const pos = leratoPos;
+      const depth = 0.8;
+      const camX = camera.x * depth;
+      const camY = camera.y * depth * 0.5;
+      const forwardProgress = camera.forward / 100;
+      const forwardOff = forwardProgress * depth * 2;
+      const finalX = pos.x + camX - forwardOff;
+      const finalY = pos.y + camY;
+      ctx.save();
+      ctx.translate(width / 2 + finalX, height / 2 + finalY);
+      ctx.scale(pos.scale, pos.scale);
+      ctx.drawImage(lerImg, -lerImg.width / 2, -lerImg.height / 2);
+      ctx.restore();
+    }
+
+    // Draw mouths if talking
+    if (kopanangTalking) {
+      const mouthImg = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
+      if (mouthImg) {
+        // Place mouth above Kopanang (approx position)
+        const mouthX = kopanangPos.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
+        const mouthY = kopanangPos.y + camera.y * 0.8 - 30; // offset up
+        ctx.drawImage(mouthImg, width / 2 + mouthX - 15, height / 2 + mouthY - 15, 30, 30);
+      }
+    }
+    if (leratoTalking) {
+      const mouthImg = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
+      if (mouthImg) {
+        const mouthX = leratoPos.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
+        const mouthY = leratoPos.y + camera.y * 0.8 - 30;
+        ctx.drawImage(mouthImg, width / 2 + mouthX - 15, height / 2 + mouthY - 15, 30, 30);
+      }
+    }
+  }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform]);
+
+  // Animation loop for canvas (for recording)
   useEffect(() => {
     let canvasAnimationFrame;
-    
     const animateCanvas = () => {
       drawSceneToCanvas();
       canvasAnimationFrame = requestAnimationFrame(animateCanvas);
     };
-    
     animateCanvas();
-    
     return () => cancelAnimationFrame(canvasAnimationFrame);
   }, [drawSceneToCanvas]);
 
-  // MP4 Recording Functions
+  // Recording functions (same as before)
   const startRecording = async () => {
-    console.log('🎬 START RECORDING called');
-    try {
-      const canvas = canvasRef.current;
-      if (!canvas) {
-        console.error('❌ Canvas not found');
-        return;
-      }
-      console.log('✅ Canvas found:', canvas.width, 'x', canvas.height);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-      // Force a draw first
-      drawSceneToCanvas();
-      console.log('✅ Canvas drawn');
-
-      // Create MP4 muxer
-      console.log('📦 Creating Muxer...');
-      const muxer = new Muxer({
-        target: new ArrayBufferTarget(),
-        video: {
-          codec: 'avc',
-          width: canvas.width,
-          height: canvas.height,
-          firstTimestampBehavior: 'offset'  // 🛠️ FIX: This is the correct placement!
-        },
-        fastStart: 'in-memory'
-      });
-      console.log('✅ Muxer created');
-
-      muxerRef.current = muxer;
-
-      // Create video encoder
-      console.log('🎥 Creating VideoEncoder...');
-      const videoEncoder = new VideoEncoder({
-        output: (chunk, meta) => {
-          muxer.addVideoChunk(chunk, meta);
-        },
-        error: (e) => console.error('❌ Encoder error:', e)
-      });
-
-      videoEncoderRef.current = videoEncoder;
-      console.log('✅ VideoEncoder created');
-
-      console.log('⚙️ Configuring encoder...');
-      videoEncoder.configure({
-        codec: 'avc1.42001f',
+    const muxer = new Muxer({
+      target: new ArrayBufferTarget(),
+      video: {
+        codec: 'avc',
         width: canvas.width,
         height: canvas.height,
-        bitrate: 5_000_000,
-        framerate: 15
-      });
-      console.log('✅ Encoder configured, state:', videoEncoder.state);
+        firstTimestampBehavior: 'offset'
+      },
+      fastStart: 'in-memory'
+    });
+    muxerRef.current = muxer;
 
-      // Start recording frames
-      let frameNumber = 0;
-      const frameRate = 15;
-      const frameInterval = 1000000 / frameRate; // microseconds per frame
+    const videoEncoder = new VideoEncoder({
+      output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+      error: (e) => console.error('Encoder error:', e)
+    });
+    videoEncoderRef.current = videoEncoder;
 
-      isRecordingRef.current = true;
-      console.log('✅ isRecordingRef set to true');
+    videoEncoder.configure({
+      codec: 'avc1.42001f',
+      width: canvas.width,
+      height: canvas.height,
+      bitrate: 5_000_000,
+      framerate: 15
+    });
 
-      const processFrame = async () => {
-        if (!videoEncoderRef.current || videoEncoderRef.current.state !== 'configured') {
-          if (isRecordingRef.current) {
-            requestAnimationFrame(processFrame);
-          }
-          return;
-        }
+    let frameNumber = 0;
+    const frameRate = 15;
+    const frameInterval = 1000000 / frameRate;
+    isRecordingRef.current = true;
 
-        if (videoEncoderRef.current.encodeQueueSize > 2) {
-          if (isRecordingRef.current) {
-            requestAnimationFrame(processFrame);
-          }
-          return;
-        }
-
-        try {
-          const timestamp = frameNumber * frameInterval;
-          
-          const frame = new VideoFrame(canvas, { timestamp });
-          videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 15 === 0 });
-          frame.close();
-          frameNumber++;
-        } catch (error) {
-          console.error('❌ Frame encoding failed:', error);
-        }
-
-        if (isRecordingRef.current) {
-          requestAnimationFrame(processFrame);
-        } else {
-          console.log('🛑 Frame loop stopping');
-        }
-      };
-
-      console.log('🚀 Starting frame loop...');
+    const processFrame = () => {
+      if (!isRecordingRef.current) return;
+      if (videoEncoderRef.current.encodeQueueSize > 2) {
+        requestAnimationFrame(processFrame);
+        return;
+      }
+      const timestamp = frameNumber * frameInterval;
+      const frame = new VideoFrame(canvas, { timestamp });
+      videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 15 === 0 });
+      frame.close();
+      frameNumber++;
       requestAnimationFrame(processFrame);
-      setIsRecording(true);
-      console.log('✅ Recording started!');
+    };
 
-    } catch (error) {
-      console.error('❌ Error starting recording:', error);
-    }
+    requestAnimationFrame(processFrame);
+    setIsRecording(true);
   };
 
   const stopRecording = async () => {
-    console.log('⏹️ STOP RECORDING called');
     isRecordingRef.current = false;
-    console.log('✅ isRecordingRef set to false');
-
-    if (videoEncoderRef.current && videoEncoderRef.current.state === 'configured') {
-      try {
-        console.log('⏳ Flushing encoder...');
-        await videoEncoderRef.current.flush();
-        console.log('✅ Encoder flushed');
-        
-        console.log('📦 Finalizing muxer...');
-        muxerRef.current.finalize();
-        console.log('✅ Muxer finalized');
-        
-        const { buffer } = muxerRef.current.target;
-        console.log('✅ Buffer size:', buffer.byteLength);
-        
-        const blob = new Blob([buffer], { type: 'video/mp4' });
-        console.log('✅ Blob created, size:', blob.size);
-        
-        const url = URL.createObjectURL(blob);
-        console.log('✅ Object URL created:', url);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `lesah-scene01-${Date.now()}.mp4`;
-        a.click();
-        console.log('✅ Download triggered');
-        
-        URL.revokeObjectURL(url);
-        console.log('✅ URL revoked');
-      } catch (error) {
-        console.error('❌ Error finalizing recording:', error);
-      }
-    } else {
-      console.warn('⚠️ Encoder not in configured state:', videoEncoderRef.current?.state);
-    }
-    
     if (videoEncoderRef.current) {
-      console.log('🛑 Closing encoder...');
+      await videoEncoderRef.current.flush();
+      muxerRef.current.finalize();
+      const { buffer } = muxerRef.current.target;
+      const blob = new Blob([buffer], { type: 'video/mp4' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `lesah-scene-${Date.now()}.mp4`;
+      a.click();
+      URL.revokeObjectURL(url);
       videoEncoderRef.current.close();
       videoEncoderRef.current = null;
-      console.log('✅ Encoder closed');
     }
-    
-    muxerRef.current = null;
     setIsRecording(false);
-    console.log('✅ Recording stopped');
   };
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (videoEncoderRef.current && videoEncoderRef.current.state === 'configured') {
-        videoEncoderRef.current.close();
-      }
-      if (muxerRef.current) {
-        muxerRef.current = null;
-      }
-    };
-  }, []);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -410,6 +400,10 @@ function Scene01CameraTest() {
     };
   }, [handleKeyDown, handleKeyUp]);
 
+  const resetCamera = () => {
+    setCamera({ x: 0, y: 0, forward: 0 });
+  };
+
   return (
     <div className="scene01-page">
       <div className="scene01-container">
@@ -417,24 +411,39 @@ function Scene01CameraTest() {
         {/* Scene Viewport */}
         <div className="scene-viewport">
           <div className="scene-stage">
-            {SCENE_LAYERS.map(layer => (
-              layerVisibility[layer.id] && (
-                <div key={layer.id} className="scene-layer" style={{ zIndex: layer.zIndex, ...getLayerTransform(layer) }}>
-                  <img src={layer.src} alt={layer.name} className="scene-layer-img" draggable={false} />
-                </div>
-              )
-            ))}
+            {/* Background */}
+            {layerVisibility.background && (
+              <div className="scene-layer" style={{ zIndex: 0, ...getBackgroundTransform() }}>
+                <img src={backgroundImg} alt="Background" className="scene-layer-img" draggable={false} />
+              </div>
+            )}
+            {/* Kopanang */}
+            {layerVisibility.kopanang && (
+              <div className="scene-layer" style={{ zIndex: 10, ...getCharacterTransform('kopanang', kopanangPos) }}>
+                <img src={KOPANANG_SIT.find(pose => pose.id === selectedKopanangPose).src} alt="Kopanang" className="scene-layer-img" draggable={false} />
+                {kopanangTalking && (
+                  <div className="mouth-overlay" style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
+                  </div>
+                )}
+              </div>
+            )}
+            {/* Lerato */}
+            {layerVisibility.lerato && (
+              <div className="scene-layer" style={{ zIndex: 10, ...getCharacterTransform('lerato', leratoPos) }}>
+                <img src={LERATO_SIT.find(pose => pose.id === selectedLeratoPose).src} alt="Lerato" className="scene-layer-img" draggable={false} />
+                {leratoTalking && (
+                  <div className="mouth-overlay" style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           
           {/* Hidden Canvas for recording */}
-          <canvas 
-            ref={canvasRef} 
-            width={1280} 
-            height={720} 
-            style={{ display: 'none' }} 
-          />
+          <canvas ref={canvasRef} width={1280} height={720} style={{ display: 'none' }} />
           
-          {/* Recording Indicator */}
           {isRecording && (
             <div className="recording-indicator">
               <span className="rec-dot"></span>
@@ -443,103 +452,110 @@ function Scene01CameraTest() {
           )}
         </div>
 
-        {/* FULL MANUAL CONTROLS */}
+        {/* Controls Panel */}
         <div className="camera-controls">
           <div className="camera-controls-header">
-            <h3>Manual Editor</h3>
+            <h3>Scene Editor</h3>
             <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>
               🐛 Toggle Controls
             </button>
           </div>
 
-          {/* Unlimited Mode Toggle + Record Button */}
+          {/* Unlimited Mode + Record */}
           <div className="unlimited-mode-section">
             <div className="unlimited-mode-toggle">
               <label>
-                <input 
-                  type="checkbox" 
-                  checked={unlimitedMode} 
-                  onChange={() => setUnlimitedMode(!unlimitedMode)}
-                />
+                <input type="checkbox" checked={unlimitedMode} onChange={() => setUnlimitedMode(!unlimitedMode)} />
                 <span className="unlimited-label">🔓 Unlimited Mode</span>
               </label>
-              <span className="unlimited-hint">{unlimitedMode ? 'Movement is infinite' : 'Movement has limits'}</span>
             </div>
-
             <div className="record-section">
               {!isRecording ? (
-                <button className="record-btn" onClick={startRecording}>
-                  🎥 Record Scene
-                </button>
+                <button className="record-btn" onClick={startRecording}>🎥 Record Scene</button>
               ) : (
-                <button className="record-btn recording" onClick={stopRecording}>
-                  ⏹️ Stop Recording
-                </button>
+                <button className="record-btn recording" onClick={stopRecording}>⏹️ Stop Recording</button>
               )}
             </div>
           </div>
 
-          {/* Asset Visibility Panel */}
+          {/* Background Visibility */}
           <div className="asset-visibility-panel">
-            <div className="asset-visibility-header">
-              <strong>🎨 Asset Visibility</strong>
-            </div>
-            
-            <div className="asset-quick-presets">
-              <button onClick={() => showOnly(['sky', 'mountains'])}>🌄 Opening Shot</button>
-              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest'])}>🌲 Add Forest</button>
-              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest', 'clearing'])}>🏞️ Add Clearing</button>
-              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest', 'clearing', 'landmark_tree'])}>🌳 Add Landmark</button>
-              <button onClick={() => showOnly(['sky', 'mountains', 'distant_forest', 'clearing', 'landmark_tree', 'near_tree_01', 'near_tree_02'])}>🎬 Full Scene</button>
-            </div>
-
-            <div className="asset-list">
-              {SCENE_LAYERS.map(layer => (
-                <label key={layer.id} className="asset-toggle-item">
-                  <input 
-                    type="checkbox" 
-                    checked={layerVisibility[layer.id]} 
-                    onChange={() => toggleLayerVisibility(layer.id)}
-                  />
-                  <span className="asset-toggle-label">{layer.name}</span>
-                  <span className="asset-toggle-status">
-                    {layerVisibility[layer.id] ? '✅ Visible' : '👁️ Hidden'}
-                  </span>
-                </label>
-              ))}
-            </div>
+            <strong>🎨 Layers</strong>
+            <label className="asset-toggle-item">
+              <input type="checkbox" checked={layerVisibility.background} onChange={() => setLayerVisibility(prev => ({ ...prev, background: !prev.background }))} />
+              <span className="asset-toggle-label">Background</span>
+            </label>
+            <label className="asset-toggle-item">
+              <input type="checkbox" checked={layerVisibility.kopanang} onChange={() => setLayerVisibility(prev => ({ ...prev, kopanang: !prev.kopanang }))} />
+              <span className="asset-toggle-label">Kopanang</span>
+            </label>
+            <label className="asset-toggle-item">
+              <input type="checkbox" checked={layerVisibility.lerato} onChange={() => setLayerVisibility(prev => ({ ...prev, lerato: !prev.lerato }))} />
+              <span className="asset-toggle-label">Lerato</span>
+            </label>
           </div>
 
-          {/* Manual Camera Controls */}
+          {/* Character Controls */}
+          {debugMode && (
+            <div className="character-controls">
+              <h4>Kopanang</h4>
+              <div className="pose-buttons">
+                {KOPANANG_SIT.map(pose => (
+                  <button key={pose.id} className={`test-btn ${selectedKopanangPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedKopanangPose(pose.id)}>{pose.label}</button>
+                ))}
+              </div>
+              <div className="slider-row">
+                <label>X:</label>
+                <input type="range" min="-500" max="500" value={kopanangPos.x} onChange={(e) => setKopanangPos({ ...kopanangPos, x: Number(e.target.value) })} />
+                <span>{kopanangPos.x}</span>
+              </div>
+              <div className="slider-row">
+                <label>Y:</label>
+                <input type="range" min="-300" max="300" value={kopanangPos.y} onChange={(e) => setKopanangPos({ ...kopanangPos, y: Number(e.target.value) })} />
+                <span>{kopanangPos.y}</span>
+              </div>
+              <div className="slider-row">
+                <label>Scale:</label>
+                <input type="range" min="0.2" max="3" step="0.1" value={kopanangPos.scale} onChange={(e) => setKopanangPos({ ...kopanangPos, scale: Number(e.target.value) })} />
+                <span>{kopanangPos.scale.toFixed(1)}</span>
+              </div>
+              <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>
+                {kopanangTalking ? '⏹ Stop Talking' : '🗣️ Start Talking'}
+              </button>
+
+              <h4>Lerato</h4>
+              <div className="pose-buttons">
+                {LERATO_SIT.map(pose => (
+                  <button key={pose.id} className={`test-btn ${selectedLeratoPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedLeratoPose(pose.id)}>{pose.label}</button>
+                ))}
+              </div>
+              <div className="slider-row">
+                <label>X:</label>
+                <input type="range" min="-500" max="500" value={leratoPos.x} onChange={(e) => setLeratoPos({ ...leratoPos, x: Number(e.target.value) })} />
+                <span>{leratoPos.x}</span>
+              </div>
+              <div className="slider-row">
+                <label>Y:</label>
+                <input type="range" min="-300" max="300" value={leratoPos.y} onChange={(e) => setLeratoPos({ ...leratoPos, y: Number(e.target.value) })} />
+                <span>{leratoPos.y}</span>
+              </div>
+              <div className="slider-row">
+                <label>Scale:</label>
+                <input type="range" min="0.2" max="3" step="0.1" value={leratoPos.scale} onChange={(e) => setLeratoPos({ ...leratoPos, scale: Number(e.target.value) })} />
+                <span>{leratoPos.scale.toFixed(1)}</span>
+              </div>
+              <button className={`test-btn ${leratoTalking ? 'active' : ''}`} onClick={() => setLeratoTalking(!leratoTalking)}>
+                {leratoTalking ? '⏹ Stop Talking' : '🗣️ Start Talking'}
+              </button>
+            </div>
+          )}
+
+          {/* Camera Controls */}
           <div className="camera-stat-group">
             <strong>Camera Parallax</strong>
-            <label>Camera X (Left/Right): 
-              <input 
-                type="range" 
-                min={-rangeLimits.cameraX} 
-                max={rangeLimits.cameraX} 
-                value={camera.x} 
-                onChange={(e) => setCamera(prev => ({ ...prev, x: Number(e.target.value) }))} 
-              />
-            </label>
-            <label>Camera Y (Up/Down): 
-              <input 
-                type="range" 
-                min={-rangeLimits.cameraY} 
-                max={rangeLimits.cameraY} 
-                value={camera.y} 
-                onChange={(e) => setCamera(prev => ({ ...prev, y: Number(e.target.value) }))} 
-              />
-            </label>
-            <label>Forward (Zoom Dolly): 
-              <input 
-                type="range" 
-                min={unlimitedMode ? -rangeLimits.forward : 0} 
-                max={rangeLimits.forward} 
-                value={camera.forward} 
-                onChange={(e) => setCamera(prev => ({ ...prev, forward: Number(e.target.value) }))} 
-              />
-            </label>
+            <label>Camera X: <input type="range" min={unlimitedMode ? -10000 : -200} max={unlimitedMode ? 10000 : 200} value={camera.x} onChange={(e) => setCamera({ ...camera, x: Number(e.target.value) })} /></label>
+            <label>Camera Y: <input type="range" min={unlimitedMode ? -10000 : -200} max={unlimitedMode ? 10000 : 200} value={camera.y} onChange={(e) => setCamera({ ...camera, y: Number(e.target.value) })} /></label>
+            <label>Forward: <input type="range" min={unlimitedMode ? -5000 : 0} max={unlimitedMode ? 5000 : 100} value={camera.forward} onChange={(e) => setCamera({ ...camera, forward: Number(e.target.value) })} /></label>
             <div className="camera-position-display">
               <span>X: {camera.x.toFixed(2)}</span>
               <span>Y: {camera.y.toFixed(2)}</span>
@@ -547,57 +563,10 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Layer Editor */}
-          {debugMode && (
-            <div className="layer-editor">
-              <div className="layer-editor-header">
-                <strong>Layer Positions</strong>
-                <label className="link-scale-label">
-                  <input type="checkbox" checked={linkScale} onChange={() => setLinkScale(!linkScale)} />
-                  Link Mountains + Forest Scale
-                </label>
-              </div>
-
-              {SCENE_LAYERS.map(layer => (
-                <div key={layer.id} className="layer-editor-item">
-                  <strong>{layer.name}</strong>
-                  <label>X: 
-                    <input 
-                      type="range" 
-                      min={-rangeLimits.layerX} 
-                      max={rangeLimits.layerX} 
-                      value={layerPositions[layer.id].x} 
-                      onChange={(e) => updateLayerPosition(layer.id, 'x', Number(e.target.value))} 
-                    />
-                  </label>
-                  <label>Y: 
-                    <input 
-                      type="range" 
-                      min={-rangeLimits.layerY} 
-                      max={rangeLimits.layerY} 
-                      value={layerPositions[layer.id].y} 
-                      onChange={(e) => updateLayerPosition(layer.id, 'y', Number(e.target.value))} 
-                    />
-                  </label>
-                  <label>Scale: 
-                    <input 
-                      type="range" 
-                      min="0.1" 
-                      max={rangeLimits.scale} 
-                      step="0.1" 
-                      value={layerPositions[layer.id].scale} 
-                      onChange={(e) => updateLayerPosition(layer.id, 'scale', Number(e.target.value))} 
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
-          )}
-
           <div className="camera-buttons">
-            <button className="camera-btn" onClick={resetCamera}>🔄 Reset All</button>
+            <button className="camera-btn" onClick={resetCamera}>🔄 Reset Camera</button>
           </div>
-          
+
           <div className="slider-row">
             <label>Speed:</label>
             <input type="range" min="0.1" max="10" step="0.1" value={cameraSpeed} onChange={(e) => setCameraSpeed(Number(e.target.value))} />
