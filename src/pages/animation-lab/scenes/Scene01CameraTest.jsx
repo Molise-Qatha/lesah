@@ -84,13 +84,16 @@ function Scene01CameraTest() {
   const [linkScale, setLinkScale] = useState(false);
   const [unlimitedMode, setUnlimitedMode] = useState(false);
 
-  // 🛠️ NEW: Background Scale
+  // Background Scale
   const [backgroundScale, setBackgroundScale] = useState(1.0);
 
-  // 🛠️ NEW: Selected Character for controls
+  // Selected Character
   const [selectedCharacter, setSelectedCharacter] = useState('kopanang');
 
-  // 🛠️ NEW: Drag state
+  // Show Selection Outline
+  const [showSelectionOutline, setShowSelectionOutline] = useState(true);
+
+  // Drag state
   const [draggingCharacter, setDraggingCharacter] = useState(null);
   const dragStartRef = useRef({ mouseX: 0, mouseY: 0, charX: 0, charY: 0 });
   const stageRef = useRef(null);
@@ -149,7 +152,7 @@ function Scene01CameraTest() {
     forward: 100,
   };
 
-  // 🛠️ MODIFIED: Background transform now uses backgroundScale
+  // Background transform
   const getBackgroundTransform = useCallback(() => {
     const depthFactor = 1.0;
     const cameraX = camera.x * depthFactor;
@@ -186,10 +189,10 @@ function Scene01CameraTest() {
     keysPressed.current[e.key.toLowerCase()] = false;
   }, []);
 
-  // 🛠️ NEW: Arrow key movement for selected character
+  // Arrow key movement + scale shortcuts
   useEffect(() => {
     const handleKeyFrame = () => {
-      // Camera movement (always active)
+      // Camera movement
       const speed = 0.4 * cameraSpeed;
       const currentCamera = { ...camera };
       if (unlimitedMode) {
@@ -206,7 +209,7 @@ function Scene01CameraTest() {
       setCamera(currentCamera);
 
       // Character movement (arrow keys)
-      const charSpeed = 5; // pixels per frame
+      const charSpeed = 5;
       if (selectedCharacter === 'kopanang') {
         setKopanangPos(prev => {
           let newX = prev.x;
@@ -229,11 +232,35 @@ function Scene01CameraTest() {
         });
       }
 
+      // Scale shortcuts: [ and ]
+      if (keysPressed.current['[']) {
+        scaleCharacter(-0.02);
+      }
+      if (keysPressed.current[']']) {
+        scaleCharacter(0.02);
+      }
+
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     };
     animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     return () => cancelAnimationFrame(animationFrameRef.current);
   }, [cameraSpeed, unlimitedMode, rangeLimits, selectedCharacter, camera]);
+
+  // Scale function (used for wheel, shortcuts, nudge)
+  const scaleCharacter = (delta) => {
+    if (selectedCharacter === 'kopanang') {
+      setKopanangPos(prev => ({ ...prev, scale: Math.max(0.2, Math.min(3, prev.scale + delta)) }));
+    } else {
+      setLeratoPos(prev => ({ ...prev, scale: Math.max(0.2, Math.min(3, prev.scale + delta)) }));
+    }
+  };
+
+  // Mouse wheel scaling
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.05 : 0.05;
+    scaleCharacter(delta);
+  };
 
   // Mouth animation loop
   useEffect(() => {
@@ -247,7 +274,7 @@ function Scene01CameraTest() {
     };
   }, [kopanangTalking, leratoTalking]);
 
-  // 🛠️ NEW: Drag handlers
+  // Drag handlers
   const handleCharacterMouseDown = (e, character) => {
     e.preventDefault();
     e.stopPropagation();
@@ -301,7 +328,7 @@ function Scene01CameraTest() {
     };
   }, [draggingCharacter]);
 
-  // 🛠️ NEW: Click-to-place character
+  // Click-to-place character
   const handleStageClick = (e) => {
     if (draggingCharacter) return;
     
@@ -309,8 +336,6 @@ function Scene01CameraTest() {
     const mouseX = e.clientX - stageRect.left;
     const mouseY = e.clientY - stageRect.top;
     
-    // Convert to character position (accounting for camera offset)
-    // For simplicity, just place at clicked position (relative to stage center)
     const offsetX = mouseX - stageRect.width / 2;
     const offsetY = mouseY - stageRect.height / 2;
     
@@ -321,7 +346,7 @@ function Scene01CameraTest() {
     }
   };
 
-  // Draw to canvas for recording
+  // Draw to canvas for recording (same as before, but include scale in drawing)
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imagesLoadedRef.current) return;
@@ -412,7 +437,7 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(canvasAnimationFrame);
   }, [drawSceneToCanvas]);
 
-  // Recording functions
+  // Recording functions (same as before)
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -485,20 +510,7 @@ function Scene01CameraTest() {
     setIsRecording(false);
   };
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [handleKeyDown, handleKeyUp]);
-
-  const resetCamera = () => {
-    setCamera({ x: 0, y: 0, forward: 0 });
-  };
-
-  // 🛠️ NEW: Nudge functions
+  // Nudge functions
   const nudgeCharacter = (axis, direction) => {
     const amount = 10;
     if (selectedCharacter === 'kopanang') {
@@ -518,12 +530,16 @@ function Scene01CameraTest() {
     }
   };
 
+  const nudgeScale = (direction) => {
+    scaleCharacter(direction * 0.1);
+  };
+
   return (
     <div className="scene01-page">
       <div className="scene01-container">
         
         {/* Scene Viewport */}
-        <div className="scene-viewport" ref={stageRef} onClick={handleStageClick}>
+        <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onWheel={handleWheel}>
           <div className="scene-stage">
             {/* Background */}
             {layerVisibility.background && (
@@ -539,7 +555,7 @@ function Scene01CameraTest() {
                   zIndex: 10, 
                   ...getCharacterTransform('kopanang', kopanangPos),
                   cursor: draggingCharacter === 'kopanang' ? 'grabbing' : 'grab',
-                  outline: selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
+                  outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
                 }}
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
               >
@@ -559,7 +575,7 @@ function Scene01CameraTest() {
                   zIndex: 10, 
                   ...getCharacterTransform('lerato', leratoPos),
                   cursor: draggingCharacter === 'lerato' ? 'grabbing' : 'grab',
-                  outline: selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
+                  outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
                 }}
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
               >
@@ -637,7 +653,7 @@ function Scene01CameraTest() {
             </label>
           </div>
 
-          {/* 🛠️ NEW: Selected Character & Movement Controls */}
+          {/* Character Selection & Movement */}
           <div className="character-controls">
             <h4>Select Character</h4>
             <div className="pose-buttons">
@@ -652,7 +668,19 @@ function Scene01CameraTest() {
               <button className="nudge-btn" onClick={() => nudgeCharacter('x', 1)}>→</button>
               <button className="nudge-btn" onClick={() => nudgeCharacter('y', 1)}>↓</button>
             </div>
-            <p className="movement-hint">Click on background to place selected character. Use arrow keys to move.</p>
+
+            <h4>🔍 Scale</h4>
+            <div className="nudge-buttons">
+              <button className="nudge-btn" onClick={() => nudgeScale(-1)}>−</button>
+              <button className="nudge-btn" onClick={() => nudgeScale(1)}>+</button>
+            </div>
+            <p className="movement-hint">Use [ and ] keys or mouse wheel to scale selected character.</p>
+
+            <h4>🎨 Selection Outline</h4>
+            <label className="asset-toggle-item">
+              <input type="checkbox" checked={showSelectionOutline} onChange={() => setShowSelectionOutline(!showSelectionOutline)} />
+              <span className="asset-toggle-label">Show Outline</span>
+            </label>
           </div>
 
           {/* Character Poses */}

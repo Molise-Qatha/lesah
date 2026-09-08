@@ -503,4 +503,54 @@ kbd {
   color: #888;
   margin-top: 5px;
 }
+/* Draggable Characters */
+.draggable-character {
+  transition: none;
+}
 
+.draggable-character img {
+  pointer-events: none;
+}
+
+/* Character Controls Section */
+.character-controls {
+  background: #16213e;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.character-controls h4 {
+  color: #ffd700;
+  margin: 10px 0 5px 0;
+}
+
+/* Nudge Buttons */
+.nudge-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 40px);
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.nudge-btn {
+  width: 40px;
+  height: 40px;
+  background: #0f3460;
+  color: #ffffff;
+  border: 1px solid #533483;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nudge-btn:hover {
+  background: #533483;
+}
+
+.movement-hint {
+  font-size: 11px;
+  color: #888;
+  margin-top: 5px;
+}
