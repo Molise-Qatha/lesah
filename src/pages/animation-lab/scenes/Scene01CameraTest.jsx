@@ -69,7 +69,6 @@ function Scene01CameraTest() {
     lerato: true,
   });
 
-  // Character state
   const [selectedKopanangPose, setSelectedKopanangPose] = useState('ksit1');
   const [selectedLeratoPose, setSelectedLeratoPose] = useState('sit1');
   const [kopanangPos, setKopanangPos] = useState({ x: -100, y: 50, scale: 1 });
@@ -81,19 +80,12 @@ function Scene01CameraTest() {
 
   const [debugMode, setDebugMode] = useState(true);
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
-  const [linkScale, setLinkScale] = useState(false);
   const [unlimitedMode, setUnlimitedMode] = useState(false);
 
-  // Background Scale
   const [backgroundScale, setBackgroundScale] = useState(1.0);
-
-  // Selected Character
   const [selectedCharacter, setSelectedCharacter] = useState('kopanang');
-
-  // Show Selection Outline
   const [showSelectionOutline, setShowSelectionOutline] = useState(true);
 
-  // Drag state
   const [draggingCharacter, setDraggingCharacter] = useState(null);
   const dragStartRef = useRef({ mouseX: 0, mouseY: 0, charX: 0, charY: 0 });
   const stageRef = useRef(null);
@@ -106,7 +98,6 @@ function Scene01CameraTest() {
   const muxerRef = useRef(null);
   const videoEncoderRef = useRef(null);
 
-  // Preload images
   const imagesRef = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imagesLoadedRef = useRef(false);
@@ -128,38 +119,20 @@ function Scene01CameraTest() {
       return img;
     };
 
-    SCENE_LAYERS.forEach(layer => {
-      imagesRef.current[layer.id] = loadImage(layer.src);
-    });
-    KOPANANG_SIT.forEach(pose => {
-      imagesRef.current[`kopanang_${pose.id}`] = loadImage(pose.src);
-    });
-    LERATO_SIT.forEach(pose => {
-      imagesRef.current[`lerato_${pose.id}`] = loadImage(pose.src);
-    });
-    MOUTH_FRAMES.forEach(mouth => {
-      imagesRef.current[`mouth_${mouth.id}`] = loadImage(mouth.src);
-    });
+    SCENE_LAYERS.forEach(layer => imagesRef.current[layer.id] = loadImage(layer.src));
+    KOPANANG_SIT.forEach(pose => imagesRef.current[`kopanang_${pose.id}`] = loadImage(pose.src));
+    LERATO_SIT.forEach(pose => imagesRef.current[`lerato_${pose.id}`] = loadImage(pose.src));
+    MOUTH_FRAMES.forEach(mouth => imagesRef.current[`mouth_${mouth.id}`] = loadImage(mouth.src));
   }, []);
 
-  const rangeLimits = unlimitedMode ? {
-    cameraX: 10000,
-    cameraY: 10000,
-    forward: 5000,
-  } : {
-    cameraX: 200,
-    cameraY: 200,
-    forward: 100,
-  };
+  const rangeLimits = unlimitedMode ? { cameraX: 10000, cameraY: 10000, forward: 5000 } : { cameraX: 200, cameraY: 200, forward: 100 };
 
-  // Background transform
   const getBackgroundTransform = useCallback(() => {
     const depthFactor = 1.0;
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
-
     return {
       transform: `translate(${cameraX - forwardOffset}px, ${cameraY}px) scale(${backgroundScale})`,
       opacity: 1,
@@ -167,13 +140,12 @@ function Scene01CameraTest() {
     };
   }, [camera, backgroundScale]);
 
-  const getCharacterTransform = (character, pos) => {
+  const getCharacterTransform = (pos) => {
     const depthFactor = 0.8;
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
-
     return {
       transform: `translate(${pos.x + cameraX - forwardOffset}px, ${pos.y + cameraY}px) scale(${pos.scale})`,
       opacity: 1,
@@ -189,10 +161,8 @@ function Scene01CameraTest() {
     keysPressed.current[e.key.toLowerCase()] = false;
   }, []);
 
-  // Arrow key movement + scale shortcuts
   useEffect(() => {
     const handleKeyFrame = () => {
-      // Camera movement
       const speed = 0.4 * cameraSpeed;
       const currentCamera = { ...camera };
       if (unlimitedMode) {
@@ -208,12 +178,10 @@ function Scene01CameraTest() {
       }
       setCamera(currentCamera);
 
-      // Character movement (arrow keys)
       const charSpeed = 5;
       if (selectedCharacter === 'kopanang') {
         setKopanangPos(prev => {
-          let newX = prev.x;
-          let newY = prev.y;
+          let newX = prev.x, newY = prev.y;
           if (keysPressed.current['arrowleft']) newX -= charSpeed;
           if (keysPressed.current['arrowright']) newX += charSpeed;
           if (keysPressed.current['arrowup']) newY -= charSpeed;
@@ -222,8 +190,7 @@ function Scene01CameraTest() {
         });
       } else {
         setLeratoPos(prev => {
-          let newX = prev.x;
-          let newY = prev.y;
+          let newX = prev.x, newY = prev.y;
           if (keysPressed.current['arrowleft']) newX -= charSpeed;
           if (keysPressed.current['arrowright']) newX += charSpeed;
           if (keysPressed.current['arrowup']) newY -= charSpeed;
@@ -232,13 +199,8 @@ function Scene01CameraTest() {
         });
       }
 
-      // Scale shortcuts: [ and ]
-      if (keysPressed.current['[']) {
-        scaleCharacter(-0.02);
-      }
-      if (keysPressed.current[']']) {
-        scaleCharacter(0.02);
-      }
+      if (keysPressed.current['[']) scaleCharacter(-0.02);
+      if (keysPressed.current[']']) scaleCharacter(0.02);
 
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     };
@@ -246,7 +208,6 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(animationFrameRef.current);
   }, [cameraSpeed, unlimitedMode, rangeLimits, selectedCharacter, camera]);
 
-  // Scale function (used for wheel, shortcuts, nudge)
   const scaleCharacter = (delta) => {
     if (selectedCharacter === 'kopanang') {
       setKopanangPos(prev => ({ ...prev, scale: Math.max(0.2, Math.min(3, prev.scale + delta)) }));
@@ -255,71 +216,45 @@ function Scene01CameraTest() {
     }
   };
 
-  // Mouse wheel scaling
   const handleWheel = (e) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.05 : 0.05;
     scaleCharacter(delta);
   };
 
-  // Mouth animation loop
   useEffect(() => {
     if (kopanangTalking || leratoTalking) {
-      mouthTimerRef.current = setInterval(() => {
-        setMouthIndex(prev => (prev + 1) % MOUTH_FRAMES.length);
-      }, 200);
+      mouthTimerRef.current = setInterval(() => setMouthIndex(prev => (prev + 1) % MOUTH_FRAMES.length), 200);
     }
-    return () => {
-      if (mouthTimerRef.current) clearInterval(mouthTimerRef.current);
-    };
+    return () => clearInterval(mouthTimerRef.current);
   }, [kopanangTalking, leratoTalking]);
 
-  // Drag handlers
   const handleCharacterMouseDown = (e, character) => {
     e.preventDefault();
     e.stopPropagation();
     setDraggingCharacter(character);
     setSelectedCharacter(character);
-    
     const stageRect = stageRef.current.getBoundingClientRect();
     const mouseX = e.clientX - stageRect.left;
     const mouseY = e.clientY - stageRect.top;
-    
     const currentPos = character === 'kopanang' ? kopanangPos : leratoPos;
-    
-    dragStartRef.current = {
-      mouseX,
-      mouseY,
-      charX: currentPos.x,
-      charY: currentPos.y,
-    };
+    dragStartRef.current = { mouseX, mouseY, charX: currentPos.x, charY: currentPos.y };
   };
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!draggingCharacter) return;
-      
       const stageRect = stageRef.current.getBoundingClientRect();
       const mouseX = e.clientX - stageRect.left;
       const mouseY = e.clientY - stageRect.top;
-      
       const dx = mouseX - dragStartRef.current.mouseX;
       const dy = mouseY - dragStartRef.current.mouseY;
-      
       const newX = dragStartRef.current.charX + dx;
       const newY = dragStartRef.current.charY + dy;
-      
-      if (draggingCharacter === 'kopanang') {
-        setKopanangPos(prev => ({ ...prev, x: newX, y: newY }));
-      } else if (draggingCharacter === 'lerato') {
-        setLeratoPos(prev => ({ ...prev, x: newX, y: newY }));
-      }
+      if (draggingCharacter === 'kopanang') setKopanangPos(prev => ({ ...prev, x: newX, y: newY }));
+      else if (draggingCharacter === 'lerato') setLeratoPos(prev => ({ ...prev, x: newX, y: newY }));
     };
-
-    const handleMouseUp = () => {
-      setDraggingCharacter(null);
-    };
-
+    const handleMouseUp = () => setDraggingCharacter(null);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
@@ -328,33 +263,22 @@ function Scene01CameraTest() {
     };
   }, [draggingCharacter]);
 
-  // Click-to-place character
   const handleStageClick = (e) => {
     if (draggingCharacter) return;
-    
     const stageRect = stageRef.current.getBoundingClientRect();
     const mouseX = e.clientX - stageRect.left;
     const mouseY = e.clientY - stageRect.top;
-    
     const offsetX = mouseX - stageRect.width / 2;
     const offsetY = mouseY - stageRect.height / 2;
-    
-    if (selectedCharacter === 'kopanang') {
-      setKopanangPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
-    } else {
-      setLeratoPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
-    }
+    if (selectedCharacter === 'kopanang') setKopanangPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
+    else setLeratoPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
   };
 
-  // Draw to canvas for recording (same as before, but include scale in drawing)
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imagesLoadedRef.current) return;
-
     const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-
+    const width = canvas.width, height = canvas.height;
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, width, height);
 
@@ -366,7 +290,6 @@ function Scene01CameraTest() {
       const tx = translateMatch ? parseFloat(translateMatch[1]) : 0;
       const ty = translateMatch ? parseFloat(translateMatch[2]) : 0;
       const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
-      
       ctx.save();
       ctx.translate(width / 2 + tx, height / 2 + ty);
       ctx.scale(scale, scale);
@@ -380,8 +303,7 @@ function Scene01CameraTest() {
       const depth = 0.8;
       const camX = camera.x * depth;
       const camY = camera.y * depth * 0.5;
-      const forwardProgress = camera.forward / 100;
-      const forwardOff = forwardProgress * depth * 2;
+      const forwardOff = (camera.forward / 100) * depth * 2;
       const finalX = pos.x + camX - forwardOff;
       const finalY = pos.y + camY;
       ctx.save();
@@ -397,8 +319,7 @@ function Scene01CameraTest() {
       const depth = 0.8;
       const camX = camera.x * depth;
       const camY = camera.y * depth * 0.5;
-      const forwardProgress = camera.forward / 100;
-      const forwardOff = forwardProgress * depth * 2;
+      const forwardOff = (camera.forward / 100) * depth * 2;
       const finalX = pos.x + camX - forwardOff;
       const finalY = pos.y + camY;
       ctx.save();
@@ -426,7 +347,6 @@ function Scene01CameraTest() {
     }
   }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform]);
 
-  // Animation loop for canvas
   useEffect(() => {
     let canvasAnimationFrame;
     const animateCanvas = () => {
@@ -437,48 +357,20 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(canvasAnimationFrame);
   }, [drawSceneToCanvas]);
 
-  // Recording functions (same as before)
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    const muxer = new Muxer({
-      target: new ArrayBufferTarget(),
-      video: {
-        codec: 'avc',
-        width: canvas.width,
-        height: canvas.height,
-        firstTimestampBehavior: 'offset'
-      },
-      fastStart: 'in-memory'
-    });
+    const muxer = new Muxer({ target: new ArrayBufferTarget(), video: { codec: 'avc', width: canvas.width, height: canvas.height, firstTimestampBehavior: 'offset' }, fastStart: 'in-memory' });
     muxerRef.current = muxer;
-
-    const videoEncoder = new VideoEncoder({
-      output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
-      error: (e) => console.error('Encoder error:', e)
-    });
+    const videoEncoder = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: (e) => console.error('Encoder error:', e) });
     videoEncoderRef.current = videoEncoder;
-
-    videoEncoder.configure({
-      codec: 'avc1.42001f',
-      width: canvas.width,
-      height: canvas.height,
-      bitrate: 5_000_000,
-      framerate: 15
-    });
-
+    videoEncoder.configure({ codec: 'avc1.42001f', width: canvas.width, height: canvas.height, bitrate: 5_000_000, framerate: 15 });
     let frameNumber = 0;
-    const frameRate = 15;
-    const frameInterval = 1000000 / frameRate;
+    const frameInterval = 1000000 / 15;
     isRecordingRef.current = true;
-
     const processFrame = () => {
       if (!isRecordingRef.current) return;
-      if (videoEncoderRef.current.encodeQueueSize > 2) {
-        requestAnimationFrame(processFrame);
-        return;
-      }
+      if (videoEncoderRef.current.encodeQueueSize > 2) { requestAnimationFrame(processFrame); return; }
       const timestamp = frameNumber * frameInterval;
       const frame = new VideoFrame(canvas, { timestamp });
       videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 15 === 0 });
@@ -486,7 +378,6 @@ function Scene01CameraTest() {
       frameNumber++;
       requestAnimationFrame(processFrame);
     };
-
     requestAnimationFrame(processFrame);
     setIsRecording(true);
   };
@@ -510,7 +401,20 @@ function Scene01CameraTest() {
     setIsRecording(false);
   };
 
-  // Nudge functions
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [handleKeyDown, handleKeyUp]);
+
+  // 🛠️ FIX: This function was missing
+  const resetCamera = () => {
+    setCamera({ x: 0, y: 0, forward: 0 });
+  };
+
   const nudgeCharacter = (axis, direction) => {
     const amount = 10;
     if (selectedCharacter === 'kopanang') {
@@ -530,30 +434,24 @@ function Scene01CameraTest() {
     }
   };
 
-  const nudgeScale = (direction) => {
-    scaleCharacter(direction * 0.1);
-  };
+  const nudgeScale = (direction) => scaleCharacter(direction * 0.1);
 
   return (
     <div className="scene01-page">
       <div className="scene01-container">
-        
-        {/* Scene Viewport */}
         <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onWheel={handleWheel}>
           <div className="scene-stage">
-            {/* Background */}
             {layerVisibility.background && (
               <div className="scene-layer" style={{ zIndex: 0, ...getBackgroundTransform() }}>
                 <img src={backgroundImg} alt="Background" className="scene-layer-img" draggable={false} />
               </div>
             )}
-            {/* Kopanang */}
             {layerVisibility.kopanang && (
-              <div 
+              <div
                 className="scene-layer draggable-character"
-                style={{ 
-                  zIndex: 10, 
-                  ...getCharacterTransform('kopanang', kopanangPos),
+                style={{
+                  zIndex: 10,
+                  ...getCharacterTransform(kopanangPos),
                   cursor: draggingCharacter === 'kopanang' ? 'grabbing' : 'grab',
                   outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
                 }}
@@ -567,13 +465,12 @@ function Scene01CameraTest() {
                 )}
               </div>
             )}
-            {/* Lerato */}
             {layerVisibility.lerato && (
-              <div 
+              <div
                 className="scene-layer draggable-character"
-                style={{ 
-                  zIndex: 10, 
-                  ...getCharacterTransform('lerato', leratoPos),
+                style={{
+                  zIndex: 10,
+                  ...getCharacterTransform(leratoPos),
                   cursor: draggingCharacter === 'lerato' ? 'grabbing' : 'grab',
                   outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
                 }}
@@ -588,45 +485,29 @@ function Scene01CameraTest() {
               </div>
             )}
           </div>
-          
-          {/* Hidden Canvas for recording */}
           <canvas ref={canvasRef} width={1280} height={720} style={{ display: 'none' }} />
-          
           {isRecording && (
             <div className="recording-indicator">
-              <span className="rec-dot"></span>
-              REC
+              <span className="rec-dot"></span> REC
             </div>
           )}
         </div>
 
-        {/* Controls Panel */}
         <div className="camera-controls">
           <div className="camera-controls-header">
             <h3>Scene Editor</h3>
-            <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>
-              🐛 Toggle Controls
-            </button>
+            <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>🐛 Toggle Controls</button>
           </div>
 
-          {/* Unlimited Mode + Record */}
           <div className="unlimited-mode-section">
             <div className="unlimited-mode-toggle">
-              <label>
-                <input type="checkbox" checked={unlimitedMode} onChange={() => setUnlimitedMode(!unlimitedMode)} />
-                <span className="unlimited-label">🔓 Camera Unlimited Mode</span>
-              </label>
+              <label><input type="checkbox" checked={unlimitedMode} onChange={() => setUnlimitedMode(!unlimitedMode)} /><span className="unlimited-label">🔓 Camera Unlimited Mode</span></label>
             </div>
             <div className="record-section">
-              {!isRecording ? (
-                <button className="record-btn" onClick={startRecording}>🎥 Record Scene</button>
-              ) : (
-                <button className="record-btn recording" onClick={stopRecording}>⏹️ Stop Recording</button>
-              )}
+              {!isRecording ? <button className="record-btn" onClick={startRecording}>🎥 Record Scene</button> : <button className="record-btn recording" onClick={stopRecording}>⏹️ Stop Recording</button>}
             </div>
           </div>
 
-          {/* Background Controls */}
           <div className="background-controls">
             <strong>🌄 Background</strong>
             <div className="slider-row">
@@ -636,31 +517,19 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Layer Visibility */}
           <div className="asset-visibility-panel">
             <strong>🎨 Layers</strong>
-            <label className="asset-toggle-item">
-              <input type="checkbox" checked={layerVisibility.background} onChange={() => setLayerVisibility(prev => ({ ...prev, background: !prev.background }))} />
-              <span className="asset-toggle-label">Background</span>
-            </label>
-            <label className="asset-toggle-item">
-              <input type="checkbox" checked={layerVisibility.kopanang} onChange={() => setLayerVisibility(prev => ({ ...prev, kopanang: !prev.kopanang }))} />
-              <span className="asset-toggle-label">Kopanang</span>
-            </label>
-            <label className="asset-toggle-item">
-              <input type="checkbox" checked={layerVisibility.lerato} onChange={() => setLayerVisibility(prev => ({ ...prev, lerato: !prev.lerato }))} />
-              <span className="asset-toggle-label">Lerato</span>
-            </label>
+            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.background} onChange={() => setLayerVisibility(prev => ({ ...prev, background: !prev.background }))} /><span className="asset-toggle-label">Background</span></label>
+            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.kopanang} onChange={() => setLayerVisibility(prev => ({ ...prev, kopanang: !prev.kopanang }))} /><span className="asset-toggle-label">Kopanang</span></label>
+            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.lerato} onChange={() => setLayerVisibility(prev => ({ ...prev, lerato: !prev.lerato }))} /><span className="asset-toggle-label">Lerato</span></label>
           </div>
 
-          {/* Character Selection & Movement */}
           <div className="character-controls">
             <h4>Select Character</h4>
             <div className="pose-buttons">
               <button className={`test-btn ${selectedCharacter === 'kopanang' ? 'active' : ''}`} onClick={() => setSelectedCharacter('kopanang')}>Kopanang</button>
               <button className={`test-btn ${selectedCharacter === 'lerato' ? 'active' : ''}`} onClick={() => setSelectedCharacter('lerato')}>Lerato</button>
             </div>
-
             <h4>🎯 Quick Move</h4>
             <div className="nudge-buttons">
               <button className="nudge-btn" onClick={() => nudgeCharacter('y', -1)}>↑</button>
@@ -668,59 +537,38 @@ function Scene01CameraTest() {
               <button className="nudge-btn" onClick={() => nudgeCharacter('x', 1)}>→</button>
               <button className="nudge-btn" onClick={() => nudgeCharacter('y', 1)}>↓</button>
             </div>
-
             <h4>🔍 Scale</h4>
             <div className="nudge-buttons">
               <button className="nudge-btn" onClick={() => nudgeScale(-1)}>−</button>
               <button className="nudge-btn" onClick={() => nudgeScale(1)}>+</button>
             </div>
             <p className="movement-hint">Use [ and ] keys or mouse wheel to scale selected character.</p>
-
             <h4>🎨 Selection Outline</h4>
-            <label className="asset-toggle-item">
-              <input type="checkbox" checked={showSelectionOutline} onChange={() => setShowSelectionOutline(!showSelectionOutline)} />
-              <span className="asset-toggle-label">Show Outline</span>
-            </label>
+            <label className="asset-toggle-item"><input type="checkbox" checked={showSelectionOutline} onChange={() => setShowSelectionOutline(!showSelectionOutline)} /><span className="asset-toggle-label">Show Outline</span></label>
           </div>
 
-          {/* Character Poses */}
           {debugMode && (
             <div className="character-controls">
               <h4>Kopanang Poses</h4>
               <div className="pose-buttons">
-                {KOPANANG_SIT.map(pose => (
-                  <button key={pose.id} className={`test-btn ${selectedKopanangPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedKopanangPose(pose.id)}>{pose.label}</button>
-                ))}
+                {KOPANANG_SIT.map(pose => <button key={pose.id} className={`test-btn ${selectedKopanangPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedKopanangPose(pose.id)}>{pose.label}</button>)}
               </div>
-
               <h4>Lerato Poses</h4>
               <div className="pose-buttons">
-                {LERATO_SIT.map(pose => (
-                  <button key={pose.id} className={`test-btn ${selectedLeratoPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedLeratoPose(pose.id)}>{pose.label}</button>
-                ))}
+                {LERATO_SIT.map(pose => <button key={pose.id} className={`test-btn ${selectedLeratoPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedLeratoPose(pose.id)}>{pose.label}</button>)}
               </div>
-
               <h4>Talking</h4>
-              <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>
-                {kopanangTalking ? '⏹ Stop Kopanang' : '🗣️ Talk Kopanang'}
-              </button>
-              <button className={`test-btn ${leratoTalking ? 'active' : ''}`} onClick={() => setLeratoTalking(!leratoTalking)}>
-                {leratoTalking ? '⏹ Stop Lerato' : '🗣️ Talk Lerato'}
-              </button>
+              <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>{kopanangTalking ? '⏹ Stop Kopanang' : '🗣️ Talk Kopanang'}</button>
+              <button className={`test-btn ${leratoTalking ? 'active' : ''}`} onClick={() => setLeratoTalking(!leratoTalking)}>{leratoTalking ? '⏹ Stop Lerato' : '🗣️ Talk Lerato'}</button>
             </div>
           )}
 
-          {/* Camera Controls */}
           <div className="camera-stat-group">
             <strong>Camera Parallax</strong>
             <label>Camera X: <input type="range" min={unlimitedMode ? -10000 : -200} max={unlimitedMode ? 10000 : 200} value={camera.x} onChange={(e) => setCamera({ ...camera, x: Number(e.target.value) })} /></label>
             <label>Camera Y: <input type="range" min={unlimitedMode ? -10000 : -200} max={unlimitedMode ? 10000 : 200} value={camera.y} onChange={(e) => setCamera({ ...camera, y: Number(e.target.value) })} /></label>
             <label>Forward: <input type="range" min={unlimitedMode ? -5000 : 0} max={unlimitedMode ? 5000 : 100} value={camera.forward} onChange={(e) => setCamera({ ...camera, forward: Number(e.target.value) })} /></label>
-            <div className="camera-position-display">
-              <span>X: {camera.x.toFixed(2)}</span>
-              <span>Y: {camera.y.toFixed(2)}</span>
-              <span>F: {camera.forward.toFixed(2)}</span>
-            </div>
+            <div className="camera-position-display"><span>X: {camera.x.toFixed(2)}</span><span>Y: {camera.y.toFixed(2)}</span><span>F: {camera.forward.toFixed(2)}</span></div>
           </div>
 
           <div className="camera-buttons">
