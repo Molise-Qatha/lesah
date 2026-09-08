@@ -9,19 +9,27 @@ import body03 from '../../assets/kopanang_body/kopanang_body_03_standardized.png
 import body04 from '../../assets/kopanang_body/kopanang_body_04_standardized.png';
 import body05 from '../../assets/kopanang_body/kopanang_body_05_standardized.png';
 
-// Import face expressions (standardized)
+// Import Lerato sit frames (new)
+import leratoSit1 from '../../assets/lerato_sit/sit_1.png';
+import leratoSit2 from '../../assets/lerato_sit/sit_2.png';
+import leratoSit3 from '../../assets/lerato_sit/sit_3.png';
+import leratoSit4 from '../../assets/lerato_sit/sit_4.png';
+import leratoSit5 from '../../assets/lerato_sit/sit_5.png';
+
+// Import face expressions (standardized) - Kopanang
 import faceNeutral from '../../assets/kopanang_face/kopanang_face_neutral_standardized.png';
 import faceAngry from '../../assets/kopanang_face/kopanang_face_angry_standardized.png';
 import faceSad from '../../assets/kopanang_face/kopanang_face_sad_standardized.png';
 import faceWorried from '../../assets/kopanang_face/kopanang_face_worried_standardized.png';
 
-// Import vowel mouth sprites (standardized)
-import mouthA from '../../assets/kopanang_mouth_vowels/kopanang_mouth_a_standardized.png';
-import mouthE from '../../assets/kopanang_mouth_vowels/kopanang_mouth_e_standardized.png';
-import mouthI from '../../assets/kopanang_mouth_vowels/kopanang_mouth_i_standardized.png';
-import mouthO from '../../assets/kopanang_mouth_vowels/kopanang_mouth_o_standardized.png';
+// Import shared mouth assets (new)
+import mouthA from '../../assets/mouth/mouth_a.png';
+import mouthE from '../../assets/mouth/mouth_e.png';
+import mouthI from '../../assets/mouth/mouth_i.png';
+import mouthO from '../../assets/mouth/mouth_o.png';
+import mouthU from '../../assets/mouth/mouth_u.png';
 
-// Import 2-frame walking sprites (standardized)
+// Import 2-frame walking sprites (standardized) - Kopanang
 import walkFrame1 from '../../assets/kopanang_walk/kopanang_walk_1_standardized.png';
 import walkFrame2 from '../../assets/kopanang_walk/kopanang_walk_2_standardized.png';
 
@@ -30,6 +38,13 @@ const WALK_FRAMES = [
   { id: 'walk2', src: walkFrame2 },
 ];
 
+// Character options
+const CHARACTER_OPTIONS = [
+  { id: 'kopanang', label: 'Kopanang' },
+  { id: 'lerato', label: 'Lerato' },
+];
+
+// Kopanang body options
 const BODY_OPTIONS = [
   { id: 'body01', label: 'Body 01', src: body01 },
   { id: 'body02', label: 'Body 02', src: body02 },
@@ -38,6 +53,16 @@ const BODY_OPTIONS = [
   { id: 'body05', label: 'Body 05', src: body05 },
 ];
 
+// Lerato body options (sit frames)
+const LERATO_BODY_OPTIONS = [
+  { id: 'sit1', label: 'Sit 1', src: leratoSit1 },
+  { id: 'sit2', label: 'Sit 2', src: leratoSit2 },
+  { id: 'sit3', label: 'Sit 3', src: leratoSit3 },
+  { id: 'sit4', label: 'Sit 4', src: leratoSit4 },
+  { id: 'sit5', label: 'Sit 5', src: leratoSit5 },
+];
+
+// Face expressions - Kopanang (for now, we'll use same for Lerato until assets are added)
 const FACE_OPTIONS = [
   { id: 'neutral', label: 'Neutral', src: faceNeutral },
   { id: 'angry', label: 'Angry', src: faceAngry },
@@ -45,15 +70,20 @@ const FACE_OPTIONS = [
   { id: 'worried', label: 'Worried', src: faceWorried },
 ];
 
+// Shared mouth frames
 const MOUTH_FRAMES = [
   { id: 'A', label: 'A (Open)', src: mouthA },
   { id: 'E', label: 'E (Smile)', src: mouthE },
   { id: 'I', label: 'I (Narrow)', src: mouthI },
   { id: 'O', label: 'O (Round)', src: mouthO },
+  { id: 'U', label: 'U (Pursed)', src: mouthU },
 ];
 
 function KopanangTest() {
   const [activeTab, setActiveTab] = useState('character');
+  
+  // NEW: Character switcher
+  const [selectedCharacter, setSelectedCharacter] = useState('kopanang');
   
   // Character states
   const [selectedBody, setSelectedBody] = useState('body01');
@@ -120,7 +150,7 @@ function KopanangTest() {
   const [walkX, setWalkX] = useState(0);
   const [walkHeightRatio, setWalkHeightRatio] = useState(1.8);
 
-  // 🛠️ NEW: Movement / Keyframe Animation States
+  // Movement / Keyframe Animation States
   const [startX, setStartX] = useState(0);
   const [endX, setEndX] = useState(200);
   const [moveDuration, setMoveDuration] = useState(3);
@@ -129,7 +159,7 @@ function KopanangTest() {
   const moveAnimationFrameRef = useRef(null);
   const moveStartTimeRef = useRef(null);
   
-  // 🛠️ NEW: Anime Technique States
+  // Anime Technique States
   const [squash, setSquash] = useState({ x: 1, y: 1 });
   const [bobbing, setBobbing] = useState(true);
   const [steppedFPS, setSteppedFPS] = useState(true);
@@ -283,7 +313,7 @@ function KopanangTest() {
     };
   }, [isWalking, isMoving, walkSpeed, syncMode]);
 
-  // 🛠️ NEW: Movement Animation (Keyframe)
+  // Movement Animation (Keyframe)
   const startMovement = () => {
     if (isMoving) return;
     
@@ -300,7 +330,6 @@ function KopanangTest() {
       
       setMoveProgress(progress);
       
-      // Calculate new X position
       const newX = startX + (endX - startX) * progress;
       setBodyX(newX);
       setWalkX(newX);
@@ -694,6 +723,7 @@ function KopanangTest() {
     const preset = {
       id: Date.now(),
       name: presetName.trim(),
+      character: selectedCharacter,
       body: selectedBody,
       face: selectedFace,
       bodyScale,
@@ -726,6 +756,7 @@ function KopanangTest() {
   };
 
   const handleLoadPreset = (preset) => {
+    if (preset.character) setSelectedCharacter(preset.character);
     setSelectedBody(preset.body);
     setSelectedFace(preset.face);
     setBodyScale(preset.bodyScale);
@@ -828,10 +859,21 @@ function KopanangTest() {
     }
   };
 
-  const currentBody = BODY_OPTIONS.find(b => b.id === selectedBody);
-  const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace);
+  const currentBodyOptions = selectedCharacter === 'kopanang' ? BODY_OPTIONS : LERATO_BODY_OPTIONS;
+  const currentBody = currentBodyOptions.find(b => b.id === selectedBody) || currentBodyOptions[0];
+  const currentFace = FACE_OPTIONS.find(f => f.id === selectedFace) || FACE_OPTIONS[0];
   const currentMouth = MOUTH_FRAMES[currentMouthIndex];
   const currentWalk = WALK_FRAMES[currentWalkFrame];
+
+  // When character changes, update selectedBody to first option
+  const handleCharacterChange = (charId) => {
+    setSelectedCharacter(charId);
+    if (charId === 'kopanang') {
+      setSelectedBody('body01');
+    } else {
+      setSelectedBody('sit1');
+    }
+  };
 
   return (
     <div className="kopanang-test-page">
@@ -839,9 +881,22 @@ function KopanangTest() {
         <Link to="/animation-lab" className="back-link">← Back to Animation Lab</Link>
         
         <div className="test-header">
-          <h1>🧪 Kopanang Animation Tool</h1>
+          <h1>🧪 Character Animation Tool</h1>
           <p className="test-subtitle">Talking + Walking + Expressions + Audio Mixer + Effects + Anime Techniques + Movement</p>
           <span className="test-badge">DEVELOPER TOOL</span>
+        </div>
+
+        {/* Character Switcher */}
+        <div className="character-switcher">
+          {CHARACTER_OPTIONS.map(char => (
+            <button
+              key={char.id}
+              className={`char-btn ${selectedCharacter === char.id ? 'active' : ''}`}
+              onClick={() => handleCharacterChange(char.id)}
+            >
+              {char.label}
+            </button>
+          ))}
         </div>
 
         <div className="main-layout">
@@ -990,7 +1045,7 @@ function KopanangTest() {
                       <span>{bodyScale}px</span>
                     </div>
                     <div className="pose-buttons">
-                      {BODY_OPTIONS.map(body => (
+                      {currentBodyOptions.map(body => (
                         <button key={body.id} className={`test-btn ${selectedBody === body.id ? 'active' : ''}`} onClick={() => setSelectedBody(body.id)}>{body.label}</button>
                       ))}
                     </div>
@@ -1386,7 +1441,7 @@ function KopanangTest() {
                 </div>
               )}
 
-              {/* 🛠️ NEW: Movement Tab */}
+              {/* Movement Tab */}
               {activeTab === 'movement' && (
                 <div className="tab-panel">
                   <div className="control-panel movement-panel">
@@ -1423,15 +1478,9 @@ function KopanangTest() {
                     <div className="movement-section">
                       <h4>🎬 Controls</h4>
                       <div className="pose-buttons">
-                        <button className={`test-btn ${isMoving ? 'active' : ''}`} onClick={startMovement} disabled={isMoving}>
-                          ▶ Play Animation
-                        </button>
-                        <button className="test-btn" onClick={stopMovement} disabled={!isMoving}>
-                          ⏹ Stop
-                        </button>
-                        <button className="test-btn" onClick={resetMovement}>
-                          🔄 Reset
-                        </button>
+                        <button className={`test-btn ${isMoving ? 'active' : ''}`} onClick={startMovement} disabled={isMoving}>▶ Play Animation</button>
+                        <button className="test-btn" onClick={stopMovement} disabled={!isMoving}>⏹ Stop</button>
+                        <button className="test-btn" onClick={resetMovement}>🔄 Reset</button>
                       </div>
                     </div>
 
@@ -1444,7 +1493,7 @@ function KopanangTest() {
                     </div>
 
                     <div className="movement-hint">
-                      💡 Set Start X and End X, then click "Play Animation" to see Kopanang walk from point A to point B.
+                      💡 Set Start X and End X, then click "Play Animation" to see the character walk from point A to point B.
                     </div>
                   </div>
                 </div>
