@@ -72,8 +72,8 @@ function Scene01CameraTest() {
   // Character state
   const [selectedKopanangPose, setSelectedKopanangPose] = useState('ksit1');
   const [selectedLeratoPose, setSelectedLeratoPose] = useState('sit1');
-  const [kopanangPos, setKopanangPos] = useState({ x: 0, y: 0, scale: 1 });
-  const [leratoPos, setLeratoPos] = useState({ x: 0, y: 0, scale: 1 });
+  const [kopanangPos, setKopanangPos] = useState({ x: -100, y: 50, scale: 1 });
+  const [leratoPos, setLeratoPos] = useState({ x: -100, y: -50, scale: 1 });
   const [kopanangTalking, setKopanangTalking] = useState(false);
   const [leratoTalking, setLeratoTalking] = useState(false);
   const [mouthIndex, setMouthIndex] = useState(0);
@@ -87,19 +87,13 @@ function Scene01CameraTest() {
   // 🛠️ NEW: Background Scale
   const [backgroundScale, setBackgroundScale] = useState(1.0);
 
-  // 🛠️ NEW: Character Unlimited Mode
-  const [characterUnlimitedMode, setCharacterUnlimitedMode] = useState(false);
-  const characterRangeLimits = characterUnlimitedMode ? {
-    x: 10000,
-    y: 10000,
-  } : {
-    x: 2000,
-    y: 1000,
-  };
+  // 🛠️ NEW: Selected Character for controls
+  const [selectedCharacter, setSelectedCharacter] = useState('kopanang');
 
   // 🛠️ NEW: Drag state
   const [draggingCharacter, setDraggingCharacter] = useState(null);
   const dragStartRef = useRef({ mouseX: 0, mouseY: 0, charX: 0, charY: 0 });
+  const stageRef = useRef(null);
 
   const [isRecording, setIsRecording] = useState(false);
   const isRecordingRef = useRef(false);
@@ -108,7 +102,6 @@ function Scene01CameraTest() {
   const keysPressed = useRef({});
   const muxerRef = useRef(null);
   const videoEncoderRef = useRef(null);
-  const stageRef = useRef(null);
 
   // Preload images
   const imagesRef = useRef({});
@@ -187,22 +180,16 @@ function Scene01CameraTest() {
 
   const handleKeyDown = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = true;
-    if (e.key === 'ArrowUp') keysPressed.current['w'] = true;
-    if (e.key === 'ArrowDown') keysPressed.current['s'] = true;
-    if (e.key === 'ArrowLeft') keysPressed.current['a'] = true;
-    if (e.key === 'ArrowRight') keysPressed.current['d'] = true;
   }, []);
 
   const handleKeyUp = useCallback((e) => {
     keysPressed.current[e.key.toLowerCase()] = false;
-    if (e.key === 'ArrowUp') keysPressed.current['w'] = false;
-    if (e.key === 'ArrowDown') keysPressed.current['s'] = false;
-    if (e.key === 'ArrowLeft') keysPressed.current['a'] = false;
-    if (e.key === 'ArrowRight') keysPressed.current['d'] = false;
   }, []);
 
+  // 🛠️ NEW: Arrow key movement for selected character
   useEffect(() => {
     const handleKeyFrame = () => {
+      // Camera movement (always active)
       const speed = 0.4 * cameraSpeed;
       const currentCamera = { ...camera };
       if (unlimitedMode) {
@@ -217,11 +204,36 @@ function Scene01CameraTest() {
         if (keysPressed.current['d']) currentCamera.x = Math.min(currentCamera.x + speed, rangeLimits.cameraX);
       }
       setCamera(currentCamera);
+
+      // Character movement (arrow keys)
+      const charSpeed = 5; // pixels per frame
+      if (selectedCharacter === 'kopanang') {
+        setKopanangPos(prev => {
+          let newX = prev.x;
+          let newY = prev.y;
+          if (keysPressed.current['arrowleft']) newX -= charSpeed;
+          if (keysPressed.current['arrowright']) newX += charSpeed;
+          if (keysPressed.current['arrowup']) newY -= charSpeed;
+          if (keysPressed.current['arrowdown']) newY += charSpeed;
+          return { ...prev, x: newX, y: newY };
+        });
+      } else {
+        setLeratoPos(prev => {
+          let newX = prev.x;
+          let newY = prev.y;
+          if (keysPressed.current['arrowleft']) newX -= charSpeed;
+          if (keysPressed.current['arrowright']) newX += charSpeed;
+          if (keysPressed.current['arrowup']) newY -= charSpeed;
+          if (keysPressed.current['arrowdown']) newY += charSpeed;
+          return { ...prev, x: newX, y: newY };
+        });
+      }
+
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     };
     animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     return () => cancelAnimationFrame(animationFrameRef.current);
-  }, [cameraSpeed, unlimitedMode, rangeLimits]);
+  }, [cameraSpeed, unlimitedMode, rangeLimits, selectedCharacter, camera]);
 
   // Mouth animation loop
   useEffect(() => {
@@ -240,6 +252,7 @@ function Scene01CameraTest() {
     e.preventDefault();
     e.stopPropagation();
     setDraggingCharacter(character);
+    setSelectedCharacter(character);
     
     const stageRect = stageRef.current.getBoundingClientRect();
     const mouseX = e.clientX - stageRect.left;
@@ -269,14 +282,10 @@ function Scene01CameraTest() {
       const newX = dragStartRef.current.charX + dx;
       const newY = dragStartRef.current.charY + dy;
       
-      // Apply limits
-      const finalX = Math.max(-characterRangeLimits.x, Math.min(characterRangeLimits.x, newX));
-      const finalY = Math.max(-characterRangeLimits.y, Math.min(characterRangeLimits.y, newY));
-      
       if (draggingCharacter === 'kopanang') {
-        setKopanangPos(prev => ({ ...prev, x: finalX, y: finalY }));
+        setKopanangPos(prev => ({ ...prev, x: newX, y: newY }));
       } else if (draggingCharacter === 'lerato') {
-        setLeratoPos(prev => ({ ...prev, x: finalX, y: finalY }));
+        setLeratoPos(prev => ({ ...prev, x: newX, y: newY }));
       }
     };
 
@@ -290,7 +299,27 @@ function Scene01CameraTest() {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [draggingCharacter, characterRangeLimits]);
+  }, [draggingCharacter]);
+
+  // 🛠️ NEW: Click-to-place character
+  const handleStageClick = (e) => {
+    if (draggingCharacter) return;
+    
+    const stageRect = stageRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - stageRect.left;
+    const mouseY = e.clientY - stageRect.top;
+    
+    // Convert to character position (accounting for camera offset)
+    // For simplicity, just place at clicked position (relative to stage center)
+    const offsetX = mouseX - stageRect.width / 2;
+    const offsetY = mouseY - stageRect.height / 2;
+    
+    if (selectedCharacter === 'kopanang') {
+      setKopanangPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
+    } else {
+      setLeratoPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
+    }
+  };
 
   // Draw to canvas for recording
   const drawSceneToCanvas = useCallback(() => {
@@ -469,12 +498,32 @@ function Scene01CameraTest() {
     setCamera({ x: 0, y: 0, forward: 0 });
   };
 
+  // 🛠️ NEW: Nudge functions
+  const nudgeCharacter = (axis, direction) => {
+    const amount = 10;
+    if (selectedCharacter === 'kopanang') {
+      setKopanangPos(prev => {
+        const newPos = { ...prev };
+        if (axis === 'x') newPos.x += direction * amount;
+        if (axis === 'y') newPos.y += direction * amount;
+        return newPos;
+      });
+    } else {
+      setLeratoPos(prev => {
+        const newPos = { ...prev };
+        if (axis === 'x') newPos.x += direction * amount;
+        if (axis === 'y') newPos.y += direction * amount;
+        return newPos;
+      });
+    }
+  };
+
   return (
     <div className="scene01-page">
       <div className="scene01-container">
         
         {/* Scene Viewport */}
-        <div className="scene-viewport" ref={stageRef}>
+        <div className="scene-viewport" ref={stageRef} onClick={handleStageClick}>
           <div className="scene-stage">
             {/* Background */}
             {layerVisibility.background && (
@@ -490,6 +539,7 @@ function Scene01CameraTest() {
                   zIndex: 10, 
                   ...getCharacterTransform('kopanang', kopanangPos),
                   cursor: draggingCharacter === 'kopanang' ? 'grabbing' : 'grab',
+                  outline: selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
                 }}
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
               >
@@ -509,6 +559,7 @@ function Scene01CameraTest() {
                   zIndex: 10, 
                   ...getCharacterTransform('lerato', leratoPos),
                   cursor: draggingCharacter === 'lerato' ? 'grabbing' : 'grab',
+                  outline: selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
                 }}
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
               >
@@ -550,12 +601,6 @@ function Scene01CameraTest() {
                 <span className="unlimited-label">🔓 Camera Unlimited Mode</span>
               </label>
             </div>
-            <div className="unlimited-mode-toggle">
-              <label>
-                <input type="checkbox" checked={characterUnlimitedMode} onChange={() => setCharacterUnlimitedMode(!characterUnlimitedMode)} />
-                <span className="unlimited-label">🔓 Character Unlimited Mode</span>
-              </label>
-            </div>
             <div className="record-section">
               {!isRecording ? (
                 <button className="record-btn" onClick={startRecording}>🎥 Record Scene</button>
@@ -592,57 +637,47 @@ function Scene01CameraTest() {
             </label>
           </div>
 
-          {/* Character Controls */}
+          {/* 🛠️ NEW: Selected Character & Movement Controls */}
+          <div className="character-controls">
+            <h4>Select Character</h4>
+            <div className="pose-buttons">
+              <button className={`test-btn ${selectedCharacter === 'kopanang' ? 'active' : ''}`} onClick={() => setSelectedCharacter('kopanang')}>Kopanang</button>
+              <button className={`test-btn ${selectedCharacter === 'lerato' ? 'active' : ''}`} onClick={() => setSelectedCharacter('lerato')}>Lerato</button>
+            </div>
+
+            <h4>🎯 Quick Move</h4>
+            <div className="nudge-buttons">
+              <button className="nudge-btn" onClick={() => nudgeCharacter('y', -1)}>↑</button>
+              <button className="nudge-btn" onClick={() => nudgeCharacter('x', -1)}>←</button>
+              <button className="nudge-btn" onClick={() => nudgeCharacter('x', 1)}>→</button>
+              <button className="nudge-btn" onClick={() => nudgeCharacter('y', 1)}>↓</button>
+            </div>
+            <p className="movement-hint">Click on background to place selected character. Use arrow keys to move.</p>
+          </div>
+
+          {/* Character Poses */}
           {debugMode && (
             <div className="character-controls">
-              <h4>Kopanang</h4>
+              <h4>Kopanang Poses</h4>
               <div className="pose-buttons">
                 {KOPANANG_SIT.map(pose => (
                   <button key={pose.id} className={`test-btn ${selectedKopanangPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedKopanangPose(pose.id)}>{pose.label}</button>
                 ))}
               </div>
-              <div className="slider-row">
-                <label>X:</label>
-                <input type="range" min={-characterRangeLimits.x} max={characterRangeLimits.x} value={kopanangPos.x} onChange={(e) => setKopanangPos({ ...kopanangPos, x: Number(e.target.value) })} />
-                <span>{kopanangPos.x}</span>
-              </div>
-              <div className="slider-row">
-                <label>Y:</label>
-                <input type="range" min={-characterRangeLimits.y} max={characterRangeLimits.y} value={kopanangPos.y} onChange={(e) => setKopanangPos({ ...kopanangPos, y: Number(e.target.value) })} />
-                <span>{kopanangPos.y}</span>
-              </div>
-              <div className="slider-row">
-                <label>Scale:</label>
-                <input type="range" min="0.2" max="3" step="0.1" value={kopanangPos.scale} onChange={(e) => setKopanangPos({ ...kopanangPos, scale: Number(e.target.value) })} />
-                <span>{kopanangPos.scale.toFixed(1)}</span>
-              </div>
-              <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>
-                {kopanangTalking ? '⏹ Stop Talking' : '🗣️ Start Talking'}
-              </button>
 
-              <h4>Lerato</h4>
+              <h4>Lerato Poses</h4>
               <div className="pose-buttons">
                 {LERATO_SIT.map(pose => (
                   <button key={pose.id} className={`test-btn ${selectedLeratoPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedLeratoPose(pose.id)}>{pose.label}</button>
                 ))}
               </div>
-              <div className="slider-row">
-                <label>X:</label>
-                <input type="range" min={-characterRangeLimits.x} max={characterRangeLimits.x} value={leratoPos.x} onChange={(e) => setLeratoPos({ ...leratoPos, x: Number(e.target.value) })} />
-                <span>{leratoPos.x}</span>
-              </div>
-              <div className="slider-row">
-                <label>Y:</label>
-                <input type="range" min={-characterRangeLimits.y} max={characterRangeLimits.y} value={leratoPos.y} onChange={(e) => setLeratoPos({ ...leratoPos, y: Number(e.target.value) })} />
-                <span>{leratoPos.y}</span>
-              </div>
-              <div className="slider-row">
-                <label>Scale:</label>
-                <input type="range" min="0.2" max="3" step="0.1" value={leratoPos.scale} onChange={(e) => setLeratoPos({ ...leratoPos, scale: Number(e.target.value) })} />
-                <span>{leratoPos.scale.toFixed(1)}</span>
-              </div>
+
+              <h4>Talking</h4>
+              <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>
+                {kopanangTalking ? '⏹ Stop Kopanang' : '🗣️ Talk Kopanang'}
+              </button>
               <button className={`test-btn ${leratoTalking ? 'active' : ''}`} onClick={() => setLeratoTalking(!leratoTalking)}>
-                {leratoTalking ? '⏹ Stop Talking' : '🗣️ Start Talking'}
+                {leratoTalking ? '⏹ Stop Lerato' : '🗣️ Talk Lerato'}
               </button>
             </div>
           )}
