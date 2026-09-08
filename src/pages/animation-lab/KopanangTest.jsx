@@ -44,6 +44,12 @@ const CHARACTER_OPTIONS = [
   { id: 'lerato', label: 'Lerato' },
 ];
 
+// Character default dimensions
+const CHARACTER_DEFAULTS = {
+  kopanang: { bodyScale: 200, headScale: 60, mouthScale: 30 },
+  lerato: { bodyScale: 250, headScale: 0, mouthScale: 30 },
+};
+
 // Kopanang body options
 const BODY_OPTIONS = [
   { id: 'body01', label: 'Body 01', src: body01 },
@@ -62,7 +68,7 @@ const LERATO_BODY_OPTIONS = [
   { id: 'sit5', label: 'Sit 5', src: leratoSit5 },
 ];
 
-// Face expressions - Kopanang (for now, we'll use same for Lerato until assets are added)
+// Face expressions - Kopanang
 const FACE_OPTIONS = [
   { id: 'neutral', label: 'Neutral', src: faceNeutral },
   { id: 'angry', label: 'Angry', src: faceAngry },
@@ -82,7 +88,7 @@ const MOUTH_FRAMES = [
 function KopanangTest() {
   const [activeTab, setActiveTab] = useState('character');
   
-  // NEW: Character switcher
+  // Character switcher
   const [selectedCharacter, setSelectedCharacter] = useState('kopanang');
   
   // Character states
@@ -96,7 +102,7 @@ function KopanangTest() {
   const [walkSpeed, setWalkSpeed] = useState(300);
   const [mouthOverride, setMouthOverride] = useState(false);
 
-  // Audio sync states (original single-track)
+  // Audio sync states
   const [audioFile, setAudioFile] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -303,7 +309,7 @@ function KopanangTest() {
 
   // Walking animation (manual + movement)
   useEffect(() => {
-    if ((isWalking || isMoving) && (syncMode === 'manual' || isMoving)) {
+    if (isWalking || isMoving) {
       walkTimerRef.current = setInterval(() => {
         setCurrentWalkFrame(prev => (prev + 1) % WALK_FRAMES.length);
       }, walkSpeed);
@@ -311,7 +317,7 @@ function KopanangTest() {
     return () => {
       if (walkTimerRef.current) clearInterval(walkTimerRef.current);
     };
-  }, [isWalking, isMoving, walkSpeed, syncMode]);
+  }, [isWalking, isMoving, walkSpeed]);
 
   // Movement Animation (Keyframe)
   const startMovement = () => {
@@ -362,6 +368,22 @@ function KopanangTest() {
     setMoveProgress(0);
     setBodyX(startX);
     setWalkX(startX);
+  };
+
+  // Character change handler
+  const handleCharacterChange = (charId) => {
+    setSelectedCharacter(charId);
+    if (charId === 'kopanang') {
+      setSelectedBody('body01');
+      setBodyScale(CHARACTER_DEFAULTS.kopanang.bodyScale);
+      setHeadScale(CHARACTER_DEFAULTS.kopanang.headScale);
+      setMouthScale(CHARACTER_DEFAULTS.kopanang.mouthScale);
+    } else {
+      setSelectedBody('sit1');
+      setBodyScale(CHARACTER_DEFAULTS.lerato.bodyScale);
+      setHeadScale(CHARACTER_DEFAULTS.lerato.headScale);
+      setMouthScale(CHARACTER_DEFAULTS.lerato.mouthScale);
+    }
   };
 
   // Clean up
@@ -865,16 +887,6 @@ function KopanangTest() {
   const currentMouth = MOUTH_FRAMES[currentMouthIndex];
   const currentWalk = WALK_FRAMES[currentWalkFrame];
 
-  // When character changes, update selectedBody to first option
-  const handleCharacterChange = (charId) => {
-    setSelectedCharacter(charId);
-    if (charId === 'kopanang') {
-      setSelectedBody('body01');
-    } else {
-      setSelectedBody('sit1');
-    }
-  };
-
   return (
     <div className="kopanang-test-page">
       <div className="kopanang-test-container">
@@ -966,24 +978,28 @@ function KopanangTest() {
                       onMouseDown={(e) => handleMouseDown(e, 'body')}
                     />
 
-                    <img 
-                      src={currentFace.src}
-                      alt="Face"
-                      className="layer-head-img draggable"
-                      style={{
-                        width: `${headScale}px`,
-                        position: 'absolute',
-                        top: `${headY}px`,
-                        left: `calc(50% + ${headX}px)`,
-                        transform: `translateX(-50%) rotate(${headRotation}deg) scale(${squash.x}, ${squash.y})`,
-                        zIndex: 10,
-                        cursor: 'grab',
-                        pointerEvents: 'auto',
-                      }}
-                      onMouseDown={(e) => handleMouseDown(e, 'head')}
-                    />
+                    {/* Only show head for Kopanang */}
+                    {selectedCharacter === 'kopanang' && (
+                      <img 
+                        src={currentFace.src}
+                        alt="Face"
+                        className="layer-head-img draggable"
+                        style={{
+                          width: `${headScale}px`,
+                          position: 'absolute',
+                          top: `${headY}px`,
+                          left: `calc(50% + ${headX}px)`,
+                          transform: `translateX(-50%) rotate(${headRotation}deg) scale(${squash.x}, ${squash.y})`,
+                          zIndex: 10,
+                          cursor: 'grab',
+                          pointerEvents: 'auto',
+                        }}
+                        onMouseDown={(e) => handleMouseDown(e, 'head')}
+                      />
+                    )}
 
-                    {isTalking && (
+                    {/* Only show mouth for Kopanang */}
+                    {selectedCharacter === 'kopanang' && isTalking && (
                       <div
                         style={{
                           width: `${mouthScale}px`,
@@ -1051,19 +1067,22 @@ function KopanangTest() {
                     </div>
                   </div>
 
-                  <div className="control-panel head-panel">
-                    <h3>👤 Head</h3>
-                    <div className="slider-row">
-                      <label>Width:</label>
-                      <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
-                      <span>{headScale}px</span>
+                  {/* Only show Head panel for Kopanang */}
+                  {selectedCharacter === 'kopanang' && (
+                    <div className="control-panel head-panel">
+                      <h3>👤 Head</h3>
+                      <div className="slider-row">
+                        <label>Width:</label>
+                        <input type="range" min="20" max="200" value={headScale} onChange={(e) => setHeadScale(Number(e.target.value))} />
+                        <span>{headScale}px</span>
+                      </div>
+                      <div className="pose-buttons">
+                        {FACE_OPTIONS.map(face => (
+                          <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>{face.label}</button>
+                        ))}
+                      </div>
                     </div>
-                    <div className="pose-buttons">
-                      {FACE_OPTIONS.map(face => (
-                        <button key={face.id} className={`test-btn ${selectedFace === face.id ? 'active' : ''}`} onClick={() => setSelectedFace(face.id)}>{face.label}</button>
-                      ))}
-                    </div>
-                  </div>
+                  )}
 
                   <div className="control-panel mouth-panel">
                     <h3>👄 Mouth</h3>
