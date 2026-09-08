@@ -416,3 +416,38 @@ kbd {
   font-size: 11px;
   color: #ffffff;
 }
+/* Draggable Characters */
+.draggable-character {
+  transition: none;
+}
+
+.draggable-character img {
+  pointer-events: none;
+}
+
+/* Background Controls */
+.background-controls {
+  background: #0f3460;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.background-controls strong {
+  display: block;
+  color: #ffd700;
+  margin-bottom: 8px;
+}
+
+/* Character Controls Section */
+.character-controls {
+  background: #16213e;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.character-controls h4 {
+  color: #ffd700;
+  margin: 10px 0 5px 0;
+}
