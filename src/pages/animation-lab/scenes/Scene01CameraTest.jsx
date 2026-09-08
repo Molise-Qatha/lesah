@@ -13,7 +13,7 @@ import ksit3 from '../../../assets/Kopanang_sit/ksit_3.png';
 import ksit4 from '../../../assets/Kopanang_sit/ksit_4.png';
 import ksit5 from '../../../assets/Kopanang_sit/ksit_5.png';
 import ksit6 from '../../../assets/Kopanang_sit/ksit_6.png';
-import ksit7 from '../../../assets/Kopanang_sit/ksit_7.png';
+import ksit7 from '../../../assets/Kopanang_sit/ksit7.png'; // ✅ FIXED
 import ksit8 from '../../../assets/Kopanang_sit/ksit_8.png';
 
 // Lerato sit frames
@@ -69,7 +69,6 @@ function Scene01CameraTest() {
     lerato: true,
   });
 
-  // Character state
   const [selectedKopanangPose, setSelectedKopanangPose] = useState('ksit1');
   const [selectedLeratoPose, setSelectedLeratoPose] = useState('sit1');
   const [kopanangPos, setKopanangPos] = useState({ x: 0, y: 0, scale: 1 });
@@ -92,7 +91,7 @@ function Scene01CameraTest() {
   const muxerRef = useRef(null);
   const videoEncoderRef = useRef(null);
 
-  // Preload all images
+  // Preload images
   const imagesRef = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imagesLoadedRef = useRef(false);
@@ -144,7 +143,6 @@ function Scene01CameraTest() {
     scale: 4
   };
 
-  // Camera transform for background
   const getBackgroundTransform = useCallback(() => {
     const depthFactor = 1.0;
     const cameraX = camera.x * depthFactor;
@@ -159,9 +157,8 @@ function Scene01CameraTest() {
     };
   }, [camera]);
 
-  // Character transforms (they move with camera but also have their own offset)
   const getCharacterTransform = (character, pos) => {
-    const depthFactor = 0.8; // characters are in mid-ground
+    const depthFactor = 0.8;
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
     const forwardProgress = camera.forward / 100;
@@ -224,7 +221,7 @@ function Scene01CameraTest() {
     };
   }, [kopanangTalking, leratoTalking]);
 
-  // Draw to canvas for recording (and for preview as well? Actually we are using DOM for preview, but canvas for recording)
+  // Draw to canvas for recording
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imagesLoadedRef.current) return;
@@ -233,15 +230,12 @@ function Scene01CameraTest() {
     const width = canvas.width;
     const height = canvas.height;
 
-    // Clear
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw background
     const bgImg = imagesRef.current['background'];
     if (layerVisibility.background && bgImg) {
       const bgTransform = getBackgroundTransform();
-      // Parse transform (simplified: we just draw with offsets)
       const translateMatch = bgTransform.transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
       const tx = translateMatch ? parseFloat(translateMatch[1]) : 0;
       const ty = translateMatch ? parseFloat(translateMatch[2]) : 0;
@@ -251,7 +245,6 @@ function Scene01CameraTest() {
       ctx.restore();
     }
 
-    // Draw Kopanang
     const kopImg = imagesRef.current[`kopanang_${selectedKopanangPose}`];
     if (layerVisibility.kopanang && kopImg) {
       const pos = kopanangPos;
@@ -269,7 +262,6 @@ function Scene01CameraTest() {
       ctx.restore();
     }
 
-    // Draw Lerato
     const lerImg = imagesRef.current[`lerato_${selectedLeratoPose}`];
     if (layerVisibility.lerato && lerImg) {
       const pos = leratoPos;
@@ -287,13 +279,11 @@ function Scene01CameraTest() {
       ctx.restore();
     }
 
-    // Draw mouths if talking
     if (kopanangTalking) {
       const mouthImg = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
       if (mouthImg) {
-        // Place mouth above Kopanang (approx position)
         const mouthX = kopanangPos.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
-        const mouthY = kopanangPos.y + camera.y * 0.8 - 30; // offset up
+        const mouthY = kopanangPos.y + camera.y * 0.8 - 30;
         ctx.drawImage(mouthImg, width / 2 + mouthX - 15, height / 2 + mouthY - 15, 30, 30);
       }
     }
@@ -307,7 +297,7 @@ function Scene01CameraTest() {
     }
   }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform]);
 
-  // Animation loop for canvas (for recording)
+  // Animation loop for canvas
   useEffect(() => {
     let canvasAnimationFrame;
     const animateCanvas = () => {
@@ -318,7 +308,7 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(canvasAnimationFrame);
   }, [drawSceneToCanvas]);
 
-  // Recording functions (same as before)
+  // Recording functions
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
