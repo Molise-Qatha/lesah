@@ -78,6 +78,10 @@ function Scene01CameraTest() {
   const [mouthIndex, setMouthIndex] = useState(0);
   const mouthTimerRef = useRef(null);
 
+  // 🛠️ NEW: Mouth positions relative to character center
+  const [kopanangMouthPos, setKopanangMouthPos] = useState({ x: 0, y: -40 });
+  const [leratoMouthPos, setLeratoMouthPos] = useState({ x: 0, y: -40 });
+
   const [debugMode, setDebugMode] = useState(true);
   const [cameraSpeed, setCameraSpeed] = useState(1.0);
   const [unlimitedMode, setUnlimitedMode] = useState(false);
@@ -87,7 +91,8 @@ function Scene01CameraTest() {
   const [showSelectionOutline, setShowSelectionOutline] = useState(true);
 
   const [draggingCharacter, setDraggingCharacter] = useState(null);
-  const dragStartRef = useRef({ mouseX: 0, mouseY: 0, charX: 0, charY: 0 });
+  const [draggingMouth, setDraggingMouth] = useState(null); // 🛠️ NEW: track which mouth is being dragged
+  const dragStartRef = useRef({ mouseX: 0, mouseY: 0, charX: 0, charY: 0, mouthX: 0, mouthY: 0 });
   const stageRef = useRef(null);
 
   const [isRecording, setIsRecording] = useState(false);
@@ -150,6 +155,28 @@ function Scene01CameraTest() {
       transform: `translate(${pos.x + cameraX - forwardOffset}px, ${pos.y + cameraY}px) scale(${pos.scale})`,
       opacity: 1,
       transformOrigin: 'center bottom',
+    };
+  };
+
+  // Mouth transform: absolute position relative to stage center, based on character position + mouth offset
+  const getMouthTransform = (character) => {
+    const pos = character === 'kopanang' ? kopanangPos : leratoPos;
+    const mouthPos = character === 'kopanang' ? kopanangMouthPos : leratoMouthPos;
+    const depthFactor = 0.8;
+    const cameraX = camera.x * depthFactor;
+    const cameraY = camera.y * depthFactor * 0.5;
+    const forwardProgress = camera.forward / 100;
+    const forwardOffset = forwardProgress * depthFactor * 2;
+    const charX = pos.x + cameraX - forwardOffset;
+    const charY = pos.y + cameraY;
+    const mouthX = charX + mouthPos.x;
+    const mouthY = charY + mouthPos.y;
+    return {
+      transform: `translate(${mouthX}px, ${mouthY}px)`,
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      zIndex: 20,
     };
   };
 
@@ -241,30 +268,54 @@ function Scene01CameraTest() {
     dragStartRef.current = { mouseX, mouseY, charX: currentPos.x, charY: currentPos.y };
   };
 
+  // 🛠️ NEW: Mouth drag handler
+  const handleMouthMouseDown = (e, character) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDraggingMouth(character);
+    setSelectedCharacter(character);
+    const stageRect = stageRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - stageRect.left;
+    const mouseY = e.clientY - stageRect.top;
+    const mouthPos = character === 'kopanang' ? kopanangMouthPos : leratoMouthPos;
+    dragStartRef.current = { mouseX, mouseY, mouthX: mouthPos.x, mouthY: mouthPos.y };
+  };
+
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (!draggingCharacter) return;
       const stageRect = stageRef.current.getBoundingClientRect();
       const mouseX = e.clientX - stageRect.left;
       const mouseY = e.clientY - stageRect.top;
-      const dx = mouseX - dragStartRef.current.mouseX;
-      const dy = mouseY - dragStartRef.current.mouseY;
-      const newX = dragStartRef.current.charX + dx;
-      const newY = dragStartRef.current.charY + dy;
-      if (draggingCharacter === 'kopanang') setKopanangPos(prev => ({ ...prev, x: newX, y: newY }));
-      else if (draggingCharacter === 'lerato') setLeratoPos(prev => ({ ...prev, x: newX, y: newY }));
+      if (draggingCharacter) {
+        const dx = mouseX - dragStartRef.current.mouseX;
+        const dy = mouseY - dragStartRef.current.mouseY;
+        const newX = dragStartRef.current.charX + dx;
+        const newY = dragStartRef.current.charY + dy;
+        if (draggingCharacter === 'kopanang') setKopanangPos(prev => ({ ...prev, x: newX, y: newY }));
+        else if (draggingCharacter === 'lerato') setLeratoPos(prev => ({ ...prev, x: newX, y: newY }));
+      } else if (draggingMouth) {
+        const dx = mouseX - dragStartRef.current.mouseX;
+        const dy = mouseY - dragStartRef.current.mouseY;
+        const newMouthX = dragStartRef.current.mouthX + dx;
+        const newMouthY = dragStartRef.current.mouthY + dy;
+        if (draggingMouth === 'kopanang') setKopanangMouthPos({ x: newMouthX, y: newMouthY });
+        else if (draggingMouth === 'lerato') setLeratoMouthPos({ x: newMouthX, y: newMouthY });
+      }
     };
-    const handleMouseUp = () => setDraggingCharacter(null);
+    const handleMouseUp = () => {
+      setDraggingCharacter(null);
+      setDraggingMouth(null);
+    };
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [draggingCharacter]);
+  }, [draggingCharacter, draggingMouth]);
 
   const handleStageClick = (e) => {
-    if (draggingCharacter) return;
+    if (draggingCharacter || draggingMouth) return;
     const stageRect = stageRef.current.getBoundingClientRect();
     const mouseX = e.clientX - stageRect.left;
     const mouseY = e.clientY - stageRect.top;
@@ -329,23 +380,46 @@ function Scene01CameraTest() {
       ctx.restore();
     }
 
+    // Draw mouths if talking, using mouthPos offset
     if (kopanangTalking) {
       const mouthImg = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
       if (mouthImg) {
-        const mouthX = kopanangPos.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
-        const mouthY = kopanangPos.y + camera.y * 0.8 - 30;
-        ctx.drawImage(mouthImg, width / 2 + mouthX - 15, height / 2 + mouthY - 15, 30, 30);
+        const pos = kopanangPos;
+        const mouthPos = kopanangMouthPos;
+        const depth = 0.8;
+        const camX = camera.x * depth;
+        const camY = camera.y * depth * 0.5;
+        const forwardOff = (camera.forward / 100) * depth * 2;
+        const charX = pos.x + camX - forwardOff;
+        const charY = pos.y + camY;
+        const finalMouthX = charX + mouthPos.x;
+        const finalMouthY = charY + mouthPos.y;
+        ctx.save();
+        ctx.translate(width / 2 + finalMouthX, height / 2 + finalMouthY);
+        ctx.drawImage(mouthImg, -15, -15, 30, 30);
+        ctx.restore();
       }
     }
     if (leratoTalking) {
       const mouthImg = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
       if (mouthImg) {
-        const mouthX = leratoPos.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
-        const mouthY = leratoPos.y + camera.y * 0.8 - 30;
-        ctx.drawImage(mouthImg, width / 2 + mouthX - 15, height / 2 + mouthY - 15, 30, 30);
+        const pos = leratoPos;
+        const mouthPos = leratoMouthPos;
+        const depth = 0.8;
+        const camX = camera.x * depth;
+        const camY = camera.y * depth * 0.5;
+        const forwardOff = (camera.forward / 100) * depth * 2;
+        const charX = pos.x + camX - forwardOff;
+        const charY = pos.y + camY;
+        const finalMouthX = charX + mouthPos.x;
+        const finalMouthY = charY + mouthPos.y;
+        ctx.save();
+        ctx.translate(width / 2 + finalMouthX, height / 2 + finalMouthY);
+        ctx.drawImage(mouthImg, -15, -15, 30, 30);
+        ctx.restore();
       }
     }
-  }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform]);
+  }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangMouthPos, leratoMouthPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform]);
 
   useEffect(() => {
     let canvasAnimationFrame;
@@ -410,7 +484,6 @@ function Scene01CameraTest() {
     };
   }, [handleKeyDown, handleKeyUp]);
 
-  // 🛠️ FIX: This function was missing
   const resetCamera = () => {
     setCamera({ x: 0, y: 0, forward: 0 });
   };
@@ -436,6 +509,32 @@ function Scene01CameraTest() {
 
   const nudgeScale = (direction) => scaleCharacter(direction * 0.1);
 
+  // 🛠️ NEW: Mouth nudge functions
+  const nudgeMouth = (character, axis, direction) => {
+    const amount = 5;
+    if (character === 'kopanang') {
+      setKopanangMouthPos(prev => {
+        const newPos = { ...prev };
+        if (axis === 'x') newPos.x += direction * amount;
+        if (axis === 'y') newPos.y += direction * amount;
+        return newPos;
+      });
+    } else {
+      setLeratoMouthPos(prev => {
+        const newPos = { ...prev };
+        if (axis === 'x') newPos.x += direction * amount;
+        if (axis === 'y') newPos.y += direction * amount;
+        return newPos;
+      });
+    }
+  };
+
+  const resetMouth = (character) => {
+    const defaultPos = { x: 0, y: -40 };
+    if (character === 'kopanang') setKopanangMouthPos(defaultPos);
+    else setLeratoMouthPos(defaultPos);
+  };
+
   return (
     <div className="scene01-page">
       <div className="scene01-container">
@@ -458,8 +557,17 @@ function Scene01CameraTest() {
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
               >
                 <img src={KOPANANG_SIT.find(pose => pose.id === selectedKopanangPose).src} alt="Kopanang" className="scene-layer-img" draggable={false} />
+                {/* Mouth overlay - draggable */}
                 {kopanangTalking && (
-                  <div className="mouth-overlay" style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                  <div
+                    className="mouth-overlay draggable-mouth"
+                    style={{
+                      ...getMouthTransform('kopanang'),
+                      cursor: draggingMouth === 'kopanang' ? 'grabbing' : 'grab',
+                      outline: showSelectionOutline && draggingMouth === 'kopanang' ? '2px solid #00ff00' : 'none',
+                    }}
+                    onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
+                  >
                     <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
                   </div>
                 )}
@@ -477,8 +585,17 @@ function Scene01CameraTest() {
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
               >
                 <img src={LERATO_SIT.find(pose => pose.id === selectedLeratoPose).src} alt="Lerato" className="scene-layer-img" draggable={false} />
+                {/* Mouth overlay - draggable */}
                 {leratoTalking && (
-                  <div className="mouth-overlay" style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                  <div
+                    className="mouth-overlay draggable-mouth"
+                    style={{
+                      ...getMouthTransform('lerato'),
+                      cursor: draggingMouth === 'lerato' ? 'grabbing' : 'grab',
+                      outline: showSelectionOutline && draggingMouth === 'lerato' ? '2px solid #00ff00' : 'none',
+                    }}
+                    onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
+                  >
                     <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
                   </div>
                 )}
@@ -546,6 +663,32 @@ function Scene01CameraTest() {
             <h4>🎨 Selection Outline</h4>
             <label className="asset-toggle-item"><input type="checkbox" checked={showSelectionOutline} onChange={() => setShowSelectionOutline(!showSelectionOutline)} /><span className="asset-toggle-label">Show Outline</span></label>
           </div>
+
+          {/* 🛠️ NEW: Mouth Position Controls */}
+          {debugMode && (
+            <div className="character-controls">
+              <h4>👄 Kopanang Mouth</h4>
+              <div className="pose-buttons">
+                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'y', -1)}>↑</button>
+                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'x', -1)}>←</button>
+                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'x', 1)}>→</button>
+                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'y', 1)}>↓</button>
+                <button className="test-btn" onClick={() => resetMouth('kopanang')}>Reset</button>
+              </div>
+              <span className="mouth-pos-display">X: {kopanangMouthPos.x}, Y: {kopanangMouthPos.y}</span>
+
+              <h4>👄 Lerato Mouth</h4>
+              <div className="pose-buttons">
+                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'y', -1)}>↑</button>
+                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'x', -1)}>←</button>
+                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'x', 1)}>→</button>
+                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'y', 1)}>↓</button>
+                <button className="test-btn" onClick={() => resetMouth('lerato')}>Reset</button>
+              </div>
+              <span className="mouth-pos-display">X: {leratoMouthPos.x}, Y: {leratoMouthPos.y}</span>
+              <p className="movement-hint">Drag the green-outlined mouth to position it.</p>
+            </div>
+          )}
 
           {debugMode && (
             <div className="character-controls">

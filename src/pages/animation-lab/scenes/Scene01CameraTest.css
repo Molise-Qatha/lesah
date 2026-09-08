@@ -554,3 +554,23 @@ kbd {
   color: #888;
   margin-top: 5px;
 }
+/* Mouth Overlay Styling */
+.mouth-overlay {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  pointer-events: auto; /* Allow dragging */
+  transform: translate(-50%, -50%); /* Center the mouth */
+  z-index: 20;
+}
+
+.draggable-mouth {
+  transition: none;
+}
+
+.mouth-pos-display {
+  color: #ffd700;
+  font-size: 12px;
+  display: block;
+  margin-top: 5px;
+}
