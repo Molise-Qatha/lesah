@@ -78,7 +78,7 @@ function Scene01CameraTest() {
   const [mouthIndex, setMouthIndex] = useState(0);
   const mouthTimerRef = useRef(null);
 
-  // Mouth positions relative to character center
+  // Mouth positions
   const [kopanangMouthPos, setKopanangMouthPos] = useState({ x: 0, y: -40 });
   const [leratoMouthPos, setLeratoMouthPos] = useState({ x: 0, y: -40 });
 
@@ -91,9 +91,12 @@ function Scene01CameraTest() {
   const [showSelectionOutline, setShowSelectionOutline] = useState(true);
   const [showMouthOutline, setShowMouthOutline] = useState(true);
 
-  // Lock position states
+  // Lock positions
   const [lockKopanangPos, setLockKopanangPos] = useState(false);
   const [lockLeratoPos, setLockLeratoPos] = useState(false);
+
+  // 🛠️ NEW: Select Mode (Character or Mouth)
+  const [selectMode, setSelectMode] = useState('character'); // 'character' or 'mouth'
 
   const [draggingCharacter, setDraggingCharacter] = useState(null);
   const [draggingMouth, setDraggingMouth] = useState(null);
@@ -210,25 +213,50 @@ function Scene01CameraTest() {
       setCamera(currentCamera);
 
       const charSpeed = 5;
-      if (selectedCharacter === 'kopanang' && !lockKopanangPos) {
-        setKopanangPos(prev => {
-          let newX = prev.x, newY = prev.y;
-          if (keysPressed.current['arrowleft']) newX -= charSpeed;
-          if (keysPressed.current['arrowright']) newX += charSpeed;
-          if (keysPressed.current['arrowup']) newY -= charSpeed;
-          if (keysPressed.current['arrowdown']) newY += charSpeed;
-          return { ...prev, x: newX, y: newY };
-        });
-      }
-      if (selectedCharacter === 'lerato' && !lockLeratoPos) {
-        setLeratoPos(prev => {
-          let newX = prev.x, newY = prev.y;
-          if (keysPressed.current['arrowleft']) newX -= charSpeed;
-          if (keysPressed.current['arrowright']) newX += charSpeed;
-          if (keysPressed.current['arrowup']) newY -= charSpeed;
-          if (keysPressed.current['arrowdown']) newY += charSpeed;
-          return { ...prev, x: newX, y: newY };
-        });
+      if (selectMode === 'character') {
+        // Move character
+        if (selectedCharacter === 'kopanang' && !lockKopanangPos) {
+          setKopanangPos(prev => {
+            let newX = prev.x, newY = prev.y;
+            if (keysPressed.current['arrowleft']) newX -= charSpeed;
+            if (keysPressed.current['arrowright']) newX += charSpeed;
+            if (keysPressed.current['arrowup']) newY -= charSpeed;
+            if (keysPressed.current['arrowdown']) newY += charSpeed;
+            return { ...prev, x: newX, y: newY };
+          });
+        }
+        if (selectedCharacter === 'lerato' && !lockLeratoPos) {
+          setLeratoPos(prev => {
+            let newX = prev.x, newY = prev.y;
+            if (keysPressed.current['arrowleft']) newX -= charSpeed;
+            if (keysPressed.current['arrowright']) newX += charSpeed;
+            if (keysPressed.current['arrowup']) newY -= charSpeed;
+            if (keysPressed.current['arrowdown']) newY += charSpeed;
+            return { ...prev, x: newX, y: newY };
+          });
+        }
+      } else {
+        // Move mouth
+        const mouthSpeed = 3;
+        if (selectedCharacter === 'kopanang') {
+          setKopanangMouthPos(prev => {
+            let newX = prev.x, newY = prev.y;
+            if (keysPressed.current['arrowleft']) newX -= mouthSpeed;
+            if (keysPressed.current['arrowright']) newX += mouthSpeed;
+            if (keysPressed.current['arrowup']) newY -= mouthSpeed;
+            if (keysPressed.current['arrowdown']) newY += mouthSpeed;
+            return { x: newX, y: newY };
+          });
+        } else {
+          setLeratoMouthPos(prev => {
+            let newX = prev.x, newY = prev.y;
+            if (keysPressed.current['arrowleft']) newX -= mouthSpeed;
+            if (keysPressed.current['arrowright']) newX += mouthSpeed;
+            if (keysPressed.current['arrowup']) newY -= mouthSpeed;
+            if (keysPressed.current['arrowdown']) newY += mouthSpeed;
+            return { x: newX, y: newY };
+          });
+        }
       }
 
       if (keysPressed.current['[']) scaleCharacter(-0.02);
@@ -238,7 +266,7 @@ function Scene01CameraTest() {
     };
     animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
     return () => cancelAnimationFrame(animationFrameRef.current);
-  }, [cameraSpeed, unlimitedMode, rangeLimits, selectedCharacter, camera, lockKopanangPos, lockLeratoPos]);
+  }, [cameraSpeed, unlimitedMode, rangeLimits, selectedCharacter, camera, lockKopanangPos, lockLeratoPos, selectMode]);
 
   const scaleCharacter = (delta) => {
     if (selectedCharacter === 'kopanang' && !lockKopanangPos) {
@@ -262,6 +290,7 @@ function Scene01CameraTest() {
   }, [kopanangTalking, leratoTalking]);
 
   const handleCharacterMouseDown = (e, character) => {
+    if (selectMode !== 'character') return;
     if (character === 'kopanang' && lockKopanangPos) return;
     if (character === 'lerato' && lockLeratoPos) return;
     e.preventDefault();
@@ -276,6 +305,7 @@ function Scene01CameraTest() {
   };
 
   const handleMouthMouseDown = (e, character) => {
+    if (selectMode !== 'mouth') return;
     e.preventDefault();
     e.stopPropagation();
     setDraggingMouth(character);
@@ -325,20 +355,24 @@ function Scene01CameraTest() {
 
   const handleStageClick = (e) => {
     if (draggingCharacter || draggingMouth) return;
-    if (selectedCharacter === 'kopanang' && lockKopanangPos) return;
-    if (selectedCharacter === 'lerato' && lockLeratoPos) return;
     const stageRect = stageRef.current.getBoundingClientRect();
     const mouseX = e.clientX - stageRect.left;
     const mouseY = e.clientY - stageRect.top;
     const offsetX = mouseX - stageRect.width / 2;
     const offsetY = mouseY - stageRect.height / 2;
-    if (selectedCharacter === 'kopanang') setKopanangPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
-    else setLeratoPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
+    if (selectMode === 'character') {
+      if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
+      if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
+    } else {
+      if (selectedCharacter === 'kopanang') setKopanangMouthPos({ x: offsetX - kopanangPos.x, y: offsetY - kopanangPos.y });
+      if (selectedCharacter === 'lerato') setLeratoMouthPos({ x: offsetX - leratoPos.x, y: offsetY - leratoPos.y });
+    }
   };
 
   // Nudge functions
   const nudgeCharacter = (axis, direction) => {
     const amount = 10;
+    if (selectMode !== 'character') return;
     if (selectedCharacter === 'kopanang' && !lockKopanangPos) {
       setKopanangPos(prev => {
         const newPos = { ...prev };
@@ -358,12 +392,6 @@ function Scene01CameraTest() {
 
   const nudgeScale = (direction) => scaleCharacter(direction * 0.1);
 
-  // Reset functions
-  const resetKopanangPos = () => setKopanangPos({ x: -100, y: 50, scale: 1 });
-  const resetLeratoPos = () => setLeratoPos({ x: -100, y: -50, scale: 1 });
-  const resetCamera = () => setCamera({ x: 0, y: 0, forward: 0 });
-
-  // Mouth nudge functions
   const nudgeMouth = (character, axis, direction) => {
     const amount = 5;
     if (character === 'kopanang') {
@@ -388,6 +416,10 @@ function Scene01CameraTest() {
     if (character === 'kopanang') setKopanangMouthPos(defaultPos);
     else setLeratoMouthPos(defaultPos);
   };
+
+  const resetKopanangPos = () => setKopanangPos({ x: -100, y: 50, scale: 1 });
+  const resetLeratoPos = () => setLeratoPos({ x: -100, y: -50, scale: 1 });
+  const resetCamera = () => setCamera({ x: 0, y: 0, forward: 0 });
 
   // Draw to canvas for recording
   const drawSceneToCanvas = useCallback(() => {
@@ -566,7 +598,7 @@ function Scene01CameraTest() {
                 style={{
                   zIndex: 10,
                   ...getCharacterTransform(kopanangPos),
-                  cursor: draggingCharacter === 'kopanang' ? 'grabbing' : 'grab',
+                  cursor: selectMode === 'character' && draggingCharacter === 'kopanang' ? 'grabbing' : 'grab',
                   outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
                 }}
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
@@ -577,8 +609,8 @@ function Scene01CameraTest() {
                     className="mouth-overlay draggable-mouth"
                     style={{
                       ...getMouthTransform('kopanang'),
-                      cursor: draggingMouth === 'kopanang' ? 'grabbing' : 'grab',
-                      outline: showMouthOutline ? '2px dashed #00ff00' : 'none',
+                      cursor: selectMode === 'mouth' && draggingMouth === 'kopanang' ? 'grabbing' : 'grab',
+                      outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
                   >
@@ -593,7 +625,7 @@ function Scene01CameraTest() {
                 style={{
                   zIndex: 10,
                   ...getCharacterTransform(leratoPos),
-                  cursor: draggingCharacter === 'lerato' ? 'grabbing' : 'grab',
+                  cursor: selectMode === 'character' && draggingCharacter === 'lerato' ? 'grabbing' : 'grab',
                   outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
                 }}
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
@@ -604,8 +636,8 @@ function Scene01CameraTest() {
                     className="mouth-overlay draggable-mouth"
                     style={{
                       ...getMouthTransform('lerato'),
-                      cursor: draggingMouth === 'lerato' ? 'grabbing' : 'grab',
-                      outline: showMouthOutline ? '2px dashed #00ff00' : 'none',
+                      cursor: selectMode === 'mouth' && draggingMouth === 'lerato' ? 'grabbing' : 'grab',
+                      outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
                   >
@@ -660,6 +692,14 @@ function Scene01CameraTest() {
               <button className={`test-btn ${selectedCharacter === 'kopanang' ? 'active' : ''}`} onClick={() => setSelectedCharacter('kopanang')}>Kopanang</button>
               <button className={`test-btn ${selectedCharacter === 'lerato' ? 'active' : ''}`} onClick={() => setSelectedCharacter('lerato')}>Lerato</button>
             </div>
+
+            <h4>Select Mode</h4>
+            <div className="pose-buttons">
+              <button className={`test-btn ${selectMode === 'character' ? 'active' : ''}`} onClick={() => setSelectMode('character')}>🗣️ Move Character</button>
+              <button className={`test-btn ${selectMode === 'mouth' ? 'active' : ''}`} onClick={() => setSelectMode('mouth')}>👄 Move Mouth</button>
+            </div>
+            <p className="movement-hint">Choose what you want to move, then use arrow keys, nudge, click, or drag.</p>
+
             <h4>🎯 Quick Move</h4>
             <div className="nudge-buttons">
               <button className="nudge-btn" onClick={() => nudgeCharacter('y', -1)}>↑</button>
