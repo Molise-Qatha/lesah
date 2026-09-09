@@ -78,7 +78,7 @@ function Scene01CameraTest() {
   const [mouthIndex, setMouthIndex] = useState(0);
   const mouthTimerRef = useRef(null);
 
-  // Mouth positions
+  // Mouth positions relative to character center (unscaled)
   const [kopanangMouthPos, setKopanangMouthPos] = useState({ x: 0, y: -40 });
   const [leratoMouthPos, setLeratoMouthPos] = useState({ x: 0, y: -40 });
 
@@ -95,8 +95,8 @@ function Scene01CameraTest() {
   const [lockKopanangPos, setLockKopanangPos] = useState(false);
   const [lockLeratoPos, setLockLeratoPos] = useState(false);
 
-  // 🛠️ NEW: Select Mode (Character or Mouth)
-  const [selectMode, setSelectMode] = useState('character'); // 'character' or 'mouth'
+  // Select Mode: 'character' or 'mouth'
+  const [selectMode, setSelectMode] = useState('character');
 
   const [draggingCharacter, setDraggingCharacter] = useState(null);
   const [draggingMouth, setDraggingMouth] = useState(null);
@@ -166,7 +166,8 @@ function Scene01CameraTest() {
     };
   };
 
-  const getMouthTransform = (character) => {
+  // Helper: Compute mouth absolute position for a character (relative to stage center)
+  const getMouthAbsolutePosition = (character) => {
     const pos = character === 'kopanang' ? kopanangPos : leratoPos;
     const mouthPos = character === 'kopanang' ? kopanangMouthPos : leratoMouthPos;
     const depthFactor = 0.8;
@@ -176,14 +177,12 @@ function Scene01CameraTest() {
     const forwardOffset = forwardProgress * depthFactor * 2;
     const charX = pos.x + cameraX - forwardOffset;
     const charY = pos.y + cameraY;
-    const mouthX = charX + mouthPos.x;
-    const mouthY = charY + mouthPos.y;
+    // Scale the mouth offset with the character's scale
+    const scaledMouthX = mouthPos.x * pos.scale;
+    const scaledMouthY = mouthPos.y * pos.scale;
     return {
-      transform: `translate(${mouthX}px, ${mouthY}px)`,
-      position: 'absolute',
-      left: '50%',
-      top: '50%',
-      zIndex: 20,
+      x: charX + scaledMouthX,
+      y: charY + scaledMouthY,
     };
   };
 
@@ -364,8 +363,12 @@ function Scene01CameraTest() {
       if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
       if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
     } else {
-      if (selectedCharacter === 'kopanang') setKopanangMouthPos({ x: offsetX - kopanangPos.x, y: offsetY - kopanangPos.y });
-      if (selectedCharacter === 'lerato') setLeratoMouthPos({ x: offsetX - leratoPos.x, y: offsetY - leratoPos.y });
+      // For mouth: offset is relative to character's current unscaled position
+      if (selectedCharacter === 'kopanang') {
+        setKopanangMouthPos({ x: (offsetX - kopanangPos.x) / kopanangPos.scale, y: (offsetY - kopanangPos.y) / kopanangPos.scale });
+      } else {
+        setLeratoMouthPos({ x: (offsetX - leratoPos.x) / leratoPos.scale, y: (offsetY - leratoPos.y) / leratoPos.scale });
+      }
     }
   };
 
@@ -480,18 +483,9 @@ function Scene01CameraTest() {
     if (kopanangTalking) {
       const mouthImg = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
       if (mouthImg) {
-        const pos = kopanangPos;
-        const mouthPos = kopanangMouthPos;
-        const depth = 0.8;
-        const camX = camera.x * depth;
-        const camY = camera.y * depth * 0.5;
-        const forwardOff = (camera.forward / 100) * depth * 2;
-        const charX = pos.x + camX - forwardOff;
-        const charY = pos.y + camY;
-        const finalMouthX = charX + mouthPos.x;
-        const finalMouthY = charY + mouthPos.y;
+        const mouthPosAbs = getMouthAbsolutePosition('kopanang');
         ctx.save();
-        ctx.translate(width / 2 + finalMouthX, height / 2 + finalMouthY);
+        ctx.translate(width / 2 + mouthPosAbs.x, height / 2 + mouthPosAbs.y);
         ctx.drawImage(mouthImg, -15, -15, 30, 30);
         ctx.restore();
       }
@@ -499,23 +493,14 @@ function Scene01CameraTest() {
     if (leratoTalking) {
       const mouthImg = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
       if (mouthImg) {
-        const pos = leratoPos;
-        const mouthPos = leratoMouthPos;
-        const depth = 0.8;
-        const camX = camera.x * depth;
-        const camY = camera.y * depth * 0.5;
-        const forwardOff = (camera.forward / 100) * depth * 2;
-        const charX = pos.x + camX - forwardOff;
-        const charY = pos.y + camY;
-        const finalMouthX = charX + mouthPos.x;
-        const finalMouthY = charY + mouthPos.y;
+        const mouthPosAbs = getMouthAbsolutePosition('lerato');
         ctx.save();
-        ctx.translate(width / 2 + finalMouthX, height / 2 + finalMouthY);
+        ctx.translate(width / 2 + mouthPosAbs.x, height / 2 + mouthPosAbs.y);
         ctx.drawImage(mouthImg, -15, -15, 30, 30);
         ctx.restore();
       }
     }
-  }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangMouthPos, leratoMouthPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform]);
+  }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangMouthPos, leratoMouthPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform, getMouthAbsolutePosition]);
 
   // Animation loop for canvas
   useEffect(() => {
@@ -587,11 +572,14 @@ function Scene01CameraTest() {
       <div className="scene01-container">
         <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onWheel={handleWheel}>
           <div className="scene-stage">
+            {/* Background */}
             {layerVisibility.background && (
               <div className="scene-layer" style={{ zIndex: 0, ...getBackgroundTransform() }}>
                 <img src={backgroundImg} alt="Background" className="scene-layer-img" draggable={false} />
               </div>
             )}
+
+            {/* Kopanang Character */}
             {layerVisibility.kopanang && (
               <div
                 className="scene-layer draggable-character"
@@ -604,21 +592,10 @@ function Scene01CameraTest() {
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
               >
                 <img src={KOPANANG_SIT.find(pose => pose.id === selectedKopanangPose).src} alt="Kopanang" className="scene-layer-img" draggable={false} />
-                {kopanangTalking && (
-                  <div
-                    className="mouth-overlay draggable-mouth"
-                    style={{
-                      ...getMouthTransform('kopanang'),
-                      cursor: selectMode === 'mouth' && draggingMouth === 'kopanang' ? 'grabbing' : 'grab',
-                      outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
-                    }}
-                    onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
-                  >
-                    <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
-                  </div>
-                )}
               </div>
             )}
+
+            {/* Lerato Character */}
             {layerVisibility.lerato && (
               <div
                 className="scene-layer draggable-character"
@@ -631,22 +608,47 @@ function Scene01CameraTest() {
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
               >
                 <img src={LERATO_SIT.find(pose => pose.id === selectedLeratoPose).src} alt="Lerato" className="scene-layer-img" draggable={false} />
-                {leratoTalking && (
-                  <div
-                    className="mouth-overlay draggable-mouth"
-                    style={{
-                      ...getMouthTransform('lerato'),
-                      cursor: selectMode === 'mouth' && draggingMouth === 'lerato' ? 'grabbing' : 'grab',
-                      outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
-                    }}
-                    onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
-                  >
-                    <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
-                  </div>
-                )}
+              </div>
+            )}
+
+            {/* Mouth Overlays - separate from characters */}
+            {kopanangTalking && layerVisibility.kopanang && (
+              <div
+                className="mouth-overlay draggable-mouth"
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: `translate(${getMouthAbsolutePosition('kopanang').x}px, ${getMouthAbsolutePosition('kopanang').y}px) translate(-15px, -15px)`,
+                  zIndex: 20,
+                  cursor: selectMode === 'mouth' && draggingMouth === 'kopanang' ? 'grabbing' : 'grab',
+                  outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                }}
+                onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
+              >
+                <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
+              </div>
+            )}
+
+            {leratoTalking && layerVisibility.lerato && (
+              <div
+                className="mouth-overlay draggable-mouth"
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: `translate(${getMouthAbsolutePosition('lerato').x}px, ${getMouthAbsolutePosition('lerato').y}px) translate(-15px, -15px)`,
+                  zIndex: 20,
+                  cursor: selectMode === 'mouth' && draggingMouth === 'lerato' ? 'grabbing' : 'grab',
+                  outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                }}
+                onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
+              >
+                <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '30px' }} />
               </div>
             )}
           </div>
+
           <canvas ref={canvasRef} width={1280} height={720} style={{ display: 'none' }} />
           {isRecording && (
             <div className="recording-indicator">
