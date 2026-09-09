@@ -574,3 +574,15 @@ kbd {
   display: block;
   margin-top: 5px;
 }
+.mouth-overlay {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+.draggable-mouth {
+  transition: none;
+}
