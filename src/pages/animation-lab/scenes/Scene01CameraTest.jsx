@@ -89,6 +89,17 @@ function Scene01CameraTest() {
   const [lockLeratoPos, setLockLeratoPos] = useState(false);
   const [selectMode, setSelectMode] = useState('character');
 
+  // Audio sync states
+  const [kopanangAudioUrl, setKopanangAudioUrl] = useState(null);
+  const [leratoAudioUrl, setLeratoAudioUrl] = useState(null);
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const audioRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const audioSourceRef = useRef(null);
+  const animationFrameRef = useRef(null);
+  const dataArrayRef = useRef(null);
+
   const [draggingCharacter, setDraggingCharacter] = useState(null);
   const [draggingMouth, setDraggingMouth] = useState(null);
   const [draggingCamera, setDraggingCamera] = useState(false);
@@ -99,7 +110,7 @@ function Scene01CameraTest() {
   const [isRecording, setIsRecording] = useState(false);
   const isRecordingRef = useRef(false);
   const canvasRef = useRef(null);
-  const animationFrameRef = useRef(null);
+  const animationFrameRef2 = useRef(null); // for canvas animation
   const keysPressed = useRef({});
   const muxerRef = useRef(null);
   const videoEncoderRef = useRef(null);
@@ -250,13 +261,6 @@ function Scene01CameraTest() {
     scaleCharacter(delta);
   };
 
-  useEffect(() => {
-    if (kopanangTalking || leratoTalking) {
-      mouthTimerRef.current = setInterval(() => setMouthIndex(prev => (prev + 1) % MOUTH_FRAMES.length), 200);
-    }
-    return () => clearInterval(mouthTimerRef.current);
-  }, [kopanangTalking, leratoTalking]);
-
   const handleCharacterMouseDown = (e, character) => {
     if (selectMode !== 'character') return;
     if (character === 'kopanang' && lockKopanangPos) return;
@@ -406,7 +410,100 @@ function Scene01CameraTest() {
     setCamera(prev => ({ ...prev, forward: Math.max(-100, Math.min(5000, prev.forward + direction * 10)) }));
   };
 
-  // Timeline functions
+  // ========== LIP SYNC AUDIO ==========
+  const initializeAudioContext = () => {
+    if (!audioContextRef.current) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioContextRef.current = new AudioContext();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 256;
+      analyserRef.current.smoothingTimeConstant = 0.5;
+      dataArrayRef.current = new Uint8Array(analyserRef.current.fftSize);
+    }
+    if (audioContextRef.current.state === 'suspended') audioContextRef.current.resume();
+  };
+
+  const handleAudioUpload = (e, character) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (character === 'kopanang') setKopanangAudioUrl(url);
+    else setLeratoAudioUrl(url);
+  };
+
+  const playAudioForCharacter = async (character) => {
+    if (character === 'kopanang' && kopanangAudioUrl) {
+      await audioRef.current.load();
+      audioRef.current.src = kopanangAudioUrl;
+      await audioRef.current.play();
+      setKopanangTalking(true);
+      setAudioPlaying(true);
+      initializeAudioContext();
+      audioSourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+      audioSourceRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(audioContextRef.current.destination);
+      const updateAmplitude = () => {
+        if (!analyserRef.current || !dataArrayRef.current) return;
+        analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
+        let sum = 0;
+        for (let i = 0; i < dataArrayRef.current.length; i++) {
+          const value = (dataArrayRef.current[i] - 128) / 128;
+          sum += value * value;
+        }
+        const rms = Math.sqrt(sum / dataArrayRef.current.length);
+        if (rms > 0.35) setMouthIndex(0); // A
+        else if (rms > 0.18) setMouthIndex(3); // O
+        else if (rms > 0.06) setMouthIndex(1); // E
+        else setMouthIndex(4); // U (closed-ish)
+        animationFrameRef.current = requestAnimationFrame(updateAmplitude);
+      };
+      updateAmplitude();
+    } else if (character === 'lerato' && leratoAudioUrl) {
+      // similar for Lerato (we can reuse same audioRef and just switch src)
+      await audioRef.current.load();
+      audioRef.current.src = leratoAudioUrl;
+      await audioRef.current.play();
+      setLeratoTalking(true);
+      setAudioPlaying(true);
+      initializeAudioContext();
+      audioSourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+      audioSourceRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(audioContextRef.current.destination);
+      const updateAmplitude = () => {
+        analyserRef.current.getByteTimeDomainData(dataArrayRef.current);
+        let sum = 0;
+        for (let i = 0; i < dataArrayRef.current.length; i++) {
+          const value = (dataArrayRef.current[i] - 128) / 128;
+          sum += value * value;
+        }
+        const rms = Math.sqrt(sum / dataArrayRef.current.length);
+        if (rms > 0.35) setMouthIndex(0);
+        else if (rms > 0.18) setMouthIndex(3);
+        else if (rms > 0.06) setMouthIndex(1);
+        else setMouthIndex(4);
+        animationFrameRef.current = requestAnimationFrame(updateAmplitude);
+      };
+      updateAmplitude();
+    }
+  };
+
+  const stopAudio = () => {
+    if (audioRef.current) audioRef.current.pause();
+    setKopanangTalking(false);
+    setLeratoTalking(false);
+    setAudioPlaying(false);
+    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) audioRef.current.pause();
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (audioContextRef.current) audioContextRef.current.close();
+    };
+  }, []);
+
+  // ========== TIMELINE ==========
   const addKeyframe = () => {
     const kf = {
       id: Date.now(),
@@ -514,7 +611,7 @@ function Scene01CameraTest() {
     };
   }, []);
 
-  // Draw to canvas for recording
+  // ========== DRAW TO CANVAS ==========
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imagesLoadedRef.current) return;
@@ -574,6 +671,7 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(canvasAnimationFrame);
   }, [drawSceneToCanvas]);
 
+  // ========== RECORDING ==========
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -632,34 +730,27 @@ function Scene01CameraTest() {
       <div className="scene01-container">
         <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onMouseDown={handleStageMouseDown} onWheel={handleWheel}>
           <div className="scene-stage">
-            {/* Background */}
             {layerVisibility.background && (
               <div className="scene-layer" style={{ zIndex: 0, ...getBackgroundTransform() }}>
                 <img src={backgroundImg} alt="Background" className="scene-layer-img" draggable={false} />
               </div>
             )}
-
-            {/* Kopanang */}
             {layerVisibility.kopanang && (
               <div className="scene-layer draggable-character" style={{ zIndex: 10, ...getCharacterTransform(kopanangPos), cursor: selectMode === 'character' ? 'grab' : 'default', outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none' }} onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}>
                 <img src={KOPANANG_SIT.find(pose => pose.id === selectedKopanangPose).src} alt="Kopanang" className="scene-layer-img" draggable={false} />
               </div>
             )}
-
-            {/* Lerato */}
             {layerVisibility.lerato && (
               <div className="scene-layer draggable-character" style={{ zIndex: 10, ...getCharacterTransform(leratoPos), cursor: selectMode === 'character' ? 'grab' : 'default', outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none' }} onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}>
                 <img src={LERATO_SIT.find(pose => pose.id === selectedLeratoPose).src} alt="Lerato" className="scene-layer-img" draggable={false} />
               </div>
             )}
 
-            {/* Mouths */}
             {kopanangTalking && layerVisibility.kopanang && (
               <div className="mouth-overlay draggable-mouth" style={{ position: 'absolute', left: '50%', top: '50%', transform: `translate(${getMouthAbsolutePosition('kopanang').x}px, ${getMouthAbsolutePosition('kopanang').y}px) translate(-${15 * kopanangMouthScale}px, -${15 * kopanangMouthScale}px)`, zIndex: 20, cursor: selectMode === 'mouth' ? 'grab' : 'default', outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none', width: `${30 * kopanangMouthScale}px`, height: `${30 * kopanangMouthScale}px` }} onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}>
                 <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
               </div>
             )}
-
             {leratoTalking && layerVisibility.lerato && (
               <div className="mouth-overlay draggable-mouth" style={{ position: 'absolute', left: '50%', top: '50%', transform: `translate(${getMouthAbsolutePosition('lerato').x}px, ${getMouthAbsolutePosition('lerato').y}px) translate(-${15 * leratoMouthScale}px, -${15 * leratoMouthScale}px)`, zIndex: 20, cursor: selectMode === 'mouth' ? 'grab' : 'default', outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none', width: `${30 * leratoMouthScale}px`, height: `${30 * leratoMouthScale}px` }} onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}>
                 <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
@@ -799,6 +890,25 @@ function Scene01CameraTest() {
             </div>
           </div>
 
+          {/* Audio Upload & Playback */}
+          <div className="character-controls">
+            <h4>🎙️ Lip Sync Audio</h4>
+            <div className="audio-upload">
+              <input type="file" accept="audio/*" onChange={(e) => handleAudioUpload(e, 'kopanang')} className="audio-file-input" id="kopanang-audio" />
+              <label htmlFor="kopanang-audio" className="audio-upload-label">Kopanang Audio</label>
+            </div>
+            <div className="audio-upload">
+              <input type="file" accept="audio/*" onChange={(e) => handleAudioUpload(e, 'lerato')} className="audio-file-input" id="lerato-audio" />
+              <label htmlFor="lerato-audio" className="audio-upload-label">Lerato Audio</label>
+            </div>
+            <div className="pose-buttons">
+              <button className="test-btn" onClick={() => playAudioForCharacter('kopanang')} disabled={!kopanangAudioUrl}>▶ Play Kopanang</button>
+              <button className="test-btn" onClick={() => playAudioForCharacter('lerato')} disabled={!leratoAudioUrl}>▶ Play Lerato</button>
+              <button className="test-btn" onClick={stopAudio} disabled={!audioPlaying}>⏹ Stop</button>
+            </div>
+            <p className="movement-hint">Audio will auto-sync mouth frames.</p>
+          </div>
+
           {/* Poses and Talking */}
           {debugMode && (
             <div className="character-controls">
@@ -810,7 +920,7 @@ function Scene01CameraTest() {
               <div className="pose-buttons">
                 {LERATO_SIT.map(pose => <button key={pose.id} className={`test-btn ${selectedLeratoPose === pose.id ? 'active' : ''}`} onClick={() => setSelectedLeratoPose(pose.id)}>{pose.label}</button>)}
               </div>
-              <h4>Talking</h4>
+              <h4>Manual Talking</h4>
               <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>{kopanangTalking ? '⏹ Stop Kopanang' : '🗣️ Talk Kopanang'}</button>
               <button className={`test-btn ${leratoTalking ? 'active' : ''}`} onClick={() => setLeratoTalking(!leratoTalking)}>{leratoTalking ? '⏹ Stop Lerato' : '🗣️ Talk Lerato'}</button>
             </div>
