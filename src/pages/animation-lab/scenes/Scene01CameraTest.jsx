@@ -94,14 +94,14 @@ function Scene01CameraTest() {
   const [selectedKopanangPose, setSelectedKopanangPose] = useState('ksit1');
   const [selectedLeratoPose, setSelectedLeratoPose] = useState('sit1');
   const [kopanangPos, setKopanangPos] = useState({ x: -100, y: 50, scale: 1 });
-  const [leratoPos, setLeratoPos] = useState({ x: -100, y: -50, scale: 1 });
+  const [leratoPos, setLeratoPos] = useState({ x: 200, y: -50, scale: 1 });
   const [kopanangTalking, setKopanangTalking] = useState(false);
   const [leratoTalking, setLeratoTalking] = useState(false);
   const [mouthIndex, setMouthIndex] = useState(0);
   const mouthTimerRef = useRef(null);
 
-  const [kopanangMouthPos, setKopanangMouthPos] = useState({ x: 0, y: -40 });
-  const [leratoMouthPos, setLeratoMouthPos] = useState({ x: 0, y: -40 });
+  const [kopanangMouthPos, setKopanangMouthPos] = useState({ x: 0, y: -180 });
+  const [leratoMouthPos, setLeratoMouthPos] = useState({ x: 0, y: -180 });
   const [kopanangMouthScale, setKopanangMouthScale] = useState(1);
   const [leratoMouthScale, setLeratoMouthScale] = useState(1);
 
@@ -116,7 +116,6 @@ function Scene01CameraTest() {
   const [lockLeratoPos, setLockLeratoPos] = useState(false);
   const [selectMode, setSelectMode] = useState('character');
 
-  // Grass controls
   const [grassEnabled, setGrassEnabled] = useState(true);
   const [grassWindSpeed, setGrassWindSpeed] = useState(3);
   const [grassPositions, setGrassPositions] = useState(
@@ -124,14 +123,12 @@ function Scene01CameraTest() {
   );
   const [selectedGrassIdx, setSelectedGrassIdx] = useState(0);
 
-  // Butterfly
   const [butterflyEnabled, setButterflyEnabled] = useState(true);
   const [butterflyCount, setButterflyCount] = useState(4);
   const [butterflySpeed, setButterflySpeed] = useState(2);
   const [butterflies, setButterflies] = useState([]);
   const [grassSway, setGrassSway] = useState(0);
 
-  // Audio
   const [kopanangAudioUrl, setKopanangAudioUrl] = useState(null);
   const [leratoAudioUrl, setLeratoAudioUrl] = useState(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
@@ -160,7 +157,6 @@ function Scene01CameraTest() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imagesLoadedRef = useRef(false);
 
-  // Timeline
   const [timelineKeyframes, setTimelineKeyframes] = useState([]);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -168,7 +164,6 @@ function Scene01CameraTest() {
   const playbackFrameRef = useRef(null);
   const playbackStartTimeRef = useRef(null);
 
-  // Load all images
   useEffect(() => {
     let loaded = 0;
     const total =
@@ -194,7 +189,6 @@ function Scene01CameraTest() {
     BUTTERFLY_FRAMES.forEach((b, i) => (imagesRef.current[`butterfly_${i}`] = loadImage(b)));
   }, []);
 
-  // Init butterflies
   useEffect(() => {
     const newB = [];
     for (let i = 0; i < butterflyCount; i++) {
@@ -212,7 +206,6 @@ function Scene01CameraTest() {
     setButterflies(newB);
   }, [butterflyCount, butterflySpeed]);
 
-  // Animate butterflies
   useEffect(() => {
     if (!butterflyEnabled) return;
     let id;
@@ -237,7 +230,6 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [butterflyEnabled]);
 
-  // Grass sway
   useEffect(() => {
     if (!grassEnabled) return;
     let id, t = 0;
@@ -280,7 +272,6 @@ function Scene01CameraTest() {
   const handleKeyDown = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = true; }, []);
   const handleKeyUp = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = false; }, []);
 
-  // Keyboard movement
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = 0.4 * cameraSpeed;
@@ -463,7 +454,7 @@ function Scene01CameraTest() {
   };
 
   const resetMouth = (character) => {
-    const d = { x: 0, y: -40 };
+    const d = { x: 0, y: -180 };
     if (character === 'kopanang') setKopanangMouthPos(d);
     else setLeratoMouthPos(d);
   };
@@ -475,13 +466,12 @@ function Scene01CameraTest() {
   };
 
   const resetKopanangPos = () => setKopanangPos({ x: -100, y: 50, scale: 1 });
-  const resetLeratoPos = () => setLeratoPos({ x: -100, y: -50, scale: 1 });
+  const resetLeratoPos = () => setLeratoPos({ x: 200, y: -50, scale: 1 });
   const resetCamera = () => setCamera({ x: 0, y: 0, forward: 0 });
 
   const nudgeCamera = (axis, direction) => setCamera((p) => ({ ...p, [axis]: p[axis] + direction * 20 }));
   const nudgeCameraForward = (direction) => setCamera((p) => ({ ...p, forward: Math.max(-100, Math.min(5000, p.forward + direction * 10)) }));
 
-  // Grass controls
   const nudgeGrass = (axis, direction) => {
     setGrassPositions((prev) =>
       prev.map((g, i) => (i === selectedGrassIdx ? { ...g, [axis]: g[axis] + direction * 10 } : g))
@@ -500,7 +490,6 @@ function Scene01CameraTest() {
     setGrassPositions(GRASS_ASSETS.map((g) => ({ x: g.x, y: g.y, size: g.size })));
   };
 
-  // Audio
   const initializeAudioContext = () => {
     if (!audioContextRef.current) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -572,7 +561,6 @@ function Scene01CameraTest() {
     };
   }, []);
 
-  // Timeline
   const addKeyframe = () => {
     const kf = {
       id: Date.now(), time: currentTime,
@@ -647,7 +635,7 @@ function Scene01CameraTest() {
 
   useEffect(() => () => { if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current); }, []);
 
-  // ================= CANVAS DRAW =================
+  // ============== CANVAS DRAW (FIXED: bottom-center anchor) ==============
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imagesLoadedRef.current) return;
@@ -672,7 +660,7 @@ function Scene01CameraTest() {
       ctx.restore();
     }
 
-    // Kopanang
+    // Kopanang — bottom-center anchor
     const kopImg = imagesRef.current[`kopanang_${selectedKopanangPose}`];
     if (layerVisibility.kopanang && kopImg) {
       const pos = kopanangPos;
@@ -681,18 +669,20 @@ function Scene01CameraTest() {
       const fwd = (camera.forward / 100) * depth * 2;
       const chX = width / 2 + pos.x + cx - fwd;
       const chY = height / 2 + pos.y + cy;
+
       ctx.save();
       ctx.translate(chX, chY);
       ctx.scale(pos.scale, pos.scale);
-      ctx.drawImage(kopImg, -kopImg.width / 2, -kopImg.height / 2);
+      ctx.drawImage(kopImg, -kopImg.width / 2, -kopImg.height);
       ctx.restore();
 
-      // Kopanang mouth
       if (kopanangTalking) {
         const m = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
         if (m) {
+          const mouthOffX = pos.scale * kopanangMouthPos.x;
+          const mouthOffY = pos.scale * (kopanangMouthPos.y - kopImg.height / 2);
           ctx.save();
-          ctx.translate(chX + kopanangMouthPos.x * pos.scale, chY + kopanangMouthPos.y * pos.scale);
+          ctx.translate(chX + mouthOffX, chY + mouthOffY);
           ctx.scale(kopanangMouthScale * pos.scale, kopanangMouthScale * pos.scale);
           ctx.drawImage(m, -15, -15, 30, 30);
           ctx.restore();
@@ -700,7 +690,7 @@ function Scene01CameraTest() {
       }
     }
 
-    // Lerato
+    // Lerato — bottom-center anchor
     const lerImg = imagesRef.current[`lerato_${selectedLeratoPose}`];
     if (layerVisibility.lerato && lerImg) {
       const pos = leratoPos;
@@ -709,17 +699,20 @@ function Scene01CameraTest() {
       const fwd = (camera.forward / 100) * depth * 2;
       const chX = width / 2 + pos.x + cx - fwd;
       const chY = height / 2 + pos.y + cy;
+
       ctx.save();
       ctx.translate(chX, chY);
       ctx.scale(pos.scale, pos.scale);
-      ctx.drawImage(lerImg, -lerImg.width / 2, -lerImg.height / 2);
+      ctx.drawImage(lerImg, -lerImg.width / 2, -lerImg.height);
       ctx.restore();
 
       if (leratoTalking) {
         const m = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
         if (m) {
+          const mouthOffX = pos.scale * leratoMouthPos.x;
+          const mouthOffY = pos.scale * (leratoMouthPos.y - lerImg.height / 2);
           ctx.save();
-          ctx.translate(chX + leratoMouthPos.x * pos.scale, chY + leratoMouthPos.y * pos.scale);
+          ctx.translate(chX + mouthOffX, chY + mouthOffY);
           ctx.scale(leratoMouthScale * pos.scale, leratoMouthScale * pos.scale);
           ctx.drawImage(m, -15, -15, 30, 30);
           ctx.restore();
@@ -770,7 +763,6 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [drawSceneToCanvas]);
 
-  // Recording
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -841,7 +833,6 @@ function Scene01CameraTest() {
               </div>
             )}
 
-            {/* Kopanang with mouth INSIDE */}
             {layerVisibility.kopanang && (
               <div
                 className="scene-layer draggable-character"
@@ -880,7 +871,6 @@ function Scene01CameraTest() {
               </div>
             )}
 
-            {/* Lerato with mouth INSIDE */}
             {layerVisibility.lerato && (
               <div
                 className="scene-layer draggable-character"
@@ -919,7 +909,6 @@ function Scene01CameraTest() {
               </div>
             )}
 
-            {/* Grass */}
             {grassEnabled && (
               <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5 }}>
                 {grassPositions.map((g, idx) => {
@@ -948,7 +937,6 @@ function Scene01CameraTest() {
               </div>
             )}
 
-            {/* Butterflies */}
             {butterflyEnabled &&
               butterflies.map((bf) => {
                 const img = imagesRef.current[`butterfly_${bf.frame}`];
@@ -985,7 +973,6 @@ function Scene01CameraTest() {
             <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>🐛 Toggle Controls</button>
           </div>
 
-          {/* Timeline */}
           <div className="timeline-panel">
             <h3>🎬 Timeline</h3>
             <div className="timeline-controls">
@@ -1029,7 +1016,6 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Grass Controls */}
           <div className="character-controls">
             <h4>🌿 Grass</h4>
             <label className="asset-toggle-item">
@@ -1068,7 +1054,6 @@ function Scene01CameraTest() {
             <button className="test-btn" onClick={resetGrassPositions}>Reset All Grass</button>
           </div>
 
-          {/* Butterfly Controls */}
           <div className="character-controls">
             <h4>🦋 Butterflies</h4>
             <label className="asset-toggle-item">
@@ -1087,7 +1072,6 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Background Scale */}
           <div className="background-controls">
             <strong>🌄 Background</strong>
             <div className="slider-row">
@@ -1097,7 +1081,6 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Layers */}
           <div className="asset-visibility-panel">
             <strong>🎨 Layers</strong>
             <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.background} onChange={() => setLayerVisibility((p) => ({ ...p, background: !p.background }))} /><span className="asset-toggle-label">Background</span></label>
@@ -1105,7 +1088,6 @@ function Scene01CameraTest() {
             <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.lerato} onChange={() => setLayerVisibility((p) => ({ ...p, lerato: !p.lerato }))} /><span className="asset-toggle-label">Lerato</span></label>
           </div>
 
-          {/* Character & Mouth */}
           <div className="character-controls">
             <h4>Select Character</h4>
             <div className="pose-buttons">
@@ -1158,7 +1140,6 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Lip Sync */}
           <div className="character-controls">
             <h4>🎙️ Lip Sync Audio</h4>
             <div className="audio-upload">
@@ -1176,7 +1157,6 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Poses */}
           {debugMode && (
             <div className="character-controls">
               <h4>Kopanang Poses</h4>
@@ -1193,7 +1173,6 @@ function Scene01CameraTest() {
             </div>
           )}
 
-          {/* Mouth Position */}
           {debugMode && (
             <div className="character-controls">
               <h4>👄 Kopanang Mouth</h4>
