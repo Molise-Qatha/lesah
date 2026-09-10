@@ -78,7 +78,6 @@ function Scene01CameraTest() {
   const [mouthIndex, setMouthIndex] = useState(0);
   const mouthTimerRef = useRef(null);
 
-  // Mouth positions relative to character center (unscaled)
   const [kopanangMouthPos, setKopanangMouthPos] = useState({ x: 0, y: -40 });
   const [leratoMouthPos, setLeratoMouthPos] = useState({ x: 0, y: -40 });
 
@@ -91,11 +90,9 @@ function Scene01CameraTest() {
   const [showSelectionOutline, setShowSelectionOutline] = useState(true);
   const [showMouthOutline, setShowMouthOutline] = useState(true);
 
-  // Lock positions
   const [lockKopanangPos, setLockKopanangPos] = useState(false);
   const [lockLeratoPos, setLockLeratoPos] = useState(false);
 
-  // Select Mode: 'character' or 'mouth'
   const [selectMode, setSelectMode] = useState('character');
 
   const [draggingCharacter, setDraggingCharacter] = useState(null);
@@ -114,6 +111,15 @@ function Scene01CameraTest() {
   const imagesRef = useRef({});
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imagesLoadedRef = useRef(false);
+
+  // ================= TIMELINE STATE =================
+  const [timelineKeyframes, setTimelineKeyframes] = useState([]);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [timelineDuration, setTimelineDuration] = useState(10); // seconds
+  const playbackFrameRef = useRef(null);
+  const playbackStartTimeRef = useRef(null);
+  // ===================================================
 
   useEffect(() => {
     let loaded = 0;
@@ -166,7 +172,6 @@ function Scene01CameraTest() {
     };
   };
 
-  // Helper: Compute mouth absolute position for a character (relative to stage center)
   const getMouthAbsolutePosition = (character) => {
     const pos = character === 'kopanang' ? kopanangPos : leratoPos;
     const mouthPos = character === 'kopanang' ? kopanangMouthPos : leratoMouthPos;
@@ -177,7 +182,6 @@ function Scene01CameraTest() {
     const forwardOffset = forwardProgress * depthFactor * 2;
     const charX = pos.x + cameraX - forwardOffset;
     const charY = pos.y + cameraY;
-    // Scale the mouth offset with the character's scale
     const scaledMouthX = mouthPos.x * pos.scale;
     const scaledMouthY = mouthPos.y * pos.scale;
     return {
@@ -213,7 +217,6 @@ function Scene01CameraTest() {
 
       const charSpeed = 5;
       if (selectMode === 'character') {
-        // Move character
         if (selectedCharacter === 'kopanang' && !lockKopanangPos) {
           setKopanangPos(prev => {
             let newX = prev.x, newY = prev.y;
@@ -235,7 +238,6 @@ function Scene01CameraTest() {
           });
         }
       } else {
-        // Move mouth
         const mouthSpeed = 3;
         if (selectedCharacter === 'kopanang') {
           setKopanangMouthPos(prev => {
@@ -363,7 +365,6 @@ function Scene01CameraTest() {
       if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
       if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos(prev => ({ ...prev, x: offsetX, y: offsetY }));
     } else {
-      // For mouth: offset is relative to character's current unscaled position
       if (selectedCharacter === 'kopanang') {
         setKopanangMouthPos({ x: (offsetX - kopanangPos.x) / kopanangPos.scale, y: (offsetY - kopanangPos.y) / kopanangPos.scale });
       } else {
@@ -372,7 +373,6 @@ function Scene01CameraTest() {
     }
   };
 
-  // Nudge functions
   const nudgeCharacter = (axis, direction) => {
     const amount = 10;
     if (selectMode !== 'character') return;
@@ -423,6 +423,147 @@ function Scene01CameraTest() {
   const resetKopanangPos = () => setKopanangPos({ x: -100, y: 50, scale: 1 });
   const resetLeratoPos = () => setLeratoPos({ x: -100, y: -50, scale: 1 });
   const resetCamera = () => setCamera({ x: 0, y: 0, forward: 0 });
+
+  // ================= TIMELINE FUNCTIONS =================
+  const addKeyframe = () => {
+    const kf = {
+      id: Date.now(),
+      time: currentTime,
+      camera: { ...camera },
+      kopanangPos: { ...kopanangPos },
+      leratoPos: { ...leratoPos },
+      kopanangMouthPos: { ...kopanangMouthPos },
+      leratoMouthPos: { ...leratoMouthPos },
+      selectedKopanangPose,
+      selectedLeratoPose,
+      kopanangTalking,
+      leratoTalking,
+      backgroundScale,
+    };
+    setTimelineKeyframes(prev => {
+      // Sort by time
+      const newArr = [...prev, kf].sort((a, b) => a.time - b.time);
+      return newArr;
+    });
+  };
+
+  const deleteKeyframe = (id) => {
+    setTimelineKeyframes(prev => prev.filter(kf => kf.id !== id));
+  };
+
+  const selectKeyframe = (kf) => {
+    setCurrentTime(kf.time);
+    setCamera({ ...kf.camera });
+    setKopanangPos({ ...kf.kopanangPos });
+    setLeratoPos({ ...kf.leratoPos });
+    setKopanangMouthPos({ ...kf.kopanangMouthPos });
+    setLeratoMouthPos({ ...kf.leratoMouthPos });
+    setSelectedKopanangPose(kf.selectedKopanangPose);
+    setSelectedLeratoPose(kf.selectedLeratoPose);
+    setKopanangTalking(kf.kopanangTalking);
+    setLeratoTalking(kf.leratoTalking);
+    setBackgroundScale(kf.backgroundScale);
+  };
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  const interpolateAtTime = (time) => {
+    if (timelineKeyframes.length === 0) return;
+    const sorted = [...timelineKeyframes].sort((a, b) => a.time - b.time);
+    // Find surrounding keyframes
+    let kf1 = sorted[0];
+    let kf2 = sorted[sorted.length - 1];
+    for (let i = 0; i < sorted.length - 1; i++) {
+      if (time >= sorted[i].time && time <= sorted[i + 1].time) {
+        kf1 = sorted[i];
+        kf2 = sorted[i + 1];
+        break;
+      }
+    }
+    if (time <= kf1.time) {
+      kf2 = kf1;
+    }
+    if (time >= kf2.time) {
+      kf1 = kf2;
+    }
+    const t = (time - kf1.time) / (kf2.time - kf1.time || 1);
+    // Interpolate
+    const newCamera = {
+      x: lerp(kf1.camera.x, kf2.camera.x, t),
+      y: lerp(kf1.camera.y, kf2.camera.y, t),
+      forward: lerp(kf1.camera.forward, kf2.camera.forward, t),
+    };
+    const newKopanangPos = {
+      x: lerp(kf1.kopanangPos.x, kf2.kopanangPos.x, t),
+      y: lerp(kf1.kopanangPos.y, kf2.kopanangPos.y, t),
+      scale: lerp(kf1.kopanangPos.scale, kf2.kopanangPos.scale, t),
+    };
+    const newLeratoPos = {
+      x: lerp(kf1.leratoPos.x, kf2.leratoPos.x, t),
+      y: lerp(kf1.leratoPos.y, kf2.leratoPos.y, t),
+      scale: lerp(kf1.leratoPos.scale, kf2.leratoPos.scale, t),
+    };
+    const newKopanangMouthPos = {
+      x: lerp(kf1.kopanangMouthPos.x, kf2.kopanangMouthPos.x, t),
+      y: lerp(kf1.kopanangMouthPos.y, kf2.kopanangMouthPos.y, t),
+    };
+    const newLeratoMouthPos = {
+      x: lerp(kf1.leratoMouthPos.x, kf2.leratoMouthPos.x, t),
+      y: lerp(kf1.leratoMouthPos.y, kf2.leratoMouthPos.y, t),
+    };
+    const newBackgroundScale = lerp(kf1.backgroundScale, kf2.backgroundScale, t);
+    // For poses and talking, we'll just take from nearest keyframe (snap)
+    const newSelectedKopanangPose = t < 0.5 ? kf1.selectedKopanangPose : kf2.selectedKopanangPose;
+    const newSelectedLeratoPose = t < 0.5 ? kf1.selectedLeratoPose : kf2.selectedLeratoPose;
+    const newKopanangTalking = t < 0.5 ? kf1.kopanangTalking : kf2.kopanangTalking;
+    const newLeratoTalking = t < 0.5 ? kf1.leratoTalking : kf2.leratoTalking;
+
+    setCamera(newCamera);
+    setKopanangPos(newKopanangPos);
+    setLeratoPos(newLeratoPos);
+    setKopanangMouthPos(newKopanangMouthPos);
+    setLeratoMouthPos(newLeratoMouthPos);
+    setBackgroundScale(newBackgroundScale);
+    setSelectedKopanangPose(newSelectedKopanangPose);
+    setSelectedLeratoPose(newSelectedLeratoPose);
+    setKopanangTalking(newKopanangTalking);
+    setLeratoTalking(newLeratoTalking);
+  };
+
+  const play = () => {
+    if (timelineKeyframes.length === 0) return;
+    setIsPlaying(true);
+    playbackStartTimeRef.current = performance.now();
+    const animate = (now) => {
+      const elapsed = (now - playbackStartTimeRef.current) / 1000;
+      const time = elapsed % timelineDuration; // loop
+      setCurrentTime(time);
+      interpolateAtTime(time);
+      playbackFrameRef.current = requestAnimationFrame(animate);
+    };
+    playbackFrameRef.current = requestAnimationFrame(animate);
+  };
+
+  const pause = () => {
+    setIsPlaying(false);
+    if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current);
+  };
+
+  const stop = () => {
+    setIsPlaying(false);
+    if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current);
+    setCurrentTime(0);
+    if (timelineKeyframes.length > 0) {
+      selectKeyframe(timelineKeyframes[0]);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current);
+    };
+  }, []);
+  // ======================================================
 
   // Draw to canvas for recording
   const drawSceneToCanvas = useCallback(() => {
@@ -662,6 +803,40 @@ function Scene01CameraTest() {
             <h3>Scene Editor</h3>
             <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>🐛 Toggle Controls</button>
           </div>
+
+          {/* ================= TIMELINE PANEL ================= */}
+          <div className="timeline-panel">
+            <h3>🎬 Timeline</h3>
+            <div className="timeline-controls">
+              <button className="test-btn" onClick={play} disabled={isPlaying || timelineKeyframes.length === 0}>▶ Play</button>
+              <button className="test-btn" onClick={pause} disabled={!isPlaying}>⏸ Pause</button>
+              <button className="test-btn" onClick={stop}>⏹ Stop</button>
+              <button className="test-btn" onClick={addKeyframe}>➕ Add Keyframe @ {currentTime.toFixed(2)}s</button>
+            </div>
+            <div className="timeline-duration">
+              <label>Duration: </label>
+              <input type="range" min="1" max="60" step="0.5" value={timelineDuration} onChange={(e) => setTimelineDuration(Number(e.target.value))} />
+              <span>{timelineDuration}s</span>
+            </div>
+            <div className="timeline-tracks">
+              <div className="timeline-bar" style={{ width: '100%', background: '#333', height: '20px', position: 'relative' }}>
+                <div className="playhead" style={{ left: `${(currentTime / timelineDuration) * 100}%`, position: 'absolute', top: '-5px', width: '2px', height: '30px', background: '#ffd700' }} />
+                {timelineKeyframes.map(kf => (
+                  <div key={kf.id} className="keyframe-marker" style={{ left: `${(kf.time / timelineDuration) * 100}%`, position: 'absolute', top: '0', width: '8px', height: '20px', background: '#e94560', cursor: 'pointer' }} onClick={() => selectKeyframe(kf)} title={`Keyframe @ ${kf.time.toFixed(2)}s`} />
+                ))}
+              </div>
+            </div>
+            <div className="keyframe-list">
+              {timelineKeyframes.map(kf => (
+                <div key={kf.id} className="keyframe-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <button className="test-btn" onClick={() => selectKeyframe(kf)}>@{kf.time.toFixed(2)}s</button>
+                  <button className="test-btn delete-btn" onClick={() => deleteKeyframe(kf.id)}>🗑️</button>
+                </div>
+              ))}
+              {timelineKeyframes.length === 0 && <p>No keyframes yet. Click "Add Keyframe" to capture current state.</p>}
+            </div>
+          </div>
+          {/* ================================================= */}
 
           <div className="unlimited-mode-section">
             <div className="unlimited-mode-toggle">

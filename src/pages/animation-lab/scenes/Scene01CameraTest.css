@@ -586,3 +586,53 @@ kbd {
 .draggable-mouth {
   transition: none;
 }
+/* Timeline Panel */
+.timeline-panel {
+  background: #16213e;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.timeline-controls {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.timeline-duration {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+  color: #ffd700;
+}
+
+.timeline-tracks {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.timeline-bar {
+  position: relative;
+}
+
+.playhead {
+  transition: left 0.1s linear;
+}
+
+.keyframe-marker {
+  transition: left 0.1s linear;
+}
+
+.keyframe-list {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.keyframe-item {
+  background: #1a1a2e;
+  margin-bottom: 5px;
+  padding: 5px;
+  border-radius: 4px;
+}
