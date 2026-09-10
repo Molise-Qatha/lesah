@@ -91,9 +91,9 @@ function Scene01CameraTest() {
 
   const [draggingCharacter, setDraggingCharacter] = useState(null);
   const [draggingMouth, setDraggingMouth] = useState(null);
-  const [draggingCamera, setDraggingCamera] = useState(false); // 🆕
+  const [draggingCamera, setDraggingCamera] = useState(false);
   const dragStartRef = useRef({ mouseX: 0, mouseY: 0, charX: 0, charY: 0, mouthX: 0, mouthY: 0 });
-  const cameraDragStartRef = useRef({ mouseX: 0, mouseY: 0, camX: 0, camY: 0 }); // 🆕
+  const cameraDragStartRef = useRef({ mouseX: 0, mouseY: 0, camX: 0, camY: 0 });
   const stageRef = useRef(null);
 
   const [isRecording, setIsRecording] = useState(false);
@@ -285,10 +285,9 @@ function Scene01CameraTest() {
     dragStartRef.current = { mouseX, mouseY, mouthX: mouthPos.x, mouthY: mouthPos.y };
   };
 
-  // Camera drag start (on background only, when not dragging character/mouth)
   const handleStageMouseDown = (e) => {
     if (draggingCharacter || draggingMouth) return;
-    if (selectMode !== 'character') return; // Only allow camera drag when in character mode (background click)
+    if (selectMode !== 'character') return;
     const stageRect = stageRef.current.getBoundingClientRect();
     const mouseX = e.clientX - stageRect.left;
     const mouseY = e.clientY - stageRect.top;
@@ -393,7 +392,6 @@ function Scene01CameraTest() {
   const resetLeratoPos = () => setLeratoPos({ x: -100, y: -50, scale: 1 });
   const resetCamera = () => setCamera({ x: 0, y: 0, forward: 0 });
 
-  // Camera nudge functions (new)
   const nudgeCamera = (axis, direction) => {
     const amount = 20;
     setCamera(prev => {
@@ -408,11 +406,115 @@ function Scene01CameraTest() {
     setCamera(prev => ({ ...prev, forward: Math.max(-100, Math.min(5000, prev.forward + direction * 10)) }));
   };
 
-  // Timeline functions (as before)
-  // ... (all timeline functions remain same)
-  // We'll keep them here for brevity; they are already defined in the previous version.
+  // Timeline functions
+  const addKeyframe = () => {
+    const kf = {
+      id: Date.now(),
+      time: currentTime,
+      camera: { ...camera },
+      kopanangPos: { ...kopanangPos },
+      leratoPos: { ...leratoPos },
+      kopanangMouthPos: { ...kopanangMouthPos },
+      leratoMouthPos: { ...leratoMouthPos },
+      selectedKopanangPose,
+      selectedLeratoPose,
+      kopanangTalking,
+      leratoTalking,
+      backgroundScale,
+    };
+    setTimelineKeyframes(prev => [...prev, kf].sort((a, b) => a.time - b.time));
+  };
 
-  // Draw to canvas (same as before, but mouth scale used)
+  const deleteKeyframe = (id) => {
+    setTimelineKeyframes(prev => prev.filter(kf => kf.id !== id));
+  };
+
+  const selectKeyframe = (kf) => {
+    setCurrentTime(kf.time);
+    setCamera({ ...kf.camera });
+    setKopanangPos({ ...kf.kopanangPos });
+    setLeratoPos({ ...kf.leratoPos });
+    setKopanangMouthPos({ ...kf.kopanangMouthPos });
+    setLeratoMouthPos({ ...kf.leratoMouthPos });
+    setSelectedKopanangPose(kf.selectedKopanangPose);
+    setSelectedLeratoPose(kf.selectedLeratoPose);
+    setKopanangTalking(kf.kopanangTalking);
+    setLeratoTalking(kf.leratoTalking);
+    setBackgroundScale(kf.backgroundScale);
+  };
+
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  const interpolateAtTime = (time) => {
+    if (timelineKeyframes.length === 0) return;
+    const sorted = [...timelineKeyframes].sort((a, b) => a.time - b.time);
+    let kf1 = sorted[0];
+    let kf2 = sorted[sorted.length - 1];
+    for (let i = 0; i < sorted.length - 1; i++) {
+      if (time >= sorted[i].time && time <= sorted[i + 1].time) {
+        kf1 = sorted[i];
+        kf2 = sorted[i + 1];
+        break;
+      }
+    }
+    if (time <= kf1.time) kf2 = kf1;
+    if (time >= kf2.time) kf1 = kf2;
+    const t = (time - kf1.time) / (kf2.time - kf1.time || 1);
+    const newCamera = { x: lerp(kf1.camera.x, kf2.camera.x, t), y: lerp(kf1.camera.y, kf2.camera.y, t), forward: lerp(kf1.camera.forward, kf2.camera.forward, t) };
+    const newKopanangPos = { x: lerp(kf1.kopanangPos.x, kf2.kopanangPos.x, t), y: lerp(kf1.kopanangPos.y, kf2.kopanangPos.y, t), scale: lerp(kf1.kopanangPos.scale, kf2.kopanangPos.scale, t) };
+    const newLeratoPos = { x: lerp(kf1.leratoPos.x, kf2.leratoPos.x, t), y: lerp(kf1.leratoPos.y, kf2.leratoPos.y, t), scale: lerp(kf1.leratoPos.scale, kf2.leratoPos.scale, t) };
+    const newKopanangMouthPos = { x: lerp(kf1.kopanangMouthPos.x, kf2.kopanangMouthPos.x, t), y: lerp(kf1.kopanangMouthPos.y, kf2.kopanangMouthPos.y, t) };
+    const newLeratoMouthPos = { x: lerp(kf1.leratoMouthPos.x, kf2.leratoMouthPos.x, t), y: lerp(kf1.leratoMouthPos.y, kf2.leratoMouthPos.y, t) };
+    const newBackgroundScale = lerp(kf1.backgroundScale, kf2.backgroundScale, t);
+    const newSelectedKopanangPose = t < 0.5 ? kf1.selectedKopanangPose : kf2.selectedKopanangPose;
+    const newSelectedLeratoPose = t < 0.5 ? kf1.selectedLeratoPose : kf2.selectedLeratoPose;
+    const newKopanangTalking = t < 0.5 ? kf1.kopanangTalking : kf2.kopanangTalking;
+    const newLeratoTalking = t < 0.5 ? kf1.leratoTalking : kf2.leratoTalking;
+    setCamera(newCamera);
+    setKopanangPos(newKopanangPos);
+    setLeratoPos(newLeratoPos);
+    setKopanangMouthPos(newKopanangMouthPos);
+    setLeratoMouthPos(newLeratoMouthPos);
+    setBackgroundScale(newBackgroundScale);
+    setSelectedKopanangPose(newSelectedKopanangPose);
+    setSelectedLeratoPose(newSelectedLeratoPose);
+    setKopanangTalking(newKopanangTalking);
+    setLeratoTalking(newLeratoTalking);
+  };
+
+  const play = () => {
+    if (timelineKeyframes.length === 0) return;
+    setIsPlaying(true);
+    playbackStartTimeRef.current = performance.now();
+    const animate = (now) => {
+      const elapsed = (now - playbackStartTimeRef.current) / 1000;
+      const time = elapsed % timelineDuration;
+      setCurrentTime(time);
+      interpolateAtTime(time);
+      playbackFrameRef.current = requestAnimationFrame(animate);
+    };
+    playbackFrameRef.current = requestAnimationFrame(animate);
+  };
+
+  const pause = () => {
+    setIsPlaying(false);
+    if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current);
+  };
+
+  const stop = () => {
+    setIsPlaying(false);
+    if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current);
+    setCurrentTime(0);
+    if (timelineKeyframes.length > 0) selectKeyframe(timelineKeyframes[0]);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current);
+    };
+  }, []);
+
+  // Draw to canvas for recording
   const drawSceneToCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || !imagesLoadedRef.current) return;
@@ -462,9 +564,68 @@ function Scene01CameraTest() {
     }
   }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangMouthPos, leratoMouthPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform, getMouthAbsolutePosition, kopanangMouthScale, leratoMouthScale]);
 
-  // ... (rest of component: recording, timeline, return JSX)
+  useEffect(() => {
+    let canvasAnimationFrame;
+    const animateCanvas = () => {
+      drawSceneToCanvas();
+      canvasAnimationFrame = requestAnimationFrame(animateCanvas);
+    };
+    animateCanvas();
+    return () => cancelAnimationFrame(canvasAnimationFrame);
+  }, [drawSceneToCanvas]);
 
-  // We'll include the full return with updated controls.
+  const startRecording = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const muxer = new Muxer({ target: new ArrayBufferTarget(), video: { codec: 'avc', width: canvas.width, height: canvas.height, firstTimestampBehavior: 'offset' }, fastStart: 'in-memory' });
+    muxerRef.current = muxer;
+    const videoEncoder = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: (e) => console.error('Encoder error:', e) });
+    videoEncoderRef.current = videoEncoder;
+    videoEncoder.configure({ codec: 'avc1.42001f', width: canvas.width, height: canvas.height, bitrate: 5_000_000, framerate: 15 });
+    let frameNumber = 0;
+    const frameInterval = 1000000 / 15;
+    isRecordingRef.current = true;
+    const processFrame = () => {
+      if (!isRecordingRef.current) return;
+      if (videoEncoderRef.current.encodeQueueSize > 2) { requestAnimationFrame(processFrame); return; }
+      const timestamp = frameNumber * frameInterval;
+      const frame = new VideoFrame(canvas, { timestamp });
+      videoEncoderRef.current.encode(frame, { keyFrame: frameNumber % 15 === 0 });
+      frame.close();
+      frameNumber++;
+      requestAnimationFrame(processFrame);
+    };
+    requestAnimationFrame(processFrame);
+    setIsRecording(true);
+  };
+
+  const stopRecording = async () => {
+    isRecordingRef.current = false;
+    if (videoEncoderRef.current) {
+      await videoEncoderRef.current.flush();
+      muxerRef.current.finalize();
+      const { buffer } = muxerRef.current.target;
+      const blob = new Blob([buffer], { type: 'video/mp4' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `lesah-scene-${Date.now()}.mp4`;
+      a.click();
+      URL.revokeObjectURL(url);
+      videoEncoderRef.current.close();
+      videoEncoderRef.current = null;
+    }
+    setIsRecording(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [handleKeyDown, handleKeyUp]);
 
   return (
     <div className="scene01-page">
@@ -559,7 +720,7 @@ function Scene01CameraTest() {
             </div>
           </div>
 
-          {/* Background Scale (still a slider, but it's one value; could also nudge but keeping for now) */}
+          {/* Background Scale */}
           <div className="background-controls">
             <strong>🌄 Background</strong>
             <div className="slider-row">
@@ -591,7 +752,7 @@ function Scene01CameraTest() {
               <button className={`test-btn ${selectMode === 'mouth' ? 'active' : ''}`} onClick={() => setSelectMode('mouth')}>👄 Move Mouth</button>
             </div>
 
-            {/* Camera controls (nudge buttons, no sliders) */}
+            {/* Camera controls */}
             <h4>🎥 Camera</h4>
             <div className="nudge-buttons">
               <button className="nudge-btn" onClick={() => nudgeCamera('y', -1)}>↑</button>
