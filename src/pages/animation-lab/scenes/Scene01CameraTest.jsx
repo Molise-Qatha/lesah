@@ -5,8 +5,24 @@ import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 
 // Scene Assets
 import backgroundImg from '../../../assets/scene01/background.png';
-import grassSheet from '../../../assets/scene01/grass.png';
-import butterflySheet from '../../../assets/scene01/butterfly.png';
+
+// Grass sprites (cut out)
+import grass01 from '../../../assets/scene01/grass/grass_01.png';
+import grass02 from '../../../assets/scene01/grass/grass_02.png';
+import grass03 from '../../../assets/scene01/grass/grass_03.png';
+import grass04 from '../../../assets/scene01/grass/grass_04.png';
+import grass05 from '../../../assets/scene01/grass/grass_05.png';
+import grass06 from '../../../assets/scene01/grass/grass_06.png';
+import grass07 from '../../../assets/scene01/grass/grass_07.png';
+import grass08 from '../../../assets/scene01/grass/grass_08.png';
+import grass09 from '../../../assets/scene01/grass/grass_09.png';
+import grass10 from '../../../assets/scene01/grass/grass_10.png';
+
+// Butterfly frames (cut out)
+import butterfly01 from '../../../assets/scene01/butterfly/butterfly_01.png';
+import butterfly02 from '../../../assets/scene01/butterfly/butterfly_02.png';
+import butterfly03 from '../../../assets/scene01/butterfly/butterfly_03.png';
+import butterfly04 from '../../../assets/scene01/butterfly/butterfly_04.png';
 
 // Kopanang sit frames
 import ksit1 from '../../../assets/Kopanang_sit/ksit_1.png';
@@ -31,6 +47,23 @@ import mouthE from '../../../assets/mouth/mouth_e.png';
 import mouthI from '../../../assets/mouth/mouth_i.png';
 import mouthO from '../../../assets/mouth/mouth_o.png';
 import mouthU from '../../../assets/mouth/mouth_u.png';
+
+// Grass asset definitions with placement info
+const GRASS_ASSETS = [
+  { src: grass01, x: -380, y: 280, size: 220 },
+  { src: grass02, x: -240, y: 300, size: 180 },
+  { src: grass03, x: -100, y: 320, size: 150 },
+  { src: grass04, x: 60,   y: 330, size: 200 },
+  { src: grass05, x: 200,  y: 310, size: 180 },
+  { src: grass06, x: 340,  y: 320, size: 160 },
+  { src: grass07, x: -300, y: 340, size: 200 },
+  { src: grass08, x: -150, y: 350, size: 190 },
+  { src: grass09, x: 30,   y: 360, size: 210 },
+  { src: grass10, x: 180,  y: 350, size: 200 },
+];
+
+// Butterfly frames array
+const BUTTERFLY_FRAMES = [butterfly01, butterfly02, butterfly03, butterfly04];
 
 const SCENE_LAYERS = [
   { id: 'background', name: 'Background', src: backgroundImg, depth: 1.0, zIndex: 0, defaultVisible: true },
@@ -61,29 +94,6 @@ const MOUTH_FRAMES = [
   { id: 'I', label: 'I', src: mouthI },
   { id: 'O', label: 'O', src: mouthO },
   { id: 'U', label: 'U', src: mouthU },
-];
-
-// Grass sprites: separate clumps on the sheet
-const GRASS_SPRITES = [
-  { sx: 30,  sy: 20,  sw: 220, sh: 200 },
-  { sx: 270, sy: 20,  sw: 180, sh: 160 },
-  { sx: 470, sy: 20,  sw: 130, sh: 130 },
-  { sx: 610, sy: 20,  sw: 180, sh: 160 },
-  { sx: 30,  sy: 240, sw: 200, sh: 200 },
-  { sx: 260, sy: 260, sw: 180, sh: 170 },
-  { sx: 460, sy: 220, sw: 200, sh: 200 },
-  { sx: 30,  sy: 460, sw: 230, sh: 220 },
-  { sx: 280, sy: 460, sw: 220, sh: 210 },
-  { sx: 500, sy: 460, sw: 130, sh: 140 },
-  { sx: 640, sy: 460, sw: 120, sh: 130 },
-];
-
-// Butterfly frames: 4 wing positions side by side
-const BUTTERFLY_FRAMES = [
-  { sx: 0,   sy: 0, sw: 220, sh: 200 },
-  { sx: 220, sy: 0, sw: 220, sh: 200 },
-  { sx: 440, sy: 0, sw: 220, sh: 200 },
-  { sx: 660, sy: 0, sw: 220, sh: 200 },
 ];
 
 function Scene01CameraTest() {
@@ -163,19 +173,31 @@ function Scene01CameraTest() {
   // Load all images
   useEffect(() => {
     let loaded = 0;
-    const total = SCENE_LAYERS.length + KOPANANG_SIT.length + LERATO_SIT.length + MOUTH_FRAMES.length + 2; // +2 for grass & butterfly
+    const total =
+      SCENE_LAYERS.length +
+      KOPANANG_SIT.length +
+      LERATO_SIT.length +
+      MOUTH_FRAMES.length +
+      GRASS_ASSETS.length +
+      BUTTERFLY_FRAMES.length;
     const loadImage = (src) => {
       const img = new Image();
-      img.onload = () => { loaded++; if (loaded === total) { imagesLoadedRef.current = true; setImagesLoaded(true); } };
+      img.onload = () => {
+        loaded++;
+        if (loaded === total) {
+          imagesLoadedRef.current = true;
+          setImagesLoaded(true);
+        }
+      };
       img.src = src;
       return img;
     };
-    SCENE_LAYERS.forEach(layer => imagesRef.current[layer.id] = loadImage(layer.src));
-    KOPANANG_SIT.forEach(pose => imagesRef.current[`kopanang_${pose.id}`] = loadImage(pose.src));
-    LERATO_SIT.forEach(pose => imagesRef.current[`lerato_${pose.id}`] = loadImage(pose.src));
-    MOUTH_FRAMES.forEach(mouth => imagesRef.current[`mouth_${mouth.id}`] = loadImage(mouth.src));
-    imagesRef.current['grassSheet'] = loadImage(grassSheet);
-    imagesRef.current['butterflySheet'] = loadImage(butterflySheet);
+    SCENE_LAYERS.forEach((l) => (imagesRef.current[l.id] = loadImage(l.src)));
+    KOPANANG_SIT.forEach((p) => (imagesRef.current[`kopanang_${p.id}`] = loadImage(p.src)));
+    LERATO_SIT.forEach((p) => (imagesRef.current[`lerato_${p.id}`] = loadImage(p.src)));
+    MOUTH_FRAMES.forEach((m) => (imagesRef.current[`mouth_${m.id}`] = loadImage(m.src)));
+    GRASS_ASSETS.forEach((g, i) => (imagesRef.current[`grass_${i}`] = loadImage(g.src)));
+    BUTTERFLY_FRAMES.forEach((b, i) => (imagesRef.current[`butterfly_${i}`] = loadImage(b)));
   }, []);
 
   // Initialize butterflies
@@ -201,18 +223,29 @@ function Scene01CameraTest() {
     if (!butterflyEnabled) return;
     let animId;
     const animate = () => {
-      setButterflies(prev => prev.map(b => {
-        let x = b.x + b.vx;
-        let y = b.y + b.vy;
-        let frame = b.frame;
-        let frameTimer = b.frameTimer + 1;
-        if (frameTimer >= 6) { frame = (frame + 1) % 4; frameTimer = 0; }
-        if (x > 700) { x = -700; y = (Math.random() - 0.5) * 400; }
-        if (x < -700) { x = 700; y = (Math.random() - 0.5) * 400; }
-        if (y > 400) { y = -400; }
-        if (y < -400) { y = 400; }
-        return { ...b, x, y, frame, frameTimer };
-      }));
+      setButterflies((prev) =>
+        prev.map((b) => {
+          let x = b.x + b.vx;
+          let y = b.y + b.vy;
+          let frame = b.frame;
+          let frameTimer = b.frameTimer + 1;
+          if (frameTimer >= 6) {
+            frame = (frame + 1) % 4;
+            frameTimer = 0;
+          }
+          if (x > 700) {
+            x = -700;
+            y = (Math.random() - 0.5) * 400;
+          }
+          if (x < -700) {
+            x = 700;
+            y = (Math.random() - 0.5) * 400;
+          }
+          if (y > 400) y = -400;
+          if (y < -400) y = 400;
+          return { ...b, x, y, frame, frameTimer };
+        })
+      );
       animId = requestAnimationFrame(animate);
     };
     animId = requestAnimationFrame(animate);
@@ -233,7 +266,9 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(animId);
   }, [grassEnabled, grassWindSpeed]);
 
-  const rangeLimits = unlimitedMode ? { cameraX: 10000, cameraY: 10000, forward: 5000 } : { cameraX: 200, cameraY: 200, forward: 100 };
+  const rangeLimits = unlimitedMode
+    ? { cameraX: 10000, cameraY: 10000, forward: 5000 }
+    : { cameraX: 200, cameraY: 200, forward: 100 };
 
   const getBackgroundTransform = useCallback(() => {
     const depthFactor = 1.0;
@@ -241,7 +276,11 @@ function Scene01CameraTest() {
     const cameraY = camera.y * depthFactor * 0.5;
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
-    return { transform: `translate(${cameraX - forwardOffset}px, ${cameraY}px) scale(${backgroundScale})`, opacity: 1, transformOrigin: 'center center' };
+    return {
+      transform: `translate(${cameraX - forwardOffset}px, ${cameraY}px) scale(${backgroundScale})`,
+      opacity: 1,
+      transformOrigin: 'center center',
+    };
   }, [camera, backgroundScale]);
 
   const getCharacterTransform = (pos) => {
@@ -250,7 +289,11 @@ function Scene01CameraTest() {
     const cameraY = camera.y * depthFactor * 0.5;
     const forwardProgress = camera.forward / 100;
     const forwardOffset = forwardProgress * depthFactor * 2;
-    return { transform: `translate(${pos.x + cameraX - forwardOffset}px, ${pos.y + cameraY}px) scale(${pos.scale})`, opacity: 1, transformOrigin: 'center bottom' };
+    return {
+      transform: `translate(${pos.x + cameraX - forwardOffset}px, ${pos.y + cameraY}px) scale(${pos.scale})`,
+      opacity: 1,
+      transformOrigin: 'center bottom',
+    };
   };
 
   const getMouthAbsolutePosition = (character) => {
@@ -259,17 +302,21 @@ function Scene01CameraTest() {
     const depthFactor = 0.8;
     const cameraX = camera.x * depthFactor;
     const cameraY = camera.y * depthFactor * 0.5;
-    const forwardProgress = camera.forward / 100;
-    const forwardOffset = forwardProgress * depthFactor * 2;
+    const forwardOffset = (camera.forward / 100) * depthFactor * 2;
     const charX = pos.x + cameraX - forwardOffset;
     const charY = pos.y + cameraY;
-    const scaledMouthX = mouthPos.x * pos.scale;
-    const scaledMouthY = mouthPos.y * pos.scale;
-    return { x: charX + scaledMouthX, y: charY + scaledMouthY };
+    return {
+      x: charX + mouthPos.x * pos.scale,
+      y: charY + mouthPos.y * pos.scale,
+    };
   };
 
-  const handleKeyDown = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = true; }, []);
-  const handleKeyUp = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = false; }, []);
+  const handleKeyDown = useCallback((e) => {
+    keysPressed.current[e.key.toLowerCase()] = true;
+  }, []);
+  const handleKeyUp = useCallback((e) => {
+    keysPressed.current[e.key.toLowerCase()] = false;
+  }, []);
 
   // Keyboard movement
   useEffect(() => {
@@ -292,7 +339,7 @@ function Scene01CameraTest() {
       const charSpeed = 5;
       if (selectMode === 'character') {
         if (selectedCharacter === 'kopanang' && !lockKopanangPos) {
-          setKopanangPos(prev => {
+          setKopanangPos((prev) => {
             let nx = prev.x, ny = prev.y;
             if (keysPressed.current['arrowleft']) nx -= charSpeed;
             if (keysPressed.current['arrowright']) nx += charSpeed;
@@ -302,7 +349,7 @@ function Scene01CameraTest() {
           });
         }
         if (selectedCharacter === 'lerato' && !lockLeratoPos) {
-          setLeratoPos(prev => {
+          setLeratoPos((prev) => {
             let nx = prev.x, ny = prev.y;
             if (keysPressed.current['arrowleft']) nx -= charSpeed;
             if (keysPressed.current['arrowright']) nx += charSpeed;
@@ -314,7 +361,7 @@ function Scene01CameraTest() {
       } else {
         const mSpeed = 3;
         if (selectedCharacter === 'kopanang') {
-          setKopanangMouthPos(prev => {
+          setKopanangMouthPos((prev) => {
             let nx = prev.x, ny = prev.y;
             if (keysPressed.current['arrowleft']) nx -= mSpeed;
             if (keysPressed.current['arrowright']) nx += mSpeed;
@@ -323,7 +370,7 @@ function Scene01CameraTest() {
             return { x: nx, y: ny };
           });
         } else {
-          setLeratoMouthPos(prev => {
+          setLeratoMouthPos((prev) => {
             let nx = prev.x, ny = prev.y;
             if (keysPressed.current['arrowleft']) nx -= mSpeed;
             if (keysPressed.current['arrowright']) nx += mSpeed;
@@ -333,7 +380,6 @@ function Scene01CameraTest() {
           });
         }
       }
-
       if (keysPressed.current['[']) scaleCharacter(-0.02);
       if (keysPressed.current[']']) scaleCharacter(0.02);
       animationFrameRef.current = requestAnimationFrame(handleKeyFrame);
@@ -343,20 +389,24 @@ function Scene01CameraTest() {
   }, [cameraSpeed, unlimitedMode, rangeLimits, selectedCharacter, camera, lockKopanangPos, lockLeratoPos, selectMode]);
 
   const scaleCharacter = (delta) => {
-    if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos(prev => ({ ...prev, scale: Math.max(0.2, Math.min(3, prev.scale + delta)) }));
-    else if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos(prev => ({ ...prev, scale: Math.max(0.2, Math.min(3, prev.scale + delta)) }));
+    if (selectedCharacter === 'kopanang' && !lockKopanangPos)
+      setKopanangPos((prev) => ({ ...prev, scale: Math.max(0.2, Math.min(3, prev.scale + delta)) }));
+    else if (selectedCharacter === 'lerato' && !lockLeratoPos)
+      setLeratoPos((prev) => ({ ...prev, scale: Math.max(0.2, Math.min(3, prev.scale + delta)) }));
   };
 
   const handleWheel = (e) => {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.05 : 0.05;
-    scaleCharacter(delta);
+    scaleCharacter(e.deltaY > 0 ? -0.05 : 0.05);
   };
 
   // Manual mouth cycling
   useEffect(() => {
     if ((kopanangTalking || leratoTalking) && !audioPlaying) {
-      mouthTimerRef.current = setInterval(() => setMouthIndex(prev => (prev + 1) % MOUTH_FRAMES.length), 200);
+      mouthTimerRef.current = setInterval(
+        () => setMouthIndex((prev) => (prev + 1) % MOUTH_FRAMES.length),
+        200
+      );
     }
     return () => clearInterval(mouthTimerRef.current);
   }, [kopanangTalking, leratoTalking, audioPlaying]);
@@ -365,7 +415,8 @@ function Scene01CameraTest() {
     if (selectMode !== 'character') return;
     if (character === 'kopanang' && lockKopanangPos) return;
     if (character === 'lerato' && lockLeratoPos) return;
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     setDraggingCharacter(character);
     setSelectedCharacter(character);
     const r = stageRef.current.getBoundingClientRect();
@@ -376,7 +427,8 @@ function Scene01CameraTest() {
 
   const handleMouthMouseDown = (e, character) => {
     if (selectMode !== 'mouth') return;
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     setDraggingMouth(character);
     setSelectedCharacter(character);
     const r = stageRef.current.getBoundingClientRect();
@@ -389,7 +441,12 @@ function Scene01CameraTest() {
     if (draggingCharacter || draggingMouth) return;
     if (selectMode !== 'character') return;
     const r = stageRef.current.getBoundingClientRect();
-    cameraDragStartRef.current = { mouseX: e.clientX - r.left, mouseY: e.clientY - r.top, camX: camera.x, camY: camera.y };
+    cameraDragStartRef.current = {
+      mouseX: e.clientX - r.left,
+      mouseY: e.clientY - r.top,
+      camX: camera.x,
+      camY: camera.y,
+    };
     setDraggingCamera(true);
   };
 
@@ -400,15 +457,21 @@ function Scene01CameraTest() {
       if (draggingCamera) {
         const dx = mx - cameraDragStartRef.current.mouseX;
         const dy = my - cameraDragStartRef.current.mouseY;
-        setCamera(prev => ({ ...prev, x: cameraDragStartRef.current.camX - dx, y: cameraDragStartRef.current.camY - dy }));
+        setCamera((prev) => ({
+          ...prev,
+          x: cameraDragStartRef.current.camX - dx,
+          y: cameraDragStartRef.current.camY - dy,
+        }));
       }
       if (draggingCharacter) {
         const dx = mx - dragStartRef.current.mouseX;
         const dy = my - dragStartRef.current.mouseY;
         const nx = dragStartRef.current.charX + dx;
         const ny = dragStartRef.current.charY + dy;
-        if (draggingCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos(prev => ({ ...prev, x: nx, y: ny }));
-        else if (draggingCharacter === 'lerato' && !lockLeratoPos) setLeratoPos(prev => ({ ...prev, x: nx, y: ny }));
+        if (draggingCharacter === 'kopanang' && !lockKopanangPos)
+          setKopanangPos((prev) => ({ ...prev, x: nx, y: ny }));
+        else if (draggingCharacter === 'lerato' && !lockLeratoPos)
+          setLeratoPos((prev) => ({ ...prev, x: nx, y: ny }));
       } else if (draggingMouth) {
         const dx = mx - dragStartRef.current.mouseX;
         const dy = my - dragStartRef.current.mouseY;
@@ -434,30 +497,43 @@ function Scene01CameraTest() {
   const handleStageClick = (e) => {
     if (draggingCharacter || draggingMouth || draggingCamera) return;
     const r = stageRef.current.getBoundingClientRect();
-    const ox = (e.clientX - r.left) - r.width / 2;
-    const oy = (e.clientY - r.top) - r.height / 2;
+    const ox = e.clientX - r.left - r.width / 2;
+    const oy = e.clientY - r.top - r.height / 2;
     if (selectMode === 'character') {
-      if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos(prev => ({ ...prev, x: ox, y: oy }));
-      if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos(prev => ({ ...prev, x: ox, y: oy }));
+      if (selectedCharacter === 'kopanang' && !lockKopanangPos)
+        setKopanangPos((prev) => ({ ...prev, x: ox, y: oy }));
+      if (selectedCharacter === 'lerato' && !lockLeratoPos)
+        setLeratoPos((prev) => ({ ...prev, x: ox, y: oy }));
     } else {
-      if (selectedCharacter === 'kopanang') setKopanangMouthPos({ x: (ox - kopanangPos.x) / kopanangPos.scale, y: (oy - kopanangPos.y) / kopanangPos.scale });
-      else setLeratoMouthPos({ x: (ox - leratoPos.x) / leratoPos.scale, y: (oy - leratoPos.y) / leratoPos.scale });
+      if (selectedCharacter === 'kopanang')
+        setKopanangMouthPos({
+          x: (ox - kopanangPos.x) / kopanangPos.scale,
+          y: (oy - kopanangPos.y) / kopanangPos.scale,
+        });
+      else
+        setLeratoMouthPos({
+          x: (ox - leratoPos.x) / leratoPos.scale,
+          y: (oy - leratoPos.y) / leratoPos.scale,
+        });
     }
   };
 
   const nudgeCharacter = (axis, direction) => {
     const amt = 10;
     if (selectMode !== 'character') return;
-    if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos(prev => ({ ...prev, [axis]: prev[axis] + direction * amt }));
-    else if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos(prev => ({ ...prev, [axis]: prev[axis] + direction * amt }));
+    if (selectedCharacter === 'kopanang' && !lockKopanangPos)
+      setKopanangPos((prev) => ({ ...prev, [axis]: prev[axis] + direction * amt }));
+    else if (selectedCharacter === 'lerato' && !lockLeratoPos)
+      setLeratoPos((prev) => ({ ...prev, [axis]: prev[axis] + direction * amt }));
   };
 
   const nudgeScale = (dir) => scaleCharacter(dir * 0.1);
 
   const nudgeMouth = (character, axis, direction) => {
     const amt = 5;
-    if (character === 'kopanang') setKopanangMouthPos(prev => ({ ...prev, [axis]: prev[axis] + direction * amt }));
-    else setLeratoMouthPos(prev => ({ ...prev, [axis]: prev[axis] + direction * amt }));
+    if (character === 'kopanang')
+      setKopanangMouthPos((prev) => ({ ...prev, [axis]: prev[axis] + direction * amt }));
+    else setLeratoMouthPos((prev) => ({ ...prev, [axis]: prev[axis] + direction * amt }));
   };
 
   const resetMouth = (character) => {
@@ -468,20 +544,22 @@ function Scene01CameraTest() {
 
   const nudgeMouthScale = (character, direction) => {
     const amt = 0.1;
-    if (character === 'kopanang') setKopanangMouthScale(prev => Math.max(0.2, Math.min(5, prev + direction * amt)));
-    else setLeratoMouthScale(prev => Math.max(0.2, Math.min(5, prev + direction * amt)));
+    if (character === 'kopanang')
+      setKopanangMouthScale((prev) => Math.max(0.2, Math.min(5, prev + direction * amt)));
+    else setLeratoMouthScale((prev) => Math.max(0.2, Math.min(5, prev + direction * amt)));
   };
 
   const resetKopanangPos = () => setKopanangPos({ x: -100, y: 50, scale: 1 });
   const resetLeratoPos = () => setLeratoPos({ x: -100, y: -50, scale: 1 });
   const resetCamera = () => setCamera({ x: 0, y: 0, forward: 0 });
 
-  const nudgeCamera = (axis, direction) => {
-    setCamera(prev => ({ ...prev, [axis]: prev[axis] + direction * 20 }));
-  };
-  const nudgeCameraForward = (direction) => {
-    setCamera(prev => ({ ...prev, forward: Math.max(-100, Math.min(5000, prev.forward + direction * 10)) }));
-  };
+  const nudgeCamera = (axis, direction) =>
+    setCamera((prev) => ({ ...prev, [axis]: prev[axis] + direction * 20 }));
+  const nudgeCameraForward = (direction) =>
+    setCamera((prev) => ({
+      ...prev,
+      forward: Math.max(-100, Math.min(5000, prev.forward + direction * 10)),
+    }));
 
   // Audio lip sync
   const initializeAudioContext = () => {
@@ -536,7 +614,9 @@ function Scene01CameraTest() {
         animationFrameRef.current = requestAnimationFrame(updateAmplitude);
       };
       updateAmplitude();
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const stopAudio = () => {
@@ -555,18 +635,27 @@ function Scene01CameraTest() {
     };
   }, []);
 
-  // Timeline functions
+  // Timeline
   const addKeyframe = () => {
     const kf = {
-      id: Date.now(), time: currentTime,
-      camera: { ...camera }, kopanangPos: { ...kopanangPos }, leratoPos: { ...leratoPos },
-      kopanangMouthPos: { ...kopanangMouthPos }, leratoMouthPos: { ...leratoMouthPos },
-      selectedKopanangPose, selectedLeratoPose, kopanangTalking, leratoTalking, backgroundScale,
+      id: Date.now(),
+      time: currentTime,
+      camera: { ...camera },
+      kopanangPos: { ...kopanangPos },
+      leratoPos: { ...leratoPos },
+      kopanangMouthPos: { ...kopanangMouthPos },
+      leratoMouthPos: { ...leratoMouthPos },
+      selectedKopanangPose,
+      selectedLeratoPose,
+      kopanangTalking,
+      leratoTalking,
+      backgroundScale,
     };
-    setTimelineKeyframes(prev => [...prev, kf].sort((a, b) => a.time - b.time));
+    setTimelineKeyframes((prev) => [...prev, kf].sort((a, b) => a.time - b.time));
   };
 
-  const deleteKeyframe = (id) => setTimelineKeyframes(prev => prev.filter(kf => kf.id !== id));
+  const deleteKeyframe = (id) =>
+    setTimelineKeyframes((prev) => prev.filter((kf) => kf.id !== id));
 
   const selectKeyframe = (kf) => {
     setCurrentTime(kf.time);
@@ -590,17 +679,37 @@ function Scene01CameraTest() {
     let kf1 = sorted[0], kf2 = sorted[sorted.length - 1];
     for (let i = 0; i < sorted.length - 1; i++) {
       if (time >= sorted[i].time && time <= sorted[i + 1].time) {
-        kf1 = sorted[i]; kf2 = sorted[i + 1]; break;
+        kf1 = sorted[i];
+        kf2 = sorted[i + 1];
+        break;
       }
     }
     if (time <= kf1.time) kf2 = kf1;
     if (time >= kf2.time) kf1 = kf2;
     const t = (time - kf1.time) / (kf2.time - kf1.time || 1);
-    setCamera({ x: lerp(kf1.camera.x, kf2.camera.x, t), y: lerp(kf1.camera.y, kf2.camera.y, t), forward: lerp(kf1.camera.forward, kf2.camera.forward, t) });
-    setKopanangPos({ x: lerp(kf1.kopanangPos.x, kf2.kopanangPos.x, t), y: lerp(kf1.kopanangPos.y, kf2.kopanangPos.y, t), scale: lerp(kf1.kopanangPos.scale, kf2.kopanangPos.scale, t) });
-    setLeratoPos({ x: lerp(kf1.leratoPos.x, kf2.leratoPos.x, t), y: lerp(kf1.leratoPos.y, kf2.leratoPos.y, t), scale: lerp(kf1.leratoPos.scale, kf2.leratoPos.scale, t) });
-    setKopanangMouthPos({ x: lerp(kf1.kopanangMouthPos.x, kf2.kopanangMouthPos.x, t), y: lerp(kf1.kopanangMouthPos.y, kf2.kopanangMouthPos.y, t) });
-    setLeratoMouthPos({ x: lerp(kf1.leratoMouthPos.x, kf2.leratoMouthPos.x, t), y: lerp(kf1.leratoMouthPos.y, kf2.leratoMouthPos.y, t) });
+    setCamera({
+      x: lerp(kf1.camera.x, kf2.camera.x, t),
+      y: lerp(kf1.camera.y, kf2.camera.y, t),
+      forward: lerp(kf1.camera.forward, kf2.camera.forward, t),
+    });
+    setKopanangPos({
+      x: lerp(kf1.kopanangPos.x, kf2.kopanangPos.x, t),
+      y: lerp(kf1.kopanangPos.y, kf2.kopanangPos.y, t),
+      scale: lerp(kf1.kopanangPos.scale, kf2.kopanangPos.scale, t),
+    });
+    setLeratoPos({
+      x: lerp(kf1.leratoPos.x, kf2.leratoPos.x, t),
+      y: lerp(kf1.leratoPos.y, kf2.leratoPos.y, t),
+      scale: lerp(kf1.leratoPos.scale, kf2.leratoPos.scale, t),
+    });
+    setKopanangMouthPos({
+      x: lerp(kf1.kopanangMouthPos.x, kf2.kopanangMouthPos.x, t),
+      y: lerp(kf1.kopanangMouthPos.y, kf2.kopanangMouthPos.y, t),
+    });
+    setLeratoMouthPos({
+      x: lerp(kf1.leratoMouthPos.x, kf2.leratoMouthPos.x, t),
+      y: lerp(kf1.leratoMouthPos.y, kf2.leratoMouthPos.y, t),
+    });
     setBackgroundScale(lerp(kf1.backgroundScale, kf2.backgroundScale, t));
     setSelectedKopanangPose(t < 0.5 ? kf1.selectedKopanangPose : kf2.selectedKopanangPose);
     setSelectedLeratoPose(t < 0.5 ? kf1.selectedLeratoPose : kf2.selectedLeratoPose);
@@ -635,7 +744,9 @@ function Scene01CameraTest() {
   };
 
   useEffect(() => {
-    return () => { if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current); };
+    return () => {
+      if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current);
+    };
   }, []);
 
   // ============== CANVAS DRAW ==============
@@ -715,41 +826,61 @@ function Scene01CameraTest() {
       }
     }
 
-    // Grass
+    // Grass (foreground)
     if (grassEnabled) {
-      const g = imagesRef.current['grassSheet'];
-      if (g) {
-        const baseY = 300;
-        GRASS_SPRITES.forEach((s, idx) => {
-          const x = (idx - 5) * 180 + camera.x * 1.0 - (camera.forward / 100) * 2;
-          const y = baseY + camera.y * 1.0;
-          const swayDeg = grassSway * (0.5 + idx * 0.15);
-          ctx.save();
-          ctx.translate(width / 2 + x, height / 2 + y);
-          ctx.rotate(swayDeg * Math.PI / 180);
-          ctx.drawImage(g, s.sx, s.sy, s.sw, s.sh, -s.sw / 2, -s.sh, s.sw, s.sh);
-          ctx.restore();
-        });
-      }
+      GRASS_ASSETS.forEach((g, idx) => {
+        const img = imagesRef.current[`grass_${idx}`];
+        if (!img) return;
+        const x = g.x + camera.x * 1.1 - (camera.forward / 100) * 1.1 * 2;
+        const y = g.y + camera.y * 1.1;
+        const swayDeg = grassSway * (0.5 + idx * 0.15);
+        ctx.save();
+        ctx.translate(width / 2 + x, height / 2 + y);
+        ctx.rotate((swayDeg * Math.PI) / 180);
+        const w = g.size;
+        const h = (img.height / img.width) * w;
+        ctx.drawImage(img, -w / 2, -h, w, h);
+        ctx.restore();
+      });
     }
 
     // Butterflies
     if (butterflyEnabled) {
-      const b = imagesRef.current['butterflySheet'];
-      if (b) {
-        butterflies.forEach(bf => {
-          const frame = BUTTERFLY_FRAMES[bf.frame];
-          const bx = bf.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
-          const by = bf.y + camera.y * 0.8;
-          ctx.save();
-          ctx.translate(width / 2 + bx, height / 2 + by);
-          ctx.scale(bf.scale, bf.scale);
-          ctx.drawImage(b, frame.sx, frame.sy, frame.sw, frame.sh, -frame.sw / 2, -frame.sh / 2, frame.sw, frame.sh);
-          ctx.restore();
-        });
-      }
+      butterflies.forEach((bf) => {
+        const img = imagesRef.current[`butterfly_${bf.frame}`];
+        if (!img) return;
+        const bx = bf.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
+        const by = bf.y + camera.y * 0.8;
+        ctx.save();
+        ctx.translate(width / 2 + bx, height / 2 + by);
+        ctx.scale(bf.scale, bf.scale);
+        const w = 60;
+        const h = (img.height / img.width) * w;
+        ctx.drawImage(img, -w / 2, -h / 2, w, h);
+        ctx.restore();
+      });
     }
-  }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangMouthPos, leratoMouthPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform, getMouthAbsolutePosition, kopanangMouthScale, leratoMouthScale, grassEnabled, grassSway, butterflyEnabled, butterflies]);
+  }, [
+    camera,
+    layerVisibility,
+    selectedKopanangPose,
+    selectedLeratoPose,
+    kopanangPos,
+    leratoPos,
+    kopanangMouthPos,
+    leratoMouthPos,
+    kopanangTalking,
+    leratoTalking,
+    mouthIndex,
+    getBackgroundTransform,
+    getMouthAbsolutePosition,
+    kopanangMouthScale,
+    leratoMouthScale,
+    grassEnabled,
+    grassSway,
+    butterflyEnabled,
+    butterflies,
+  ]);
 
   useEffect(() => {
     let animId;
@@ -767,7 +898,12 @@ function Scene01CameraTest() {
     if (!canvas) return;
     const muxer = new Muxer({
       target: new ArrayBufferTarget(),
-      video: { codec: 'avc', width: canvas.width, height: canvas.height, firstTimestampBehavior: 'offset' },
+      video: {
+        codec: 'avc',
+        width: canvas.width,
+        height: canvas.height,
+        firstTimestampBehavior: 'offset',
+      },
       fastStart: 'in-memory',
     });
     muxerRef.current = muxer;
@@ -776,13 +912,22 @@ function Scene01CameraTest() {
       error: (e) => console.error('Encoder error:', e),
     });
     videoEncoderRef.current = enc;
-    enc.configure({ codec: 'avc1.42001f', width: canvas.width, height: canvas.height, bitrate: 5_000_000, framerate: 15 });
+    enc.configure({
+      codec: 'avc1.42001f',
+      width: canvas.width,
+      height: canvas.height,
+      bitrate: 5_000_000,
+      framerate: 15,
+    });
     let fn = 0;
     const fi = 1000000 / 15;
     isRecordingRef.current = true;
     const loop = () => {
       if (!isRecordingRef.current) return;
-      if (videoEncoderRef.current.encodeQueueSize > 2) { requestAnimationFrame(loop); return; }
+      if (videoEncoderRef.current.encodeQueueSize > 2) {
+        requestAnimationFrame(loop);
+        return;
+      }
       const frame = new VideoFrame(canvas, { timestamp: fn * fi });
       videoEncoderRef.current.encode(frame, { keyFrame: fn % 15 === 0 });
       frame.close();
@@ -824,7 +969,13 @@ function Scene01CameraTest() {
   return (
     <div className="scene01-page">
       <div className="scene01-container">
-        <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onMouseDown={handleStageMouseDown} onWheel={handleWheel}>
+        <div
+          className="scene-viewport"
+          ref={stageRef}
+          onClick={handleStageClick}
+          onMouseDown={handleStageMouseDown}
+          onWheel={handleWheel}
+        >
           <div className="scene-stage">
             {/* Background */}
             {layerVisibility.background && (
@@ -835,106 +986,263 @@ function Scene01CameraTest() {
 
             {/* Kopanang */}
             {layerVisibility.kopanang && (
-              <div className="scene-layer draggable-character" style={{ zIndex: 10, ...getCharacterTransform(kopanangPos), cursor: selectMode === 'character' ? 'grab' : 'default', outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none' }} onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}>
-                <img src={KOPANANG_SIT.find(p => p.id === selectedKopanangPose).src} alt="Kopanang" className="scene-layer-img" draggable={false} />
+              <div
+                className="scene-layer draggable-character"
+                style={{
+                  zIndex: 10,
+                  ...getCharacterTransform(kopanangPos),
+                  cursor: selectMode === 'character' ? 'grab' : 'default',
+                  outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
+                }}
+                onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
+              >
+                <img
+                  src={KOPANANG_SIT.find((p) => p.id === selectedKopanangPose).src}
+                  alt="Kopanang"
+                  className="scene-layer-img"
+                  draggable={false}
+                />
               </div>
             )}
 
             {/* Lerato */}
             {layerVisibility.lerato && (
-              <div className="scene-layer draggable-character" style={{ zIndex: 10, ...getCharacterTransform(leratoPos), cursor: selectMode === 'character' ? 'grab' : 'default', outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none' }} onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}>
-                <img src={LERATO_SIT.find(p => p.id === selectedLeratoPose).src} alt="Lerato" className="scene-layer-img" draggable={false} />
+              <div
+                className="scene-layer draggable-character"
+                style={{
+                  zIndex: 10,
+                  ...getCharacterTransform(leratoPos),
+                  cursor: selectMode === 'character' ? 'grab' : 'default',
+                  outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
+                }}
+                onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
+              >
+                <img
+                  src={LERATO_SIT.find((p) => p.id === selectedLeratoPose).src}
+                  alt="Lerato"
+                  className="scene-layer-img"
+                  draggable={false}
+                />
               </div>
             )}
 
             {/* Mouths */}
             {kopanangTalking && layerVisibility.kopanang && (
-              <div className="mouth-overlay draggable-mouth" style={{ position: 'absolute', left: '50%', top: '50%', transform: `translate(${getMouthAbsolutePosition('kopanang').x}px, ${getMouthAbsolutePosition('kopanang').y}px) translate(-${15 * kopanangMouthScale}px, -${15 * kopanangMouthScale}px)`, zIndex: 20, cursor: selectMode === 'mouth' ? 'grab' : 'default', outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none', width: `${30 * kopanangMouthScale}px`, height: `${30 * kopanangMouthScale}px` }} onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}>
-                <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
+              <div
+                className="mouth-overlay draggable-mouth"
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: `translate(${getMouthAbsolutePosition('kopanang').x}px, ${
+                    getMouthAbsolutePosition('kopanang').y
+                  }px) translate(-${15 * kopanangMouthScale}px, -${15 * kopanangMouthScale}px)`,
+                  zIndex: 20,
+                  cursor: selectMode === 'mouth' ? 'grab' : 'default',
+                  outline:
+                    showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                  width: `${30 * kopanangMouthScale}px`,
+                  height: `${30 * kopanangMouthScale}px`,
+                }}
+                onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
+              >
+                <img
+                  src={MOUTH_FRAMES[mouthIndex].src}
+                  alt="Mouth"
+                  style={{ width: '100%', height: '100%' }}
+                />
               </div>
             )}
             {leratoTalking && layerVisibility.lerato && (
-              <div className="mouth-overlay draggable-mouth" style={{ position: 'absolute', left: '50%', top: '50%', transform: `translate(${getMouthAbsolutePosition('lerato').x}px, ${getMouthAbsolutePosition('lerato').y}px) translate(-${15 * leratoMouthScale}px, -${15 * leratoMouthScale}px)`, zIndex: 20, cursor: selectMode === 'mouth' ? 'grab' : 'default', outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none', width: `${30 * leratoMouthScale}px`, height: `${30 * leratoMouthScale}px` }} onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}>
-                <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
+              <div
+                className="mouth-overlay draggable-mouth"
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  transform: `translate(${getMouthAbsolutePosition('lerato').x}px, ${
+                    getMouthAbsolutePosition('lerato').y
+                  }px) translate(-${15 * leratoMouthScale}px, -${15 * leratoMouthScale}px)`,
+                  zIndex: 20,
+                  cursor: selectMode === 'mouth' ? 'grab' : 'default',
+                  outline:
+                    showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                  width: `${30 * leratoMouthScale}px`,
+                  height: `${30 * leratoMouthScale}px`,
+                }}
+                onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
+              >
+                <img
+                  src={MOUTH_FRAMES[mouthIndex].src}
+                  alt="Mouth"
+                  style={{ width: '100%', height: '100%' }}
+                />
               </div>
             )}
 
             {/* Grass preview (DOM) */}
             {grassEnabled && (
-              <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '50%', pointerEvents: 'none', zIndex: 5 }}>
-                {GRASS_SPRITES.map((s, idx) => (
-                  <div key={idx} style={{
-                    position: 'absolute',
-                    left: `${(idx - 5) * 8 + 50}%`,
-                    bottom: '0',
-                    width: `${s.sw * 0.6}px`,
-                    height: `${s.sh * 0.6}px`,
-                    backgroundImage: `url(${grassSheet})`,
-                    backgroundPosition: `-${s.sx * 0.6}px -${s.sy * 0.6}px`,
-                    backgroundSize: `${grassSheet.width * 0.6}px auto`,
-                    backgroundRepeat: 'no-repeat',
-                    transformOrigin: 'bottom center',
-                    transform: `rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
-                  }} />
-                ))}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  pointerEvents: 'none',
+                  zIndex: 5,
+                }}
+              >
+                {GRASS_ASSETS.map((g, idx) => {
+                  const img = imagesRef.current[`grass_${idx}`];
+                  if (!img) return null;
+                  const w = g.size;
+                  const h = img.width ? (img.height / img.width) * w : w;
+                  return (
+                    <img
+                      key={idx}
+                      src={g.src}
+                      alt="grass"
+                      style={{
+                        position: 'absolute',
+                        left: `calc(50% + ${g.x}px)`,
+                        top: `calc(50% + ${g.y}px)`,
+                        width: `${w}px`,
+                        height: `${h}px`,
+                        transform: `translate(-50%, -100%) rotate(${
+                          grassSway * (0.5 + idx * 0.15)
+                        }deg)`,
+                        transformOrigin: 'bottom center',
+                      }}
+                    />
+                  );
+                })}
               </div>
             )}
 
             {/* Butterflies preview (DOM) */}
-            {butterflyEnabled && butterflies.map(bf => (
-              <div key={bf.id} style={{
-                position: 'absolute',
-                left: `calc(50% + ${bf.x}px)`,
-                top: `calc(50% + ${bf.y}px)`,
-                width: `${BUTTERFLY_FRAMES[bf.frame].sw * bf.scale * 0.6}px`,
-                height: `${BUTTERFLY_FRAMES[bf.frame].sh * bf.scale * 0.6}px`,
-                backgroundImage: `url(${butterflySheet})`,
-                backgroundPosition: `-${BUTTERFLY_FRAMES[bf.frame].sx * 0.6 * bf.scale}px -${BUTTERFLY_FRAMES[bf.frame].sy * 0.6 * bf.scale}px`,
-                backgroundSize: `${butterflySheet.width * 0.6 * bf.scale}px auto`,
-                backgroundRepeat: 'no-repeat',
-                pointerEvents: 'none',
-                zIndex: 8,
-              }} />
-            ))}
+            {butterflyEnabled &&
+              butterflies.map((bf) => {
+                const img = imagesRef.current[`butterfly_${bf.frame}`];
+                if (!img) return null;
+                const w = 60 * bf.scale;
+                const h = img.width ? (img.height / img.width) * w : w;
+                return (
+                  <img
+                    key={bf.id}
+                    src={BUTTERFLY_FRAMES[bf.frame]}
+                    alt={`butterfly-${bf.id}`}
+                    style={{
+                      position: 'absolute',
+                      left: `calc(50% + ${bf.x}px)`,
+                      top: `calc(50% + ${bf.y}px)`,
+                      width: `${w}px`,
+                      height: `${h}px`,
+                      transform: 'translate(-50%, -50%)',
+                      pointerEvents: 'none',
+                      zIndex: 8,
+                    }}
+                  />
+                );
+              })}
           </div>
 
           <canvas ref={canvasRef} width={1280} height={720} style={{ display: 'none' }} />
-          {isRecording && <div className="recording-indicator"><span className="rec-dot"></span> REC</div>}
+          {isRecording && (
+            <div className="recording-indicator">
+              <span className="rec-dot"></span> REC
+            </div>
+          )}
         </div>
 
         <div className="camera-controls">
           <div className="camera-controls-header">
             <h3>Scene Editor</h3>
-            <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>🐛 Toggle Controls</button>
+            <button
+              className={`debug-toggle ${debugMode ? 'active' : ''}`}
+              onClick={() => setDebugMode(!debugMode)}
+            >
+              🐛 Toggle Controls
+            </button>
           </div>
 
           {/* Timeline */}
           <div className="timeline-panel">
             <h3>🎬 Timeline</h3>
             <div className="timeline-controls">
-              <button className="test-btn" onClick={play} disabled={isPlaying || timelineKeyframes.length === 0}>▶ Play</button>
-              <button className="test-btn" onClick={pause} disabled={!isPlaying}>⏸ Pause</button>
-              <button className="test-btn" onClick={stop}>⏹ Stop</button>
-              <button className="test-btn" onClick={addKeyframe}>➕ Add Keyframe @ {currentTime.toFixed(2)}s</button>
+              <button
+                className="test-btn"
+                onClick={play}
+                disabled={isPlaying || timelineKeyframes.length === 0}
+              >
+                ▶ Play
+              </button>
+              <button className="test-btn" onClick={pause} disabled={!isPlaying}>
+                ⏸ Pause
+              </button>
+              <button className="test-btn" onClick={stop}>
+                ⏹ Stop
+              </button>
+              <button className="test-btn" onClick={addKeyframe}>
+                ➕ Add Keyframe @ {currentTime.toFixed(2)}s
+              </button>
             </div>
             <div className="timeline-duration">
               <label>Duration: </label>
-              <input type="range" min="1" max="60" step="0.5" value={timelineDuration} onChange={(e) => setTimelineDuration(Number(e.target.value))} />
+              <input
+                type="range"
+                min="1"
+                max="60"
+                step="0.5"
+                value={timelineDuration}
+                onChange={(e) => setTimelineDuration(Number(e.target.value))}
+              />
               <span>{timelineDuration}s</span>
             </div>
             <div className="timeline-tracks">
-              <div className="timeline-bar" style={{ width: '100%', background: '#333', height: '20px', position: 'relative' }}>
-                <div className="playhead" style={{ left: `${(currentTime / timelineDuration) * 100}%`, position: 'absolute', top: '-5px', width: '2px', height: '30px', background: '#ffd700' }} />
-                {timelineKeyframes.map(kf => (
-                  <div key={kf.id} className="keyframe-marker" style={{ left: `${(kf.time / timelineDuration) * 100}%`, position: 'absolute', top: 0, width: '8px', height: '20px', background: '#e94560', cursor: 'pointer' }} onClick={() => selectKeyframe(kf)} />
+              <div
+                className="timeline-bar"
+                style={{ width: '100%', background: '#333', height: '20px', position: 'relative' }}
+              >
+                <div
+                  className="playhead"
+                  style={{
+                    left: `${(currentTime / timelineDuration) * 100}%`,
+                    position: 'absolute',
+                    top: '-5px',
+                    width: '2px',
+                    height: '30px',
+                    background: '#ffd700',
+                  }}
+                />
+                {timelineKeyframes.map((kf) => (
+                  <div
+                    key={kf.id}
+                    className="keyframe-marker"
+                    style={{
+                      left: `${(kf.time / timelineDuration) * 100}%`,
+                      position: 'absolute',
+                      top: 0,
+                      width: '8px',
+                      height: '20px',
+                      background: '#e94560',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => selectKeyframe(kf)}
+                  />
                 ))}
               </div>
             </div>
             <div className="keyframe-list">
-              {timelineKeyframes.map(kf => (
-                <div key={kf.id} className="keyframe-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <button className="test-btn" onClick={() => selectKeyframe(kf)}>@{kf.time.toFixed(2)}s</button>
-                  <button className="test-btn delete-btn" onClick={() => deleteKeyframe(kf.id)}>🗑️</button>
+              {timelineKeyframes.map((kf) => (
+                <div
+                  key={kf.id}
+                  className="keyframe-item"
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
+                  <button className="test-btn" onClick={() => selectKeyframe(kf)}>
+                    @{kf.time.toFixed(2)}s
+                  </button>
+                  <button className="test-btn delete-btn" onClick={() => deleteKeyframe(kf.id)}>
+                    🗑️
+                  </button>
                 </div>
               ))}
               {timelineKeyframes.length === 0 && <p>No keyframes yet.</p>}
@@ -944,32 +1252,82 @@ function Scene01CameraTest() {
           {/* Record + Unlimited */}
           <div className="unlimited-mode-section">
             <div className="unlimited-mode-toggle">
-              <label><input type="checkbox" checked={unlimitedMode} onChange={() => setUnlimitedMode(!unlimitedMode)} /><span className="unlimited-label">🔓 Camera Unlimited Mode</span></label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={unlimitedMode}
+                  onChange={() => setUnlimitedMode(!unlimitedMode)}
+                />
+                <span className="unlimited-label">🔓 Camera Unlimited Mode</span>
+              </label>
             </div>
             <div className="record-section">
-              {!isRecording ? <button className="record-btn" onClick={startRecording}>🎥 Record Scene</button> : <button className="record-btn recording" onClick={stopRecording}>⏹️ Stop Recording</button>}
+              {!isRecording ? (
+                <button className="record-btn" onClick={startRecording}>
+                  🎥 Record Scene
+                </button>
+              ) : (
+                <button className="record-btn recording" onClick={stopRecording}>
+                  ⏹️ Stop Recording
+                </button>
+              )}
             </div>
           </div>
 
           {/* Grass & Butterfly Controls */}
           <div className="character-controls">
             <h4>🌿 Grass</h4>
-            <label className="asset-toggle-item"><input type="checkbox" checked={grassEnabled} onChange={() => setGrassEnabled(!grassEnabled)} /><span className="asset-toggle-label">Enable Grass</span></label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={grassEnabled}
+                onChange={() => setGrassEnabled(!grassEnabled)}
+              />
+              <span className="asset-toggle-label">Enable Grass</span>
+            </label>
             <div className="slider-row">
               <label>Wind Speed:</label>
-              <input type="range" min="0.5" max="10" step="0.5" value={grassWindSpeed} onChange={(e) => setGrassWindSpeed(Number(e.target.value))} />
+              <input
+                type="range"
+                min="0.5"
+                max="10"
+                step="0.5"
+                value={grassWindSpeed}
+                onChange={(e) => setGrassWindSpeed(Number(e.target.value))}
+              />
               <span>{grassWindSpeed}</span>
             </div>
             <h4>🦋 Butterflies</h4>
-            <label className="asset-toggle-item"><input type="checkbox" checked={butterflyEnabled} onChange={() => setButterflyEnabled(!butterflyEnabled)} /><span className="asset-toggle-label">Enable Butterflies</span></label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={butterflyEnabled}
+                onChange={() => setButterflyEnabled(!butterflyEnabled)}
+              />
+              <span className="asset-toggle-label">Enable Butterflies</span>
+            </label>
             <div className="slider-row">
               <label>Count:</label>
-              <input type="range" min="1" max="10" step="1" value={butterflyCount} onChange={(e) => setButterflyCount(Number(e.target.value))} />
+              <input
+                type="range"
+                min="1"
+                max="10"
+                step="1"
+                value={butterflyCount}
+                onChange={(e) => setButterflyCount(Number(e.target.value))}
+              />
               <span>{butterflyCount}</span>
             </div>
             <div className="slider-row">
               <label>Speed:</label>
-              <input type="range" min="0.5" max="6" step="0.5" value={butterflySpeed} onChange={(e) => setButterflySpeed(Number(e.target.value))} />
+              <input
+                type="range"
+                min="0.5"
+                max="6"
+                step="0.5"
+                value={butterflySpeed}
+                onChange={(e) => setButterflySpeed(Number(e.target.value))}
+              />
               <span>{butterflySpeed}</span>
             </div>
           </div>
@@ -979,7 +1337,14 @@ function Scene01CameraTest() {
             <strong>🌄 Background</strong>
             <div className="slider-row">
               <label>Scale:</label>
-              <input type="range" min="0.5" max="2" step="0.1" value={backgroundScale} onChange={(e) => setBackgroundScale(Number(e.target.value))} />
+              <input
+                type="range"
+                min="0.5"
+                max="2"
+                step="0.1"
+                value={backgroundScale}
+                onChange={(e) => setBackgroundScale(Number(e.target.value))}
+              />
               <span>{backgroundScale.toFixed(1)}x</span>
             </div>
           </div>
@@ -987,22 +1352,63 @@ function Scene01CameraTest() {
           {/* Layer Visibility */}
           <div className="asset-visibility-panel">
             <strong>🎨 Layers</strong>
-            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.background} onChange={() => setLayerVisibility(p => ({ ...p, background: !p.background }))} /><span className="asset-toggle-label">Background</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.kopanang} onChange={() => setLayerVisibility(p => ({ ...p, kopanang: !p.kopanang }))} /><span className="asset-toggle-label">Kopanang</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.lerato} onChange={() => setLayerVisibility(p => ({ ...p, lerato: !p.lerato }))} /><span className="asset-toggle-label">Lerato</span></label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={layerVisibility.background}
+                onChange={() => setLayerVisibility((p) => ({ ...p, background: !p.background }))}
+              />
+              <span className="asset-toggle-label">Background</span>
+            </label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={layerVisibility.kopanang}
+                onChange={() => setLayerVisibility((p) => ({ ...p, kopanang: !p.kopanang }))}
+              />
+              <span className="asset-toggle-label">Kopanang</span>
+            </label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={layerVisibility.lerato}
+                onChange={() => setLayerVisibility((p) => ({ ...p, lerato: !p.lerato }))}
+              />
+              <span className="asset-toggle-label">Lerato</span>
+            </label>
           </div>
 
           {/* Character Controls */}
           <div className="character-controls">
             <h4>Select Character</h4>
             <div className="pose-buttons">
-              <button className={`test-btn ${selectedCharacter === 'kopanang' ? 'active' : ''}`} onClick={() => setSelectedCharacter('kopanang')}>Kopanang</button>
-              <button className={`test-btn ${selectedCharacter === 'lerato' ? 'active' : ''}`} onClick={() => setSelectedCharacter('lerato')}>Lerato</button>
+              <button
+                className={`test-btn ${selectedCharacter === 'kopanang' ? 'active' : ''}`}
+                onClick={() => setSelectedCharacter('kopanang')}
+              >
+                Kopanang
+              </button>
+              <button
+                className={`test-btn ${selectedCharacter === 'lerato' ? 'active' : ''}`}
+                onClick={() => setSelectedCharacter('lerato')}
+              >
+                Lerato
+              </button>
             </div>
             <h4>Select Mode</h4>
             <div className="pose-buttons">
-              <button className={`test-btn ${selectMode === 'character' ? 'active' : ''}`} onClick={() => setSelectMode('character')}>🗣️ Character</button>
-              <button className={`test-btn ${selectMode === 'mouth' ? 'active' : ''}`} onClick={() => setSelectMode('mouth')}>👄 Mouth</button>
+              <button
+                className={`test-btn ${selectMode === 'character' ? 'active' : ''}`}
+                onClick={() => setSelectMode('character')}
+              >
+                🗣️ Character
+              </button>
+              <button
+                className={`test-btn ${selectMode === 'mouth' ? 'active' : ''}`}
+                onClick={() => setSelectMode('mouth')}
+              >
+                👄 Mouth
+              </button>
             </div>
             <h4>🎥 Camera</h4>
             <div className="nudge-buttons">
@@ -1033,11 +1439,39 @@ function Scene01CameraTest() {
               <button className="nudge-btn" onClick={() => nudgeMouthScale(selectedCharacter, 1)}>+</button>
             </div>
             <h4>🎨 Outline</h4>
-            <label className="asset-toggle-item"><input type="checkbox" checked={showSelectionOutline} onChange={() => setShowSelectionOutline(!showSelectionOutline)} /><span className="asset-toggle-label">Character Outline</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={showMouthOutline} onChange={() => setShowMouthOutline(!showMouthOutline)} /><span className="asset-toggle-label">Mouth Outline</span></label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={showSelectionOutline}
+                onChange={() => setShowSelectionOutline(!showSelectionOutline)}
+              />
+              <span className="asset-toggle-label">Character Outline</span>
+            </label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={showMouthOutline}
+                onChange={() => setShowMouthOutline(!showMouthOutline)}
+              />
+              <span className="asset-toggle-label">Mouth Outline</span>
+            </label>
             <h4>🔒 Lock Position</h4>
-            <label className="asset-toggle-item"><input type="checkbox" checked={lockKopanangPos} onChange={() => setLockKopanangPos(!lockKopanangPos)} /><span className="asset-toggle-label">Lock Kopanang</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={lockLeratoPos} onChange={() => setLockLeratoPos(!lockLeratoPos)} /><span className="asset-toggle-label">Lock Lerato</span></label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={lockKopanangPos}
+                onChange={() => setLockKopanangPos(!lockKopanangPos)}
+              />
+              <span className="asset-toggle-label">Lock Kopanang</span>
+            </label>
+            <label className="asset-toggle-item">
+              <input
+                type="checkbox"
+                checked={lockLeratoPos}
+                onChange={() => setLockLeratoPos(!lockLeratoPos)}
+              />
+              <span className="asset-toggle-label">Lock Lerato</span>
+            </label>
             <div className="pose-buttons">
               <button className="test-btn" onClick={resetKopanangPos}>Reset Kopanang</button>
               <button className="test-btn" onClick={resetLeratoPos}>Reset Lerato</button>
@@ -1049,17 +1483,43 @@ function Scene01CameraTest() {
           <div className="character-controls">
             <h4>🎙️ Lip Sync Audio</h4>
             <div className="audio-upload">
-              <input type="file" accept="audio/*" onChange={(e) => handleAudioUpload(e, 'kopanang')} className="audio-file-input" id="kopanang-audio" />
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={(e) => handleAudioUpload(e, 'kopanang')}
+                className="audio-file-input"
+                id="kopanang-audio"
+              />
               <label htmlFor="kopanang-audio" className="audio-upload-label">Kopanang Audio</label>
             </div>
             <div className="audio-upload">
-              <input type="file" accept="audio/*" onChange={(e) => handleAudioUpload(e, 'lerato')} className="audio-file-input" id="lerato-audio" />
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={(e) => handleAudioUpload(e, 'lerato')}
+                className="audio-file-input"
+                id="lerato-audio"
+              />
               <label htmlFor="lerato-audio" className="audio-upload-label">Lerato Audio</label>
             </div>
             <div className="pose-buttons">
-              <button className="test-btn" onClick={() => playAudioForCharacter('kopanang')} disabled={!kopanangAudioUrl}>▶ Kopanang</button>
-              <button className="test-btn" onClick={() => playAudioForCharacter('lerato')} disabled={!leratoAudioUrl}>▶ Lerato</button>
-              <button className="test-btn" onClick={stopAudio} disabled={!audioPlaying}>⏹ Stop</button>
+              <button
+                className="test-btn"
+                onClick={() => playAudioForCharacter('kopanang')}
+                disabled={!kopanangAudioUrl}
+              >
+                ▶ Kopanang
+              </button>
+              <button
+                className="test-btn"
+                onClick={() => playAudioForCharacter('lerato')}
+                disabled={!leratoAudioUrl}
+              >
+                ▶ Lerato
+              </button>
+              <button className="test-btn" onClick={stopAudio} disabled={!audioPlaying}>
+                ⏹ Stop
+              </button>
             </div>
           </div>
 
@@ -1068,15 +1528,41 @@ function Scene01CameraTest() {
             <div className="character-controls">
               <h4>Kopanang Poses</h4>
               <div className="pose-buttons">
-                {KOPANANG_SIT.map(p => <button key={p.id} className={`test-btn ${selectedKopanangPose === p.id ? 'active' : ''}`} onClick={() => setSelectedKopanangPose(p.id)}>{p.label}</button>)}
+                {KOPANANG_SIT.map((p) => (
+                  <button
+                    key={p.id}
+                    className={`test-btn ${selectedKopanangPose === p.id ? 'active' : ''}`}
+                    onClick={() => setSelectedKopanangPose(p.id)}
+                  >
+                    {p.label}
+                  </button>
+                ))}
               </div>
               <h4>Lerato Poses</h4>
               <div className="pose-buttons">
-                {LERATO_SIT.map(p => <button key={p.id} className={`test-btn ${selectedLeratoPose === p.id ? 'active' : ''}`} onClick={() => setSelectedLeratoPose(p.id)}>{p.label}</button>)}
+                {LERATO_SIT.map((p) => (
+                  <button
+                    key={p.id}
+                    className={`test-btn ${selectedLeratoPose === p.id ? 'active' : ''}`}
+                    onClick={() => setSelectedLeratoPose(p.id)}
+                  >
+                    {p.label}
+                  </button>
+                ))}
               </div>
               <h4>Manual Talking</h4>
-              <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>{kopanangTalking ? '⏹ Stop Kopanang' : '🗣️ Talk Kopanang'}</button>
-              <button className={`test-btn ${leratoTalking ? 'active' : ''}`} onClick={() => setLeratoTalking(!leratoTalking)}>{leratoTalking ? '⏹ Stop Lerato' : '🗣️ Talk Lerato'}</button>
+              <button
+                className={`test-btn ${kopanangTalking ? 'active' : ''}`}
+                onClick={() => setKopanangTalking(!kopanangTalking)}
+              >
+                {kopanangTalking ? '⏹ Stop Kopanang' : '🗣️ Talk Kopanang'}
+              </button>
+              <button
+                className={`test-btn ${leratoTalking ? 'active' : ''}`}
+                onClick={() => setLeratoTalking(!leratoTalking)}
+              >
+                {leratoTalking ? '⏹ Stop Lerato' : '🗣️ Talk Lerato'}
+              </button>
             </div>
           )}
 
@@ -1091,7 +1577,9 @@ function Scene01CameraTest() {
                 <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'y', 1)}>↓</button>
                 <button className="test-btn" onClick={() => resetMouth('kopanang')}>Reset</button>
               </div>
-              <span className="mouth-pos-display">X: {kopanangMouthPos.x}, Y: {kopanangMouthPos.y}</span>
+              <span className="mouth-pos-display">
+                X: {kopanangMouthPos.x}, Y: {kopanangMouthPos.y}
+              </span>
               <h4>👄 Lerato Mouth</h4>
               <div className="pose-buttons">
                 <button className="test-btn" onClick={() => nudgeMouth('lerato', 'y', -1)}>↑</button>
@@ -1100,13 +1588,22 @@ function Scene01CameraTest() {
                 <button className="test-btn" onClick={() => nudgeMouth('lerato', 'y', 1)}>↓</button>
                 <button className="test-btn" onClick={() => resetMouth('lerato')}>Reset</button>
               </div>
-              <span className="mouth-pos-display">X: {leratoMouthPos.x}, Y: {leratoMouthPos.y}</span>
+              <span className="mouth-pos-display">
+                X: {leratoMouthPos.x}, Y: {leratoMouthPos.y}
+              </span>
             </div>
           )}
 
           <div className="slider-row">
             <label>Camera Speed:</label>
-            <input type="range" min="0.1" max="10" step="0.1" value={cameraSpeed} onChange={(e) => setCameraSpeed(Number(e.target.value))} />
+            <input
+              type="range"
+              min="0.1"
+              max="10"
+              step="0.1"
+              value={cameraSpeed}
+              onChange={(e) => setCameraSpeed(Number(e.target.value))}
+            />
             <span>{cameraSpeed}x</span>
           </div>
 
