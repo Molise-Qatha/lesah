@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Scene01CameraTest.css';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 import { drawSceneToCanvas } from './Scene01Canvas';
+import Scene01Controls from './Scene01Controls';
 
 import backgroundImg from '../../../assets/scene01/background.png';
 
@@ -147,7 +148,6 @@ function Scene01CameraTest() {
   const cameraDragStartRef = useRef({ mouseX: 0, mouseY: 0, camX: 0, camY: 0 });
   const stageRef = useRef(null);
 
-  // Refs for DOM img elements (used by canvas draw)
   const backgroundImgRef = useRef(null);
   const kopanangImgRef = useRef(null);
   const leratoImgRef = useRef(null);
@@ -274,8 +274,11 @@ function Scene01CameraTest() {
     const cx = camera.x * depth;
     const cy = camera.y * depth * 0.5;
     const fwd = (camera.forward / 100) * depth * 2;
+    const scaledX = (pos.x + cx - fwd) * backgroundScale;
+    const scaledY = (pos.y + cy) * backgroundScale;
+    const scaledSize = pos.scale * backgroundScale;
     return {
-      transform: `translate(${pos.x + cx - fwd}px, ${pos.y + cy}px) scale(${pos.scale})`,
+      transform: `translate(${scaledX}px, ${scaledY}px) scale(${scaledSize})`,
       opacity: 1,
       transformOrigin: 'center bottom',
     };
@@ -365,7 +368,6 @@ function Scene01CameraTest() {
     scaleCharacter(e.deltaY > 0 ? -0.05 : 0.05);
   };
 
-  // Manual mouth cycling
   useEffect(() => {
     if ((kopanangTalking || leratoTalking) && !audioPlaying) {
       mouthTimerRef.current = setInterval(
@@ -503,7 +505,6 @@ function Scene01CameraTest() {
     setGrassPositions(GRASS_ASSETS.map((g) => ({ x: g.x, y: g.y, size: g.size })));
   };
 
-  // Audio lip sync
   const initializeAudioContext = () => {
     if (!audioContextRef.current) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -575,7 +576,6 @@ function Scene01CameraTest() {
     };
   }, []);
 
-  // Timeline
   const addKeyframe = () => {
     const kf = {
       id: Date.now(), time: currentTime,
@@ -650,7 +650,7 @@ function Scene01CameraTest() {
 
   useEffect(() => () => { if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current); }, []);
 
-  // ============== CANVAS DRAW (uses Scene01Canvas.js) ==============
+  // Canvas draw loop
   useEffect(() => {
     let animId;
     const animate = () => {
@@ -658,25 +658,13 @@ function Scene01CameraTest() {
       if (canvas && imagesLoadedRef.current) {
         const ctx = canvas.getContext('2d');
         drawSceneToCanvas(canvas, ctx, {
-          stageRef,
-          imagesRef,
-          backgroundImgRef,
-          kopanangImgRef,
-          leratoImgRef,
-          kopanangMouthImgRef,
-          leratoMouthImgRef,
-          layerVisibility,
-          selectedKopanangPose,
-          selectedLeratoPose,
-          kopanangTalking,
-          leratoTalking,
-          mouthIndex,
-          grassEnabled,
-          grassSway,
-          grassPositions,
-          butterflyEnabled,
-          butterflies,
-          MOUTH_FRAMES,
+          stageRef, imagesRef,
+          backgroundImgRef, kopanangImgRef, leratoImgRef,
+          kopanangMouthImgRef, leratoMouthImgRef,
+          layerVisibility, selectedKopanangPose, selectedLeratoPose,
+          kopanangTalking, leratoTalking, mouthIndex,
+          grassEnabled, grassSway, grassPositions,
+          butterflyEnabled, butterflies, MOUTH_FRAMES,
         });
       }
       animId = requestAnimationFrame(animate);
@@ -684,20 +672,12 @@ function Scene01CameraTest() {
     animate();
     return () => cancelAnimationFrame(animId);
   }, [
-    layerVisibility,
-    selectedKopanangPose,
-    selectedLeratoPose,
-    kopanangTalking,
-    leratoTalking,
-    mouthIndex,
-    grassEnabled,
-    grassSway,
-    grassPositions,
-    butterflyEnabled,
-    butterflies,
+    layerVisibility, selectedKopanangPose, selectedLeratoPose,
+    kopanangTalking, leratoTalking, mouthIndex,
+    grassEnabled, grassSway, grassPositions,
+    butterflyEnabled, butterflies,
   ]);
 
-  // Recording
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -789,9 +769,7 @@ function Scene01CameraTest() {
                 {kopanangTalking && (
                   <div
                     style={{
-                      position: 'absolute',
-                      left: '50%',
-                      top: '50%',
+                      position: 'absolute', left: '50%', top: '50%',
                       width: `${30 * kopanangMouthScale}px`,
                       height: `${30 * kopanangMouthScale}px`,
                       transform: `translate(-50%, -50%) translate(${kopanangMouthPos.x}px, ${kopanangMouthPos.y}px)`,
@@ -801,12 +779,7 @@ function Scene01CameraTest() {
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
                   >
-                    <img
-                      ref={kopanangMouthImgRef}
-                      src={MOUTH_FRAMES[mouthIndex].src}
-                      alt="Mouth"
-                      style={{ width: '100%', height: '100%' }}
-                    />
+                    <img ref={kopanangMouthImgRef} src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
                   </div>
                 )}
               </div>
@@ -833,9 +806,7 @@ function Scene01CameraTest() {
                 {leratoTalking && (
                   <div
                     style={{
-                      position: 'absolute',
-                      left: '50%',
-                      top: '50%',
+                      position: 'absolute', left: '50%', top: '50%',
                       width: `${30 * leratoMouthScale}px`,
                       height: `${30 * leratoMouthScale}px`,
                       transform: `translate(-50%, -50%) translate(${leratoMouthPos.x}px, ${leratoMouthPos.y}px)`,
@@ -845,12 +816,7 @@ function Scene01CameraTest() {
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
                   >
-                    <img
-                      ref={leratoMouthImgRef}
-                      src={MOUTH_FRAMES[mouthIndex].src}
-                      alt="Mouth"
-                      style={{ width: '100%', height: '100%' }}
-                    />
+                    <img ref={leratoMouthImgRef} src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
                   </div>
                 )}
               </div>
@@ -861,7 +827,7 @@ function Scene01CameraTest() {
                 {grassPositions.map((g, idx) => {
                   const img = imagesRef.current[`grass_${idx}`];
                   if (!img) return null;
-                  const w = g.size;
+                  const w = g.size * backgroundScale;
                   const h = img.width ? (img.height / img.width) * w : w;
                   return (
                     <img
@@ -870,8 +836,8 @@ function Scene01CameraTest() {
                       alt="grass"
                       style={{
                         position: 'absolute',
-                        left: `calc(50% + ${g.x}px)`,
-                        top: `calc(50% + ${g.y}px)`,
+                        left: `calc(50% + ${g.x * backgroundScale}px)`,
+                        top: `calc(50% + ${g.y * backgroundScale}px)`,
                         width: `${w}px`,
                         height: `${h}px`,
                         transform: `translate(-50%, -100%) rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
@@ -888,7 +854,7 @@ function Scene01CameraTest() {
               butterflies.map((bf) => {
                 const img = imagesRef.current[`butterfly_${bf.frame}`];
                 if (!img) return null;
-                const w = 60 * bf.scale;
+                const w = 60 * bf.scale * backgroundScale;
                 const h = img.width ? (img.height / img.width) * w : w;
                 return (
                   <img
@@ -897,8 +863,8 @@ function Scene01CameraTest() {
                     alt={`butterfly-${bf.id}`}
                     style={{
                       position: 'absolute',
-                      left: `calc(50% + ${bf.x}px)`,
-                      top: `calc(50% + ${bf.y}px)`,
+                      left: `calc(50% + ${bf.x * backgroundScale}px)`,
+                      top: `calc(50% + ${bf.y * backgroundScale}px)`,
                       width: `${w}px`,
                       height: `${h}px`,
                       transform: 'translate(-50%, -50%)',
@@ -914,248 +880,45 @@ function Scene01CameraTest() {
           {isRecording && <div className="recording-indicator"><span className="rec-dot"></span> REC</div>}
         </div>
 
-        <div className="camera-controls">
-          <div className="camera-controls-header">
-            <h3>Scene Editor</h3>
-            <button className={`debug-toggle ${debugMode ? 'active' : ''}`} onClick={() => setDebugMode(!debugMode)}>🐛 Toggle Controls</button>
-          </div>
-
-          <div className="timeline-panel">
-            <h3>🎬 Timeline</h3>
-            <div className="timeline-controls">
-              <button className="test-btn" onClick={play} disabled={isPlaying || timelineKeyframes.length === 0}>▶ Play</button>
-              <button className="test-btn" onClick={pause} disabled={!isPlaying}>⏸ Pause</button>
-              <button className="test-btn" onClick={stop}>⏹ Stop</button>
-              <button className="test-btn" onClick={addKeyframe}>➕ Add Keyframe @ {currentTime.toFixed(2)}s</button>
-            </div>
-            <div className="timeline-duration">
-              <label>Duration: </label>
-              <input type="range" min="1" max="60" step="0.5" value={timelineDuration} onChange={(e) => setTimelineDuration(Number(e.target.value))} />
-              <span>{timelineDuration}s</span>
-            </div>
-            <div className="timeline-tracks">
-              <div className="timeline-bar" style={{ width: '100%', background: '#333', height: '20px', position: 'relative' }}>
-                <div className="playhead" style={{ left: `${(currentTime / timelineDuration) * 100}%`, position: 'absolute', top: '-5px', width: '2px', height: '30px', background: '#ffd700' }} />
-                {timelineKeyframes.map((kf) => (
-                  <div key={kf.id} className="keyframe-marker" style={{ left: `${(kf.time / timelineDuration) * 100}%`, position: 'absolute', top: 0, width: '8px', height: '20px', background: '#e94560', cursor: 'pointer' }} onClick={() => selectKeyframe(kf)} />
-                ))}
-              </div>
-            </div>
-            <div className="keyframe-list">
-              {timelineKeyframes.map((kf) => (
-                <div key={kf.id} className="keyframe-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <button className="test-btn" onClick={() => selectKeyframe(kf)}>@{kf.time.toFixed(2)}s</button>
-                  <button className="test-btn delete-btn" onClick={() => deleteKeyframe(kf.id)}>🗑️</button>
-                </div>
-              ))}
-              {timelineKeyframes.length === 0 && <p>No keyframes yet.</p>}
-            </div>
-          </div>
-
-          <div className="unlimited-mode-section">
-            <div className="unlimited-mode-toggle">
-              <label><input type="checkbox" checked={unlimitedMode} onChange={() => setUnlimitedMode(!unlimitedMode)} /><span className="unlimited-label">🔓 Camera Unlimited</span></label>
-            </div>
-            <div className="record-section">
-              {!isRecording
-                ? <button className="record-btn" onClick={startRecording}>🎥 Record Scene</button>
-                : <button className="record-btn recording" onClick={stopRecording}>⏹️ Stop Recording</button>}
-            </div>
-          </div>
-
-          <div className="character-controls">
-            <h4>🌿 Grass</h4>
-            <label className="asset-toggle-item">
-              <input type="checkbox" checked={grassEnabled} onChange={() => setGrassEnabled(!grassEnabled)} />
-              <span className="asset-toggle-label">Enable Grass</span>
-            </label>
-            <div className="slider-row">
-              <label>Wind Speed:</label>
-              <input type="range" min="0.5" max="10" step="0.5" value={grassWindSpeed} onChange={(e) => setGrassWindSpeed(Number(e.target.value))} />
-              <span>{grassWindSpeed}</span>
-            </div>
-            <p className="movement-hint">Selected Grass: <strong>#{selectedGrassIdx + 1}</strong></p>
-            <div className="pose-buttons">
-              {grassPositions.map((_, idx) => (
-                <button
-                  key={idx}
-                  className={`test-btn ${selectedGrassIdx === idx ? 'active' : ''}`}
-                  onClick={() => setSelectedGrassIdx(idx)}
-                >
-                  {idx + 1}
-                </button>
-              ))}
-            </div>
-            <h4>📍 Grass Position</h4>
-            <div className="nudge-buttons">
-              <button className="nudge-btn" onClick={() => nudgeGrass('y', -1)}>↑</button>
-              <button className="nudge-btn" onClick={() => nudgeGrass('x', -1)}>←</button>
-              <button className="nudge-btn" onClick={() => nudgeGrass('x', 1)}>→</button>
-              <button className="nudge-btn" onClick={() => nudgeGrass('y', 1)}>↓</button>
-            </div>
-            <h4>🔍 Grass Size</h4>
-            <div className="nudge-buttons">
-              <button className="nudge-btn" onClick={() => nudgeGrassSize(-1)}>−</button>
-              <button className="nudge-btn" onClick={() => nudgeGrassSize(1)}>+</button>
-            </div>
-            <button className="test-btn" onClick={resetGrassPositions}>Reset All Grass</button>
-          </div>
-
-          <div className="character-controls">
-            <h4>🦋 Butterflies</h4>
-            <label className="asset-toggle-item">
-              <input type="checkbox" checked={butterflyEnabled} onChange={() => setButterflyEnabled(!butterflyEnabled)} />
-              <span className="asset-toggle-label">Enable Butterflies</span>
-            </label>
-            <div className="slider-row">
-              <label>Count:</label>
-              <input type="range" min="1" max="10" step="1" value={butterflyCount} onChange={(e) => setButterflyCount(Number(e.target.value))} />
-              <span>{butterflyCount}</span>
-            </div>
-            <div className="slider-row">
-              <label>Speed:</label>
-              <input type="range" min="0.5" max="6" step="0.5" value={butterflySpeed} onChange={(e) => setButterflySpeed(Number(e.target.value))} />
-              <span>{butterflySpeed}</span>
-            </div>
-          </div>
-
-          <div className="background-controls">
-            <strong>🌄 Background</strong>
-            <div className="slider-row">
-              <label>Scale:</label>
-              <input type="range" min="0.5" max="2" step="0.1" value={backgroundScale} onChange={(e) => setBackgroundScale(Number(e.target.value))} />
-              <span>{backgroundScale.toFixed(1)}x</span>
-            </div>
-          </div>
-
-          <div className="asset-visibility-panel">
-            <strong>🎨 Layers</strong>
-            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.background} onChange={() => setLayerVisibility((p) => ({ ...p, background: !p.background }))} /><span className="asset-toggle-label">Background</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.kopanang} onChange={() => setLayerVisibility((p) => ({ ...p, kopanang: !p.kopanang }))} /><span className="asset-toggle-label">Kopanang</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={layerVisibility.lerato} onChange={() => setLayerVisibility((p) => ({ ...p, lerato: !p.lerato }))} /><span className="asset-toggle-label">Lerato</span></label>
-          </div>
-
-          <div className="character-controls">
-            <h4>Select Character</h4>
-            <div className="pose-buttons">
-              <button className={`test-btn ${selectedCharacter === 'kopanang' ? 'active' : ''}`} onClick={() => setSelectedCharacter('kopanang')}>Kopanang</button>
-              <button className={`test-btn ${selectedCharacter === 'lerato' ? 'active' : ''}`} onClick={() => setSelectedCharacter('lerato')}>Lerato</button>
-            </div>
-            <h4>Select Mode</h4>
-            <div className="pose-buttons">
-              <button className={`test-btn ${selectMode === 'character' ? 'active' : ''}`} onClick={() => setSelectMode('character')}>🗣️ Character</button>
-              <button className={`test-btn ${selectMode === 'mouth' ? 'active' : ''}`} onClick={() => setSelectMode('mouth')}>👄 Mouth</button>
-            </div>
-            <h4>🎥 Camera</h4>
-            <div className="nudge-buttons">
-              <button className="nudge-btn" onClick={() => nudgeCamera('y', -1)}>↑</button>
-              <button className="nudge-btn" onClick={() => nudgeCamera('x', -1)}>←</button>
-              <button className="nudge-btn" onClick={() => nudgeCamera('x', 1)}>→</button>
-              <button className="nudge-btn" onClick={() => nudgeCamera('y', 1)}>↓</button>
-            </div>
-            <div className="nudge-buttons">
-              <button className="nudge-btn" onClick={() => nudgeCameraForward(-1)}>− Zoom</button>
-              <button className="nudge-btn" onClick={() => nudgeCameraForward(1)}>+ Zoom</button>
-            </div>
-            <h4>🎯 Move Character</h4>
-            <div className="nudge-buttons">
-              <button className="nudge-btn" onClick={() => nudgeCharacter('y', -1)}>↑</button>
-              <button className="nudge-btn" onClick={() => nudgeCharacter('x', -1)}>←</button>
-              <button className="nudge-btn" onClick={() => nudgeCharacter('x', 1)}>→</button>
-              <button className="nudge-btn" onClick={() => nudgeCharacter('y', 1)}>↓</button>
-            </div>
-            <h4>🔍 Character Scale</h4>
-            <div className="nudge-buttons">
-              <button className="nudge-btn" onClick={() => nudgeScale(-1)}>−</button>
-              <button className="nudge-btn" onClick={() => nudgeScale(1)}>+</button>
-            </div>
-            <h4>👄 Mouth Scale</h4>
-            <div className="nudge-buttons">
-              <button className="nudge-btn" onClick={() => nudgeMouthScale(selectedCharacter, -1)}>−</button>
-              <button className="nudge-btn" onClick={() => nudgeMouthScale(selectedCharacter, 1)}>+</button>
-            </div>
-            <h4>🎨 Outline</h4>
-            <label className="asset-toggle-item"><input type="checkbox" checked={showSelectionOutline} onChange={() => setShowSelectionOutline(!showSelectionOutline)} /><span className="asset-toggle-label">Character Outline</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={showMouthOutline} onChange={() => setShowMouthOutline(!showMouthOutline)} /><span className="asset-toggle-label">Mouth Outline</span></label>
-            <h4>🔒 Lock Position</h4>
-            <label className="asset-toggle-item"><input type="checkbox" checked={lockKopanangPos} onChange={() => setLockKopanangPos(!lockKopanangPos)} /><span className="asset-toggle-label">Lock Kopanang</span></label>
-            <label className="asset-toggle-item"><input type="checkbox" checked={lockLeratoPos} onChange={() => setLockLeratoPos(!lockLeratoPos)} /><span className="asset-toggle-label">Lock Lerato</span></label>
-            <div className="pose-buttons">
-              <button className="test-btn" onClick={resetKopanangPos}>Reset Kopanang</button>
-              <button className="test-btn" onClick={resetLeratoPos}>Reset Lerato</button>
-              <button className="test-btn" onClick={resetCamera}>Reset Camera</button>
-            </div>
-          </div>
-
-          <div className="character-controls">
-            <h4>🎙️ Lip Sync Audio</h4>
-            <div className="audio-upload">
-              <input type="file" accept="audio/*" onChange={(e) => handleAudioUpload(e, 'kopanang')} className="audio-file-input" id="kopanang-audio" />
-              <label htmlFor="kopanang-audio" className="audio-upload-label">Kopanang Audio</label>
-            </div>
-            <div className="audio-upload">
-              <input type="file" accept="audio/*" onChange={(e) => handleAudioUpload(e, 'lerato')} className="audio-file-input" id="lerato-audio" />
-              <label htmlFor="lerato-audio" className="audio-upload-label">Lerato Audio</label>
-            </div>
-            <div className="pose-buttons">
-              <button className="test-btn" onClick={() => playAudioForCharacter('kopanang')} disabled={!kopanangAudioUrl}>▶ Kopanang</button>
-              <button className="test-btn" onClick={() => playAudioForCharacter('lerato')} disabled={!leratoAudioUrl}>▶ Lerato</button>
-              <button className="test-btn" onClick={stopAudio} disabled={!audioPlaying}>⏹ Stop</button>
-            </div>
-          </div>
-
-          {debugMode && (
-            <div className="character-controls">
-              <h4>Kopanang Poses</h4>
-              <div className="pose-buttons">
-                {KOPANANG_SIT.map((p) => <button key={p.id} className={`test-btn ${selectedKopanangPose === p.id ? 'active' : ''}`} onClick={() => setSelectedKopanangPose(p.id)}>{p.label}</button>)}
-              </div>
-              <h4>Lerato Poses</h4>
-              <div className="pose-buttons">
-                {LERATO_SIT.map((p) => <button key={p.id} className={`test-btn ${selectedLeratoPose === p.id ? 'active' : ''}`} onClick={() => setSelectedLeratoPose(p.id)}>{p.label}</button>)}
-              </div>
-              <h4>Manual Talking</h4>
-              <button className={`test-btn ${kopanangTalking ? 'active' : ''}`} onClick={() => setKopanangTalking(!kopanangTalking)}>{kopanangTalking ? '⏹ Stop Kopanang' : '🗣️ Talk Kopanang'}</button>
-              <button className={`test-btn ${leratoTalking ? 'active' : ''}`} onClick={() => setLeratoTalking(!leratoTalking)}>{leratoTalking ? '⏹ Stop Lerato' : '🗣️ Talk Lerato'}</button>
-            </div>
-          )}
-
-          {debugMode && (
-            <div className="character-controls">
-              <h4>👄 Kopanang Mouth</h4>
-              <div className="pose-buttons">
-                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'y', -1)}>↑</button>
-                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'x', -1)}>←</button>
-                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'x', 1)}>→</button>
-                <button className="test-btn" onClick={() => nudgeMouth('kopanang', 'y', 1)}>↓</button>
-                <button className="test-btn" onClick={() => resetMouth('kopanang')}>Reset</button>
-              </div>
-              <span className="mouth-pos-display">X: {kopanangMouthPos.x}, Y: {kopanangMouthPos.y}</span>
-              <h4>👄 Lerato Mouth</h4>
-              <div className="pose-buttons">
-                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'y', -1)}>↑</button>
-                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'x', -1)}>←</button>
-                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'x', 1)}>→</button>
-                <button className="test-btn" onClick={() => nudgeMouth('lerato', 'y', 1)}>↓</button>
-                <button className="test-btn" onClick={() => resetMouth('lerato')}>Reset</button>
-              </div>
-              <span className="mouth-pos-display">X: {leratoMouthPos.x}, Y: {leratoMouthPos.y}</span>
-            </div>
-          )}
-
-          <div className="slider-row">
-            <label>Camera Speed:</label>
-            <input type="range" min="0.1" max="10" step="0.1" value={cameraSpeed} onChange={(e) => setCameraSpeed(Number(e.target.value))} />
-            <span>{cameraSpeed}x</span>
-          </div>
-
-          <div className="keyboard-hints">
-            <p><kbd>W</kbd> Push Forward</p>
-            <p><kbd>S</kbd> Pull Back</p>
-            <p><kbd>A</kbd> Left</p>
-            <p><kbd>D</kbd> Right</p>
-          </div>
-        </div>
+        <Scene01Controls
+          debugMode={debugMode} setDebugMode={setDebugMode}
+          timelineKeyframes={timelineKeyframes} currentTime={currentTime}
+          timelineDuration={timelineDuration} setTimelineDuration={setTimelineDuration}
+          isPlaying={isPlaying}
+          play={play} pause={pause} stop={stop}
+          addKeyframe={addKeyframe} selectKeyframe={selectKeyframe} deleteKeyframe={deleteKeyframe}
+          isRecording={isRecording} startRecording={startRecording} stopRecording={stopRecording}
+          unlimitedMode={unlimitedMode} setUnlimitedMode={setUnlimitedMode}
+          nudgeCamera={nudgeCamera} nudgeCameraForward={nudgeCameraForward} resetCamera={resetCamera}
+          cameraSpeed={cameraSpeed} setCameraSpeed={setCameraSpeed}
+          backgroundScale={backgroundScale} setBackgroundScale={setBackgroundScale}
+          layerVisibility={layerVisibility} setLayerVisibility={setLayerVisibility}
+          grassEnabled={grassEnabled} setGrassEnabled={setGrassEnabled}
+          grassWindSpeed={grassWindSpeed} setGrassWindSpeed={setGrassWindSpeed}
+          grassPositions={grassPositions} selectedGrassIdx={selectedGrassIdx} setSelectedGrassIdx={setSelectedGrassIdx}
+          nudgeGrass={nudgeGrass} nudgeGrassSize={nudgeGrassSize} resetGrassPositions={resetGrassPositions}
+          butterflyEnabled={butterflyEnabled} setButterflyEnabled={setButterflyEnabled}
+          butterflyCount={butterflyCount} setButterflyCount={setButterflyCount}
+          butterflySpeed={butterflySpeed} setButterflySpeed={setButterflySpeed}
+          selectedCharacter={selectedCharacter} setSelectedCharacter={setSelectedCharacter}
+          selectMode={selectMode} setSelectMode={setSelectMode}
+          nudgeCharacter={nudgeCharacter} nudgeScale={nudgeScale} nudgeMouthScale={nudgeMouthScale}
+          showSelectionOutline={showSelectionOutline} setShowSelectionOutline={setShowSelectionOutline}
+          showMouthOutline={showMouthOutline} setShowMouthOutline={setShowMouthOutline}
+          lockKopanangPos={lockKopanangPos} setLockKopanangPos={setLockKopanangPos}
+          lockLeratoPos={lockLeratoPos} setLockLeratoPos={setLockLeratoPos}
+          resetKopanangPos={resetKopanangPos} resetLeratoPos={resetLeratoPos}
+          kopanangAudioUrl={kopanangAudioUrl} leratoAudioUrl={leratoAudioUrl}
+          handleAudioUpload={handleAudioUpload} playAudioForCharacter={playAudioForCharacter} stopAudio={stopAudio}
+          audioPlaying={audioPlaying}
+          KOPANANG_SIT={KOPANANG_SIT} LERATO_SIT={LERATO_SIT}
+          selectedKopanangPose={selectedKopanangPose} setSelectedKopanangPose={setSelectedKopanangPose}
+          selectedLeratoPose={selectedLeratoPose} setSelectedLeratoPose={setSelectedLeratoPose}
+          kopanangTalking={kopanangTalking} setKopanangTalking={setKopanangTalking}
+          leratoTalking={leratoTalking} setLeratoTalking={setLeratoTalking}
+          kopanangMouthPos={kopanangMouthPos} leratoMouthPos={leratoMouthPos}
+          nudgeMouth={nudgeMouth} resetMouth={resetMouth}
+        />
       </div>
     </div>
   );
