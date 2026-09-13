@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Scene01CameraTest.css';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
+import { drawSceneToCanvas } from './Scene01Canvas';
 
 import backgroundImg from '../../../assets/scene01/background.png';
 
@@ -146,6 +147,13 @@ function Scene01CameraTest() {
   const cameraDragStartRef = useRef({ mouseX: 0, mouseY: 0, camX: 0, camY: 0 });
   const stageRef = useRef(null);
 
+  // Refs for DOM img elements (used by canvas draw)
+  const backgroundImgRef = useRef(null);
+  const kopanangImgRef = useRef(null);
+  const leratoImgRef = useRef(null);
+  const kopanangMouthImgRef = useRef(null);
+  const leratoMouthImgRef = useRef(null);
+
   const [isRecording, setIsRecording] = useState(false);
   const isRecordingRef = useRef(false);
   const canvasRef = useRef(null);
@@ -164,6 +172,7 @@ function Scene01CameraTest() {
   const playbackFrameRef = useRef(null);
   const playbackStartTimeRef = useRef(null);
 
+  // Preload all images
   useEffect(() => {
     let loaded = 0;
     const total =
@@ -189,6 +198,7 @@ function Scene01CameraTest() {
     BUTTERFLY_FRAMES.forEach((b, i) => (imagesRef.current[`butterfly_${i}`] = loadImage(b)));
   }, []);
 
+  // Init butterflies
   useEffect(() => {
     const newB = [];
     for (let i = 0; i < butterflyCount; i++) {
@@ -206,6 +216,7 @@ function Scene01CameraTest() {
     setButterflies(newB);
   }, [butterflyCount, butterflySpeed]);
 
+  // Animate butterflies
   useEffect(() => {
     if (!butterflyEnabled) return;
     let id;
@@ -230,6 +241,7 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [butterflyEnabled]);
 
+  // Animate grass sway
   useEffect(() => {
     if (!grassEnabled) return;
     let id, t = 0;
@@ -353,6 +365,7 @@ function Scene01CameraTest() {
     scaleCharacter(e.deltaY > 0 ? -0.05 : 0.05);
   };
 
+  // Manual mouth cycling
   useEffect(() => {
     if ((kopanangTalking || leratoTalking) && !audioPlaying) {
       mouthTimerRef.current = setInterval(
@@ -490,6 +503,7 @@ function Scene01CameraTest() {
     setGrassPositions(GRASS_ASSETS.map((g) => ({ x: g.x, y: g.y, size: g.size })));
   };
 
+  // Audio lip sync
   const initializeAudioContext = () => {
     if (!audioContextRef.current) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -561,6 +575,7 @@ function Scene01CameraTest() {
     };
   }, []);
 
+  // Timeline
   const addKeyframe = () => {
     const kf = {
       id: Date.now(), time: currentTime,
@@ -635,134 +650,54 @@ function Scene01CameraTest() {
 
   useEffect(() => () => { if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current); }, []);
 
-  // ============== CANVAS DRAW (FIXED: bottom-center anchor) ==============
-  const drawSceneToCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !imagesLoadedRef.current) return;
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width, height = canvas.height;
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, width, height);
-
-    // Background
-    const bgImg = imagesRef.current['background'];
-    if (layerVisibility.background && bgImg) {
-      const t = getBackgroundTransform();
-      const txM = t.transform.match(/translate\(([-\d.]+)px, ([-\d.]+)px\)/);
-      const sM = t.transform.match(/scale\(([\d.]+)\)/);
-      const tx = txM ? parseFloat(txM[1]) : 0;
-      const ty = txM ? parseFloat(txM[2]) : 0;
-      const sc = sM ? parseFloat(sM[1]) : 1;
-      ctx.save();
-      ctx.translate(width / 2 + tx, height / 2 + ty);
-      ctx.scale(sc, sc);
-      ctx.drawImage(bgImg, -width, -height, width * 2, height * 2);
-      ctx.restore();
-    }
-
-    // Kopanang — bottom-center anchor
-    const kopImg = imagesRef.current[`kopanang_${selectedKopanangPose}`];
-    if (layerVisibility.kopanang && kopImg) {
-      const pos = kopanangPos;
-      const depth = 0.8;
-      const cx = camera.x * depth, cy = camera.y * depth * 0.5;
-      const fwd = (camera.forward / 100) * depth * 2;
-      const chX = width / 2 + pos.x + cx - fwd;
-      const chY = height / 2 + pos.y + cy;
-
-      ctx.save();
-      ctx.translate(chX, chY);
-      ctx.scale(pos.scale, pos.scale);
-      ctx.drawImage(kopImg, -kopImg.width / 2, -kopImg.height);
-      ctx.restore();
-
-      if (kopanangTalking) {
-        const m = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
-        if (m) {
-          const mouthOffX = pos.scale * kopanangMouthPos.x;
-          const mouthOffY = pos.scale * (kopanangMouthPos.y - kopImg.height / 2);
-          ctx.save();
-          ctx.translate(chX + mouthOffX, chY + mouthOffY);
-          ctx.scale(kopanangMouthScale * pos.scale, kopanangMouthScale * pos.scale);
-          ctx.drawImage(m, -15, -15, 30, 30);
-          ctx.restore();
-        }
-      }
-    }
-
-    // Lerato — bottom-center anchor
-    const lerImg = imagesRef.current[`lerato_${selectedLeratoPose}`];
-    if (layerVisibility.lerato && lerImg) {
-      const pos = leratoPos;
-      const depth = 0.8;
-      const cx = camera.x * depth, cy = camera.y * depth * 0.5;
-      const fwd = (camera.forward / 100) * depth * 2;
-      const chX = width / 2 + pos.x + cx - fwd;
-      const chY = height / 2 + pos.y + cy;
-
-      ctx.save();
-      ctx.translate(chX, chY);
-      ctx.scale(pos.scale, pos.scale);
-      ctx.drawImage(lerImg, -lerImg.width / 2, -lerImg.height);
-      ctx.restore();
-
-      if (leratoTalking) {
-        const m = imagesRef.current[`mouth_${MOUTH_FRAMES[mouthIndex].id}`];
-        if (m) {
-          const mouthOffX = pos.scale * leratoMouthPos.x;
-          const mouthOffY = pos.scale * (leratoMouthPos.y - lerImg.height / 2);
-          ctx.save();
-          ctx.translate(chX + mouthOffX, chY + mouthOffY);
-          ctx.scale(leratoMouthScale * pos.scale, leratoMouthScale * pos.scale);
-          ctx.drawImage(m, -15, -15, 30, 30);
-          ctx.restore();
-        }
-      }
-    }
-
-    // Grass
-    if (grassEnabled) {
-      grassPositions.forEach((g, idx) => {
-        const img = imagesRef.current[`grass_${idx}`];
-        if (!img) return;
-        const x = g.x + camera.x * 1.1 - (camera.forward / 100) * 1.1 * 2;
-        const y = g.y + camera.y * 1.1;
-        const swayDeg = grassSway * (0.5 + idx * 0.15);
-        ctx.save();
-        ctx.translate(width / 2 + x, height / 2 + y);
-        ctx.rotate((swayDeg * Math.PI) / 180);
-        const w = g.size;
-        const h = img.width ? (img.height / img.width) * w : w;
-        ctx.drawImage(img, -w / 2, -h, w, h);
-        ctx.restore();
-      });
-    }
-
-    // Butterflies
-    if (butterflyEnabled) {
-      butterflies.forEach((bf) => {
-        const img = imagesRef.current[`butterfly_${bf.frame}`];
-        if (!img) return;
-        const bx = bf.x + camera.x * 0.8 - (camera.forward / 100) * 0.8 * 2;
-        const by = bf.y + camera.y * 0.8;
-        ctx.save();
-        ctx.translate(width / 2 + bx, height / 2 + by);
-        ctx.scale(bf.scale, bf.scale);
-        const w = 60;
-        const h = img.width ? (img.height / img.width) * w : w;
-        ctx.drawImage(img, -w / 2, -h / 2, w, h);
-        ctx.restore();
-      });
-    }
-  }, [camera, layerVisibility, selectedKopanangPose, selectedLeratoPose, kopanangPos, leratoPos, kopanangMouthPos, leratoMouthPos, kopanangTalking, leratoTalking, mouthIndex, getBackgroundTransform, kopanangMouthScale, leratoMouthScale, grassEnabled, grassSway, grassPositions, butterflyEnabled, butterflies]);
-
+  // ============== CANVAS DRAW (uses Scene01Canvas.js) ==============
   useEffect(() => {
-    let id;
-    const animate = () => { drawSceneToCanvas(); id = requestAnimationFrame(animate); };
+    let animId;
+    const animate = () => {
+      const canvas = canvasRef.current;
+      if (canvas && imagesLoadedRef.current) {
+        const ctx = canvas.getContext('2d');
+        drawSceneToCanvas(canvas, ctx, {
+          stageRef,
+          imagesRef,
+          backgroundImgRef,
+          kopanangImgRef,
+          leratoImgRef,
+          kopanangMouthImgRef,
+          leratoMouthImgRef,
+          layerVisibility,
+          selectedKopanangPose,
+          selectedLeratoPose,
+          kopanangTalking,
+          leratoTalking,
+          mouthIndex,
+          grassEnabled,
+          grassSway,
+          grassPositions,
+          butterflyEnabled,
+          butterflies,
+          MOUTH_FRAMES,
+        });
+      }
+      animId = requestAnimationFrame(animate);
+    };
     animate();
-    return () => cancelAnimationFrame(id);
-  }, [drawSceneToCanvas]);
+    return () => cancelAnimationFrame(animId);
+  }, [
+    layerVisibility,
+    selectedKopanangPose,
+    selectedLeratoPose,
+    kopanangTalking,
+    leratoTalking,
+    mouthIndex,
+    grassEnabled,
+    grassSway,
+    grassPositions,
+    butterflyEnabled,
+    butterflies,
+  ]);
 
+  // Recording
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -829,7 +764,7 @@ function Scene01CameraTest() {
           <div className="scene-stage">
             {layerVisibility.background && (
               <div className="scene-layer" style={{ zIndex: 0, ...getBackgroundTransform() }}>
-                <img src={backgroundImg} alt="Background" className="scene-layer-img" draggable={false} />
+                <img ref={backgroundImgRef} src={backgroundImg} alt="Background" className="scene-layer-img" draggable={false} />
               </div>
             )}
 
@@ -845,6 +780,7 @@ function Scene01CameraTest() {
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
               >
                 <img
+                  ref={kopanangImgRef}
                   src={KOPANANG_SIT.find((p) => p.id === selectedKopanangPose).src}
                   alt="Kopanang"
                   className="scene-layer-img"
@@ -865,7 +801,12 @@ function Scene01CameraTest() {
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
                   >
-                    <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
+                    <img
+                      ref={kopanangMouthImgRef}
+                      src={MOUTH_FRAMES[mouthIndex].src}
+                      alt="Mouth"
+                      style={{ width: '100%', height: '100%' }}
+                    />
                   </div>
                 )}
               </div>
@@ -883,6 +824,7 @@ function Scene01CameraTest() {
                 onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
               >
                 <img
+                  ref={leratoImgRef}
                   src={LERATO_SIT.find((p) => p.id === selectedLeratoPose).src}
                   alt="Lerato"
                   className="scene-layer-img"
@@ -903,7 +845,12 @@ function Scene01CameraTest() {
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
                   >
-                    <img src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
+                    <img
+                      ref={leratoMouthImgRef}
+                      src={MOUTH_FRAMES[mouthIndex].src}
+                      alt="Mouth"
+                      style={{ width: '100%', height: '100%' }}
+                    />
                   </div>
                 )}
               </div>
