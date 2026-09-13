@@ -2,7 +2,8 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #0a1a2a;
+  /* Fallback blue in case no base image is behind */
+  background: linear-gradient(135deg, #1a3a5c 0%, #0a1a2a 100%);
 }
 
 .water-layer {
@@ -14,34 +15,48 @@
   will-change: transform;
 }
 
-/* Layer 1 — slow zoom + drift */
+/* If you have a full-color water image, uncomment and add as base:
 .water-base {
   animation: waterBaseFlow 30s ease-in-out infinite;
   transform-origin: center center;
 }
-
 @keyframes waterBaseFlow {
   0%   { transform: scale(1.05) translate(-2%, -1%); }
   50%  { transform: scale(1.12) translate(1%, 1%); }
   100% { transform: scale(1.05) translate(-2%, -1%); }
 }
+*/
 
-/* Layer 2 — medium ripples, blended into the base */
+/* Layer 1 — slow ripples
+   multiply = white disappears, blue ripples show */
 .water-ripples {
-  mix-blend-mode: overlay;
-  opacity: 0.7;
-  animation: waterRipplesFlow 12s linear infinite;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  animation: waterRipplesFlow 18s linear infinite;
 }
 
 @keyframes waterRipplesFlow {
+  0%   { transform: translate(-5%, -2%); }
+  100% { transform: translate(5%, 2%); }
+}
+
+/* Layer 2 — medium movement */
+.water-mid {
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  animation: waterMidFlow 12s linear infinite;
+}
+
+@keyframes waterMidFlow {
   0%   { transform: translate(-8%, -3%); }
   100% { transform: translate(8%, 3%); }
 }
 
-/* Layer 3 — fast highlights, brightens the surface */
+/* Layer 3 — fast highlights
+   multiply keeps it subtle; if you want brighter highlights, try 'screen' */
 .water-highlights {
-  mix-blend-mode: screen;
-  opacity: 0.85;
+  mix-blend-mode: multiply;
+  opacity: 0.6;
   animation: waterHighlightsFlow 8s linear infinite;
 }
 
@@ -50,7 +65,7 @@
   100% { transform: translate(12%, 5%); }
 }
 
-/* Vignette for cinematic edges */
+/* Vignette */
 .water-vignette {
   position: absolute;
   inset: 0;
@@ -62,7 +77,7 @@
   );
 }
 
-/* Fade in from black on first render */
+/* Fade in from black */
 .water-fade-in {
   position: absolute;
   inset: 0;
