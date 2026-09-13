@@ -5,6 +5,7 @@ export default function Scene01Controls({
   debugMode, setDebugMode,
   // Timeline
   timelineKeyframes, currentTime, timelineDuration, setTimelineDuration,
+  isPlaying,
   play, pause, stop, addKeyframe, selectKeyframe, deleteKeyframe,
   // Recording
   isRecording, startRecording, stopRecording,
