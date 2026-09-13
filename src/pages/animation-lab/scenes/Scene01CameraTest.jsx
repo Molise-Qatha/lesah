@@ -172,6 +172,12 @@ function Scene01CameraTest() {
   const playbackFrameRef = useRef(null);
   const playbackStartTimeRef = useRef(null);
 
+  // ────────── Unified camera / view ──────────
+  // A single zoom + offset applied identically to every layer.
+  const viewZoom = backgroundScale * Math.max(0.1, 1 + camera.forward / 500);
+  const camX = camera.x;
+  const camY = camera.y * 0.5;
+
   // Preload all images
   useEffect(() => {
     let loaded = 0;
@@ -258,27 +264,21 @@ function Scene01CameraTest() {
     ? { cameraX: 10000, cameraY: 10000, forward: 5000 }
     : { cameraX: 200, cameraY: 200, forward: 100 };
 
+  // ────────── Transforms (unified) ──────────
   const getBackgroundTransform = useCallback(() => {
-    const cameraX = camera.x;
-    const cameraY = camera.y * 0.5;
-    const forwardOffset = (camera.forward / 100) * 2;
     return {
-      transform: `translate(${cameraX - forwardOffset}px, ${cameraY}px) scale(${backgroundScale})`,
+      transform: `translate(${camX}px, ${camY}px) scale(${viewZoom})`,
       opacity: 1,
       transformOrigin: 'center center',
     };
-  }, [camera, backgroundScale]);
+  }, [camX, camY, viewZoom]);
 
   const getCharacterTransform = (pos) => {
-    const depth = 0.8;
-    const cx = camera.x * depth;
-    const cy = camera.y * depth * 0.5;
-    const fwd = (camera.forward / 100) * depth * 2;
-    const scaledX = (pos.x + cx - fwd) * backgroundScale;
-    const scaledY = (pos.y + cy) * backgroundScale;
-    const scaledSize = pos.scale * backgroundScale;
+    const finalX = pos.x * viewZoom + camX;
+    const finalY = pos.y * viewZoom + camY;
+    const finalScale = pos.scale * viewZoom;
     return {
-      transform: `translate(${scaledX}px, ${scaledY}px) scale(${scaledSize})`,
+      transform: `translate(${finalX}px, ${finalY}px) scale(${finalScale})`,
       opacity: 1,
       transformOrigin: 'center bottom',
     };
@@ -292,13 +292,13 @@ function Scene01CameraTest() {
       const speed = 0.4 * cameraSpeed;
       const cur = { ...camera };
       if (unlimitedMode) {
-        if (keysPressed.current['w']) cur.forward += speed;
-        if (keysPressed.current['s']) cur.forward -= speed;
+        if (keysPressed.current['w']) cur.forward += speed * 20;
+        if (keysPressed.current['s']) cur.forward -= speed * 20;
         if (keysPressed.current['a']) cur.x -= speed;
         if (keysPressed.current['d']) cur.x += speed;
       } else {
-        if (keysPressed.current['w']) cur.forward = Math.min(cur.forward + speed, rangeLimits.forward);
-        if (keysPressed.current['s']) cur.forward = Math.max(cur.forward - speed, -rangeLimits.forward);
+        if (keysPressed.current['w']) cur.forward = Math.min(cur.forward + speed * 5, rangeLimits.forward);
+        if (keysPressed.current['s']) cur.forward = Math.max(cur.forward - speed * 5, -rangeLimits.forward);
         if (keysPressed.current['a']) cur.x = Math.max(cur.x - speed, -rangeLimits.cameraX);
         if (keysPressed.current['d']) cur.x = Math.min(cur.x + speed, rangeLimits.cameraX);
       }
@@ -418,8 +418,8 @@ function Scene01CameraTest() {
         setCamera((p) => ({ ...p, x: cameraDragStartRef.current.camX - dx, y: cameraDragStartRef.current.camY - dy }));
       }
       if (draggingCharacter) {
-        const dx = mx - dragStartRef.current.mouseX;
-        const dy = my - dragStartRef.current.mouseY;
+        const dx = (mx - dragStartRef.current.mouseX) / viewZoom;
+        const dy = (my - dragStartRef.current.mouseY) / viewZoom;
         const nx = dragStartRef.current.charX + dx;
         const ny = dragStartRef.current.charY + dy;
         if (draggingCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos((p) => ({ ...p, x: nx, y: ny }));
@@ -437,7 +437,7 @@ function Scene01CameraTest() {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => { document.removeEventListener('mousemove', handleMouseMove); document.removeEventListener('mouseup', handleMouseUp); };
-  }, [draggingCamera, draggingCharacter, draggingMouth, lockKopanangPos, lockLeratoPos]);
+  }, [draggingCamera, draggingCharacter, draggingMouth, lockKopanangPos, lockLeratoPos, viewZoom]);
 
   const handleStageClick = (e) => {
     if (draggingCharacter || draggingMouth || draggingCamera) return;
@@ -445,8 +445,10 @@ function Scene01CameraTest() {
     const ox = e.clientX - r.left - r.width / 2;
     const oy = e.clientY - r.top - r.height / 2;
     if (selectMode === 'character') {
-      if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos((p) => ({ ...p, x: ox, y: oy }));
-      if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos((p) => ({ ...p, x: ox, y: oy }));
+      const worldX = (ox - camX) / viewZoom;
+      const worldY = (oy - camY) / viewZoom;
+      if (selectedCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos((p) => ({ ...p, x: worldX, y: worldY }));
+      if (selectedCharacter === 'lerato' && !lockLeratoPos) setLeratoPos((p) => ({ ...p, x: worldX, y: worldY }));
     } else {
       if (selectedCharacter === 'kopanang') setKopanangMouthPos({ x: (ox - kopanangPos.x) / kopanangPos.scale, y: (oy - kopanangPos.y) / kopanangPos.scale });
       else setLeratoMouthPos({ x: (ox - leratoPos.x) / leratoPos.scale, y: (oy - leratoPos.y) / leratoPos.scale });
@@ -485,7 +487,7 @@ function Scene01CameraTest() {
   const resetCamera = () => setCamera({ x: 0, y: 0, forward: 0 });
 
   const nudgeCamera = (axis, direction) => setCamera((p) => ({ ...p, [axis]: p[axis] + direction * 20 }));
-  const nudgeCameraForward = (direction) => setCamera((p) => ({ ...p, forward: Math.max(-100, Math.min(5000, p.forward + direction * 10)) }));
+  const nudgeCameraForward = (direction) => setCamera((p) => ({ ...p, forward: Math.max(-500, Math.min(5000, p.forward + direction * 25)) }));
 
   const nudgeGrass = (axis, direction) => {
     setGrassPositions((prev) =>
@@ -665,6 +667,7 @@ function Scene01CameraTest() {
           kopanangTalking, leratoTalking, mouthIndex,
           grassEnabled, grassSway, grassPositions,
           butterflyEnabled, butterflies, MOUTH_FRAMES,
+          viewZoom, camX, camY,
         });
       }
       animId = requestAnimationFrame(animate);
@@ -676,6 +679,7 @@ function Scene01CameraTest() {
     kopanangTalking, leratoTalking, mouthIndex,
     grassEnabled, grassSway, grassPositions,
     butterflyEnabled, butterflies,
+    viewZoom, camX, camY,
   ]);
 
   const startRecording = async () => {
@@ -827,7 +831,7 @@ function Scene01CameraTest() {
                 {grassPositions.map((g, idx) => {
                   const img = imagesRef.current[`grass_${idx}`];
                   if (!img) return null;
-                  const w = g.size * backgroundScale;
+                  const w = g.size * viewZoom;
                   const h = img.width ? (img.height / img.width) * w : w;
                   return (
                     <img
@@ -836,8 +840,8 @@ function Scene01CameraTest() {
                       alt="grass"
                       style={{
                         position: 'absolute',
-                        left: `calc(50% + ${g.x * backgroundScale}px)`,
-                        top: `calc(50% + ${g.y * backgroundScale}px)`,
+                        left: `calc(50% + ${g.x * viewZoom + camX}px)`,
+                        top: `calc(50% + ${g.y * viewZoom + camY}px)`,
                         width: `${w}px`,
                         height: `${h}px`,
                         transform: `translate(-50%, -100%) rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
@@ -854,7 +858,7 @@ function Scene01CameraTest() {
               butterflies.map((bf) => {
                 const img = imagesRef.current[`butterfly_${bf.frame}`];
                 if (!img) return null;
-                const w = 60 * bf.scale * backgroundScale;
+                const w = 60 * bf.scale * viewZoom;
                 const h = img.width ? (img.height / img.width) * w : w;
                 return (
                   <img
@@ -863,8 +867,8 @@ function Scene01CameraTest() {
                     alt={`butterfly-${bf.id}`}
                     style={{
                       position: 'absolute',
-                      left: `calc(50% + ${bf.x * backgroundScale}px)`,
-                      top: `calc(50% + ${bf.y * backgroundScale}px)`,
+                      left: `calc(50% + ${bf.x * viewZoom + camX}px)`,
+                      top: `calc(50% + ${bf.y * viewZoom + camY}px)`,
                       width: `${w}px`,
                       height: `${h}px`,
                       transform: 'translate(-50%, -50%)',
