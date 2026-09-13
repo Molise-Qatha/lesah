@@ -5,64 +5,16 @@
   background: #0a1a2a;
 }
 
-.water-layer {
+.water-video {
   position: absolute;
-  inset: -15%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  will-change: transform;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
 }
 
-/* ── Base water (opaque, colorful) ── */
-.water-base {
-  animation: waterBaseFlow 30s ease-in-out infinite;
-  transform-origin: center center;
-}
-
-@keyframes waterBaseFlow {
-  0%   { transform: scale(1.05) translate(-2%, -1%); }
-  50%  { transform: scale(1.12) translate(1%, 1%); }
-  100% { transform: scale(1.05) translate(-2%, -1%); }
-}
-
-/* ── Layer 1 — slow ripples ── */
-.water-ripples {
-  mix-blend-mode: multiply;
-  opacity: 0.45;
-  animation: waterRipplesFlow 18s linear infinite;
-}
-
-@keyframes waterRipplesFlow {
-  0%   { transform: translate(-5%, -2%); }
-  100% { transform: translate(5%, 2%); }
-}
-
-/* ── Layer 2 — medium movement ── */
-.water-mid {
-  mix-blend-mode: multiply;
-  opacity: 0.45;
-  animation: waterMidFlow 12s linear infinite;
-}
-
-@keyframes waterMidFlow {
-  0%   { transform: translate(-8%, -3%); }
-  100% { transform: translate(8%, 3%); }
-}
-
-/* ── Layer 3 — highlights ── */
-.water-highlights {
-  mix-blend-mode: screen;
-  opacity: 0.55;
-  animation: waterHighlightsFlow 8s linear infinite;
-}
-
-@keyframes waterHighlightsFlow {
-  0%   { transform: translate(-12%, -5%); }
-  100% { transform: translate(12%, 5%); }
-}
-
-/* Vignette */
+/* Vignette for cinematic edges */
 .water-vignette {
   position: absolute;
   inset: 0;
@@ -74,7 +26,7 @@
   );
 }
 
-/* Fade in from black */
+/* Fade in from black on load */
 .water-fade-in {
   position: absolute;
   inset: 0;
