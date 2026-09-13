@@ -1,0 +1,77 @@
+.shot1-water {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0a1a2a;
+}
+
+.water-layer {
+  position: absolute;
+  inset: -15%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: transform;
+}
+
+/* Layer 1 — slow zoom + drift */
+.water-base {
+  animation: waterBaseFlow 30s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@keyframes waterBaseFlow {
+  0%   { transform: scale(1.05) translate(-2%, -1%); }
+  50%  { transform: scale(1.12) translate(1%, 1%); }
+  100% { transform: scale(1.05) translate(-2%, -1%); }
+}
+
+/* Layer 2 — medium ripples, blended into the base */
+.water-ripples {
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+  animation: waterRipplesFlow 12s linear infinite;
+}
+
+@keyframes waterRipplesFlow {
+  0%   { transform: translate(-8%, -3%); }
+  100% { transform: translate(8%, 3%); }
+}
+
+/* Layer 3 — fast highlights, brightens the surface */
+.water-highlights {
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  animation: waterHighlightsFlow 8s linear infinite;
+}
+
+@keyframes waterHighlightsFlow {
+  0%   { transform: translate(-12%, -5%); }
+  100% { transform: translate(12%, 5%); }
+}
+
+/* Vignette for cinematic edges */
+.water-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+/* Fade in from black on first render */
+.water-fade-in {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  animation: waterFadeIn 2.5s ease-out forwards;
+}
+
+@keyframes waterFadeIn {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}

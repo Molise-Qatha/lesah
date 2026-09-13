@@ -1,0 +1,46 @@
+.shot2-landscape {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.landscape-pan {
+  position: absolute;
+  inset: -20%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: transform;
+  animation: landscapeDrift 40s ease-in-out infinite;
+}
+
+@keyframes landscapeDrift {
+  0%   { transform: scale(1.05) translate(0, 0); }
+  50%  { transform: scale(1.15) translate(-3%, 1%); }
+  100% { transform: scale(1.05) translate(0, 0); }
+}
+
+.landscape-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+.landscape-fade-in {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  animation: landscapeFadeIn 2s ease-out forwards;
+}
+
+@keyframes landscapeFadeIn {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}

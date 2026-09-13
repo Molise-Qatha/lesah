@@ -4,6 +4,8 @@ import './Scene01CameraTest.css';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 import { drawSceneToCanvas } from './Scene01Canvas';
 import Scene01Controls from './Scene01Controls';
+import Scene01Shot1Water from './Scene01Shot1Water';
+import Scene01Shot2Landscape from './Scene01Shot2Landscape';
 
 import backgroundImg from '../../../assets/scene01/background.png';
 
@@ -91,6 +93,9 @@ const MOUTH_FRAMES = [
 ];
 
 function Scene01CameraTest() {
+  // ── Shot switcher ──
+  const [currentShot, setCurrentShot] = useState(3); // 1=Water, 2=Landscape, 3=Characters
+
   const [camera, setCamera] = useState({ x: 0, y: 0, forward: 0 });
   const [layerVisibility, setLayerVisibility] = useState({ background: true, kopanang: true, lerato: true });
   const [selectedKopanangPose, setSelectedKopanangPose] = useState('ksit1');
@@ -172,11 +177,12 @@ function Scene01CameraTest() {
   const playbackFrameRef = useRef(null);
   const playbackStartTimeRef = useRef(null);
 
-  // Unified view
+  // ── Unified view transform ──
   const viewZoom = backgroundScale * Math.max(0.1, 1 + camera.forward / 500);
   const camX = camera.x;
   const camY = camera.y * 0.5;
 
+  // Preload all images
   useEffect(() => {
     let loaded = 0;
     const total =
@@ -202,6 +208,7 @@ function Scene01CameraTest() {
     BUTTERFLY_FRAMES.forEach((b, i) => (imagesRef.current[`butterfly_${i}`] = loadImage(b)));
   }, []);
 
+  // Init butterflies
   useEffect(() => {
     const newB = [];
     for (let i = 0; i < butterflyCount; i++) {
@@ -219,6 +226,7 @@ function Scene01CameraTest() {
     setButterflies(newB);
   }, [butterflyCount, butterflySpeed]);
 
+  // Animate butterflies
   useEffect(() => {
     if (!butterflyEnabled) return;
     let id;
@@ -243,6 +251,7 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [butterflyEnabled]);
 
+  // Grass sway
   useEffect(() => {
     if (!grassEnabled) return;
     let id, t = 0;
@@ -264,6 +273,7 @@ function Scene01CameraTest() {
   const handleKeyDown = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = true; }, []);
   const handleKeyUp = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = false; }, []);
 
+  // Keyboard loop
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = 0.4 * cameraSpeed;
@@ -345,6 +355,7 @@ function Scene01CameraTest() {
     scaleCharacter(e.deltaY > 0 ? -0.05 : 0.05);
   };
 
+  // Manual mouth cycling
   useEffect(() => {
     if ((kopanangTalking || leratoTalking) && !audioPlaying) {
       mouthTimerRef.current = setInterval(
@@ -484,6 +495,7 @@ function Scene01CameraTest() {
     setGrassPositions(GRASS_ASSETS.map((g) => ({ x: g.x, y: g.y, size: g.size })));
   };
 
+  // Audio
   const initializeAudioContext = () => {
     if (!audioContextRef.current) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -555,6 +567,7 @@ function Scene01CameraTest() {
     };
   }, []);
 
+  // Timeline
   const addKeyframe = () => {
     const kf = {
       id: Date.now(), time: currentTime,
@@ -629,6 +642,7 @@ function Scene01CameraTest() {
 
   useEffect(() => () => { if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current); }, []);
 
+  // Canvas draw
   useEffect(() => {
     let animId;
     const animate = () => {
@@ -658,6 +672,7 @@ function Scene01CameraTest() {
     viewZoom, camX, camY,
   ]);
 
+  // Recording
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -720,250 +735,269 @@ function Scene01CameraTest() {
   return (
     <div className="scene01-page">
       <div className="scene01-container">
-        <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onMouseDown={handleStageMouseDown} onWheel={handleWheel}>
-          <div
-            className="scene-stage"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              transform: stageTransform,
-              transformOrigin: 'center center',
-            }}
-          >
-            {/* Background */}
-            {layerVisibility.background && (
-              <img
-                ref={backgroundImgRef}
-                src={backgroundImg}
-                alt="Background"
-                draggable={false}
+
+        {/* Shot switcher */}
+        <div className="shot-switcher">
+          <button
+            className={`shot-btn ${currentShot === 1 ? 'active' : ''}`}
+            onClick={() => setCurrentShot(1)}
+          >🎬 Shot 1 — Water</button>
+          <button
+            className={`shot-btn ${currentShot === 2 ? 'active' : ''}`}
+            onClick={() => setCurrentShot(2)}
+          >🏔️ Shot 2 — Landscape</button>
+          <button
+            className={`shot-btn ${currentShot === 3 ? 'active' : ''}`}
+            onClick={() => setCurrentShot(3)}
+          >👥 Shot 3 — Characters</button>
+        </div>
+
+        {currentShot === 1 && <Scene01Shot1Water />}
+        {currentShot === 2 && <Scene01Shot2Landscape />}
+
+        {currentShot === 3 && (
+          <>
+            <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onMouseDown={handleStageMouseDown} onWheel={handleWheel}>
+              <div
+                className="scene-stage"
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  width: '100%',
-                  height: '100%',
-                  maxWidth: 'none',
-                  objectFit: 'cover',
-                  pointerEvents: 'none',
-                }}
-              />
-            )}
-
-            {/* Kopanang */}
-            {layerVisibility.kopanang && (
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: '50%',
-                  transform: `translate(${kopanangPos.x}px, ${kopanangPos.y}px)`,
-                  zIndex: 10,
+                  transform: stageTransform,
+                  transformOrigin: 'center center',
                 }}
               >
-                <img
-                  ref={kopanangImgRef}
-                  src={KOPANANG_SIT.find((p) => p.id === selectedKopanangPose).src}
-                  alt="Kopanang"
-                  draggable={false}
-                  onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    maxWidth: 'none',
-                    height: 'auto',
-                    transform: `translate(-50%, -100%) scale(${kopanangPos.scale})`,
-                    transformOrigin: 'center bottom',
-                    cursor: selectMode === 'character' ? 'grab' : 'default',
-                    outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
-                  }}
-                />
-                {kopanangTalking && (
+                {layerVisibility.background && (
+                  <img
+                    ref={backgroundImgRef}
+                    src={backgroundImg}
+                    alt="Background"
+                    draggable={false}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                      maxWidth: 'none',
+                      objectFit: 'cover',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                )}
+
+                {layerVisibility.kopanang && (
                   <div
                     style={{
                       position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      transform: `translate(${kopanangMouthPos.x}px, ${kopanangMouthPos.y}px) translate(-50%, -50%)`,
-                      zIndex: 20,
-                      cursor: selectMode === 'mouth' ? 'grab' : 'default',
-                      outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                      left: '50%',
+                      top: '50%',
+                      transform: `translate(${kopanangPos.x}px, ${kopanangPos.y}px)`,
+                      zIndex: 10,
                     }}
-                    onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
                   >
                     <img
-                      ref={kopanangMouthImgRef}
-                      src={MOUTH_FRAMES[mouthIndex].src}
-                      alt="Mouth"
+                      ref={kopanangImgRef}
+                      src={KOPANANG_SIT.find((p) => p.id === selectedKopanangPose).src}
+                      alt="Kopanang"
                       draggable={false}
-                      style={{ display: 'block', maxWidth: 'none', width: 30 * kopanangMouthScale }}
+                      onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        maxWidth: 'none',
+                        height: 'auto',
+                        transform: `translate(-50%, -100%) scale(${kopanangPos.scale})`,
+                        transformOrigin: 'center bottom',
+                        cursor: selectMode === 'character' ? 'grab' : 'default',
+                        outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
+                      }}
                     />
+                    {kopanangTalking && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          transform: `translate(${kopanangMouthPos.x}px, ${kopanangMouthPos.y}px) translate(-50%, -50%)`,
+                          zIndex: 20,
+                          cursor: selectMode === 'mouth' ? 'grab' : 'default',
+                          outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                        }}
+                        onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
+                      >
+                        <img
+                          ref={kopanangMouthImgRef}
+                          src={MOUTH_FRAMES[mouthIndex].src}
+                          alt="Mouth"
+                          draggable={false}
+                          style={{ display: 'block', maxWidth: 'none', width: 30 * kopanangMouthScale }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* Lerato */}
-            {layerVisibility.lerato && (
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: '50%',
-                  transform: `translate(${leratoPos.x}px, ${leratoPos.y}px)`,
-                  zIndex: 10,
-                }}
-              >
-                <img
-                  ref={leratoImgRef}
-                  src={LERATO_SIT.find((p) => p.id === selectedLeratoPose).src}
-                  alt="Lerato"
-                  draggable={false}
-                  onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    maxWidth: 'none',
-                    height: 'auto',
-                    transform: `translate(-50%, -100%) scale(${leratoPos.scale})`,
-                    transformOrigin: 'center bottom',
-                    cursor: selectMode === 'character' ? 'grab' : 'default',
-                    outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
-                  }}
-                />
-                {leratoTalking && (
+                {layerVisibility.lerato && (
                   <div
                     style={{
                       position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      transform: `translate(${leratoMouthPos.x}px, ${leratoMouthPos.y}px) translate(-50%, -50%)`,
-                      zIndex: 20,
-                      cursor: selectMode === 'mouth' ? 'grab' : 'default',
-                      outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                      left: '50%',
+                      top: '50%',
+                      transform: `translate(${leratoPos.x}px, ${leratoPos.y}px)`,
+                      zIndex: 10,
                     }}
-                    onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
                   >
                     <img
-                      ref={leratoMouthImgRef}
-                      src={MOUTH_FRAMES[mouthIndex].src}
-                      alt="Mouth"
+                      ref={leratoImgRef}
+                      src={LERATO_SIT.find((p) => p.id === selectedLeratoPose).src}
+                      alt="Lerato"
                       draggable={false}
-                      style={{ display: 'block', maxWidth: 'none', width: 30 * leratoMouthScale }}
+                      onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        maxWidth: 'none',
+                        height: 'auto',
+                        transform: `translate(-50%, -100%) scale(${leratoPos.scale})`,
+                        transformOrigin: 'center bottom',
+                        cursor: selectMode === 'character' ? 'grab' : 'default',
+                        outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
+                      }}
                     />
+                    {leratoTalking && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          transform: `translate(${leratoMouthPos.x}px, ${leratoMouthPos.y}px) translate(-50%, -50%)`,
+                          zIndex: 20,
+                          cursor: selectMode === 'mouth' ? 'grab' : 'default',
+                          outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
+                        }}
+                        onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
+                      >
+                        <img
+                          ref={leratoMouthImgRef}
+                          src={MOUTH_FRAMES[mouthIndex].src}
+                          alt="Mouth"
+                          draggable={false}
+                          style={{ display: 'block', maxWidth: 'none', width: 30 * leratoMouthScale }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
+
+                {grassEnabled && grassPositions.map((g, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      transform: `translate(${g.x}px, ${g.y}px)`,
+                      zIndex: 5,
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    <img
+                      src={GRASS_ASSETS[idx].src}
+                      alt="grass"
+                      draggable={false}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        width: g.size,
+                        maxWidth: 'none',
+                        height: 'auto',
+                        transform: `translate(-50%, -100%) rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
+                        transformOrigin: 'center bottom',
+                        outline: selectedGrassIdx === idx && grassEnabled ? '2px dashed #00ff00' : 'none',
+                      }}
+                    />
+                  </div>
+                ))}
+
+                {butterflyEnabled && butterflies.map((bf) => (
+                  <div
+                    key={bf.id}
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      transform: `translate(${bf.x}px, ${bf.y}px)`,
+                      zIndex: 8,
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    <img
+                      src={BUTTERFLY_FRAMES[bf.frame]}
+                      alt={`butterfly-${bf.id}`}
+                      draggable={false}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        width: 60 * bf.scale,
+                        maxWidth: 'none',
+                        height: 'auto',
+                        transform: 'translate(-50%, -50%)',
+                        transformOrigin: 'center center',
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
-            )}
 
-            {/* Grass */}
-            {grassEnabled && grassPositions.map((g, idx) => (
-              <div
-                key={idx}
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: '50%',
-                  transform: `translate(${g.x}px, ${g.y}px)`,
-                  zIndex: 5,
-                  pointerEvents: 'none',
-                }}
-              >
-                <img
-                  src={GRASS_ASSETS[idx].src}
-                  alt="grass"
-                  draggable={false}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: g.size,
-                    maxWidth: 'none',
-                    height: 'auto',
-                    transform: `translate(-50%, -100%) rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
-                    transformOrigin: 'center bottom',
-                    outline: selectedGrassIdx === idx && grassEnabled ? '2px dashed #00ff00' : 'none',
-                  }}
-                />
-              </div>
-            ))}
+              <canvas ref={canvasRef} width={1280} height={720} style={{ display: 'none' }} />
+              {isRecording && <div className="recording-indicator"><span className="rec-dot"></span> REC</div>}
+            </div>
 
-            {/* Butterflies */}
-            {butterflyEnabled && butterflies.map((bf) => (
-              <div
-                key={bf.id}
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: '50%',
-                  transform: `translate(${bf.x}px, ${bf.y}px)`,
-                  zIndex: 8,
-                  pointerEvents: 'none',
-                }}
-              >
-                <img
-                  src={BUTTERFLY_FRAMES[bf.frame]}
-                  alt={`butterfly-${bf.id}`}
-                  draggable={false}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: 60 * bf.scale,
-                    maxWidth: 'none',
-                    height: 'auto',
-                    transform: 'translate(-50%, -50%)',
-                    transformOrigin: 'center center',
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-
-          <canvas ref={canvasRef} width={1280} height={720} style={{ display: 'none' }} />
-          {isRecording && <div className="recording-indicator"><span className="rec-dot"></span> REC</div>}
-        </div>
-
-        <Scene01Controls
-          debugMode={debugMode} setDebugMode={setDebugMode}
-          timelineKeyframes={timelineKeyframes} currentTime={currentTime}
-          timelineDuration={timelineDuration} setTimelineDuration={setTimelineDuration}
-          isPlaying={isPlaying}
-          play={play} pause={pause} stop={stop}
-          addKeyframe={addKeyframe} selectKeyframe={selectKeyframe} deleteKeyframe={deleteKeyframe}
-          isRecording={isRecording} startRecording={startRecording} stopRecording={stopRecording}
-          unlimitedMode={unlimitedMode} setUnlimitedMode={setUnlimitedMode}
-          nudgeCamera={nudgeCamera} nudgeCameraForward={nudgeCameraForward} resetCamera={resetCamera}
-          cameraSpeed={cameraSpeed} setCameraSpeed={setCameraSpeed}
-          backgroundScale={backgroundScale} setBackgroundScale={setBackgroundScale}
-          layerVisibility={layerVisibility} setLayerVisibility={setLayerVisibility}
-          grassEnabled={grassEnabled} setGrassEnabled={setGrassEnabled}
-          grassWindSpeed={grassWindSpeed} setGrassWindSpeed={setGrassWindSpeed}
-          grassPositions={grassPositions} selectedGrassIdx={selectedGrassIdx} setSelectedGrassIdx={setSelectedGrassIdx}
-          nudgeGrass={nudgeGrass} nudgeGrassSize={nudgeGrassSize} resetGrassPositions={resetGrassPositions}
-          butterflyEnabled={butterflyEnabled} setButterflyEnabled={setButterflyEnabled}
-          butterflyCount={butterflyCount} setButterflyCount={setButterflyCount}
-          butterflySpeed={butterflySpeed} setButterflySpeed={setButterflySpeed}
-          selectedCharacter={selectedCharacter} setSelectedCharacter={setSelectedCharacter}
-          selectMode={selectMode} setSelectMode={setSelectMode}
-          nudgeCharacter={nudgeCharacter} nudgeScale={nudgeScale} nudgeMouthScale={nudgeMouthScale}
-          showSelectionOutline={showSelectionOutline} setShowSelectionOutline={setShowSelectionOutline}
-          showMouthOutline={showMouthOutline} setShowMouthOutline={setShowMouthOutline}
-          lockKopanangPos={lockKopanangPos} setLockKopanangPos={setLockKopanangPos}
-          lockLeratoPos={lockLeratoPos} setLockLeratoPos={setLockLeratoPos}
-          resetKopanangPos={resetKopanangPos} resetLeratoPos={resetLeratoPos}
-          kopanangAudioUrl={kopanangAudioUrl} leratoAudioUrl={leratoAudioUrl}
-          handleAudioUpload={handleAudioUpload} playAudioForCharacter={playAudioForCharacter} stopAudio={stopAudio}
-          audioPlaying={audioPlaying}
-          KOPANANG_SIT={KOPANANG_SIT} LERATO_SIT={LERATO_SIT}
-          selectedKopanangPose={selectedKopanangPose} setSelectedKopanangPose={setSelectedKopanangPose}
-          selectedLeratoPose={selectedLeratoPose} setSelectedLeratoPose={setSelectedLeratoPose}
-          kopanangTalking={kopanangTalking} setKopanangTalking={setKopanangTalking}
-          leratoTalking={leratoTalking} setLeratoTalking={setLeratoTalking}
-          kopanangMouthPos={kopanangMouthPos} leratoMouthPos={leratoMouthPos}
-          nudgeMouth={nudgeMouth} resetMouth={resetMouth}
-        />
+            <Scene01Controls
+              debugMode={debugMode} setDebugMode={setDebugMode}
+              timelineKeyframes={timelineKeyframes} currentTime={currentTime}
+              timelineDuration={timelineDuration} setTimelineDuration={setTimelineDuration}
+              isPlaying={isPlaying}
+              play={play} pause={pause} stop={stop}
+              addKeyframe={addKeyframe} selectKeyframe={selectKeyframe} deleteKeyframe={deleteKeyframe}
+              isRecording={isRecording} startRecording={startRecording} stopRecording={stopRecording}
+              unlimitedMode={unlimitedMode} setUnlimitedMode={setUnlimitedMode}
+              nudgeCamera={nudgeCamera} nudgeCameraForward={nudgeCameraForward} resetCamera={resetCamera}
+              cameraSpeed={cameraSpeed} setCameraSpeed={setCameraSpeed}
+              backgroundScale={backgroundScale} setBackgroundScale={setBackgroundScale}
+              layerVisibility={layerVisibility} setLayerVisibility={setLayerVisibility}
+              grassEnabled={grassEnabled} setGrassEnabled={setGrassEnabled}
+              grassWindSpeed={grassWindSpeed} setGrassWindSpeed={setGrassWindSpeed}
+              grassPositions={grassPositions} selectedGrassIdx={selectedGrassIdx} setSelectedGrassIdx={setSelectedGrassIdx}
+              nudgeGrass={nudgeGrass} nudgeGrassSize={nudgeGrassSize} resetGrassPositions={resetGrassPositions}
+              butterflyEnabled={butterflyEnabled} setButterflyEnabled={setButterflyEnabled}
+              butterflyCount={butterflyCount} setButterflyCount={setButterflyCount}
+              butterflySpeed={butterflySpeed} setButterflySpeed={setButterflySpeed}
+              selectedCharacter={selectedCharacter} setSelectedCharacter={setSelectedCharacter}
+              selectMode={selectMode} setSelectMode={setSelectMode}
+              nudgeCharacter={nudgeCharacter} nudgeScale={nudgeScale} nudgeMouthScale={nudgeMouthScale}
+              showSelectionOutline={showSelectionOutline} setShowSelectionOutline={setShowSelectionOutline}
+              showMouthOutline={showMouthOutline} setShowMouthOutline={setShowMouthOutline}
+              lockKopanangPos={lockKopanangPos} setLockKopanangPos={setLockKopanangPos}
+              lockLeratoPos={lockLeratoPos} setLockLeratoPos={setLockLeratoPos}
+              resetKopanangPos={resetKopanangPos} resetLeratoPos={resetLeratoPos}
+              kopanangAudioUrl={kopanangAudioUrl} leratoAudioUrl={leratoAudioUrl}
+              handleAudioUpload={handleAudioUpload} playAudioForCharacter={playAudioForCharacter} stopAudio={stopAudio}
+              audioPlaying={audioPlaying}
+              KOPANANG_SIT={KOPANANG_SIT} LERATO_SIT={LERATO_SIT}
+              selectedKopanangPose={selectedKopanangPose} setSelectedKopanangPose={setSelectedKopanangPose}
+              selectedLeratoPose={selectedLeratoPose} setSelectedLeratoPose={setSelectedLeratoPose}
+              kopanangTalking={kopanangTalking} setKopanangTalking={setKopanangTalking}
+              leratoTalking={leratoTalking} setLeratoTalking={setLeratoTalking}
+              kopanangMouthPos={kopanangMouthPos} leratoMouthPos={leratoMouthPos}
+              nudgeMouth={nudgeMouth} resetMouth={resetMouth}
+            />
+          </>
+        )}
       </div>
     </div>
   );

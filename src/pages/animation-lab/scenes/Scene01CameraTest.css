@@ -636,3 +636,35 @@ kbd {
   padding: 5px;
   border-radius: 4px;
 }
+.shot-switcher {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 8px;
+  z-index: 9999;
+}
+
+.shot-btn {
+  background: #1a1a2e;
+  color: #ffffff;
+  border: 1px solid #533483;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.shot-btn:hover {
+  background: #2a2a4e;
+}
+
+.shot-btn.active {
+  background: #e94560;
+  border-color: #e94560;
+}
