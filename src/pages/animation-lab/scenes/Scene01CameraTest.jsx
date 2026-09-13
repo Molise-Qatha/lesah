@@ -172,8 +172,7 @@ function Scene01CameraTest() {
   const playbackFrameRef = useRef(null);
   const playbackStartTimeRef = useRef(null);
 
-  // ────────── Unified camera / view ──────────
-  // A single zoom + offset applied identically to every layer.
+  // ─── Unified view transform (single source of truth) ───
   const viewZoom = backgroundScale * Math.max(0.1, 1 + camera.forward / 500);
   const camX = camera.x;
   const camY = camera.y * 0.5;
@@ -264,25 +263,8 @@ function Scene01CameraTest() {
     ? { cameraX: 10000, cameraY: 10000, forward: 5000 }
     : { cameraX: 200, cameraY: 200, forward: 100 };
 
-  // ────────── Transforms (unified) ──────────
-  const getBackgroundTransform = useCallback(() => {
-    return {
-      transform: `translate(${camX}px, ${camY}px) scale(${viewZoom})`,
-      opacity: 1,
-      transformOrigin: 'center center',
-    };
-  }, [camX, camY, viewZoom]);
-
-  const getCharacterTransform = (pos) => {
-    const finalX = pos.x * viewZoom + camX;
-    const finalY = pos.y * viewZoom + camY;
-    const finalScale = pos.scale * viewZoom;
-    return {
-      transform: `translate(${finalX}px, ${finalY}px) scale(${finalScale})`,
-      opacity: 1,
-      transformOrigin: 'center bottom',
-    };
-  };
+  // ─── Stage transform — ONE transform for the whole scene ───
+  const stageTransform = `translate(${camX}px, ${camY}px) scale(${viewZoom})`;
 
   const handleKeyDown = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = true; }, []);
   const handleKeyUp = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = false; }, []);
@@ -425,8 +407,8 @@ function Scene01CameraTest() {
         if (draggingCharacter === 'kopanang' && !lockKopanangPos) setKopanangPos((p) => ({ ...p, x: nx, y: ny }));
         else if (draggingCharacter === 'lerato' && !lockLeratoPos) setLeratoPos((p) => ({ ...p, x: nx, y: ny }));
       } else if (draggingMouth) {
-        const dx = mx - dragStartRef.current.mouseX;
-        const dy = my - dragStartRef.current.mouseY;
+        const dx = (mx - dragStartRef.current.mouseX) / viewZoom;
+        const dy = (my - dragStartRef.current.mouseY) / viewZoom;
         const nx = dragStartRef.current.mouthX + dx;
         const ny = dragStartRef.current.mouthY + dy;
         if (draggingMouth === 'kopanang') setKopanangMouthPos({ x: nx, y: ny });
@@ -745,139 +727,206 @@ function Scene01CameraTest() {
     <div className="scene01-page">
       <div className="scene01-container">
         <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onMouseDown={handleStageMouseDown} onWheel={handleWheel}>
-          <div className="scene-stage">
+          {/* ─── STAGE with unified camera transform ─── */}
+          <div
+            className="scene-stage"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              transform: stageTransform,
+              transformOrigin: 'center center',
+            }}
+          >
+            {/* Background — fills the stage */}
             {layerVisibility.background && (
-              <div className="scene-layer" style={{ zIndex: 0, ...getBackgroundTransform() }}>
-                <img ref={backgroundImgRef} src={backgroundImg} alt="Background" className="scene-layer-img" draggable={false} />
-              </div>
+              <img
+                ref={backgroundImgRef}
+                src={backgroundImg}
+                alt="Background"
+                draggable={false}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  pointerEvents: 'none',
+                }}
+              />
             )}
 
+            {/* Kopanang */}
             {layerVisibility.kopanang && (
               <div
-                className="scene-layer draggable-character"
                 style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  width: 0,
+                  height: 0,
+                  transform: `translate(${kopanangPos.x}px, ${kopanangPos.y}px)`,
                   zIndex: 10,
-                  ...getCharacterTransform(kopanangPos),
-                  cursor: selectMode === 'character' ? 'grab' : 'default',
-                  outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
                 }}
-                onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
               >
                 <img
                   ref={kopanangImgRef}
                   src={KOPANANG_SIT.find((p) => p.id === selectedKopanangPose).src}
                   alt="Kopanang"
-                  className="scene-layer-img"
                   draggable={false}
+                  onMouseDown={(e) => handleCharacterMouseDown(e, 'kopanang')}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    transform: `translate(-50%, -100%) scale(${kopanangPos.scale})`,
+                    transformOrigin: 'center bottom',
+                    cursor: selectMode === 'character' ? 'grab' : 'default',
+                    outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
+                  }}
                 />
                 {kopanangTalking && (
                   <div
                     style={{
-                      position: 'absolute', left: '50%', top: '50%',
-                      width: `${30 * kopanangMouthScale}px`,
-                      height: `${30 * kopanangMouthScale}px`,
-                      transform: `translate(-50%, -50%) translate(${kopanangMouthPos.x}px, ${kopanangMouthPos.y}px)`,
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      transform: `translate(${kopanangMouthPos.x}px, ${kopanangMouthPos.y}px) translate(-50%, -50%)`,
                       zIndex: 20,
                       cursor: selectMode === 'mouth' ? 'grab' : 'default',
                       outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'kopanang')}
                   >
-                    <img ref={kopanangMouthImgRef} src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
+                    <img
+                      ref={kopanangMouthImgRef}
+                      src={MOUTH_FRAMES[mouthIndex].src}
+                      alt="Mouth"
+                      draggable={false}
+                      style={{ display: 'block', width: 30 * kopanangMouthScale }}
+                    />
                   </div>
                 )}
               </div>
             )}
 
+            {/* Lerato */}
             {layerVisibility.lerato && (
               <div
-                className="scene-layer draggable-character"
                 style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  width: 0,
+                  height: 0,
+                  transform: `translate(${leratoPos.x}px, ${leratoPos.y}px)`,
                   zIndex: 10,
-                  ...getCharacterTransform(leratoPos),
-                  cursor: selectMode === 'character' ? 'grab' : 'default',
-                  outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
                 }}
-                onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
               >
                 <img
                   ref={leratoImgRef}
                   src={LERATO_SIT.find((p) => p.id === selectedLeratoPose).src}
                   alt="Lerato"
-                  className="scene-layer-img"
                   draggable={false}
+                  onMouseDown={(e) => handleCharacterMouseDown(e, 'lerato')}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    transform: `translate(-50%, -100%) scale(${leratoPos.scale})`,
+                    transformOrigin: 'center bottom',
+                    cursor: selectMode === 'character' ? 'grab' : 'default',
+                    outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
+                  }}
                 />
                 {leratoTalking && (
                   <div
                     style={{
-                      position: 'absolute', left: '50%', top: '50%',
-                      width: `${30 * leratoMouthScale}px`,
-                      height: `${30 * leratoMouthScale}px`,
-                      transform: `translate(-50%, -50%) translate(${leratoMouthPos.x}px, ${leratoMouthPos.y}px)`,
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      transform: `translate(${leratoMouthPos.x}px, ${leratoMouthPos.y}px) translate(-50%, -50%)`,
                       zIndex: 20,
                       cursor: selectMode === 'mouth' ? 'grab' : 'default',
                       outline: showMouthOutline && selectMode === 'mouth' ? '2px dashed #00ff00' : 'none',
                     }}
                     onMouseDown={(e) => handleMouthMouseDown(e, 'lerato')}
                   >
-                    <img ref={leratoMouthImgRef} src={MOUTH_FRAMES[mouthIndex].src} alt="Mouth" style={{ width: '100%', height: '100%' }} />
+                    <img
+                      ref={leratoMouthImgRef}
+                      src={MOUTH_FRAMES[mouthIndex].src}
+                      alt="Mouth"
+                      draggable={false}
+                      style={{ display: 'block', width: 30 * leratoMouthScale }}
+                    />
                   </div>
                 )}
               </div>
             )}
 
-            {grassEnabled && (
-              <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5 }}>
-                {grassPositions.map((g, idx) => {
-                  const img = imagesRef.current[`grass_${idx}`];
-                  if (!img) return null;
-                  const w = g.size * viewZoom;
-                  const h = img.width ? (img.height / img.width) * w : w;
-                  return (
-                    <img
-                      key={idx}
-                      src={GRASS_ASSETS[idx].src}
-                      alt="grass"
-                      style={{
-                        position: 'absolute',
-                        left: `calc(50% + ${g.x * viewZoom + camX}px)`,
-                        top: `calc(50% + ${g.y * viewZoom + camY}px)`,
-                        width: `${w}px`,
-                        height: `${h}px`,
-                        transform: `translate(-50%, -100%) rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
-                        transformOrigin: 'bottom center',
-                        outline: selectedGrassIdx === idx && grassEnabled ? '2px dashed #00ff00' : 'none',
-                      }}
-                    />
-                  );
-                })}
+            {/* Grass */}
+            {grassEnabled && grassPositions.map((g, idx) => (
+              <div
+                key={idx}
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  width: 0,
+                  height: 0,
+                  transform: `translate(${g.x}px, ${g.y}px)`,
+                  zIndex: 5,
+                  pointerEvents: 'none',
+                }}
+              >
+                <img
+                  src={GRASS_ASSETS[idx].src}
+                  alt="grass"
+                  draggable={false}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: g.size,
+                    height: 'auto',
+                    transform: `translate(-50%, -100%) rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
+                    transformOrigin: 'center bottom',
+                    outline: selectedGrassIdx === idx && grassEnabled ? '2px dashed #00ff00' : 'none',
+                  }}
+                />
               </div>
-            )}
+            ))}
 
-            {butterflyEnabled &&
-              butterflies.map((bf) => {
-                const img = imagesRef.current[`butterfly_${bf.frame}`];
-                if (!img) return null;
-                const w = 60 * bf.scale * viewZoom;
-                const h = img.width ? (img.height / img.width) * w : w;
-                return (
-                  <img
-                    key={bf.id}
-                    src={BUTTERFLY_FRAMES[bf.frame]}
-                    alt={`butterfly-${bf.id}`}
-                    style={{
-                      position: 'absolute',
-                      left: `calc(50% + ${bf.x * viewZoom + camX}px)`,
-                      top: `calc(50% + ${bf.y * viewZoom + camY}px)`,
-                      width: `${w}px`,
-                      height: `${h}px`,
-                      transform: 'translate(-50%, -50%)',
-                      pointerEvents: 'none',
-                      zIndex: 8,
-                    }}
-                  />
-                );
-              })}
+            {/* Butterflies */}
+            {butterflyEnabled && butterflies.map((bf) => (
+              <div
+                key={bf.id}
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '50%',
+                  width: 0,
+                  height: 0,
+                  transform: `translate(${bf.x}px, ${bf.y}px)`,
+                  zIndex: 8,
+                  pointerEvents: 'none',
+                }}
+              >
+                <img
+                  src={BUTTERFLY_FRAMES[bf.frame]}
+                  alt={`butterfly-${bf.id}`}
+                  draggable={false}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: 60 * bf.scale,
+                    height: 'auto',
+                    transform: 'translate(-50%, -50%)',
+                    transformOrigin: 'center center',
+                  }}
+                />
+              </div>
+            ))}
           </div>
 
           <canvas ref={canvasRef} width={1280} height={720} style={{ display: 'none' }} />
