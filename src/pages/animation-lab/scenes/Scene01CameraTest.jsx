@@ -172,12 +172,11 @@ function Scene01CameraTest() {
   const playbackFrameRef = useRef(null);
   const playbackStartTimeRef = useRef(null);
 
-  // ─── Unified view transform (single source of truth) ───
+  // Unified view
   const viewZoom = backgroundScale * Math.max(0.1, 1 + camera.forward / 500);
   const camX = camera.x;
   const camY = camera.y * 0.5;
 
-  // Preload all images
   useEffect(() => {
     let loaded = 0;
     const total =
@@ -203,7 +202,6 @@ function Scene01CameraTest() {
     BUTTERFLY_FRAMES.forEach((b, i) => (imagesRef.current[`butterfly_${i}`] = loadImage(b)));
   }, []);
 
-  // Init butterflies
   useEffect(() => {
     const newB = [];
     for (let i = 0; i < butterflyCount; i++) {
@@ -221,7 +219,6 @@ function Scene01CameraTest() {
     setButterflies(newB);
   }, [butterflyCount, butterflySpeed]);
 
-  // Animate butterflies
   useEffect(() => {
     if (!butterflyEnabled) return;
     let id;
@@ -246,7 +243,6 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [butterflyEnabled]);
 
-  // Animate grass sway
   useEffect(() => {
     if (!grassEnabled) return;
     let id, t = 0;
@@ -263,7 +259,6 @@ function Scene01CameraTest() {
     ? { cameraX: 10000, cameraY: 10000, forward: 5000 }
     : { cameraX: 200, cameraY: 200, forward: 100 };
 
-  // ─── Stage transform — ONE transform for the whole scene ───
   const stageTransform = `translate(${camX}px, ${camY}px) scale(${viewZoom})`;
 
   const handleKeyDown = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = true; }, []);
@@ -634,7 +629,6 @@ function Scene01CameraTest() {
 
   useEffect(() => () => { if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current); }, []);
 
-  // Canvas draw loop
   useEffect(() => {
     let animId;
     const animate = () => {
@@ -727,7 +721,6 @@ function Scene01CameraTest() {
     <div className="scene01-page">
       <div className="scene01-container">
         <div className="scene-viewport" ref={stageRef} onClick={handleStageClick} onMouseDown={handleStageMouseDown} onWheel={handleWheel}>
-          {/* ─── STAGE with unified camera transform ─── */}
           <div
             className="scene-stage"
             style={{
@@ -737,7 +730,7 @@ function Scene01CameraTest() {
               transformOrigin: 'center center',
             }}
           >
-            {/* Background — fills the stage */}
+            {/* Background */}
             {layerVisibility.background && (
               <img
                 ref={backgroundImgRef}
@@ -749,6 +742,7 @@ function Scene01CameraTest() {
                   inset: 0,
                   width: '100%',
                   height: '100%',
+                  maxWidth: 'none',
                   objectFit: 'cover',
                   pointerEvents: 'none',
                 }}
@@ -762,8 +756,6 @@ function Scene01CameraTest() {
                   position: 'absolute',
                   left: '50%',
                   top: '50%',
-                  width: 0,
-                  height: 0,
                   transform: `translate(${kopanangPos.x}px, ${kopanangPos.y}px)`,
                   zIndex: 10,
                 }}
@@ -778,6 +770,8 @@ function Scene01CameraTest() {
                     position: 'absolute',
                     left: 0,
                     top: 0,
+                    maxWidth: 'none',
+                    height: 'auto',
                     transform: `translate(-50%, -100%) scale(${kopanangPos.scale})`,
                     transformOrigin: 'center bottom',
                     cursor: selectMode === 'character' ? 'grab' : 'default',
@@ -802,7 +796,7 @@ function Scene01CameraTest() {
                       src={MOUTH_FRAMES[mouthIndex].src}
                       alt="Mouth"
                       draggable={false}
-                      style={{ display: 'block', width: 30 * kopanangMouthScale }}
+                      style={{ display: 'block', maxWidth: 'none', width: 30 * kopanangMouthScale }}
                     />
                   </div>
                 )}
@@ -816,8 +810,6 @@ function Scene01CameraTest() {
                   position: 'absolute',
                   left: '50%',
                   top: '50%',
-                  width: 0,
-                  height: 0,
                   transform: `translate(${leratoPos.x}px, ${leratoPos.y}px)`,
                   zIndex: 10,
                 }}
@@ -832,6 +824,8 @@ function Scene01CameraTest() {
                     position: 'absolute',
                     left: 0,
                     top: 0,
+                    maxWidth: 'none',
+                    height: 'auto',
                     transform: `translate(-50%, -100%) scale(${leratoPos.scale})`,
                     transformOrigin: 'center bottom',
                     cursor: selectMode === 'character' ? 'grab' : 'default',
@@ -856,7 +850,7 @@ function Scene01CameraTest() {
                       src={MOUTH_FRAMES[mouthIndex].src}
                       alt="Mouth"
                       draggable={false}
-                      style={{ display: 'block', width: 30 * leratoMouthScale }}
+                      style={{ display: 'block', maxWidth: 'none', width: 30 * leratoMouthScale }}
                     />
                   </div>
                 )}
@@ -871,8 +865,6 @@ function Scene01CameraTest() {
                   position: 'absolute',
                   left: '50%',
                   top: '50%',
-                  width: 0,
-                  height: 0,
                   transform: `translate(${g.x}px, ${g.y}px)`,
                   zIndex: 5,
                   pointerEvents: 'none',
@@ -887,6 +879,7 @@ function Scene01CameraTest() {
                     left: 0,
                     top: 0,
                     width: g.size,
+                    maxWidth: 'none',
                     height: 'auto',
                     transform: `translate(-50%, -100%) rotate(${grassSway * (0.5 + idx * 0.15)}deg)`,
                     transformOrigin: 'center bottom',
@@ -904,8 +897,6 @@ function Scene01CameraTest() {
                   position: 'absolute',
                   left: '50%',
                   top: '50%',
-                  width: 0,
-                  height: 0,
                   transform: `translate(${bf.x}px, ${bf.y}px)`,
                   zIndex: 8,
                   pointerEvents: 'none',
@@ -920,6 +911,7 @@ function Scene01CameraTest() {
                     left: 0,
                     top: 0,
                     width: 60 * bf.scale,
+                    maxWidth: 'none',
                     height: 'auto',
                     transform: 'translate(-50%, -50%)',
                     transformOrigin: 'center center',
