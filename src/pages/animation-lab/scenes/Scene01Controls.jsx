@@ -40,7 +40,8 @@ export default function Scene01Controls({
   swaySpeed, setSwaySpeed,
   swayAmplitude, setSwayAmplitude,
   idleEnabled, setIdleEnabled,
-  idleSpeed, setIdleSpeed,
+  idleHold, setIdleHold,
+  idleFade, setIdleFade,
 }) {
   return (
     <div className="camera-controls">
@@ -88,7 +89,7 @@ export default function Scene01Controls({
         </p>
       </div>
 
-      {/* Auto pose cycle */}
+      {/* Auto pose cycle with cross-fade */}
       <div className="character-controls">
         <h4>🎭 Auto Pose Cycle</h4>
         <label className="asset-toggle-item">
@@ -100,19 +101,31 @@ export default function Scene01Controls({
           <span className="asset-toggle-label">Enable Auto Cycle</span>
         </label>
         <div className="slider-row">
-          <label>Speed:</label>
+          <label>Hold:</label>
           <input
             type="range"
             min="500"
             max="10000"
             step="100"
-            value={idleSpeed}
-            onChange={(e) => setIdleSpeed(Number(e.target.value))}
+            value={idleHold}
+            onChange={(e) => setIdleHold(Number(e.target.value))}
           />
-          <span>{(idleSpeed / 1000).toFixed(1)}s</span>
+          <span>{(idleHold / 1000).toFixed(1)}s</span>
+        </div>
+        <div className="slider-row">
+          <label>Cross-Fade:</label>
+          <input
+            type="range"
+            min="0"
+            max="3000"
+            step="50"
+            value={idleFade}
+            onChange={(e) => setIdleFade(Number(e.target.value))}
+          />
+          <span>{(idleFade / 1000).toFixed(2)}s</span>
         </div>
         <p className="movement-hint">
-          Auto-cycles through each character's sitting poses. Higher = slower.
+          Hold = how long each pose stays. Cross-Fade = dissolve duration between poses.
         </p>
       </div>
 

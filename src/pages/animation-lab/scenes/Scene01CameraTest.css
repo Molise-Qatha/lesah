@@ -668,3 +668,7 @@ kbd {
   background: #e94560;
   border-color: #e94560;
 }
+@keyframes fadeOutPose {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}

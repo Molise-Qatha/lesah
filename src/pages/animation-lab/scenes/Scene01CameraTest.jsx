@@ -135,15 +135,20 @@ function Scene01CameraTest() {
   const [butterflies, setButterflies] = useState([]);
   const [grassSway, setGrassSway] = useState(0);
 
-  // ── Sway (character breathing) ──
+  // ── Character breathing sway ──
   const [swayEnabled, setSwayEnabled] = useState(true);
   const [swaySpeed, setSwaySpeed] = useState(1.0);
   const [swayAmplitude, setSwayAmplitude] = useState(1.5);
   const [swayTick, setSwayTick] = useState(0);
 
-  // ── Auto pose cycling ──
+  // ── Auto pose cycling (with cross-fade) ──
   const [idleEnabled, setIdleEnabled] = useState(true);
-  const [idleSpeed, setIdleSpeed] = useState(3000);
+  const [idleHold, setIdleHold] = useState(3000);   // ms each pose holds
+  const [idleFade, setIdleFade] = useState(700);    // ms cross-fade duration
+  const [kopanangPrevPose, setKopanangPrevPose] = useState(null);
+  const [leratoPrevPose, setLeratoPrevPose] = useState(null);
+  const kopanangPoseRef = useRef('ksit1');
+  const leratoPoseRef = useRef('sit1');
 
   const [kopanangAudioUrl, setKopanangAudioUrl] = useState(null);
   const [leratoAudioUrl, setLeratoAudioUrl] = useState(null);
@@ -165,6 +170,8 @@ function Scene01CameraTest() {
   const backgroundImgRef = useRef(null);
   const kopanangImgRef = useRef(null);
   const leratoImgRef = useRef(null);
+  const kopanangPrevImgRef = useRef(null);
+  const leratoPrevImgRef = useRef(null);
   const kopanangMouthImgRef = useRef(null);
   const leratoMouthImgRef = useRef(null);
 
@@ -191,11 +198,11 @@ function Scene01CameraTest() {
   const camX = camera.x;
   const camY = camera.y * 0.5;
 
-  // ── Sway values (breathing) ──
+  // ── Breathing ──
   const kopanangSway = swayEnabled ? Math.sin(swayTick) * swayAmplitude : 0;
   const leratoSway = swayEnabled ? Math.sin(swayTick + 1.2) * swayAmplitude : 0;
 
-  // Preload all images
+  // Preload
   useEffect(() => {
     let loaded = 0;
     const total =
@@ -221,7 +228,7 @@ function Scene01CameraTest() {
     BUTTERFLY_FRAMES.forEach((b, i) => (imagesRef.current[`butterfly_${i}`] = loadImage(b)));
   }, []);
 
-  // Init butterflies
+  // Butterflies
   useEffect(() => {
     const newB = [];
     for (let i = 0; i < butterflyCount; i++) {
@@ -239,7 +246,6 @@ function Scene01CameraTest() {
     setButterflies(newB);
   }, [butterflyCount, butterflySpeed]);
 
-  // Animate butterflies
   useEffect(() => {
     if (!butterflyEnabled) return;
     let id;
@@ -277,7 +283,7 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [grassEnabled, grassWindSpeed]);
 
-  // Character breathing (sway tick)
+  // Breathing tick
   useEffect(() => {
     if (!swayEnabled) return;
     let id, t = 0;
@@ -290,23 +296,44 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [swayEnabled, swaySpeed]);
 
-  // ── Auto pose cycling ──
+  // Keep refs in sync with current pose
+  useEffect(() => { kopanangPoseRef.current = selectedKopanangPose; }, [selectedKopanangPose]);
+  useEffect(() => { leratoPoseRef.current = selectedLeratoPose; }, [selectedLeratoPose]);
+
+  // ── Auto pose cycling with cross-fade ──
   useEffect(() => {
     if (!idleEnabled) return;
     const interval = setInterval(() => {
-      setSelectedKopanangPose((prev) => {
-        const idx = KOPANANG_SIT.findIndex((p) => p.id === prev);
-        const next = (idx + 1) % KOPANANG_SIT.length;
-        return KOPANANG_SIT[next].id;
-      });
-      setSelectedLeratoPose((prev) => {
-        const idx = LERATO_SIT.findIndex((p) => p.id === prev);
-        const next = (idx + 1) % LERATO_SIT.length;
-        return LERATO_SIT[next].id;
-      });
-    }, idleSpeed);
+      // Kopanang
+      const prevK = kopanangPoseRef.current;
+      const idxK = KOPANANG_SIT.findIndex((p) => p.id === prevK);
+      const nextK = KOPANANG_SIT[(idxK + 1) % KOPANANG_SIT.length].id;
+      setKopanangPrevPose(prevK);
+      setSelectedKopanangPose(nextK);
+
+      // Lerato
+      const prevL = leratoPoseRef.current;
+      const idxL = LERATO_SIT.findIndex((p) => p.id === prevL);
+      const nextL = LERATO_SIT[(idxL + 1) % LERATO_SIT.length].id;
+      setLeratoPrevPose(prevL);
+      setSelectedLeratoPose(nextL);
+    }, idleHold + idleFade);
+
     return () => clearInterval(interval);
-  }, [idleEnabled, idleSpeed]);
+  }, [idleEnabled, idleHold, idleFade]);
+
+  // Remove prev pose after fade completes
+  useEffect(() => {
+    if (!kopanangPrevPose) return;
+    const id = setTimeout(() => setKopanangPrevPose(null), idleFade + 50);
+    return () => clearTimeout(id);
+  }, [kopanangPrevPose, idleFade]);
+
+  useEffect(() => {
+    if (!leratoPrevPose) return;
+    const id = setTimeout(() => setLeratoPrevPose(null), idleFade + 50);
+    return () => clearTimeout(id);
+  }, [leratoPrevPose, idleFade]);
 
   const rangeLimits = unlimitedMode
     ? { cameraX: 10000, cameraY: 10000, forward: 5000 }
@@ -698,6 +725,8 @@ function Scene01CameraTest() {
           grassEnabled, grassSway, grassPositions,
           butterflyEnabled, butterflies, MOUTH_FRAMES,
           viewZoom, camX, camY,
+          kopanangPrevImgRef, leratoPrevImgRef,
+          kopanangPrevPose, leratoPrevPose,
         });
       }
       animId = requestAnimationFrame(animate);
@@ -710,6 +739,7 @@ function Scene01CameraTest() {
     grassEnabled, grassSway, grassPositions,
     butterflyEnabled, butterflies,
     viewZoom, camX, camY,
+    kopanangPrevPose, leratoPrevPose,
   ]);
 
   const startRecording = async () => {
@@ -832,6 +862,27 @@ function Scene01CameraTest() {
                       zIndex: 10,
                     }}
                   >
+                    {/* Prev pose (fading out) */}
+                    {kopanangPrevPose && (
+                      <img
+                        ref={kopanangPrevImgRef}
+                        src={KOPANANG_SIT.find((p) => p.id === kopanangPrevPose).src}
+                        alt="Kopanang prev"
+                        draggable={false}
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          maxWidth: 'none',
+                          height: 'auto',
+                          transform: `translate(-50%, -100%) scale(${kopanangPos.scale}) scaleY(${1 + kopanangSway * 0.012})`,
+                          transformOrigin: 'center bottom',
+                          animation: `fadeOutPose ${idleFade}ms linear forwards`,
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    )}
+                    {/* Current pose */}
                     <img
                       ref={kopanangImgRef}
                       src={KOPANANG_SIT.find((p) => p.id === selectedKopanangPose).src}
@@ -885,6 +936,25 @@ function Scene01CameraTest() {
                       zIndex: 10,
                     }}
                   >
+                    {leratoPrevPose && (
+                      <img
+                        ref={leratoPrevImgRef}
+                        src={LERATO_SIT.find((p) => p.id === leratoPrevPose).src}
+                        alt="Lerato prev"
+                        draggable={false}
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          maxWidth: 'none',
+                          height: 'auto',
+                          transform: `translate(-50%, -100%) scale(${leratoPos.scale}) scaleY(${1 + leratoSway * 0.012})`,
+                          transformOrigin: 'center bottom',
+                          animation: `fadeOutPose ${idleFade}ms linear forwards`,
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    )}
                     <img
                       ref={leratoImgRef}
                       src={LERATO_SIT.find((p) => p.id === selectedLeratoPose).src}
@@ -1036,7 +1106,8 @@ function Scene01CameraTest() {
               swaySpeed={swaySpeed} setSwaySpeed={setSwaySpeed}
               swayAmplitude={swayAmplitude} setSwayAmplitude={setSwayAmplitude}
               idleEnabled={idleEnabled} setIdleEnabled={setIdleEnabled}
-              idleSpeed={idleSpeed} setIdleSpeed={setIdleSpeed}
+              idleHold={idleHold} setIdleHold={setIdleHold}
+              idleFade={idleFade} setIdleFade={setIdleFade}
             />
           </>
         )}

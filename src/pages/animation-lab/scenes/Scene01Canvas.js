@@ -1,10 +1,7 @@
 /**
  * Scene01Canvas.js
- *
  * Draws the scene to a canvas for recording.
- * Reads the actual DOM positions of each visible element using
- * getBoundingClientRect(), so the canvas output matches the preview
- * exactly — no more anchor/mismatch issues.
+ * Now supports cross-fading between two character poses.
  */
 
 export function drawSceneToCanvas(canvas, ctx, params) {
@@ -28,6 +25,13 @@ export function drawSceneToCanvas(canvas, ctx, params) {
     butterflyEnabled,
     butterflies,
     MOUTH_FRAMES,
+    viewZoom,
+    camX,
+    camY,
+    kopanangPrevImgRef,
+    leratoPrevImgRef,
+    kopanangPrevPose,
+    leratoPrevPose,
   } = params;
 
   const vp = stageRef.current;
@@ -39,12 +43,10 @@ export function drawSceneToCanvas(canvas, ctx, params) {
   const sx = canvas.width / vpRect.width;
   const sy = canvas.height / vpRect.height;
 
-  // Clear the canvas
   ctx.fillStyle = '#000000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw an <img> element using its real DOM bounding rect
-  const drawImgByRef = (imgRef, img) => {
+  const drawImgByRef = (imgRef, img, alphaOverride = null) => {
     if (!imgRef || !imgRef.current || !img) return;
     const r = imgRef.current.getBoundingClientRect();
     if (r.width === 0 || r.height === 0) return;
@@ -52,7 +54,14 @@ export function drawSceneToCanvas(canvas, ctx, params) {
     const y = (r.top - vpRect.top) * sy;
     const w = r.width * sx;
     const h = r.height * sy;
-    ctx.drawImage(img, x, y, w, h);
+    if (alphaOverride !== null) {
+      const prevAlpha = ctx.globalAlpha;
+      ctx.globalAlpha = alphaOverride;
+      ctx.drawImage(img, x, y, w, h);
+      ctx.globalAlpha = prevAlpha;
+    } else {
+      ctx.drawImage(img, x, y, w, h);
+    }
   };
 
   // Background
@@ -60,8 +69,16 @@ export function drawSceneToCanvas(canvas, ctx, params) {
     drawImgByRef(backgroundImgRef, imagesRef.current['background']);
   }
 
-  // Kopanang + mouth
+  // Kopanang — prev (fading) then current
   if (layerVisibility.kopanang) {
+    if (kopanangPrevPose && kopanangPrevImgRef?.current) {
+      const opacity = parseFloat(window.getComputedStyle(kopanangPrevImgRef.current).opacity || '1');
+      drawImgByRef(
+        kopanangPrevImgRef,
+        imagesRef.current[`kopanang_${kopanangPrevPose}`],
+        opacity
+      );
+    }
     drawImgByRef(
       kopanangImgRef,
       imagesRef.current[`kopanang_${selectedKopanangPose}`]
@@ -74,8 +91,16 @@ export function drawSceneToCanvas(canvas, ctx, params) {
     }
   }
 
-  // Lerato + mouth
+  // Lerato — prev (fading) then current
   if (layerVisibility.lerato) {
+    if (leratoPrevPose && leratoPrevImgRef?.current) {
+      const opacity = parseFloat(window.getComputedStyle(leratoPrevImgRef.current).opacity || '1');
+      drawImgByRef(
+        leratoPrevImgRef,
+        imagesRef.current[`lerato_${leratoPrevPose}`],
+        opacity
+      );
+    }
     drawImgByRef(
       leratoImgRef,
       imagesRef.current[`lerato_${selectedLeratoPose}`]
@@ -93,9 +118,9 @@ export function drawSceneToCanvas(canvas, ctx, params) {
     grassPositions.forEach((g, idx) => {
       const img = imagesRef.current[`grass_${idx}`];
       if (!img) return;
-      const domX = vpRect.width / 2 + g.x;
-      const domY = vpRect.height / 2 + g.y;
-      const cw = g.size * sx;
+      const domX = vpRect.width / 2 + (g.x * viewZoom + camX);
+      const domY = vpRect.height / 2 + (g.y * viewZoom + camY);
+      const cw = g.size * viewZoom * sx;
       const ch = img.width ? (img.height / img.width) * cw : cw;
       const swayDeg = grassSway * (0.5 + idx * 0.15);
 
@@ -112,9 +137,9 @@ export function drawSceneToCanvas(canvas, ctx, params) {
     butterflies.forEach((bf) => {
       const img = imagesRef.current[`butterfly_${bf.frame}`];
       if (!img) return;
-      const domX = vpRect.width / 2 + bf.x;
-      const domY = vpRect.height / 2 + bf.y;
-      const cw = 60 * bf.scale * sx;
+      const domX = vpRect.width / 2 + (bf.x * viewZoom + camX);
+      const domY = vpRect.height / 2 + (bf.y * viewZoom + camY);
+      const cw = 60 * bf.scale * viewZoom * sx;
       const ch = img.width ? (img.height / img.width) * cw : cw;
 
       ctx.drawImage(img, domX * sx - cw / 2, domY * sy - ch / 2, cw, ch);
