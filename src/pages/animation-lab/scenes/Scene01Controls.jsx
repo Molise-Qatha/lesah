@@ -39,6 +39,8 @@ export default function Scene01Controls({
   swayEnabled, setSwayEnabled,
   swaySpeed, setSwaySpeed,
   swayAmplitude, setSwayAmplitude,
+  idleEnabled, setIdleEnabled,
+  idleSpeed, setIdleSpeed,
 }) {
   return (
     <div className="camera-controls">
@@ -52,7 +54,7 @@ export default function Scene01Controls({
         </button>
       </div>
 
-      {/* Sway (character life) */}
+      {/* Sway — breathing */}
       <div className="character-controls">
         <h4>🌊 Character Sway (Life)</h4>
         <label className="asset-toggle-item">
@@ -83,6 +85,34 @@ export default function Scene01Controls({
         </div>
         <p className="movement-hint">
           Gentle breathing-style sway. Characters move out of phase.
+        </p>
+      </div>
+
+      {/* Auto pose cycle */}
+      <div className="character-controls">
+        <h4>🎭 Auto Pose Cycle</h4>
+        <label className="asset-toggle-item">
+          <input
+            type="checkbox"
+            checked={idleEnabled}
+            onChange={() => setIdleEnabled(!idleEnabled)}
+          />
+          <span className="asset-toggle-label">Enable Auto Cycle</span>
+        </label>
+        <div className="slider-row">
+          <label>Speed:</label>
+          <input
+            type="range"
+            min="500"
+            max="10000"
+            step="100"
+            value={idleSpeed}
+            onChange={(e) => setIdleSpeed(Number(e.target.value))}
+          />
+          <span>{(idleSpeed / 1000).toFixed(1)}s</span>
+        </div>
+        <p className="movement-hint">
+          Auto-cycles through each character's sitting poses. Higher = slower.
         </p>
       </div>
 

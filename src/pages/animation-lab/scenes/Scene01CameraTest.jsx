@@ -135,11 +135,15 @@ function Scene01CameraTest() {
   const [butterflies, setButterflies] = useState([]);
   const [grassSway, setGrassSway] = useState(0);
 
-  // ── Sway (character life) ──
+  // ── Sway (character breathing) ──
   const [swayEnabled, setSwayEnabled] = useState(true);
   const [swaySpeed, setSwaySpeed] = useState(1.0);
   const [swayAmplitude, setSwayAmplitude] = useState(1.5);
   const [swayTick, setSwayTick] = useState(0);
+
+  // ── Auto pose cycling ──
+  const [idleEnabled, setIdleEnabled] = useState(true);
+  const [idleSpeed, setIdleSpeed] = useState(3000);
 
   const [kopanangAudioUrl, setKopanangAudioUrl] = useState(null);
   const [leratoAudioUrl, setLeratoAudioUrl] = useState(null);
@@ -187,7 +191,7 @@ function Scene01CameraTest() {
   const camX = camera.x;
   const camY = camera.y * 0.5;
 
-  // ── Sway values per character (out of phase) ──
+  // ── Sway values (breathing) ──
   const kopanangSway = swayEnabled ? Math.sin(swayTick) * swayAmplitude : 0;
   const leratoSway = swayEnabled ? Math.sin(swayTick + 1.2) * swayAmplitude : 0;
 
@@ -273,7 +277,7 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [grassEnabled, grassWindSpeed]);
 
-  // Character sway loop
+  // Character breathing (sway tick)
   useEffect(() => {
     if (!swayEnabled) return;
     let id, t = 0;
@@ -285,6 +289,24 @@ function Scene01CameraTest() {
     id = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(id);
   }, [swayEnabled, swaySpeed]);
+
+  // ── Auto pose cycling ──
+  useEffect(() => {
+    if (!idleEnabled) return;
+    const interval = setInterval(() => {
+      setSelectedKopanangPose((prev) => {
+        const idx = KOPANANG_SIT.findIndex((p) => p.id === prev);
+        const next = (idx + 1) % KOPANANG_SIT.length;
+        return KOPANANG_SIT[next].id;
+      });
+      setSelectedLeratoPose((prev) => {
+        const idx = LERATO_SIT.findIndex((p) => p.id === prev);
+        const next = (idx + 1) % LERATO_SIT.length;
+        return LERATO_SIT[next].id;
+      });
+    }, idleSpeed);
+    return () => clearInterval(interval);
+  }, [idleEnabled, idleSpeed]);
 
   const rangeLimits = unlimitedMode
     ? { cameraX: 10000, cameraY: 10000, forward: 5000 }
@@ -1013,6 +1035,8 @@ function Scene01CameraTest() {
               swayEnabled={swayEnabled} setSwayEnabled={setSwayEnabled}
               swaySpeed={swaySpeed} setSwaySpeed={setSwaySpeed}
               swayAmplitude={swayAmplitude} setSwayAmplitude={setSwayAmplitude}
+              idleEnabled={idleEnabled} setIdleEnabled={setIdleEnabled}
+              idleSpeed={idleSpeed} setIdleSpeed={setIdleSpeed}
             />
           </>
         )}
