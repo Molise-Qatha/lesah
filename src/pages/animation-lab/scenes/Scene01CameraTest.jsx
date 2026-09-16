@@ -93,8 +93,7 @@ const MOUTH_FRAMES = [
 ];
 
 function Scene01CameraTest() {
-  // ── Shot switcher ──
-  const [currentShot, setCurrentShot] = useState(3); // 1=Water, 2=Landscape, 3=Characters
+  const [currentShot, setCurrentShot] = useState(3);
 
   const [camera, setCamera] = useState({ x: 0, y: 0, forward: 0 });
   const [layerVisibility, setLayerVisibility] = useState({ background: true, kopanang: true, lerato: true });
@@ -135,6 +134,12 @@ function Scene01CameraTest() {
   const [butterflySpeed, setButterflySpeed] = useState(2);
   const [butterflies, setButterflies] = useState([]);
   const [grassSway, setGrassSway] = useState(0);
+
+  // ── Sway (character life) ──
+  const [swayEnabled, setSwayEnabled] = useState(true);
+  const [swaySpeed, setSwaySpeed] = useState(1.0);
+  const [swayAmplitude, setSwayAmplitude] = useState(1.5);
+  const [swayTick, setSwayTick] = useState(0);
 
   const [kopanangAudioUrl, setKopanangAudioUrl] = useState(null);
   const [leratoAudioUrl, setLeratoAudioUrl] = useState(null);
@@ -181,6 +186,10 @@ function Scene01CameraTest() {
   const viewZoom = backgroundScale * Math.max(0.1, 1 + camera.forward / 500);
   const camX = camera.x;
   const camY = camera.y * 0.5;
+
+  // ── Sway values per character (out of phase) ──
+  const kopanangSway = swayEnabled ? Math.sin(swayTick) * swayAmplitude : 0;
+  const leratoSway = swayEnabled ? Math.sin(swayTick + 1.2) * swayAmplitude : 0;
 
   // Preload all images
   useEffect(() => {
@@ -264,6 +273,19 @@ function Scene01CameraTest() {
     return () => cancelAnimationFrame(id);
   }, [grassEnabled, grassWindSpeed]);
 
+  // Character sway loop
+  useEffect(() => {
+    if (!swayEnabled) return;
+    let id, t = 0;
+    const animate = () => {
+      t += 0.02 * swaySpeed;
+      setSwayTick(t);
+      id = requestAnimationFrame(animate);
+    };
+    id = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(id);
+  }, [swayEnabled, swaySpeed]);
+
   const rangeLimits = unlimitedMode
     ? { cameraX: 10000, cameraY: 10000, forward: 5000 }
     : { cameraX: 200, cameraY: 200, forward: 100 };
@@ -273,7 +295,6 @@ function Scene01CameraTest() {
   const handleKeyDown = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = true; }, []);
   const handleKeyUp = useCallback((e) => { keysPressed.current[e.key.toLowerCase()] = false; }, []);
 
-  // Keyboard loop
   useEffect(() => {
     const handleKeyFrame = () => {
       const speed = 0.4 * cameraSpeed;
@@ -355,7 +376,6 @@ function Scene01CameraTest() {
     scaleCharacter(e.deltaY > 0 ? -0.05 : 0.05);
   };
 
-  // Manual mouth cycling
   useEffect(() => {
     if ((kopanangTalking || leratoTalking) && !audioPlaying) {
       mouthTimerRef.current = setInterval(
@@ -495,7 +515,6 @@ function Scene01CameraTest() {
     setGrassPositions(GRASS_ASSETS.map((g) => ({ x: g.x, y: g.y, size: g.size })));
   };
 
-  // Audio
   const initializeAudioContext = () => {
     if (!audioContextRef.current) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -567,7 +586,6 @@ function Scene01CameraTest() {
     };
   }, []);
 
-  // Timeline
   const addKeyframe = () => {
     const kf = {
       id: Date.now(), time: currentTime,
@@ -642,7 +660,7 @@ function Scene01CameraTest() {
 
   useEffect(() => () => { if (playbackFrameRef.current) cancelAnimationFrame(playbackFrameRef.current); }, []);
 
-  // Canvas draw
+  // Canvas draw loop
   useEffect(() => {
     let animId;
     const animate = () => {
@@ -672,7 +690,6 @@ function Scene01CameraTest() {
     viewZoom, camX, camY,
   ]);
 
-  // Recording
   const startRecording = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -735,8 +752,6 @@ function Scene01CameraTest() {
   return (
     <div className="scene01-page">
       <div className="scene01-container">
-
-        {/* Shot switcher */}
         <div className="shot-switcher">
           <button
             className={`shot-btn ${currentShot === 1 ? 'active' : ''}`}
@@ -807,7 +822,7 @@ function Scene01CameraTest() {
                         top: 0,
                         maxWidth: 'none',
                         height: 'auto',
-                        transform: `translate(-50%, -100%) scale(${kopanangPos.scale})`,
+                        transform: `translate(-50%, -100%) scale(${kopanangPos.scale}) rotate(${kopanangSway}deg)`,
                         transformOrigin: 'center bottom',
                         cursor: selectMode === 'character' ? 'grab' : 'default',
                         outline: showSelectionOutline && selectedCharacter === 'kopanang' ? '2px solid #ffd700' : 'none',
@@ -860,7 +875,7 @@ function Scene01CameraTest() {
                         top: 0,
                         maxWidth: 'none',
                         height: 'auto',
-                        transform: `translate(-50%, -100%) scale(${leratoPos.scale})`,
+                        transform: `translate(-50%, -100%) scale(${leratoPos.scale}) rotate(${leratoSway}deg)`,
                         transformOrigin: 'center bottom',
                         cursor: selectMode === 'character' ? 'grab' : 'default',
                         outline: showSelectionOutline && selectedCharacter === 'lerato' ? '2px solid #ffd700' : 'none',
@@ -995,6 +1010,9 @@ function Scene01CameraTest() {
               leratoTalking={leratoTalking} setLeratoTalking={setLeratoTalking}
               kopanangMouthPos={kopanangMouthPos} leratoMouthPos={leratoMouthPos}
               nudgeMouth={nudgeMouth} resetMouth={resetMouth}
+              swayEnabled={swayEnabled} setSwayEnabled={setSwayEnabled}
+              swaySpeed={swaySpeed} setSwaySpeed={setSwaySpeed}
+              swayAmplitude={swayAmplitude} setSwayAmplitude={setSwayAmplitude}
             />
           </>
         )}

@@ -1,57 +1,44 @@
 import React from 'react';
 
 export default function Scene01Controls({
-  // Debug
   debugMode, setDebugMode,
-  // Timeline
   timelineKeyframes, currentTime, timelineDuration, setTimelineDuration,
   isPlaying,
   play, pause, stop, addKeyframe, selectKeyframe, deleteKeyframe,
-  // Recording
   isRecording, startRecording, stopRecording,
-  // Camera
   unlimitedMode, setUnlimitedMode,
   nudgeCamera, nudgeCameraForward, resetCamera,
   cameraSpeed, setCameraSpeed,
-  // Background
   backgroundScale, setBackgroundScale,
-  // Layers
   layerVisibility, setLayerVisibility,
-  // Grass
   grassEnabled, setGrassEnabled,
   grassWindSpeed, setGrassWindSpeed,
   grassPositions, selectedGrassIdx, setSelectedGrassIdx,
   nudgeGrass, nudgeGrassSize, resetGrassPositions,
-  // Butterflies
   butterflyEnabled, setButterflyEnabled,
   butterflyCount, setButterflyCount,
   butterflySpeed, setButterflySpeed,
-  // Character select + mode
   selectedCharacter, setSelectedCharacter,
   selectMode, setSelectMode,
-  // Character move/scale
   nudgeCharacter, nudgeScale, nudgeMouthScale,
-  // Outlines & locks
   showSelectionOutline, setShowSelectionOutline,
   showMouthOutline, setShowMouthOutline,
   lockKopanangPos, setLockKopanangPos,
   lockLeratoPos, setLockLeratoPos,
-  // Reset positions
   resetKopanangPos, resetLeratoPos,
-  // Lip sync
   kopanangAudioUrl, leratoAudioUrl,
   handleAudioUpload, playAudioForCharacter, stopAudio,
   audioPlaying,
-  // Poses
   KOPANANG_SIT, LERATO_SIT,
   selectedKopanangPose, setSelectedKopanangPose,
   selectedLeratoPose, setSelectedLeratoPose,
-  // Manual talking
   kopanangTalking, setKopanangTalking,
   leratoTalking, setLeratoTalking,
-  // Mouth position
   kopanangMouthPos, leratoMouthPos,
   nudgeMouth, resetMouth,
+  swayEnabled, setSwayEnabled,
+  swaySpeed, setSwaySpeed,
+  swayAmplitude, setSwayAmplitude,
 }) {
   return (
     <div className="camera-controls">
@@ -63,6 +50,40 @@ export default function Scene01Controls({
         >
           🐛 Toggle Controls
         </button>
+      </div>
+
+      {/* Sway (character life) */}
+      <div className="character-controls">
+        <h4>🌊 Character Sway (Life)</h4>
+        <label className="asset-toggle-item">
+          <input
+            type="checkbox"
+            checked={swayEnabled}
+            onChange={() => setSwayEnabled(!swayEnabled)}
+          />
+          <span className="asset-toggle-label">Enable Sway</span>
+        </label>
+        <div className="slider-row">
+          <label>Speed:</label>
+          <input
+            type="range" min="0.3" max="3" step="0.1"
+            value={swaySpeed}
+            onChange={(e) => setSwaySpeed(Number(e.target.value))}
+          />
+          <span>{swaySpeed.toFixed(1)}</span>
+        </div>
+        <div className="slider-row">
+          <label>Amplitude:</label>
+          <input
+            type="range" min="0.5" max="5" step="0.1"
+            value={swayAmplitude}
+            onChange={(e) => setSwayAmplitude(Number(e.target.value))}
+          />
+          <span>{swayAmplitude.toFixed(1)}°</span>
+        </div>
+        <p className="movement-hint">
+          Gentle breathing-style sway. Characters move out of phase.
+        </p>
       </div>
 
       {/* Timeline */}
