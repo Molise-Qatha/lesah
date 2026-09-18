@@ -1,0 +1,26 @@
+{
+  "saving_vs_investing": {
+    "english": "Saving is keeping money safe. Investing is using money to try to make more money. Saving has low risk but low returns. Investing has higher risk but potentially higher returns. Saving preserves capital with minimal risk (e.g., 3-5% interest). Investing deploys capital for growth (e.g., 7-12% returns) with market risk.",
+    "sesotho": "Ho boloka ke ho boloka chelete e sireletsehile. Matsete ke ho sebedisa chelete ho leka ho etsa e ngata. Ho boloka ho na le kotsi e tlase empa phaello e tlase. Matsete a na le kotsi e kgolo empa phaello e ka ba kgolo. Ho boloka ho boloka chelete ka kotsi e nyane (3-5%). Matsete a sebedisa chelete bakeng sa kgolo (7-12%) ka kotsi ya mmaraka."
+  },
+  "needs_vs_wants": {
+    "english": "Needs are things you MUST have to live. Wants are things you would LIKE but can live without. Needs are essential for survival and wellbeing. Wants improve quality of life but are optional. Needs are non-discretionary (rent, food, healthcare). Wants are discretionary (entertainment, luxury items).",
+    "sesotho": "Ditlhoko ke tseo o T LAMEHANG ho ba le tsona. Ditakatso ke tseo o ka phelang ntle le tsona. Ditlhoko di bohlokwa bakeng sa ho phela. Ditakatso di ntlafatsa bophelo empa ke tsa boikgethelo. Ditlhoko ha di qojwe (rente, dijo). Ditakatso ke tsa boikgethelo (boithabiso)."
+  },
+  "simple_vs_compound_interest": {
+    "english": "Simple interest is calculated once on your starting money. Compound interest is calculated on your money PLUS the interest you earned. Simple interest: I = P x r x t (principal only). Compound interest: A = P(1+r)^n (principal + accumulated interest). Simple interest grows linearly. Compound interest grows exponentially — this is why it accelerates wealth building.",
+    "sesotho": "E bonolo e balwa hanngwe hodima chelete ya hao. E kopaneng e balwa hodima chelete LE phaello e fumanweng. E bonolo: I = P x r x t. E kopaneng: A = P(1+r)^n. E bonolo e hola ka mokgwa o otlolohileng. E kopaneng e hola ka exponentially."
+  },
+  "loan_vs_gift": {
+    "english": "A loan must be paid back. A gift is free and does not need to be returned. A loan is borrowed money with repayment obligation. A gift has no repayment requirement. Loans create debt obligations with interest. Gifts are transfers without reciprocal obligation.",
+    "sesotho": "Kalimo e tlameha ho kgutliswa. Mpho ke ya mahala mme ha e kgutliswe. Kalimo ke chelete e alimilweng e hlokang ho kgutliswa. Mpho ha e hloke ho kgutliswa. Dikoloto di bopa boitlamo le phaello. Dimpho ke phetiso ntle le boitlamo."
+  },
+  "bank_vs_mobile_money": {
+    "english": "A bank is a building where you keep money. Mobile money is on your phone. Banks offer more services (loans, interest) but may have fees. Mobile money is convenient but has transfer fees. Banks are regulated financial institutions with deposit insurance. Mobile money operators are telecom-based with different regulations.",
+    "sesotho": "Banka ke moaho moo o bolokang chelete. Mobile money e fonong ya hao. Dibanka di fana ka ditshebeletso tse ngata empa di lefisa. Mobile money e bonolo empa e na le ditefiso. Dibanka di laolwa ka molao. Mobile money e itshetlehile ho telecom."
+  },
+  "income_vs_profit": {
+    "english": "Income is money you receive. Profit is money left after paying costs. Income is total money received. Profit = Income - Expenses. Income (revenue) is the top line. Profit is the bottom line after all costs, taxes, and expenses.",
+    "sesotho": "Moputso ke chelete eo o e fumanang. Phaello ke chelete e setseng kamora ho lefa ditshenyehelo. Moputso ke kakaretso e fumanweng. Phaello = Moputso - Ditshenyehelo. Moputso ke top line. Phaello ke bottom line kamora ditshenyehelo tsohle."
+  }
+}

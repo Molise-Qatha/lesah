@@ -1,0 +1,306 @@
+{
+  "definitions": [
+    {
+      "english": "A bank is a safe place to keep your money.",
+      "sesotho": "Banka ke sebaka se sireletsehileng sa ho boloka chelete."
+    },
+    {
+      "english": "Banks help you store, get, and send money.",
+      "sesotho": "Dibanka di o thusa ho boloka, ho fumana le ho romella chelete."
+    },
+    {
+      "english": "A bank account is like a special box at the bank for your money.",
+      "sesotho": "Akhaonto ya banka e tshwana le lebokose le kgethehileng bankeng bakeng sa chelete ya hao."
+    },
+    {
+      "english": "Money in a bank is safe from getting lost.",
+      "sesotho": "Chelete bankeng e sireletsehile hore e se lahlehe."
+    },
+    {
+      "english": "Banks are buildings where people keep money safe.",
+      "sesotho": "Dibanka ke meaho eo batho ba bolokang chelete ho yona."
+    },
+    {
+      "english": "Banks accept deposits, provide loans, and offer payment services.",
+      "sesotho": "Dibanka di amohela depositi, di fana ka dikoloto le ditshebeletso tsa ditefo."
+    },
+    {
+      "english": "A bank account stores money securely and earns interest.",
+      "sesotho": "Akhaonto ya banka e boloka chelete ka mokgwa o sireletsehileng le ho fumana phaello."
+    },
+    {
+      "english": "Banking services include savings, mobile banking, and ATMs.",
+      "sesotho": "Ditshebeletso tsa banka di kenyelletsa poloko, mobile banking le di-ATM."
+    },
+    {
+      "english": "Banks act as intermediaries between savers and borrowers.",
+      "sesotho": "Dibanka di sebetsa e le mokenna-dipakeng pakeng tsa ba bolokang le ba alimang."
+    },
+    {
+      "english": "Mobile banking enables transactions through your phone.",
+      "sesotho": "Mobile banking e dumella ditransakshene ka fono ya hao."
+    },
+    {
+      "english": "Banks operate under fractional reserve banking.",
+      "sesotho": "Dibanka di sebetsa tlasa fractional reserve banking."
+    },
+    {
+      "english": "The Central Bank of Lesotho regulates commercial banks.",
+      "sesotho": "Banka e Kgolo ya Lesotho e laola dibanka tsa kgwebo."
+    },
+    {
+      "english": "Banking services include deposits, credit, payments, and wealth management.",
+      "sesotho": "Ditshebeletso tsa banka di kenyelletsa depositi, mokitlane, ditefo le taolo ya maruo."
+    },
+    {
+      "english": "Digital banking and mobile money expand financial inclusion.",
+      "sesotho": "Digital banking le mobile money di eketsa ho kenyelletswa ditabeng tsa lichelete."
+    },
+    {
+      "english": "Understanding fees and rates is essential for personal finance.",
+      "sesotho": "Ho utlwisisa ditefiso le diphaello ho bohlokwa bakeng sa lichelete tsa botho."
+    }
+  ],
+  "examples": [
+    {
+      "english": "Put M50 in the bank. It stays safe.",
+      "sesotho": "Kenya M50 bankeng. E dula e sireletsehile."
+    },
+    {
+      "english": "Your parents have a bank account.",
+      "sesotho": "Batswadi ba hao ba na le akhaonto ya banka."
+    },
+    {
+      "english": "When you take money from the bank, it is a withdrawal.",
+      "sesotho": "Ha o nka chelete bankeng, ke withdrawal."
+    },
+    {
+      "english": "A piggy bank at home is like a mini bank!",
+      "sesotho": "Piggy bank lapeng e tshwana le banka e nyane!"
+    },
+    {
+      "english": "Banks give you a card to get your money.",
+      "sesotho": "Dibanka di o fa karete ya ho fumana chelete ya hao."
+    },
+    {
+      "english": "Open a savings account with M100. Deposit M50 monthly.",
+      "sesotho": "Bula akhaonto ya poloko ka M100. Kenya M50 ka kgwedi."
+    },
+    {
+      "english": "Use mobile banking to check balance and transfer money.",
+      "sesotho": "Sebedisa mobile banking ho hlahloba balance le ho romella chelete."
+    },
+    {
+      "english": "Withdraw M200 from ATM using your card and PIN.",
+      "sesotho": "Ntsha M200 ho ATM ka karete le PIN ya hao."
+    },
+    {
+      "english": "Student accounts may offer lower fees.",
+      "sesotho": "Diakhaonto tsa baithuti di ka fana ka ditefiso tse tlase."
+    },
+    {
+      "english": "Deposit part-time earnings into your bank account.",
+      "sesotho": "Kenya moputso wa mosebetsi wa nakwana akhaontong ya hao ya banka."
+    },
+    {
+      "english": "Bank A charges M20 monthly with 3 percent interest. Bank B has no fee but 1.5 percent.",
+      "sesotho": "Banka A e lefisa M20 ka kgwedi ka 3%. Banka B ha e lefise empa 1.5%."
+    },
+    {
+      "english": "M-Pesa offers convenience but may have higher transfer fees.",
+      "sesotho": "M-Pesa e fana ka bonolo empa e ka ba le ditefiso tse phahameng tsa ho romella."
+    },
+    {
+      "english": "Fixed deposit M10,000 at 7 percent for 12 months = M700 interest.",
+      "sesotho": "Fixed deposit ya M10,000 ka 7% dikgwedi tse 12 = M700 phaello."
+    },
+    {
+      "english": "Overdraft M500 at 15 percent for 30 days = approximately M6.25 interest.",
+      "sesotho": "Overdraft ya M500 ka 15% matsatsi a 30 = M6.25 phaello."
+    },
+    {
+      "english": "Two-factor authentication protects your account.",
+      "sesotho": "Two-factor authentication e sireletsa akhaonto ya hao."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "Banks keep your money in a special box — FALSE! They track it digitally.",
+      "sesotho": "Dibanka di boloka chelete ka lebokoseng — HA SE NNETE! Di e latela ka dijithale."
+    },
+    {
+      "english": "Only rich people use banks — FALSE! Anyone can open an account.",
+      "sesotho": "Ke barui feela ba sebedisang dibanka — HA SE NNETE! Motho e mong le e mong a ka bula akhaonto."
+    },
+    {
+      "english": "Banks are dangerous — FALSE! They are very safe.",
+      "sesotho": "Dibanka di kotsi — HA SE NNETE! Di sireletsehile haholo."
+    },
+    {
+      "english": "You need lots of money to open an account — FALSE! Many start with M50.",
+      "sesotho": "O hloka chelete e ngata ho bula akhaonto — HA SE NNETE! Tse ngata di qala ka M50."
+    },
+    {
+      "english": "ATMs give free money — FALSE! You withdraw what is yours.",
+      "sesotho": "Di-ATM di fana ka chelete ya mahala — HA SE NNETE! O ntsha seo e leng sa hao."
+    },
+    {
+      "english": "Bank cards equal credit cards — FALSE! Debit uses your money.",
+      "sesotho": "Dikarete tsa banka di tshwana le tsa mokitlane — HA SE NNETE! Debit e sebedisa chelete ya hao."
+    },
+    {
+      "english": "All bank accounts are the same — FALSE! Fees and rates vary.",
+      "sesotho": "Diakhaonto tsohle tsa banka di a tshwana — HA SE NNETE! Ditefiso le diphaello di a fapana."
+    },
+    {
+      "english": "Banks do not charge for accounts — FALSE! Many charge monthly fees.",
+      "sesotho": "Dibanka ha di lefise diakhaonto — HA SE NNETE! Tse ngata di lefisa kgwedi le kgwedi."
+    },
+    {
+      "english": "Money in bank is 100 percent risk-free — FALSE! Very safe but not absolute.",
+      "sesotho": "Chelete bankeng ha e na kotsi — HA SE NNETE! E sireletsehile empa eseng ka ho phethahala."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to know how to open a bank account?",
+      "sesotho": "Na o batla ho tseba ho bula akhaonto ya banka?"
+    },
+    {
+      "english": "Should we talk about keeping money safe?",
+      "sesotho": "Na re bue ka ho boloka chelete e sireletsehile?"
+    },
+    {
+      "english": "Want to understand mobile banking?",
+      "sesotho": "Na o batla ho utlwisisa mobile banking?"
+    },
+    {
+      "english": "Should we compare bank accounts?",
+      "sesotho": "Na re bapise diakhaonto tsa banka?"
+    },
+    {
+      "english": "Want to learn about saving in a bank?",
+      "sesotho": "Na o batla ho ithuta ka ho boloka bankeng?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Ask your parents to open a bank account for you.",
+      "sesotho": "Kopa batswadi ho o bulela akhaonto."
+    },
+    {
+      "english": "Deposit money in the bank to keep it safe.",
+      "sesotho": "Kenya chelete bankeng."
+    },
+    {
+      "english": "Learn to use an ATM with adult supervision.",
+      "sesotho": "Ithute ho sebedisa ATM le motho e moholo."
+    },
+    {
+      "english": "Compare bank accounts before choosing one.",
+      "sesotho": "Bapisa diakhaonto pele o kgetha."
+    },
+    {
+      "english": "Set up mobile banking on your phone.",
+      "sesotho": "Kenya mobile banking fonong."
+    },
+    {
+      "english": "Check your balance regularly.",
+      "sesotho": "Hlahloba balance kgafetsa."
+    },
+    {
+      "english": "Use two-factor authentication for security.",
+      "sesotho": "Sebedisa two-factor authentication."
+    },
+    {
+      "english": "Understand fees and minimum balance requirements.",
+      "sesotho": "Utlwisisa ditefiso le minimum balance."
+    },
+    {
+      "english": "Explore fixed deposits for higher interest.",
+      "sesotho": "Hlahloba fixed deposits."
+    }
+  ],
+  "why": [
+    {
+      "english": "Banks keep your money safe from theft.",
+      "sesotho": "Dibanka di boloka chelete e sireletsehile."
+    },
+    {
+      "english": "Money in the bank earns interest.",
+      "sesotho": "Chelete bankeng e fumana phaello."
+    },
+    {
+      "english": "Bank accounts teach money management.",
+      "sesotho": "Diakhaonto di ruta taolo ya chelete."
+    },
+    {
+      "english": "Banking builds financial credibility.",
+      "sesotho": "Banka e haha tshepahalo."
+    },
+    {
+      "english": "Mobile banking makes transactions convenient.",
+      "sesotho": "Mobile banking e etsa ditransakshene bonolo."
+    },
+    {
+      "english": "Banks provide secure payment services.",
+      "sesotho": "Dibanka di fana ka ditshebeletso tse sireletsehileng."
+    },
+    {
+      "english": "Banking enables credit access.",
+      "sesotho": "Banka e dumella mokitlane."
+    },
+    {
+      "english": "Digital banking expands financial inclusion.",
+      "sesotho": "Digital banking e eketsa ho kenyelletswa."
+    },
+    {
+      "english": "Understanding banking is essential for planning.",
+      "sesotho": "Ho utlwisisa banka ho bohlokwa."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "You have M100. Should you keep it under your mattress or in a bank?",
+        "sesotho": "O na le M100. O e boloke kapa bankeng?"
+      },
+      "advice": {
+        "english": "Bank! Money in a bank is safer and earns interest.",
+        "sesotho": "Banka! Chelete bankeng e bolokehile le ho fumana phaello."
+      },
+      "lesson": {
+        "english": "Banks are safer than keeping money at home.",
+        "sesotho": "Dibanka di bolokehile ho feta ho boloka chelete lapeng."
+      }
+    },
+    {
+      "situation": {
+        "english": "Bank A: no monthly fee, 1% interest. Bank B: M10 monthly fee, 4% interest. You have M500. Which is better after 1 year?",
+        "sesotho": "Banka A: ha e lefise, 1% phaello. Banka B: M10 kgwedi, 4% phaello. O na le M500. E feng e betere kamora selemo?"
+      },
+      "advice": {
+        "english": "Bank A: M505. Bank B: M520 - M120 fees = M400. Bank A is better for M500.",
+        "sesotho": "Banka A: M505. Banka B: M520 - M120 = M400. Banka A e betere."
+      },
+      "lesson": {
+        "english": "Fees can eat your interest. Always calculate total cost.",
+        "sesotho": "Ditefiso di ka ja phaello. Dula o bala kakaretso."
+      }
+    },
+    {
+      "situation": {
+        "english": "You receive M1,000 via mobile money. Transfer to bank costs M20. Is this worth it to earn 5% annual interest?",
+        "sesotho": "O fumana M1,000 ka mobile money. Ho romella bankeng M20. Na ho bohlokwa ho fumana 5% phaello?"
+      },
+      "advice": {
+        "english": "5% on M1,000 = M50 interest. Transfer M20. Net = M30. Yes, worth it if held for a year.",
+        "sesotho": "5% ho M1,000 = M50. Transfer M20. Net = M30. E, ho bohlokwa haeba e bolokilwe selemo."
+      },
+      "lesson": {
+        "english": "Calculate net returns after fees.",
+        "sesotho": "Bala phaello kamora ditefiso."
+      }
+    }
+  ]
+}

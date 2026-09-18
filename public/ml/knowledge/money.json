@@ -1,0 +1,320 @@
+{
+  "definitions": [
+    {
+      "english": "Money is what we use to buy things. In Lesotho, we use Maloti and Lisente.",
+      "sesotho": "Chelete ke seo re se sebedisang ho reka dintho. Lesotho re sebedisa Maloti le Lisente."
+    },
+    {
+      "english": "Money is special paper and coins that people use to pay for things.",
+      "sesotho": "Chelete ke pampiri le ditjhepe tse kgethehileng tseo batho ba di sebedisang ho lefa."
+    },
+    {
+      "english": "Money helps us buy food, clothes, and other things we need.",
+      "sesotho": "Chelete e re thusa ho reka dijo, diaparo le dintho tse ding tseo re di hlokang."
+    },
+    {
+      "english": "In Lesotho, our money is called the Loti.",
+      "sesotho": "Lesotho, chelete ya rona e bitswa Loti."
+    },
+    {
+      "english": "Money is a tool for buying and selling things.",
+      "sesotho": "Chelete ke sesebediswa sa ho reka le ho rekisa."
+    },
+    {
+      "english": "Money is a medium of exchange used to buy goods and services.",
+      "sesotho": "Chelete ke mokgwa wa ho fapanyetsana o sebediswang ho reka thepa le ditshebeletso."
+    },
+    {
+      "english": "The Loti is divided into 100 Lisente.",
+      "sesotho": "Loti e arotswe ka Lisente tse 100."
+    },
+    {
+      "english": "Money has three functions: medium of exchange, unit of account, store of value.",
+      "sesotho": "Chelete e na le mesebetsi e meraro: ho fapanyetsana, ho metha boleng le ho boloka boleng."
+    },
+    {
+      "english": "The Loti is pegged to the South African Rand.",
+      "sesotho": "Loti e hokahane le Rand ya Afrika Borwa."
+    },
+    {
+      "english": "Money represents purchasing power.",
+      "sesotho": "Chelete e emela matla a ho reka."
+    },
+    {
+      "english": "Money serves as medium of exchange, store of value, and unit of account.",
+      "sesotho": "Chelete e sebetsa e le mokgwa wa ho fapanyetsana, ho boloka boleng le ho metha boleng."
+    },
+    {
+      "english": "The Lesotho Loti (LSL) is pegged 1:1 to the Rand (ZAR).",
+      "sesotho": "Loti ya Lesotho (LSL) e hokahane 1:1 le Rand (ZAR)."
+    },
+    {
+      "english": "Money encompasses M0 through M3 with implications for liquidity.",
+      "sesotho": "Chelete e kenyelletsa M0 ho ya M3 ka ditlamorao tsa liquidity."
+    },
+    {
+      "english": "Understanding money requires analyzing banking and monetary policy.",
+      "sesotho": "Ho utlwisisa chelete ho hloka ho hlahloba dibanka le leano la lichelete."
+    },
+    {
+      "english": "Digital money represents a new form of financial inclusion.",
+      "sesotho": "Chelete ya dijithale e emela mokgwa o motjha wa ho kenyelletsa batho ditabeng tsa lichelete."
+    }
+  ],
+  "examples": [
+    {
+      "english": "A bread costs M10. You give M10 and get bread.",
+      "sesotho": "Bohobe bo bitsa M10. O fana ka M10 mme o fumana bohobe."
+    },
+    {
+      "english": "M1 is the same as 100 Lisente.",
+      "sesotho": "M1 e tshwana le Lisente tse 100."
+    },
+    {
+      "english": "A sweet costs M5. A packet of chips costs M10.",
+      "sesotho": "Pompong e bitsa M5. Pakete ya chips e bitsa M10."
+    },
+    {
+      "english": "M50 can buy five breads that cost M10 each.",
+      "sesotho": "M50 e ka reka mahobe a mahlano a bitsang M10 ka bonngwe."
+    },
+    {
+      "english": "You have M20 and want to buy something that costs M15. You have M5 left.",
+      "sesotho": "O na le M20 mme o batla ho reka ntho e bitsang M15. O setse le M5."
+    },
+    {
+      "english": "M50 can be exchanged for goods worth M50.",
+      "sesotho": "M50 e ka fapanyetswa ka thepa ya boleng ba M50."
+    },
+    {
+      "english": "At 5 percent inflation, M100 today buys only M95 worth next year.",
+      "sesotho": "Ka inflation ya 5%, M100 kajeno e reka feela M95 selemong se tlang."
+    },
+    {
+      "english": "M1 equals R1 because of the peg.",
+      "sesotho": "M1 e lekana le R1 ka lebaka la peg."
+    },
+    {
+      "english": "Counting money: M20 + M10 + M5 = M35.",
+      "sesotho": "Ho bala chelete: M20 + M10 + M5 = M35."
+    },
+    {
+      "english": "You receive M500 and can spend or save it.",
+      "sesotho": "O fumana M500 mme o ka e sebedisa kapa ho e boloka."
+    },
+    {
+      "english": "The Loti-Rand peg means shared monetary policy with South Africa.",
+      "sesotho": "Peg ya Loti le Rand e bolela leano le kopaneng la lichelete le Afrika Borwa."
+    },
+    {
+      "english": "M1,000 in cash has different implications than M1,000 in savings.",
+      "sesotho": "M1,000 ya cash e na le moelelo o fapaneng le M1,000 polokong."
+    },
+    {
+      "english": "Depositing M500 enters the broader money supply.",
+      "sesotho": "Ho kenya M500 ho kena ka hara pokello e pharaletseng ya chelete."
+    },
+    {
+      "english": "Purchasing power parity compares prices between Maseru and Bloemfontein.",
+      "sesotho": "Purchasing power parity e bapisa ditheko pakeng tsa Maseru le Bloemfontein."
+    },
+    {
+      "english": "Mobile money like M-Pesa affects financial inclusion.",
+      "sesotho": "Mobile money e kang M-Pesa e ama ho kenyelletswa ditabeng tsa lichelete."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "Money grows on trees — FALSE! People earn money by working.",
+      "sesotho": "Chelete e mela difateng — HA SE NNETE! Batho ba fumana chelete ka ho sebetsa."
+    },
+    {
+      "english": "More money means more happiness — FALSE! Money helps but is not everything.",
+      "sesotho": "Chelete e ngata e bolela thabo e ngata — HA SE NNETE! Chelete ea thusa empa ha se yohle."
+    },
+    {
+      "english": "Only adults use money — FALSE! Children can learn to use money too.",
+      "sesotho": "Ke batho ba baholo feela ba sebedisang chelete — HA SE NNETE! Bana le bona ba ka ithuta."
+    },
+    {
+      "english": "Debit cards are unlimited money — FALSE! They only access your account.",
+      "sesotho": "Dikarete tsa debit ke chelete e sa feleng — HA SE NNETE! Di fihlella feela akhaonto ya hao."
+    },
+    {
+      "english": "The Loti and Rand are the same currency — FALSE! Different but pegged.",
+      "sesotho": "Loti le Rand ke chelete e le nngwe — HA SE NNETE! Di fapane empa di hokahane."
+    },
+    {
+      "english": "Banks print money — FALSE! The Central Bank controls money supply.",
+      "sesotho": "Dibanka di hatisa chelete — HA SE NNETE! Banka e Kgolo e laola tlhahiso ya chelete."
+    },
+    {
+      "english": "Cryptocurrency is legal tender in Lesotho — FALSE!",
+      "sesotho": "Cryptocurrency ke chelete ya molao Lesotho — HA SE NNETE!"
+    },
+    {
+      "english": "Money has intrinsic value — FALSE! Fiat money has value by decree.",
+      "sesotho": "Chelete e na le boleng ba tlhaho — HA SE NNETE! Fiat money e na le boleng ka molao."
+    },
+    {
+      "english": "Inflation always hurts everyone — FALSE! Borrowers with fixed rates benefit.",
+      "sesotho": "Inflation e utlwisa bohle bohloko — HA SE NNETE! Ba alimang ka fixed rates ba a rua molemo."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to learn how to count Maloti?",
+      "sesotho": "Na o batla ho ithuta ho bala Maloti?"
+    },
+    {
+      "english": "Would you like to know where money comes from?",
+      "sesotho": "Na o ka rata ho tseba moo chelete e tswang teng?"
+    },
+    {
+      "english": "Should we talk about saving money?",
+      "sesotho": "Na re bue ka ho boloka chelete?"
+    },
+    {
+      "english": "Want to understand what banks do with money?",
+      "sesotho": "Na o batla ho utlwisisa hore na dibanka di etsa eng ka chelete?"
+    },
+    {
+      "english": "Would you like to learn about earning money?",
+      "sesotho": "Na o ka rata ho ithuta ka ho fumana chelete?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Count your coins and notes to know how much you have.",
+      "sesotho": "Bala ditjhepe le dipampiri ho tseba hore na o na le bokae."
+    },
+    {
+      "english": "Learn that M1 equals 100 Lisente.",
+      "sesotho": "Ithute hore M1 e lekana le Lisente tse 100."
+    },
+    {
+      "english": "Practice buying small things to understand prices.",
+      "sesotho": "Ikwetlise ho reka dintho tse nyane ho utlwisisa ditheko."
+    },
+    {
+      "english": "Understand that the Loti is pegged to the Rand.",
+      "sesotho": "Utlwisisa hore Loti e hokahane le Rand."
+    },
+    {
+      "english": "Track how much money comes in and goes out.",
+      "sesotho": "Latela chelete e kenang le e tswang."
+    },
+    {
+      "english": "Learn about inflation and purchasing power.",
+      "sesotho": "Ithute ka inflation le matla a ho reka."
+    },
+    {
+      "english": "Understand monetary policy and the Common Monetary Area.",
+      "sesotho": "Utlwisisa leano la lichelete le Common Monetary Area."
+    },
+    {
+      "english": "Analyze how digital money affects financial inclusion.",
+      "sesotho": "Hlahloba kamoo chelete ya dijithale e amang ho kenyelletswa."
+    },
+    {
+      "english": "Study the money multiplier and fractional reserve banking.",
+      "sesotho": "Ithute ka money multiplier le fractional reserve banking."
+    }
+  ],
+  "why": [
+    {
+      "english": "We need money to buy food, clothes, and other things.",
+      "sesotho": "Re hloka chelete ho reka dijo, diaparo le dintho tse ding."
+    },
+    {
+      "english": "Money helps us trade fairly.",
+      "sesotho": "Chelete e re thusa ho rekisana ka toka."
+    },
+    {
+      "english": "Understanding money helps you make good choices.",
+      "sesotho": "Ho utlwisisa chelete ho thusa ho etsa dikgetho tse ntle."
+    },
+    {
+      "english": "Money makes trade efficient.",
+      "sesotho": "Chelete e etsa kgwebo e be bonolo."
+    },
+    {
+      "english": "Understanding money helps you manage finances.",
+      "sesotho": "Ho utlwisisa chelete ho thusa ho laola lichelete."
+    },
+    {
+      "english": "The Loti-Rand peg stabilizes the economy.",
+      "sesotho": "Peg ya Loti le Rand e tsitsisa moruo."
+    },
+    {
+      "english": "Money serves as store of value and unit of account.",
+      "sesotho": "Chelete e boloka boleng le ho metha boleng."
+    },
+    {
+      "english": "Monetary policy affects inflation and growth.",
+      "sesotho": "Leano la lichelete le ama inflation le kgolo."
+    },
+    {
+      "english": "Digital money is transforming financial services.",
+      "sesotho": "Chelete ya dijithale e fetola ditshebeletso."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "You have M50. A bread costs M10. How many breads can you buy?",
+        "sesotho": "O na le M50. Bohobe bo bitsa M10. O ka reka mahobe a makae?"
+      },
+      "advice": {
+        "english": "M50 divided by M10 = 5 breads. You can buy 5 breads.",
+        "sesotho": "M50 arolwa ka M10 = mahobe a 5. O ka reka mahobe a 5."
+      },
+      "lesson": {
+        "english": "Division helps you know how many things you can buy.",
+        "sesotho": "Ho arola ho o thusa ho tseba hore na o ka reka dintho tse kae."
+      }
+    },
+    {
+      "situation": {
+        "english": "A sweet costs M2. You have M10. How many sweets can you buy?",
+        "sesotho": "Pompong e bitsa M2. O na le M10. O ka reka dipompong tse kae?"
+      },
+      "advice": {
+        "english": "M10 divided by M2 = 5 sweets.",
+        "sesotho": "M10 arolwa ka M2 = dipompong tse 5."
+      },
+      "lesson": {
+        "english": "Understanding prices helps you spend wisely.",
+        "sesotho": "Ho utlwisisa ditheko ho thusa ho sebedisa ka bohlale."
+      }
+    },
+    {
+      "situation": {
+        "english": "You have M200. Transport costs M20 per day. How many days can you travel?",
+        "sesotho": "O na le M200. Dipalangwang di bitsa M20 ka letsatsi. O ka tsamaya matsatsi a makae?"
+      },
+      "advice": {
+        "english": "M200 divided by M20 = 10 days of transport.",
+        "sesotho": "M200 arolwa ka M20 = matsatsi a 10 a dipalangwang."
+      },
+      "lesson": {
+        "english": "Budgeting daily expenses helps money last longer.",
+        "sesotho": "Ho rera ditshenyehelo tsa letsatsi ho thusa chelete ho tshwarella."
+      }
+    },
+    {
+      "situation": {
+        "english": "At 6% inflation, M1,000 today will be worth how much in buying power next year?",
+        "sesotho": "Ka inflation ya 6%, M1,000 kajeno e tla ba le matla a ho reka a bokae selemong se tlang?"
+      },
+      "advice": {
+        "english": "M1,000 / 1.06 = approximately M943 purchasing power.",
+        "sesotho": "M1,000 / 1.06 = M943 matla a ho reka."
+      },
+      "lesson": {
+        "english": "Inflation erodes purchasing power over time.",
+        "sesotho": "Inflation e fokotsa matla a ho reka ka nako."
+      }
+    }
+  ]
+}

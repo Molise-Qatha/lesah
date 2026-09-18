@@ -1,0 +1,306 @@
+{
+  "definitions": [
+    {
+      "english": "Interest is extra money you get when you keep money in a bank.",
+      "sesotho": "Phaello ke chelete e eketsehileng eo o e fumanang ha o boloka chelete bankeng."
+    },
+    {
+      "english": "When you save, the bank gives you a little extra money. That is interest.",
+      "sesotho": "Ha o boloka, banka e o fa chelete e nyane e eketsehileng. Ke phaello."
+    },
+    {
+      "english": "Interest is like a reward for saving your money.",
+      "sesotho": "Phaello e tshwana le moputso wa ho boloka chelete ya hao."
+    },
+    {
+      "english": "If you put M100 in the bank and get M5 extra, that M5 is interest.",
+      "sesotho": "Haeba o kenya M100 bankeng mme o fumana M5 e eketsehileng, M5 eo ke phaello."
+    },
+    {
+      "english": "Interest is money that grows on your saved money.",
+      "sesotho": "Phaello ke chelete e holang hodima chelete e bolokilweng."
+    },
+    {
+      "english": "Interest is the cost of borrowing or the reward for saving.",
+      "sesotho": "Phaello ke theko ya ho alima kapa moputso wa ho boloka."
+    },
+    {
+      "english": "Interest is money paid for the use of borrowed money.",
+      "sesotho": "Phaello ke chelete e lefuwang bakeng sa tshebediso ya chelete e alimilweng."
+    },
+    {
+      "english": "Simple interest is calculated on principal only. Compound interest includes accumulated interest.",
+      "sesotho": "Phaello e bonolo e balwa hodima chelete feela. Phaello e kopaneng e kenyelletsa phaello e bokelletsweng."
+    },
+    {
+      "english": "Interest rate is expressed as a percentage.",
+      "sesotho": "Phaello e hlaloswa e le peresente."
+    },
+    {
+      "english": "When you save, interest works for you. When you borrow, it works against you.",
+      "sesotho": "Ha o boloka, phaello e o sebeletsa. Ha o alima, e o lwantsha."
+    },
+    {
+      "english": "Interest represents the time value of money.",
+      "sesotho": "Phaello e emela boleng ba nako ba chelete."
+    },
+    {
+      "english": "Simple interest: I = P x r x t. Compound interest: A = P(1+r)^n.",
+      "sesotho": "Phaello e bonolo: I = P x r x t. Phaello e kopaneng: A = P(1+r)^n."
+    },
+    {
+      "english": "Real interest rate equals nominal rate minus inflation.",
+      "sesotho": "Phaello ya nnete e lekana le phaello ya lebitso ho tlosa inflation."
+    },
+    {
+      "english": "Central bank policy and inflation influence interest rates.",
+      "sesotho": "Leano la banka e kgolo le inflation di ama phaello."
+    },
+    {
+      "english": "Effective annual rate accounts for compounding frequency.",
+      "sesotho": "Phaello e sebetsang ea selemo e balela makgetlo a ho kopanya."
+    }
+  ],
+  "examples": [
+    {
+      "english": "Save M100 at 5 percent. After one year, you have M105.",
+      "sesotho": "Boloka M100 ka 5%. Kamora selemo, o na le M105."
+    },
+    {
+      "english": "Borrow M50 and repay M55. The extra M5 is interest.",
+      "sesotho": "Alima M50 mme o kgutlise M55. M5 e eketsehileng ke phaello."
+    },
+    {
+      "english": "A bank account gives interest, but a piggy bank does not.",
+      "sesotho": "Akhaonto ya banka e fana ka phaello, empa piggy bank ha e fane."
+    },
+    {
+      "english": "Save M200 and get M10 extra. That is your interest.",
+      "sesotho": "Boloka M200 mme o fumane M10 e eketsehileng. Ke phaello ya hao."
+    },
+    {
+      "english": "Interest makes your money grow while you sleep.",
+      "sesotho": "Phaello e etsa hore chelete ya hao e hole ha o robetse."
+    },
+    {
+      "english": "M1,000 at 10 percent = repay M1,100 after one year.",
+      "sesotho": "M1,000 ka 10% = kgutlisa M1,100 kamora selemo."
+    },
+    {
+      "english": "Simple interest on M5,000 at 8 percent for 3 years = M1,200.",
+      "sesotho": "Phaello e bonolo ho M5,000 ka 8% dilemo tse 3 = M1,200."
+    },
+    {
+      "english": "Compound: M1,000 at 10 percent — Year 1: M1,100, Year 2: M1,210, Year 3: M1,331.",
+      "sesotho": "E kopaneng: M1,000 ka 10% — Selemo 1: M1,100, Selemo 2: M1,210, Selemo 3: M1,331."
+    },
+    {
+      "english": "Save M100 monthly at 6 percent for 10 years = M16,470.",
+      "sesotho": "Boloka M100 ka kgwedi ka 6% dilemo tse 10 = M16,470."
+    },
+    {
+      "english": "Credit card at 24 percent doubles debt every 3 years.",
+      "sesotho": "Karete ya mokitlane ka 24% e imena sekoloto ka dilemo tse 3."
+    },
+    {
+      "english": "M10,000 at 7 percent for 10 years grows to M19,672.",
+      "sesotho": "M10,000 ka 7% dilemo tse 10 e hola ho fihlela M19,672."
+    },
+    {
+      "english": "Rule of 72: divide 72 by rate to estimate doubling time.",
+      "sesotho": "Molao wa 72: arola 72 ka phaello ho hakanya nako ya ho imena."
+    },
+    {
+      "english": "12 percent monthly compounding = 12.68 percent effective annual.",
+      "sesotho": "12% e kopanwang kgwedi le kgwedi = 12.68% e sebetsang ka selemo."
+    },
+    {
+      "english": "M15,000 loan at 10 percent over 3 years = M4,500 interest.",
+      "sesotho": "Kalimo ya M15,000 ka 10% dilemo tse 3 = M4,500 phaello."
+    },
+    {
+      "english": "At 6 percent inflation and 3 percent savings, real return is negative.",
+      "sesotho": "Ka inflation ya 6% le poloko ya 3%, phaello ya nnete e negative."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "Interest is only for rich people — FALSE! Anyone earns interest on savings.",
+      "sesotho": "Phaello ke ya barui feela — HA SE NNETE! Motho e mong le e mong o fumana phaello polokong."
+    },
+    {
+      "english": "All interest is bad — FALSE! Interest on savings is good!",
+      "sesotho": "Phaello yohle e mpe — HA SE NNETE! Phaello polokong e ntle!"
+    },
+    {
+      "english": "Interest grows money instantly — FALSE! It grows slowly over time.",
+      "sesotho": "Phaello e holisa chelete hanghang — HA SE NNETE! E hola butle ka nako."
+    },
+    {
+      "english": "Interest only applies to loans — FALSE! Savings earn interest too.",
+      "sesotho": "Phaello e sebetsa feela dikolong — HA SE NNETE! Poloko le yona e fumana phaello."
+    },
+    {
+      "english": "All banks offer same rates — FALSE! Rates vary significantly.",
+      "sesotho": "Dibanka tsohle di fana ka diphaello tse tshwanang — HA SE NNETE! Di fapana haholo."
+    },
+    {
+      "english": "Compound equals simple interest — FALSE! Compound grows faster.",
+      "sesotho": "E kopaneng e tshwana le e bonolo — HA SE NNETE! E kopaneng e hola ka potlako."
+    },
+    {
+      "english": "Low rates always help borrowers — FALSE! They hurt savers too.",
+      "sesotho": "Diphaello tse tlase di thusa ba alimang — HA SE NNETE! Di utlwisa ba bolokang bohloko."
+    },
+    {
+      "english": "Rule of 72 is exact — FALSE! It is an approximation.",
+      "sesotho": "Molao wa 72 o nepahetse — HA SE NNETE! Ke tekanyo feela."
+    },
+    {
+      "english": "Higher rates always mean better investments — FALSE! Risk matters.",
+      "sesotho": "Diphaello tse phahameng di bolela matsete a matle — HA SE NNETE! Kotsi le yona e bohlokwa."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to learn how to calculate interest?",
+      "sesotho": "Na o batla ho ithuta ho bala phaello?"
+    },
+    {
+      "english": "Should we talk about compound interest?",
+      "sesotho": "Na re bue ka phaello e kopaneng?"
+    },
+    {
+      "english": "Want to know what interest rate to expect?",
+      "sesotho": "Na o batla ho tseba phaello e lebeletsweng?"
+    },
+    {
+      "english": "Should we compare savings accounts?",
+      "sesotho": "Na re bapise diakhaonto tsa poloko?"
+    },
+    {
+      "english": "Want to understand loan interest?",
+      "sesotho": "Na o batla ho utlwisisa phaello ya dikoloto?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Save money in a bank to earn interest.",
+      "sesotho": "Boloka chelete bankeng ho fumana phaello."
+    },
+    {
+      "english": "Ask the bank about interest rates.",
+      "sesotho": "Botsa banka ka diphaello."
+    },
+    {
+      "english": "Leave your savings untouched to earn more.",
+      "sesotho": "Tlohela poloko e sa amehe ho fumana phaello e ngata."
+    },
+    {
+      "english": "Compare interest rates from different banks.",
+      "sesotho": "Bapisa diphaello tsa dibanka."
+    },
+    {
+      "english": "Understand simple vs compound interest.",
+      "sesotho": "Utlwisisa phapang ya phaello e bonolo le e kopaneng."
+    },
+    {
+      "english": "Calculate interest using I = P x r x t.",
+      "sesotho": "Bala phaello ka I = P x r x t."
+    },
+    {
+      "english": "Use compound interest formula A = P(1+r)^n.",
+      "sesotho": "Sebedisa A = P(1+r)^n."
+    },
+    {
+      "english": "Calculate effective annual rate for comparison.",
+      "sesotho": "Bala effective annual rate."
+    },
+    {
+      "english": "Use Rule of 72 to estimate doubling time.",
+      "sesotho": "Sebedisa Molao wa 72."
+    }
+  ],
+  "why": [
+    {
+      "english": "Interest is a reward for saving your money.",
+      "sesotho": "Phaello ke moputso wa ho boloka."
+    },
+    {
+      "english": "Interest makes your money grow over time.",
+      "sesotho": "Phaello e holisa chelete ka nako."
+    },
+    {
+      "english": "Saving in a bank is better than keeping money at home.",
+      "sesotho": "Ho boloka bankeng ho molemo ho feta lapeng."
+    },
+    {
+      "english": "Compound interest accelerates wealth building.",
+      "sesotho": "E kopaneng e potlakisa ho haha maruo."
+    },
+    {
+      "english": "Understanding interest helps borrowing decisions.",
+      "sesotho": "Ho utlwisisa phaello ho thusa ho alima."
+    },
+    {
+      "english": "Interest rates affect savings and loans.",
+      "sesotho": "Diphaello di ama poloko le dikoloto."
+    },
+    {
+      "english": "Interest represents the time value of money.",
+      "sesotho": "Phaello e emela boleng ba nako."
+    },
+    {
+      "english": "Real interest rates account for inflation.",
+      "sesotho": "Phaello ya nnete e balela inflation."
+    },
+    {
+      "english": "Interest knowledge is essential for investing.",
+      "sesotho": "Tsebo ya phaello e bohlokwa matseteng."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "You save M100 at 5% interest. After one year, how much do you have?",
+        "sesotho": "O boloka M100 ka 5%. Kamora selemo, o na le bokae?"
+      },
+      "advice": {
+        "english": "M100 x 5% = M5 interest. Total = M105.",
+        "sesotho": "M100 x 5% = M5 phaello. Kakaretso = M105."
+      },
+      "lesson": {
+        "english": "Interest is extra money on your savings.",
+        "sesotho": "Phaello ke chelete e eketsehileng polokong."
+      }
+    },
+    {
+      "situation": {
+        "english": "You borrow M1,000 at 10% annual interest for 2 years. What is the total repayment?",
+        "sesotho": "O alima M1,000 ka 10% ka selemo dilemo tse 2. Kakaretso ya tefo ke bokae?"
+      },
+      "advice": {
+        "english": "Interest = M1,000 x 10% x 2 = M200. Total = M1,200.",
+        "sesotho": "Phaello = M1,000 x 10% x 2 = M200. Kakaretso = M1,200."
+      },
+      "lesson": {
+        "english": "The longer you borrow, the more interest you pay.",
+        "sesotho": "Ha o alima nako e telele, o lefa phaello e ngata."
+      }
+    },
+    {
+      "situation": {
+        "english": "You have M5,000 to save. Bank A offers 5% simple interest. Bank B offers 4.8% compound interest. Which is better after 5 years?",
+        "sesotho": "O na le M5,000 ho boloka. Banka A e fana ka 5% simple. Banka B e fana ka 4.8% compound. E feng e betere kamora dilemo tse 5?"
+      },
+      "advice": {
+        "english": "Bank A: M5,000 + (M5,000 x 5% x 5) = M6,250. Bank B: M5,000 x (1.048)^5 = M6,317. Bank B is better.",
+        "sesotho": "Banka A: M6,250. Banka B: M6,317. Banka B e betere."
+      },
+      "lesson": {
+        "english": "Compound interest beats simple interest over time.",
+        "sesotho": "E kopaneng e feta e bonolo ka nako."
+      }
+    }
+  ]
+}

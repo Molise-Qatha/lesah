@@ -1,8 +1,14 @@
 // ML Intent Classifier for LeSAH Financial Literacy
-// Single-tier: no grade levels, one content pool per topic
+// Loads trained model + per-topic knowledge files
 
 let trainedModel = null;
 let knowledgeBase = null;
+
+const TOPIC_FILES = [
+  'saving', 'money', 'budgeting', 'interest', 'loans', 'income',
+  'banking', 'needs_wants', 'greeting', 'comparisons',
+  'learning_paths', 'emergency_scenarios'
+];
 
 export const loadMLModel = async () => {
   if (trainedModel) return trainedModel;
@@ -19,42 +25,20 @@ export const loadMLModel = async () => {
 export const loadKnowledgeBase = async () => {
   if (knowledgeBase) return knowledgeBase;
   try {
-    const response = await fetch('/ml/knowledge-rich.json');
-    const raw = await response.json();
-    knowledgeBase = flattenKnowledge(raw);
+    const responses = await Promise.all(
+      TOPIC_FILES.map(function (t) { return fetch('/ml/knowledge/' + t + '.json'); })
+    );
+    const data = await Promise.all(responses.map(function (r) { return r.json(); }));
+    const merged = {};
+    TOPIC_FILES.forEach(function (t, i) { merged[t] = data[i]; });
+    knowledgeBase = merged;
     return knowledgeBase;
   } catch (error) {
-    console.warn('Could not load knowledge base');
+    console.warn('Could not load knowledge base', error);
     return null;
   }
 };
 
-// Collapse per-level buckets into one flat pool per topic
-function flattenKnowledge(kb) {
-  const flat = {};
-  const leveledFields = ['definitions', 'examples', 'misconceptions', 'how_to', 'why', 'scenarios'];
-
-  for (const topicId in kb) {
-    const topic = kb[topicId];
-    const ft = { ...topic };
-
-    leveledFields.forEach(function (field) {
-      const value = topic[field];
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        const merged = [];
-        Object.values(value).forEach(function (arr) {
-          if (Array.isArray(arr)) merged.push(...arr);
-        });
-        ft[field] = merged;
-      }
-    });
-
-    flat[topicId] = ft;
-  }
-  return flat;
-}
-
-// Clean tokenizer — strips punctuation so "saving?" matches "saving"
 function tokenize(text) {
   return text
     .toLowerCase()

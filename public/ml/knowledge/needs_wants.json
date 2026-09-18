@@ -1,0 +1,306 @@
+{
+  "definitions": [
+    {
+      "english": "Needs are things you must have. Wants are things that are nice to have.",
+      "sesotho": "Ditlhoko ke dintho tseo o tlamehang ho ba le tsona. Ditakatso ke tse monate feela."
+    },
+    {
+      "english": "A need is something you cannot do without. A want is nice to have.",
+      "sesotho": "Tlhoko ke ntho eo o ke keng wa phela ntle le yona. Takatso e monate feela."
+    },
+    {
+      "english": "Needs keep you alive and safe. Wants make life fun.",
+      "sesotho": "Ditlhoko di o boloka o phela mme o sireletsehile. Ditakatso di etsa bophelo bo monate."
+    },
+    {
+      "english": "Food, water, clothes, and a home are needs. Toys and sweets are wants.",
+      "sesotho": "Dijo, metsi, diaparo le lehae ke ditlhoko. Dipapadi le dipompong ke ditakatso."
+    },
+    {
+      "english": "Needs come first. Wants come after needs.",
+      "sesotho": "Ditlhoko di tla pele. Ditakatso di tla kamora ditlhoko."
+    },
+    {
+      "english": "Needs are essential expenses. Wants are discretionary purchases.",
+      "sesotho": "Ditlhoko ke ditshenyehelo tsa bohlokwa. Ditakatso ke ditheko tsa boikgethelo."
+    },
+    {
+      "english": "Distinguishing needs from wants helps prioritize spending.",
+      "sesotho": "Ho khetholla ditlhoko le ditakatso ho thusa ho beha tshebediso pele."
+    },
+    {
+      "english": "Needs include food, shelter, education, and transport.",
+      "sesotho": "Ditlhoko di kenyelletsa dijo, bolulo, thuto le dipalangwang."
+    },
+    {
+      "english": "The difference is subjective but essential for budgeting.",
+      "sesotho": "Phapang e itshetlehile boemong empa e bohlokwa bakeng sa tekanyetso."
+    },
+    {
+      "english": "Understanding needs vs wants enables wise resource allocation.",
+      "sesotho": "Ho utlwisisa ditlhoko le ditakatso ho dumella ho arola mehlodi ka bohlale."
+    },
+    {
+      "english": "Needs are non-discretionary expenses. Wants reflect lifestyle choices.",
+      "sesotho": "Ditlhoko ke ditshenyehelo tse sa qojoeng. Ditakatso di bontsha dikgetho tsa bophelo."
+    },
+    {
+      "english": "The 50/30/20 rule allocates 50 percent to needs.",
+      "sesotho": "Molao wa 50/30/20 o arola 50% ho ditlhoko."
+    },
+    {
+      "english": "Distinguishing needs from wants requires self-awareness.",
+      "sesotho": "Ho khetholla ditlhoko le ditakatso ho hloka ho itseba."
+    },
+    {
+      "english": "Needs are inelastic; wants are elastic.",
+      "sesotho": "Ditlhoko ha di fetohe habonolo; ditakatso di a feto-fetoha."
+    },
+    {
+      "english": "Maslow hierarchy frames needs as physiological and safety requirements.",
+      "sesotho": "Maslow o hlalosa ditlhoko e le tsa mmele le tshireletso."
+    }
+  ],
+  "examples": [
+    {
+      "english": "Food = need. Sweets = want.",
+      "sesotho": "Dijo = tlhoko. Dipompong = takatso."
+    },
+    {
+      "english": "School uniform = need. New toy = want.",
+      "sesotho": "Yunifomo ya sekolo = tlhoko. Sebapadiswa se setjha = takatso."
+    },
+    {
+      "english": "Water = need. Juice = want.",
+      "sesotho": "Metsi = tlhoko. Jusi = takatso."
+    },
+    {
+      "english": "A warm blanket = need. A new phone = want.",
+      "sesotho": "Kobo e futhumetseng = tlhoko. Fono e ntjha = takatso."
+    },
+    {
+      "english": "School books = need. Comic books = want.",
+      "sesotho": "Dibuka tsa sekolo = tlhoko. Dibuka tsa metlae = takatso."
+    },
+    {
+      "english": "Transport to school = need. Netflix = want.",
+      "sesotho": "Dipalangwang ho ya sekolong = tlhoko. Netflix = takatso."
+    },
+    {
+      "english": "School supplies = need. Designer shoes = want.",
+      "sesotho": "Disebediswa tsa sekolo = tlhoko. Dieta tsa designer = takatso."
+    },
+    {
+      "english": "Basic phone = need. Latest smartphone = want.",
+      "sesotho": "Fono ya motheo = tlhoko. Smartphone ya morao-rao = takatso."
+    },
+    {
+      "english": "Nutritious food = need. Eating out = want.",
+      "sesotho": "Dijo tse nang le phepo = tlhoko. Ho jella kantle = takatso."
+    },
+    {
+      "english": "Basic clothing = need. Brand fashion = want.",
+      "sesotho": "Diaparo tsa motheo = tlhoko. Feshene ya mabitso = takatso."
+    },
+    {
+      "english": "Rent = need. Bigger apartment = want.",
+      "sesotho": "Rente = tlhoko. Folete e kgolo = takatso."
+    },
+    {
+      "english": "Textbooks = need. Coffee shop spending = want.",
+      "sesotho": "Dibuka = tlhoko. Ho reka kofi = takatso."
+    },
+    {
+      "english": "Data for classes = need. Streaming = want.",
+      "sesotho": "Data bakeng sa dithuto = tlhoko. Streaming = takatso."
+    },
+    {
+      "english": "Basic groceries = need. Restaurant meals = want.",
+      "sesotho": "Dijo tsa motheo = tlhoko. Dijo tsa resturante = takatso."
+    },
+    {
+      "english": "Laptop for studies = need. Gaming console = want.",
+      "sesotho": "Laptop bakeng sa dithuto = tlhoko. Gaming console = takatso."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "Everything you want is a need — FALSE! Wants are optional.",
+      "sesotho": "Ntho e nngwe le e nngwe eo o e batlang ke tlhoko — HA SE NNETE! Ditakatso ke tsa boikgethelo."
+    },
+    {
+      "english": "Wants are bad — FALSE! They are fine after needs.",
+      "sesotho": "Ditakatso di mpe — HA SE NNETE! Di lokile kamora ditlhoko."
+    },
+    {
+      "english": "Needs are boring — FALSE! Meeting needs feels good.",
+      "sesotho": "Ditlhoko di a tena — HA SE NNETE! Ho fihlela ditlhoko ho monate."
+    },
+    {
+      "english": "If I really want it, it becomes a need — FALSE!",
+      "sesotho": "Haeba ke e batla haholo, e fetoha tlhoko — HA SE NNETE!"
+    },
+    {
+      "english": "Expensive things are always wants — FALSE! Some needs cost a lot.",
+      "sesotho": "Dintho tse turang ke ditakatso kamehla — HA SE NNETE! Ditlhoko tse ding di a tura."
+    },
+    {
+      "english": "Cheap things are always needs — FALSE! Price does not determine.",
+      "sesotho": "Dintho tse theko e tlase ke ditlhoko — HA SE NNETE! Theko ha e etse qeto."
+    },
+    {
+      "english": "Lifestyle inflation is normal — FALSE! It undermines goals.",
+      "sesotho": "Ho nyoloha ha bophelo ke ntho e tlwaelehileng — HA SE NNETE! Ho senya dipakane."
+    },
+    {
+      "english": "All discretionary spending is bad — FALSE! Wants provide quality of life.",
+      "sesotho": "Tshebediso yohle ya boikgethelo e mpe — HA SE NNETE! Ditakatso di ntlafatsa bophelo."
+    },
+    {
+      "english": "The line is always clear — FALSE! Context matters.",
+      "sesotho": "Phapang e hlakile kamehla — HA SE NNETE! Boemo bo a bohlokwa."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to practice sorting needs from wants?",
+      "sesotho": "Na o batla ho ikwetlisa ho arola ditlhoko le ditakatso?"
+    },
+    {
+      "english": "Should we talk about budgeting for needs?",
+      "sesotho": "Na re bue ka tekanyetso ya ditlhoko?"
+    },
+    {
+      "english": "Want to learn to balance needs and wants?",
+      "sesotho": "Na o batla ho ithuta ho lekalekanya ditlhoko le ditakatso?"
+    },
+    {
+      "english": "Should we explore the 50/30/20 rule?",
+      "sesotho": "Na re hlahlobe molao wa 50/30/20?"
+    },
+    {
+      "english": "Want to know how to resist impulse wants?",
+      "sesotho": "Na o batla ho tseba ho hanela ditakatso tsa tshohanyetso?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Before buying, ask: Do I need this or just want it?",
+      "sesotho": "Pele o reka, ipotse: Na ke a e hloka kapa ke a e batla?"
+    },
+    {
+      "english": "Make a list of needs first, then wants.",
+      "sesotho": "Etsa lenane la ditlhoko pele."
+    },
+    {
+      "english": "Wait one day before buying something you want.",
+      "sesotho": "Ema letsatsi pele o reka."
+    },
+    {
+      "english": "Categorize expenses as needs or wants.",
+      "sesotho": "Arola ditshenyehelo e le ditlhoko kapa ditakatso."
+    },
+    {
+      "english": "Use the 50/30/20 rule to limit wants spending.",
+      "sesotho": "Sebedisa 50/30/20 ho lekanyetsa."
+    },
+    {
+      "english": "Wait 30 days before major want purchases.",
+      "sesotho": "Ema matsatsi a 30 pele o reka."
+    },
+    {
+      "english": "Conduct a needs audit of monthly expenses.",
+      "sesotho": "Etsa tlhahlobo ya ditlhoko."
+    },
+    {
+      "english": "Distinguish lifestyle inflation from genuine needs.",
+      "sesotho": "Khetholla lifestyle inflation."
+    },
+    {
+      "english": "Practice mindful spending and delayed gratification.",
+      "sesotho": "Ikwetlise ho sebedisa ka hloko."
+    }
+  ],
+  "why": [
+    {
+      "english": "Knowing needs vs wants helps you spend wisely.",
+      "sesotho": "Ho tseba ho thusa ho sebedisa ka bohlale."
+    },
+    {
+      "english": "Needs come first to keep you safe.",
+      "sesotho": "Ditlhoko di tla pele."
+    },
+    {
+      "english": "Wants are fine after needs are met.",
+      "sesotho": "Ditakatso di lokile kamora ditlhoko."
+    },
+    {
+      "english": "Distinguishing needs helps prioritize spending.",
+      "sesotho": "Ho khetholla ho thusa ho beha pele."
+    },
+    {
+      "english": "Wants spending control prevents debt.",
+      "sesotho": "Taolo ya ditakatso e thibela sekoloto."
+    },
+    {
+      "english": "Understanding needs vs wants builds discipline.",
+      "sesotho": "Ho utlwisisa ho haha taeo."
+    },
+    {
+      "english": "Needs analysis is foundational to budgeting.",
+      "sesotho": "Tlhahlobo ya ditlhoko ke motheo."
+    },
+    {
+      "english": "Lifestyle inflation undermines goals.",
+      "sesotho": "Lifestyle inflation e senya dipakane."
+    },
+    {
+      "english": "Intentional spending increases satisfaction.",
+      "sesotho": "Ho sebedisa ka boomo ho eketsa kgotsofalo."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "You have M50. School shoes (M40) are worn out. You also want a new toy (M45). Which do you buy?",
+        "sesotho": "O na le M50. Dieta tsa sekolo (M40) di senyehile. O batla le sebapadiswa (M45). O reka sefe?"
+      },
+      "advice": {
+        "english": "School shoes are a NEED. The toy is a WANT. Buy the shoes.",
+        "sesotho": "Dieta tsa sekolo ke TLHOKO. Sebapadiswa ke TAKATSO. Reka dieta."
+      },
+      "lesson": {
+        "english": "Needs always come before wants.",
+        "sesotho": "Ditlhoko di tla pele ho ditakatso kamehla."
+      }
+    },
+    {
+      "situation": {
+        "english": "Your phone breaks and you need it for school communication. A basic phone costs M300. A smartphone costs M1,000. Which?",
+        "sesotho": "Fono ya hao e senyehile mme o e hloka bakeng sa sekolo. E bonolo M300. Smartphone M1,000. E feng?"
+      },
+      "advice": {
+        "english": "Basic phone meets the need. Smartphone is a want unless you have extra money.",
+        "sesotho": "Fono e bonolo e fihlella tlhoko. Smartphone ke takatso ntle le chelete e eketsehileng."
+      },
+      "lesson": {
+        "english": "Meeting needs does not require the most expensive option.",
+        "sesotho": "Ho fihlella ditlhoko ha ho hloke ntho e turang haholo."
+      }
+    },
+    {
+      "situation": {
+        "english": "You need a laptop for studies. Options: New MacBook M15,000 or used laptop M4,000 that meets requirements. Which?",
+        "sesotho": "O hloka laptop bakeng sa dithuto. MacBook M15,000 kapa e sebedisitsweng M4,000. E feng?"
+      },
+      "advice": {
+        "english": "Used laptop meets the need at 73% less cost. Invest the M11,000 difference.",
+        "sesotho": "E sebedisitsweng e fihlella tlhoko ka 73% e theko e tlase. Boloka M11,000 e setseng."
+      },
+      "lesson": {
+        "english": "Meeting needs smartly frees money for savings and investments.",
+        "sesotho": "Ho fihlella ditlhoko ka bohlale ho lokolla chelete bakeng sa poloko."
+      }
+    }
+  ]
+}

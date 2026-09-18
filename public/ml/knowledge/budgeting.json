@@ -1,0 +1,306 @@
+{
+  "definitions": [
+    {
+      "english": "A budget is a plan for your money.",
+      "sesotho": "Tekanyetso ke moralo wa chelete ya hao."
+    },
+    {
+      "english": "Budgeting means deciding where your money will go.",
+      "sesotho": "Ho etsa tekanyetso ho bolela ho etsa qeto ya hore na chelete e ya kae."
+    },
+    {
+      "english": "A budget is like a map for your money.",
+      "sesotho": "Tekanyetso e tshwana le mmapa wa chelete ya hao."
+    },
+    {
+      "english": "When you budget, you divide your money into different purposes.",
+      "sesotho": "Ha o etsa tekanyetso, o arola chelete ka merero e fapaneng."
+    },
+    {
+      "english": "A budget helps you know how much to spend, save, and give.",
+      "sesotho": "Tekanyetso e o thusa ho tseba hore na o sebedisa, o boloka le ho fana bokae."
+    },
+    {
+      "english": "Budgeting is creating a structured plan for income and expenses.",
+      "sesotho": "Tekanyetso ke ho theha moralo o hlophisitsweng wa moputso le ditshenyehelo."
+    },
+    {
+      "english": "A budget tracks money coming in and going out.",
+      "sesotho": "Tekanyetso e latela chelete e kenang le e tswang."
+    },
+    {
+      "english": "Budgeting means allocating income to different categories.",
+      "sesotho": "Ho etsa tekanyetso ho bolela ho arola moputso ka dikarolo tse fapaneng."
+    },
+    {
+      "english": "A budget helps you live within your means.",
+      "sesotho": "Tekanyetso e o thusa ho phela ka hara seo o nang le sona."
+    },
+    {
+      "english": "Budgeting involves comparing income to expenses.",
+      "sesotho": "Tekanyetso e kenyelletsa ho bapisa moputso le ditshenyehelo."
+    },
+    {
+      "english": "Budgeting is the systematic allocation of financial resources.",
+      "sesotho": "Tekanyetso ke ho arola mehlodi ya lichelete ka mokgwa o hlophisitsweng."
+    },
+    {
+      "english": "A budget matches income against fixed and variable expenses.",
+      "sesotho": "Tekanyetso e bapisa moputso le ditshenyehelo tse sa fetoheng le tse fetohang."
+    },
+    {
+      "english": "Budgeting encompasses zero-based and 50/30/20 approaches.",
+      "sesotho": "Tekanyetso e kenyelletsa mekgwa ya zero-based le 50/30/20."
+    },
+    {
+      "english": "Effective budgeting requires understanding cash flow.",
+      "sesotho": "Tekanyetso e atlehileng e hloka ho utlwisisa phallo ya chelete."
+    },
+    {
+      "english": "Budgeting provides visibility and control over every Maloti.",
+      "sesotho": "Tekanyetso e fana ka ponahalo le taolo hodima Maloti a mang le a mang."
+    }
+  ],
+  "examples": [
+    {
+      "english": "You get M50: M20 snacks, M20 savings, M10 giving.",
+      "sesotho": "O fumana M50: M20 dipompong, M20 poloko, M10 ho fana."
+    },
+    {
+      "english": "Your budget shows M30. A toy costs M40. You need M10 more.",
+      "sesotho": "Tekanyetso e bontsha M30. Sebapadiswa se bitsa M40. O hloka M10 e nngwe."
+    },
+    {
+      "english": "Divide M100 into three envelopes: Spend, Save, Give.",
+      "sesotho": "Arola M100 ka di-enfelopo tse tharo: Sebedisa, Boloka, Fana."
+    },
+    {
+      "english": "Check your budget before buying anything.",
+      "sesotho": "Hlahloba tekanyetso ya hao pele o reka letho."
+    },
+    {
+      "english": "Weekly budget: M15 transport, M10 food, M5 saving.",
+      "sesotho": "Tekanyetso ya beke: M15 dipalangwang, M10 dijo, M5 poloko."
+    },
+    {
+      "english": "Monthly M600: M200 transport, M150 food, M100 airtime, M100 savings, M50 fun.",
+      "sesotho": "Ka kgwedi M600: M200 dipalangwang, M150 dijo, M100 airtime, M100 poloko, M50 boithabiso."
+    },
+    {
+      "english": "Earn M500, expenses M450, M50 left to save.",
+      "sesotho": "Fumana M500, ditshenyehelo M450, M50 e setseng ho boloka."
+    },
+    {
+      "english": "Use envelopes: M200 food, M100 transport, M50 savings.",
+      "sesotho": "Sebedisa di-enfelopo: M200 dijo, M100 dipalangwang, M50 poloko."
+    },
+    {
+      "english": "Cut entertainment from M150 to M50 to balance budget.",
+      "sesotho": "Fokotsa boithabiso ho tloha M150 ho ya M50 ho lekalekanya tekanyetso."
+    },
+    {
+      "english": "Track spending for one month to understand patterns.",
+      "sesotho": "Latela tshebediso kgwedi e le nngwe ho utlwisisa mekgwa."
+    },
+    {
+      "english": "Bursary M2,500: M1,000 rent, M800 food, M300 transport, M200 books, M200 savings.",
+      "sesotho": "Bursary M2,500: M1,000 rente, M800 dijo, M300 dipalangwang, M200 dibuka, M200 poloko."
+    },
+    {
+      "english": "Zero-based: every Maloti of M3,000 has a job.",
+      "sesotho": "Zero-based: Maloti a mang le a mang a M3,000 a na le mosebetsi."
+    },
+    {
+      "english": "50/30/20 on M4,000: M2,000 needs, M1,200 wants, M800 savings.",
+      "sesotho": "50/30/20 ho M4,000: M2,000 ditlhoko, M1,200 ditakatso, M800 poloko."
+    },
+    {
+      "english": "Reduce eating out from M600 to M300 to save M300 more.",
+      "sesotho": "Fokotsa ho jella kantle ho tloha M600 ho ya M300 ho boloka M300 e nngwe."
+    },
+    {
+      "english": "Allocate 10 percent of income to emergency fund.",
+      "sesotho": "Arola 10% ya moputso ho letlole la tshohanyetso."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "Budgets are boring — FALSE! Budgets help you get what you want.",
+      "sesotho": "Ditekanyetso di a tena — HA SE NNETE! Di o thusa ho fumana seo o se batlang."
+    },
+    {
+      "english": "Only adults need budgets — FALSE! Children can plan money too.",
+      "sesotho": "Ke batho ba baholo feela ba hlokang ditekanyetso — HA SE NNETE! Bana le bona ba ka rera."
+    },
+    {
+      "english": "A budget means you cannot buy anything — FALSE! It means buying what matters.",
+      "sesotho": "Tekanyetso e bolela hore o ke ke wa reka letho — HA SE NNETE! E bolela ho reka se bohlokwa."
+    },
+    {
+      "english": "Budgeting is only for people struggling — FALSE! Everyone benefits.",
+      "sesotho": "Tekanyetso ke ya batho ba nang le mathata feela — HA SE NNETE! Bohle ba a rua molemo."
+    },
+    {
+      "english": "Budgets are too restrictive — FALSE! They give freedom within limits.",
+      "sesotho": "Ditekanyetso di a thibela — HA SE NNETE! Di fana ka tokoloho ka hara meedi."
+    },
+    {
+      "english": "You need lots of money to budget — FALSE! Works with any amount.",
+      "sesotho": "O hloka chelete e ngata ho etsa tekanyetso — HA SE NNETE! E sebetsa ka chelete efe kapa efe."
+    },
+    {
+      "english": "Budgeting means cutting all fun — FALSE! It means intentional spending.",
+      "sesotho": "Tekanyetso e bolela ho kgaola boithabiso bohle — HA SE NNETE! E bolela ho sebedisa ka boomo."
+    },
+    {
+      "english": "No need to budget if you do not overspend — FALSE! Budgets optimize savings.",
+      "sesotho": "Ha ho hlokahale tekanyetso haeba o sa sebedise ho feta — HA SE NNETE! Tekanyetso e ntlafatsa poloko."
+    },
+    {
+      "english": "Budgeting apps are necessary — FALSE! A notebook works fine.",
+      "sesotho": "Di-app tsa tekanyetso di a hlokahala — HA SE NNETE! Buka ya ho ngola e sebetsa hantle."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to create your first budget?",
+      "sesotho": "Na o batla ho etsa tekanyetso ya hao ya pele?"
+    },
+    {
+      "english": "Should we practice dividing M100 into categories?",
+      "sesotho": "Na re ikwetlise ho arola M100 ka dikarolo?"
+    },
+    {
+      "english": "Would you like to learn about tracking expenses?",
+      "sesotho": "Na o ka rata ho ithuta ho latela ditshenyehelo?"
+    },
+    {
+      "english": "Want to know the 50/30/20 rule?",
+      "sesotho": "Na o batla ho tseba molao wa 50/30/20?"
+    },
+    {
+      "english": "Should we talk about saving money too?",
+      "sesotho": "Na re bue le ka ho boloka chelete?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Divide your money into Spend, Save, and Give.",
+      "sesotho": "Arola chelete ka Sebedisa, Boloka le Fana."
+    },
+    {
+      "english": "Use three jars or envelopes for your money.",
+      "sesotho": "Sebedisa linkho kapa di-enfelopo tse tharo."
+    },
+    {
+      "english": "Write down what you want to buy and check if you have enough.",
+      "sesotho": "Ngola seo o batlang ho se reka mme o hlahlobe."
+    },
+    {
+      "english": "List all income and expenses for one month.",
+      "sesotho": "Ngola moputso le ditshenyehelo tsohle tsa kgwedi."
+    },
+    {
+      "english": "Categorize expenses: needs, wants, savings.",
+      "sesotho": "Arola ditshenyehelo: ditlhoko, ditakatso, poloko."
+    },
+    {
+      "english": "Adjust spending to not exceed income.",
+      "sesotho": "Fetola tshebediso ho se fete moputso."
+    },
+    {
+      "english": "Use zero-based budgeting or the 50/30/20 rule.",
+      "sesotho": "Sebedisa zero-based kapa molao wa 50/30/20."
+    },
+    {
+      "english": "Track every Maloti and review monthly.",
+      "sesotho": "Latela Maloti a mang le a mang kgwedi le kgwedi."
+    },
+    {
+      "english": "Build an emergency fund into your budget.",
+      "sesotho": "Kenyelletsa letlole la tshohanyetso tekanyetsong."
+    }
+  ],
+  "why": [
+    {
+      "english": "A budget helps you know where your money goes.",
+      "sesotho": "Tekanyetso e o thusa ho tseba moo chelete e yang."
+    },
+    {
+      "english": "Budgeting helps you save for things you want.",
+      "sesotho": "Tekanyetso e thusa ho bolokela dintho tseo o di batlang."
+    },
+    {
+      "english": "A budget stops you from running out of money.",
+      "sesotho": "Tekanyetso e thibela ho felloa ke chelete."
+    },
+    {
+      "english": "Budgeting prevents overspending and debt.",
+      "sesotho": "Tekanyetso e thibela ho sebedisa ho feta le sekoloto."
+    },
+    {
+      "english": "A budget helps you achieve financial goals.",
+      "sesotho": "Tekanyetso e thusa ho fihlela dipakane."
+    },
+    {
+      "english": "Budgeting gives you control over your money.",
+      "sesotho": "Tekanyetso e o fa taolo hodima chelete."
+    },
+    {
+      "english": "Budgeting optimizes resource allocation.",
+      "sesotho": "Tekanyetso e ntlafatsa ho arola mehlodi."
+    },
+    {
+      "english": "A budget provides visibility into cash flow.",
+      "sesotho": "Tekanyetso e fana ka ponahalo ya phallo."
+    },
+    {
+      "english": "Budgeting is the foundation of financial planning.",
+      "sesotho": "Tekanyetso ke motheo wa moralo wa lichelete."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "Palesa has M30. She needs bread (M10) and wants sweets (M25). Can she buy both?",
+        "sesotho": "Palesa o na le M30. O hloka bohobe (M10) mme o batla dipompong (M25). A ka reka ka bobeli?"
+      },
+      "advice": {
+        "english": "Bread + sweets = M35. She needs M5 more. She should prioritise bread (need) over sweets (want).",
+        "sesotho": "Bohobe + dipompong = M35. O hloka M5 e nngwe. O lokela ho beha bohobe (tlhoko) pele ho dipompong (takatso)."
+      },
+      "lesson": {
+        "english": "Needs come before wants when budgeting.",
+        "sesotho": "Ditlhoko di tla pele ho ditakatso."
+      }
+    },
+    {
+      "situation": {
+        "english": "Tumelo earns M500 monthly. Expenses: transport M150, food M200, airtime M50, entertainment M150. Total = M550. What should change?",
+        "sesotho": "Tumelo o fumana M500. Ditshenyehelo: dipalangwang M150, dijo M200, airtime M50, boithabiso M150. Kakaretso = M550. Ho lokela ho fetoha eng?"
+      },
+      "advice": {
+        "english": "He overspends by M50. Cut entertainment from M150 to M100.",
+        "sesotho": "O sebedisa M50 ho feta. Fokotsa boithabiso ho tloha M150 ho ya M100."
+      },
+      "lesson": {
+        "english": "When expenses exceed income, reduce wants first.",
+        "sesotho": "Ha ditshenyehelo di feta moputso, fokotsa ditakatso pele."
+      }
+    },
+    {
+      "situation": {
+        "english": "A student has M3,000 monthly. Fixed: rent M1,200, utilities M300, food M800. Variable: transport M300, entertainment M300. What is the savings potential?",
+        "sesotho": "Moithuti o na le M3,000. E sa fetoheng: rente M1,200, motlakase M300, dijo M800. E fetohang: dipalangwang M300, boithabiso M300. Poloko e ka ba bokae?"
+      },
+      "advice": {
+        "english": "Total expenses = M2,900. Savings potential = M100. Reduce entertainment to M200 to save M200.",
+        "sesotho": "Kakaretso = M2,900. Poloko = M100. Fokotsa boithabiso ho M200 ho boloka M200."
+      },
+      "lesson": {
+        "english": "Small adjustments in variable expenses increase savings.",
+        "sesotho": "Diphetoho tse nyane ditshenyehelong di eketsa poloko."
+      }
+    }
+  ]
+}

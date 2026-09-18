@@ -1,0 +1,58 @@
+{
+  "lost_bursary": {
+    "situation": {
+      "english": "A student loses their bursary due to academic performance. They have M1,000 saved and monthly expenses of M1,500. What should they do?",
+      "sesotho": "Moithuti o lahlehetswe ke bursary. O na le M1,000 e bolokilweng le ditshenyehelo tsa M1,500 ka kgwedi. O etse eng?"
+    },
+    "advice": {
+      "english": "First, cut all non-essential spending. Find part-time work quickly. Apply for other funding. The M1,000 is a buffer for 2-3 weeks.",
+      "sesotho": "Pele, fokotsa tshebediso e sa hlokahaleng. Fumana mosebetsi wa nakwana. Kopa dithuso tse ding. M1,000 ke buffer ya dibeke tse 2-3."
+    },
+    "lesson": {
+      "english": "Emergency funds buy you time during crises.",
+      "sesotho": "Matlole a tshohanyetso a o reka nako mathateng."
+    }
+  },
+  "friend_borrowing": {
+    "situation": {
+      "english": "A friend asks to borrow M200 and promises to repay next month. You know they already owe others money. What should you do?",
+      "sesotho": "Motswalle o kopa M200 mme o tshepisa ho kgutlisa kgwedi e tlang. O tseba hore o se a kolota batho ba bang. O etse eng?"
+    },
+    "advice": {
+      "english": "Politely decline or lend only what you can afford to lose. Never lend money you need for your own expenses.",
+      "sesotho": "Hana ka mosa kapa alima feela seo o ka se lahlehelwang. O se ke wa alima chelete eo o e hlokang."
+    },
+    "lesson": {
+      "english": "Protect your financial wellbeing, even with friends.",
+      "sesotho": "Sireletsa bophelo ba hao ba lichelete, le ho metswalle."
+    }
+  },
+  "overspending": {
+    "situation": {
+      "english": "You spent M400 on entertainment and now have only M100 for food for two weeks. What went wrong and how do you fix it?",
+      "sesotho": "O sebedisitse M400 boithabisong mme o setse le M100 bakeng sa dijo dibeke tse pedi. Ho senyehile eng?"
+    },
+    "advice": {
+      "english": "You prioritized wants over needs. Fix: Buy basic food (rice, mealie meal). Avoid entertainment until next month.",
+      "sesotho": "O behile ditakatso pele ho ditlhoko. Fix: Reka dijo tsa motheo. Qoba boithabiso ho fihlela kgwedi e tlang."
+    },
+    "lesson": {
+      "english": "Always budget for needs before spending on wants.",
+      "sesotho": "Dula o rera ditlhoko pele o sebedisa ditakatso."
+    }
+  },
+  "unexpected_expense": {
+    "situation": {
+      "english": "Your phone breaks and you need it for school. Repairs cost M500 but you only have M200 saved.",
+      "sesotho": "Fono ya hao e senyehile mme o e hloka bakeng sa sekolo. Ho lokisa M500 empa o bolokile M200 feela."
+    },
+    "advice": {
+      "english": "This is why emergency funds matter. Borrow M300 from family (interest-free) or find temporary work. Next time, save more.",
+      "sesotho": "Ke ka hona matlole a tshohanyetso a le bohlokwa. Alima M300 lelapeng kapa fumana mosebetsi wa nakwana."
+    },
+    "lesson": {
+      "english": "Emergency funds should cover unexpected repairs.",
+      "sesotho": "Matlole a tshohanyetso a lokela ho akaretsa ditokiso tse sa lebellwang."
+    }
+  }
+}

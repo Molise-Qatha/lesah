@@ -1,0 +1,230 @@
+{
+  "definitions": [
+    {
+      "english": "Hello! I am LeSAH, your financial literacy assistant. How can I help you?",
+      "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka o thusa jwang?"
+    },
+    {
+      "english": "Hi there! I am LeSAH. I can teach you about money!",
+      "sesotho": "Lumela! Ke LeSAH. Nka o ruta ka chelete!"
+    },
+    {
+      "english": "Welcome! I am LeSAH. What would you like to learn?",
+      "sesotho": "Re a o amohela! Ke LeSAH. O batla ho ithuta eng?"
+    },
+    {
+      "english": "Hello! I am LeSAH, your financial literacy tutor. Ask me about money.",
+      "sesotho": "Lumela! Ke LeSAH, morupelli wa hao wa tsebo ya lichelete. Mpotse ka chelete."
+    },
+    {
+      "english": "Hi! I am LeSAH. I am here to help you understand money.",
+      "sesotho": "Lumela! Ke LeSAH. Ke mona ho o thusa ho utlwisisa chelete."
+    },
+    {
+      "english": "Hey there! I am LeSAH. What financial topic interests you?",
+      "sesotho": "Lumela! Ke LeSAH. Ke taba efe ya lichelete e o kgahlang?"
+    },
+    {
+      "english": "Hello! I am LeSAH, your financial literacy assistant. I can help with budgeting, investing, and debt.",
+      "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka thusa ka tekanyetso, matsete le dikoloto."
+    },
+    {
+      "english": "Welcome! I am LeSAH. Let us discuss personal finance.",
+      "sesotho": "Re a o amohela! Ke LeSAH. Ha re buisaneng ka lichelete tsa botho."
+    },
+    {
+      "english": "Greetings! I am LeSAH. What aspect of finance would you like to explore?",
+      "sesotho": "Lumela! Ke LeSAH. Ke karolo efe ya lichelete eo o batlang ho e hlahloba?"
+    }
+  ],
+  "examples": [
+    {
+      "english": "Ask me: What is saving?",
+      "sesotho": "Mpotse: Ho boloka ke eng?"
+    },
+    {
+      "english": "Try asking: How do I count money?",
+      "sesotho": "Leka ho botsa: Ke bala chelete jwang?"
+    },
+    {
+      "english": "Ask me: What is a budget?",
+      "sesotho": "Mpotse: Tekanyetso ke eng?"
+    },
+    {
+      "english": "Try: What are needs and wants?",
+      "sesotho": "Leka: Ditlhoko le ditakatso ke eng?"
+    },
+    {
+      "english": "Ask me: How do I create a budget?",
+      "sesotho": "Mpotse: Ke etsa tekanyetso jwang?"
+    },
+    {
+      "english": "Try: What is compound interest?",
+      "sesotho": "Leka: Phaello e kopaneng ke eng?"
+    },
+    {
+      "english": "Ask: Should I get a student loan?",
+      "sesotho": "Botsa: Na ke lokela ho alima kalimo ya moithuti?"
+    },
+    {
+      "english": "Ask me: How do I build an emergency fund?",
+      "sesotho": "Mpotse: Ke haha letlole la tshohanyetso jwang?"
+    },
+    {
+      "english": "Try: What is the best investment strategy?",
+      "sesotho": "Leka: Leano le molemohali la matsete ke lefe?"
+    },
+    {
+      "english": "Ask: How do I manage student debt?",
+      "sesotho": "Botsa: Ke laola sekoloto sa moithuti jwang?"
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "I only teach boring money stuff — FALSE! Learning can be fun!",
+      "sesotho": "Ke ruta feela dintho tse tenang tsa chelete — HA SE NNETE! Ho ithuta ho ka ba monate!"
+    },
+    {
+      "english": "I only speak English — FALSE! I speak Sesotho too!",
+      "sesotho": "Ke bua Senyesemane feela — HA SE NNETE! Ke bua le Sesotho!"
+    },
+    {
+      "english": "I am only for adults — FALSE! I help all students!",
+      "sesotho": "Ke ya batho ba baholo feela — HA SE NNETE! Ke thusa baithuti bohle!"
+    },
+    {
+      "english": "I am only for finance students — FALSE! Everyone benefits.",
+      "sesotho": "Ke ya baithuti ba lichelete feela — HA SE NNETE! Bohle ba a rua molemo."
+    },
+    {
+      "english": "I only answer simple questions — FALSE! I adapt to your level.",
+      "sesotho": "Ke araba dipotso tse bonolo feela — HA SE NNETE! Ke ikamahanya le boemo ba hao."
+    },
+    {
+      "english": "I replace financial advisors — FALSE! I provide education.",
+      "sesotho": "Ke nka sebaka sa baeletsi ba lichelete — HA SE NNETE! Ke fana ka thuto."
+    },
+    {
+      "english": "I am only for beginners — FALSE! I explain advanced concepts.",
+      "sesotho": "Ke ya ba qalang feela — HA SE NNETE! Ke hlalosa le dikgopolo tse tsoetseng pele."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "What would you like to learn about?",
+      "sesotho": "O batla ho ithuta ka eng?"
+    },
+    {
+      "english": "Should we start with saving or budgeting?",
+      "sesotho": "Na re qale ka poloko kapa tekanyetso?"
+    },
+    {
+      "english": "Want to test your knowledge with a quiz?",
+      "sesotho": "Na o batla ho hlahloba tsebo ya hao ka quiz?"
+    },
+    {
+      "english": "Would you like to try an interactive activity?",
+      "sesotho": "Na o ka rata ho leka ketsahalo e kopanetsweng?"
+    },
+    {
+      "english": "What financial topic interests you most?",
+      "sesotho": "Ke taba efe ya lichelete e o kgahlang haholo?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Ask me about saving, money, or budgeting!",
+      "sesotho": "Mpotse ka ho boloka, chelete kapa tekanyetso!"
+    },
+    {
+      "english": "Try asking: What is interest?",
+      "sesotho": "Leka ho botsa: Phaello ke eng?"
+    },
+    {
+      "english": "Ask me: How do I create a budget?",
+      "sesotho": "Mpotse: Ke etsa tekanyetso jwang?"
+    },
+    {
+      "english": "Try: What is compound interest?",
+      "sesotho": "Leka: Phaello e kopaneng ke eng?"
+    },
+    {
+      "english": "Ask me: How do I build an emergency fund?",
+      "sesotho": "Mpotse: Ke haha letlole la tshohanyetso jwang?"
+    },
+    {
+      "english": "Try: What is the best investment strategy?",
+      "sesotho": "Leka: Leano le molemohali la matsete ke lefe?"
+    }
+  ],
+  "why": [
+    {
+      "english": "Learning about money now helps you later in life.",
+      "sesotho": "Ho ithuta ka chelete hona joale ho thusa hamorao."
+    },
+    {
+      "english": "Financial literacy is a life skill.",
+      "sesotho": "Tsebo ya lichelete ke bokgoni ba bophelo."
+    },
+    {
+      "english": "Financial knowledge builds confidence.",
+      "sesotho": "Tsebo ya lichelete e haha tshepo."
+    },
+    {
+      "english": "Understanding money prevents future problems.",
+      "sesotho": "Ho utlwisisa ho thibela mathata."
+    },
+    {
+      "english": "Financial literacy is essential for independence.",
+      "sesotho": "Tsebo ya lichelete e bohlokwa bakeng sa boikemelo."
+    },
+    {
+      "english": "Smart money management creates opportunities.",
+      "sesotho": "Taolo e bohlale e bopa menyetla."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "You want to learn about money. What should you ask LeSAH first?",
+        "sesotho": "O batla ho ithuta ka chelete. O botse LeSAH eng pele?"
+      },
+      "advice": {
+        "english": "Try asking: What is saving?",
+        "sesotho": "Leka ho botsa: Ho boloka ke eng?"
+      },
+      "lesson": {
+        "english": "Asking questions is the first step to learning.",
+        "sesotho": "Ho botsa ke mohato wa pele wa ho ithuta."
+      }
+    },
+    {
+      "situation": {
+        "english": "You have questions about managing your M500 monthly allowance. What should you ask?",
+        "sesotho": "O na le dipotso ka ho laola M500 ya kgwedi. O botse eng?"
+      },
+      "advice": {
+        "english": "Ask: How do I create a budget for M500?",
+        "sesotho": "Botsa: Ke etsa tekanyetso ya M500 jwang?"
+      },
+      "lesson": {
+        "english": "Specific questions get better answers.",
+        "sesotho": "Dipotso tse hlakileng di fumana dikarabo tse betere."
+      }
+    },
+    {
+      "situation": {
+        "english": "You want to start investing but do not know where to begin. What should you ask?",
+        "sesotho": "O batla ho qala matsete empa ha o tsebe moo o qalang. O botse eng?"
+      },
+      "advice": {
+        "english": "Ask: What is the best investment strategy for beginners?",
+        "sesotho": "Botsa: Leano le molemohali la matsete ke lefe?"
+      },
+      "lesson": {
+        "english": "Start with education before investing money.",
+        "sesotho": "Qala ka thuto pele o kenya chelete."
+      }
+    }
+  ]
+}

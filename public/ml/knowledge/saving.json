@@ -1,0 +1,348 @@
+{
+  "definitions": [
+    {
+      "english": "Saving means keeping some money for later instead of spending it all now.",
+      "sesotho": "Ho boloka ho bolela ho boloka chelete bakeng sa hamorao ntle le ho e sebelisa kaofela."
+    },
+    {
+      "english": "When you save, you put money away so you can use it another day.",
+      "sesotho": "Ha u boloka, u beha chelete ka thoko hore u e sebelise ka letsatsi le leng."
+    },
+    {
+      "english": "Saving is like keeping a seed instead of eating it — you keep it for the future.",
+      "sesotho": "Ho boloka ho ts'oana le ho boloka peo ho e-na le ho e ja."
+    },
+    {
+      "english": "Saving means you do not spend all your money today.",
+      "sesotho": "Ho boloka ho bolela hore ha o sebelise chelete eohle kajeno."
+    },
+    {
+      "english": "Saving is when you put money in a safe place and do not touch it.",
+      "sesotho": "Ho boloka ke ha o beha chelete sebakeng se sireletsehileng."
+    },
+    {
+      "english": "Saving is setting aside a portion of your income for future use.",
+      "sesotho": "Ho boloka ke ho behella karolo ea moputso oa hao ka thoko."
+    },
+    {
+      "english": "Saving means deliberately keeping some money for later needs.",
+      "sesotho": "Ho boloka ho bolela ho boloka chelete bakeng sa litlhoko tsa hamorao."
+    },
+    {
+      "english": "Saving is the habit of putting money aside regularly.",
+      "sesotho": "Ho boloka ke tloaelo ya ho behella chelete ka thoko khafetsa."
+    },
+    {
+      "english": "When you save, you delay spending today so you have money tomorrow.",
+      "sesotho": "Ha o boloka, o liehisa tshebeliso kajeno hore o be le chelete hosane."
+    },
+    {
+      "english": "Saving is the foundation of financial health.",
+      "sesotho": "Ho boloka ke motheo oa bophelo bo botle ba lichelete."
+    },
+    {
+      "english": "Saving is the deliberate allocation of income toward future goals.",
+      "sesotho": "Ho boloka ke ho arola moputso ka boomo ho ea lipakaneng tsa bokamoso."
+    },
+    {
+      "english": "Saving means prioritizing financial security over immediate spending.",
+      "sesotho": "Ho boloka ho bolela ho beha tshireletso ea lichelete pele."
+    },
+    {
+      "english": "Saving is a financial discipline providing liquidity for emergencies.",
+      "sesotho": "Ho boloka ke taeo ya lichelete e fanang ka chelete ya tshohanyetso."
+    },
+    {
+      "english": "Saving involves allocating a percentage of income to build reserves.",
+      "sesotho": "Ho boloka ho kenyelletsa ho arola peresente ya moputso ho haha pokello."
+    },
+    {
+      "english": "Saving builds financial assets through regular contributions.",
+      "sesotho": "Ho boloka ho haha matlotlo a lichelete ka ho kenya chelete kgafetsa."
+    }
+  ],
+  "examples": [
+    {
+      "english": "If you get M10 and keep M3 for later, you saved M3.",
+      "sesotho": "Haeba o fumana M10 mme o boloka M3, o bolokile M3."
+    },
+    {
+      "english": "Your grandmother gives you M5. You put M2 in your piggy bank.",
+      "sesotho": "Nkhono o ofa M5. O kenya M2 ka piggy bank."
+    },
+    {
+      "english": "A toy costs M50. Saving M10 per week means you will have it in 5 weeks.",
+      "sesotho": "Sebapadiswa se bitsa M50. Ho boloka M10 ka beke ho bolela hore o tla ba le sona ka dibeke tse 5."
+    },
+    {
+      "english": "Instead of spending all your M20, you keep M5.",
+      "sesotho": "Ho e-na le ho sebedisa M20 yohle, o boloka M5."
+    },
+    {
+      "english": "You have M100 and keep M30 for later.",
+      "sesotho": "O na le M100 mme o boloka M30 bakeng sa hamorao."
+    },
+    {
+      "english": "You earn M500 and save M100 monthly. After one year, you have M1,200.",
+      "sesotho": "O fumana M500 mme o boloka M100 ka kgwedi. Kamora selemo, o na le M1,200."
+    },
+    {
+      "english": "Your allowance is M300. Set aside M50 before spending anything.",
+      "sesotho": "Chelete ya hao ke M300. Behella M50 ka thoko pele o sebedisa letho."
+    },
+    {
+      "english": "You need M2,000 for a laptop. Saving M200 monthly means 10 months.",
+      "sesotho": "O hloka M2,000 bakeng sa laptop. Ho boloka M200 ka kgwedi ho bolela dikgwedi tse 10."
+    },
+    {
+      "english": "Keep M50 from M200 instead of spending it all.",
+      "sesotho": "Boloka M50 ho tswa ho M200 ho e-na le ho e sebedisa yohle."
+    },
+    {
+      "english": "A M1,000 gift: save 30 percent (M300) and spend the rest.",
+      "sesotho": "Mpho ya M1,000: boloka 30% (M300) mme o sebedise tse setseng."
+    },
+    {
+      "english": "Bursary M2,500: follow 50/30/20 rule, save M500 monthly.",
+      "sesotho": "Bursary ya M2,500: latela molao wa 50/30/20, boloka M500 ka kgwedi."
+    },
+    {
+      "english": "Freelance income M1,500: allocate M300 to savings first.",
+      "sesotho": "Moputso wa freelance M1,500: arola M300 polokong pele."
+    },
+    {
+      "english": "Save M200 monthly for emergency fund = M2,400 per year.",
+      "sesotho": "Boloka M200 ka kgwedi bakeng sa tshohanyetso = M2,400 ka selemo."
+    },
+    {
+      "english": "Invest M500 monthly at 7 percent = approximately M87,000 in 10 years.",
+      "sesotho": "Kenya M500 ka kgwedi ka 7% = M87,000 ka dilemo tse 10."
+    },
+    {
+      "english": "Income M3,500: M2,000 fixed, M500 savings, M1,000 variable.",
+      "sesotho": "Moputso M3,500: M2,000 e sa fetoheng, M500 poloko, M1,000 e fetohang."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "You need lots of money to save — FALSE! Even M1 counts.",
+      "sesotho": "O hloka chelete e ngata ho boloka — HA SE NNETE! Le M1 e a balwa."
+    },
+    {
+      "english": "Saving is only for rich people — FALSE! Everyone can save.",
+      "sesotho": "Ho boloka ke ha barui feela — HA SE NNETE! Bohle ba ka boloka."
+    },
+    {
+      "english": "Saving means no fun — FALSE! You can save and spend wisely.",
+      "sesotho": "Ho boloka ho bolela ho se thabe — HA SE NNETE! O ka boloka le ho sebedisa ka bohlale."
+    },
+    {
+      "english": "Only people with jobs can save — FALSE! Students can too.",
+      "sesotho": "Ke batho ba nang le mesebetsi feela ba ka bolokang — HA SE NNETE! Baithuti le bona ba ka boloka."
+    },
+    {
+      "english": "You need M100+ to start — FALSE! M10 regularly adds up.",
+      "sesotho": "O hloka M100+ ho qala — HA SE NNETE! M10 kgafetsa ea eketswa."
+    },
+    {
+      "english": "Saving means never spending on yourself — FALSE! It means balance.",
+      "sesotho": "Ho boloka ho bolela ho se ithekele letho — HA SE NNETE! Ho bolela ho lekalekanya."
+    },
+    {
+      "english": "Saving equals investing — FALSE! Different risk levels.",
+      "sesotho": "Ho boloka ho tshwana le matsete — HA SE NNETE! Di na le dikotsi tse fapaneng."
+    },
+    {
+      "english": "Save what is left after spending — FALSE! Pay yourself first.",
+      "sesotho": "Boloka se setseng kamora ho sebedisa — HA SE NNETE! Itefe pele."
+    },
+    {
+      "english": "Inflation makes saving pointless — FALSE! Interest offsets it.",
+      "sesotho": "Inflation e etsa hore ho boloka ho se thuse — HA SE NNETE! Phaello ea e lekanya."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Would you like to learn how to start saving?",
+      "sesotho": "Na o ka rata ho ithuta ho qala ho boloka?"
+    },
+    {
+      "english": "Do you know what a piggy bank is?",
+      "sesotho": "Na o tseba hore na piggy bank ke eng?"
+    },
+    {
+      "english": "Want to learn about saving goals?",
+      "sesotho": "Na o batla ho ithuta ka dipakane tsa poloko?"
+    },
+    {
+      "english": "Would you like to know where to keep savings?",
+      "sesotho": "Na o ka rata ho tseba moo o bolokang poloko?"
+    },
+    {
+      "english": "Should we talk about budgeting too?",
+      "sesotho": "Na re bue le ka tekanyetso?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Put money in a piggy bank every time you get some.",
+      "sesotho": "Kenya chelete ka piggy bank nako le nako ha o e fumana."
+    },
+    {
+      "english": "Ask your parents to help you open a savings jar.",
+      "sesotho": "Kopa batswadi ho o thusa ho bula jar ya poloko."
+    },
+    {
+      "english": "Start with M1 or M2. Even small amounts count!",
+      "sesotho": "Qala ka M1 kapa M2. Le tjhelete e nyane e a balwa!"
+    },
+    {
+      "english": "Set a savings goal, then save a fixed amount each month.",
+      "sesotho": "Beha pakane ya poloko, ebe o boloka tjhelete e behilweng kgwedi le kgwedi."
+    },
+    {
+      "english": "Open a bank savings account and deposit regularly.",
+      "sesotho": "Bula akhaonto ya poloko bankeng mme o kene kgafetsa."
+    },
+    {
+      "english": "Use the 50/30/20 rule: save 20 percent of income.",
+      "sesotho": "Sebedisa molao wa 50/30/20: boloka 20% ya moputso."
+    },
+    {
+      "english": "Automate your savings through a standing order.",
+      "sesotho": "Etsa hore poloko e itsamaele ka standing order."
+    },
+    {
+      "english": "Build an emergency fund with 3-6 months of expenses.",
+      "sesotho": "Haha letlole la tshohanyetso ka dikgwedi tse 3-6."
+    },
+    {
+      "english": "Track expenses and identify areas to reduce spending.",
+      "sesotho": "Latela ditshenyehelo mme o bone moo o ka fokotsang."
+    }
+  ],
+  "why": [
+    {
+      "english": "Saving helps you buy things you really want later.",
+      "sesotho": "Ho boloka ho o thusa ho reka dintho tseo o di batlang hamorao."
+    },
+    {
+      "english": "Saving keeps your money safe for the future.",
+      "sesotho": "Ho boloka ho boloka chelete e sireletsehile bakeng sa bokamoso."
+    },
+    {
+      "english": "When you save, you always have money for emergencies.",
+      "sesotho": "Ha o boloka, o dula o na le chelete ya tshohanyetso."
+    },
+    {
+      "english": "Saving builds financial security and peace of mind.",
+      "sesotho": "Ho boloka ho haha tshireletso ya lichelete le kgotso."
+    },
+    {
+      "english": "Saving helps you achieve goals like buying a laptop.",
+      "sesotho": "Ho boloka ho thusa ho fihlela dipakane tse kang ho reka laptop."
+    },
+    {
+      "english": "Saving prevents debt when unexpected expenses arise.",
+      "sesotho": "Ho boloka ho thibela sekoloto ha ditshenyehelo tse sa lebellwang di hlaha."
+    },
+    {
+      "english": "Saving provides capital for investments and wealth building.",
+      "sesotho": "Ho boloka ho fana ka motheo wa matsete le ho haha maruo."
+    },
+    {
+      "english": "An emergency fund prevents financial crises.",
+      "sesotho": "Letlole la tshohanyetso le thibela mathata a lichelete."
+    },
+    {
+      "english": "Saving creates financial independence and options.",
+      "sesotho": "Ho boloka ho bopa boikemelo ba lichelete le dikgetho."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "Mpho gets M20 pocket money. She wants to buy sweets (M5) and a toy (M15). Should she spend all or save some?",
+        "sesotho": "Mpho o fumana M20 ya pokotho. O batla ho reka dipompong (M5) le sebapadiswa (M15). Na o lokela ho sebedisa tsohle kapa ho boloka tse ding?"
+      },
+      "advice": {
+        "english": "Mpho should save at least M5. She can buy sweets and save the rest for the toy later.",
+        "sesotho": "Mpho o lokela ho boloka M5. A ka reka dipompong mme a boloke tse setseng bakeng sa sebapadiswa."
+      },
+      "lesson": {
+        "english": "Always save something from what you receive.",
+        "sesotho": "Dula o boloka ho hong ho tswa ho seo o se fumanang."
+      }
+    },
+    {
+      "situation": {
+        "english": "Thabo wants a bicycle that costs M500. He gets M50 pocket money every week. How can he save for it?",
+        "sesotho": "Thabo o batla baesekele e bitsang M500. O fumana M50 ka beke. A ka e bolokela jwang?"
+      },
+      "advice": {
+        "english": "If Thabo saves M25 per week, he will have M500 in 20 weeks (5 months).",
+        "sesotho": "Haeba Thabo a boloka M25 ka beke, o tla ba le M500 ka dibeke tse 20 (dikgwedi tse 5)."
+      },
+      "lesson": {
+        "english": "Break big goals into smaller weekly savings.",
+        "sesotho": "Arola dipakane tse kgolo ka dipoloko tse nyane tsa beke."
+      }
+    },
+    {
+      "situation": {
+        "english": "Lerato earns M600 monthly from part-time work. She spends everything on entertainment. What should she change?",
+        "sesotho": "Lerato o fumana M600 ka kgwedi mosebetsing wa nakwana. O sebedisa tsohle boithabisong. O lokela ho fetola eng?"
+      },
+      "advice": {
+        "english": "Lerato should save at least M120 (20%). She can still enjoy M480 for other things.",
+        "sesotho": "Lerato o lokela ho boloka M120 (20%). A ka ntsha M480 bakeng sa dintho tse ding."
+      },
+      "lesson": {
+        "english": "Pay yourself first before spending on wants.",
+        "sesotho": "Itefe pele pele o sebedisa ditakatso."
+      }
+    },
+    {
+      "situation": {
+        "english": "A student gets a M1,000 gift. They want to buy a new phone (M800) and go out with friends (M200). Is this wise?",
+        "sesotho": "Moithuti o fumana mpho ya M1,000. O batla ho reka fono (M800) le ho ya le metswalle (M200). Na see se bohlale?"
+      },
+      "advice": {
+        "english": "Better plan: Save M300, spend M500 on phone, M200 for friends. Or save M500 and buy a cheaper phone.",
+        "sesotho": "Leano le betere: Boloka M300, sebedisa M500 fonong, M200 metswalle. Kapa boloka M500 mme o reke fono e theko e tlase."
+      },
+      "lesson": {
+        "english": "Balance saving and spending, even with gift money.",
+        "sesotho": "Lekalekanya ho boloka le ho sebedisa, le ka chelete ya dimpho."
+      }
+    },
+    {
+      "situation": {
+        "english": "A student receives M2,500 bursary monthly. Rent is M1,000, food M800, transport M300. How much should they save?",
+        "sesotho": "Moithuti o fumana bursary ya M2,500. Rente M1,000, dijo M800, dipalangwang M300. O lokela ho boloka bokae?"
+      },
+      "advice": {
+        "english": "After expenses: M400 remains. Save M300 and keep M100 for emergencies.",
+        "sesotho": "Kamora ditshenyehelo: M400 e setseng. Boloka M300 mme o boloke M100 bakeng sa tshohanyetso."
+      },
+      "lesson": {
+        "english": "Always allocate surplus to savings before discretionary spending.",
+        "sesotho": "Dula o arola se setseng polokong pele o sebedisa."
+      }
+    },
+    {
+      "situation": {
+        "english": "A student has no savings and their laptop breaks. They need M3,000 urgently. What went wrong?",
+        "sesotho": "Moithuti ha a na poloko mme laptop ya hae e senyeha. O hloka M3,000 ka potlako. Ho senyehile eng?"
+      },
+      "advice": {
+        "english": "Without an emergency fund, unexpected expenses cause debt. Aim to save 3-6 months of expenses.",
+        "sesotho": "Ntle le letlole la tshohanyetso, ditshenyehelo tse sa lebellwang di baka sekoloto. Boloka dikgwedi tse 3-6 tsa ditshenyehelo."
+      },
+      "lesson": {
+        "english": "Emergency funds prevent financial crises.",
+        "sesotho": "Matlole a tshohanyetso a thibela mathata."
+      }
+    }
+  ]
+}

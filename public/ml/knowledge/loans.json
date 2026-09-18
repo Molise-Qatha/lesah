@@ -1,0 +1,306 @@
+{
+  "definitions": [
+    {
+      "english": "A loan is money you borrow and agree to pay back later.",
+      "sesotho": "Kalimo ke chelete eo o e alimang mme o dumela ho e kgutlisa hamorao."
+    },
+    {
+      "english": "When you borrow money, that is called a loan.",
+      "sesotho": "Ha o alima chelete, seo se bitswa kalimo."
+    },
+    {
+      "english": "A loan is money someone gives you that you must return.",
+      "sesotho": "Kalimo ke chelete eo motho a o fang yona eo o tlamehang ho e kgutlisa."
+    },
+    {
+      "english": "Borrowing M50 from a friend is a loan.",
+      "sesotho": "Ho alima M50 ho motswalle ke kalimo."
+    },
+    {
+      "english": "A loan is like borrowing a book — you give it back.",
+      "sesotho": "Kalimo e tshwana le ho alima buka — o a e kgutlisa."
+    },
+    {
+      "english": "A loan is borrowed money repaid with interest over time.",
+      "sesotho": "Kalimo ke chelete e alimilweng e kgutliswang le phaello."
+    },
+    {
+      "english": "Loans can be secured or unsecured.",
+      "sesotho": "Dikoloto di ka ba tse sireleditsweng kapa tse sa sireleditsweng."
+    },
+    {
+      "english": "Student loans help pay for education.",
+      "sesotho": "Dikoloto tsa baithuti di thusa ho lefella thuto."
+    },
+    {
+      "english": "The cost of a loan includes interest and fees.",
+      "sesotho": "Theko ya kalimo e kenyelletsa phaello le ditefiso."
+    },
+    {
+      "english": "Repayment terms define how long you have to repay.",
+      "sesotho": "Dipehelo tsa tefo di hlalosa hore na o na le nako e kae ya ho kgutlisa."
+    },
+    {
+      "english": "Loans are debt instruments requiring repayment with interest.",
+      "sesotho": "Dikoloto ke disebediswa tsa molato tse hlokang ho kgutlisa le phaello."
+    },
+    {
+      "english": "Key metrics include APR and debt-to-income ratio.",
+      "sesotho": "Ditekanyo tsa bohlokwa di kenyelletsa APR le debt-to-income ratio."
+    },
+    {
+      "english": "Amortization schedules split payments between principal and interest.",
+      "sesotho": "Mananeo a amortization a arola ditefo pakeng tsa chelete le phaello."
+    },
+    {
+      "english": "Credit risk determines loan eligibility and rates.",
+      "sesotho": "Kotsi ya mokitlane e etsa qeto ya ho tshwaneleha le diphaello."
+    },
+    {
+      "english": "Student loans may offer deferment and income-based repayment.",
+      "sesotho": "Dikoloto tsa baithuti di ka fana ka deferment le ditefo tse itshetlehileng moputsong."
+    }
+  ],
+  "examples": [
+    {
+      "english": "Borrow M50 from a friend. You must give back M50.",
+      "sesotho": "Alima M50 ho motswalle. O tlameha ho kgutlisa M50."
+    },
+    {
+      "english": "Borrow M20 and repay M22. The extra M2 is interest.",
+      "sesotho": "Alima M20 mme o kgutlise M22. M2 e eketsehileng ke phaello."
+    },
+    {
+      "english": "A bank loan of M100 means you owe the bank M100 plus interest.",
+      "sesotho": "Kalimo ya banka ya M100 e bolela hore o kolota banka M100 le phaello."
+    },
+    {
+      "english": "A toy costs M60. You borrow M60 and repay from allowance.",
+      "sesotho": "Sebapadiswa se bitsa M60. O alima M60 mme o kgutlisa ho tswa cheleteng ya pokotho."
+    },
+    {
+      "english": "Borrowing is a promise to return something. Always keep your promise!",
+      "sesotho": "Ho alima ke tshepiso ya ho kgutlisa. Dula o phethahatsa tshepiso!"
+    },
+    {
+      "english": "Student loan of M10,000 at 8 percent over 2 years = M450 monthly.",
+      "sesotho": "Kalimo ya moithuti ya M10,000 ka 8% dilemo tse 2 = M450 ka kgwedi."
+    },
+    {
+      "english": "Borrow M5,000 for business at 12 percent = repay M5,600.",
+      "sesotho": "Alima M5,000 bakeng sa kgwebo ka 12% = kgutlisa M5,600."
+    },
+    {
+      "english": "Phone on credit M3,000 at 15 percent over 12 months = M3,450 total.",
+      "sesotho": "Fono ka mokitlane M3,000 ka 15% dikgwedi tse 12 = M3,450 yohle."
+    },
+    {
+      "english": "Personal loan M2,000 for school fees at 10 percent over 6 months.",
+      "sesotho": "Kalimo ya botho M2,000 bakeng sa ditefello tsa sekolo ka 10% dikgwedi tse 6."
+    },
+    {
+      "english": "Family loans may have no interest but are still commitments.",
+      "sesotho": "Dikoloto tsa lelapa di ka se be le phaello empa e ntse e le boitlamo."
+    },
+    {
+      "english": "M15,000 loan at 10 percent over 3 years = M19,500 total.",
+      "sesotho": "Kalimo ya M15,000 ka 10% dilemo tse 3 = M19,500 yohle."
+    },
+    {
+      "english": "Bank A: 8% for 2 years is cheaper than Bank B: 6% for 3 years.",
+      "sesotho": "Banka A: 8% dilemo tse 2 e theko e tlase ho feta Banka B: 6% dilemo tse 3."
+    },
+    {
+      "english": "Debt-to-income of 30 percent on M3,000 income = M900 debt payments.",
+      "sesotho": "Debt-to-income ya 30% ho moputso wa M3,000 = M900 ditefo tsa molato."
+    },
+    {
+      "english": "M20,000 loan at 12 percent over 5 years = M445 monthly.",
+      "sesotho": "Kalimo ya M20,000 ka 12% dilemo tse 5 = M445 ka kgwedi."
+    },
+    {
+      "english": "Interest-free periods avoid interest if paid within 30 days.",
+      "sesotho": "Dinako tse se nang phaello di qoba phaello haeba o lefa ka hara matsatsi a 30."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "You do not have to pay back loans — FALSE! Always repay.",
+      "sesotho": "Ha o tlamehe ho kgutlisa dikoloto — HA SE NNETE! Dula o kgutlisa."
+    },
+    {
+      "english": "Borrowing is always bad — FALSE! Sometimes it helps.",
+      "sesotho": "Ho alima ho mpe kamehla — HA SE NNETE! Ka nako e nngwe ho a thusa."
+    },
+    {
+      "english": "Only adults can borrow — FALSE! But always ask parents first.",
+      "sesotho": "Ke batho ba baholo feela ba ka alimang — HA SE NNETE! Empa dula o botsa batswadi pele."
+    },
+    {
+      "english": "Student loans are free money — FALSE! They must be repaid.",
+      "sesotho": "Dikoloto tsa baithuti ke chelete ya mahala — HA SE NNETE! Di tlameha ho kgutliswa."
+    },
+    {
+      "english": "No need to read loan terms — FALSE! Always understand full cost.",
+      "sesotho": "Ha ho hlokahale ho bala dipehelo tsa kalimo — HA SE NNETE! Dula o utlwisisa theko yohle."
+    },
+    {
+      "english": "All debt is bad — FALSE! Education loans can be good.",
+      "sesotho": "Molato wohle o mobe — HA SE NNETE! Dikoloto tsa thuto di ka ba ntle."
+    },
+    {
+      "english": "Lower rate always means cheaper loan — FALSE! Consider fees.",
+      "sesotho": "Phaello e tlase e bolela kalimo e theko e tlase — HA SE NNETE! Nahana ka ditefiso."
+    },
+    {
+      "english": "Defaulting has no consequences — FALSE! It damages credit.",
+      "sesotho": "Ho se lefe ha ho na ditlamorao — HA SE NNETE! Ho senya mokitlane."
+    },
+    {
+      "english": "Perfect credit needed for any loan — FALSE! Options exist.",
+      "sesotho": "Ho hlokahala mokitlane o phethahetseng — HA SE NNETE! Ho na le dikgetho."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to know if you should borrow money?",
+      "sesotho": "Na o batla ho tseba hore na o lokela ho alima?"
+    },
+    {
+      "english": "Should we talk about student loans?",
+      "sesotho": "Na re bue ka dikoloto tsa baithuti?"
+    },
+    {
+      "english": "Want to understand interest on loans?",
+      "sesotho": "Na o batla ho utlwisisa phaello ya dikoloto?"
+    },
+    {
+      "english": "Should we learn how to repay loans?",
+      "sesotho": "Na re ithute ho kgutlisa dikoloto?"
+    },
+    {
+      "english": "Want to know the risks of borrowing?",
+      "sesotho": "Na o batla ho tseba dikotsi tsa ho alima?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Always ask a parent or teacher before borrowing.",
+      "sesotho": "Dula o botsa motswadi pele o alima."
+    },
+    {
+      "english": "Only borrow what you can pay back.",
+      "sesotho": "Alima feela seo o ka se kgutlisang."
+    },
+    {
+      "english": "Pay back loans as soon as you can.",
+      "sesotho": "Kgutlisa dikoloto kapele."
+    },
+    {
+      "english": "Compare loan offers from different lenders.",
+      "sesotho": "Bapisa dikoloto tsa ba alimang."
+    },
+    {
+      "english": "Understand total cost including interest and fees.",
+      "sesotho": "Utlwisisa theko yohle le ditefiso."
+    },
+    {
+      "english": "Read loan terms carefully before signing.",
+      "sesotho": "Bala dipehelo ka hloko pele o saena."
+    },
+    {
+      "english": "Calculate debt-to-income ratio before borrowing.",
+      "sesotho": "Bala debt-to-income ratio pele o alima."
+    },
+    {
+      "english": "Understand amortization schedules.",
+      "sesotho": "Utlwisisa amortization."
+    },
+    {
+      "english": "Explore income-based repayment options.",
+      "sesotho": "Hlahloba ditefo tse itshetlehileng moputsong."
+    }
+  ],
+  "why": [
+    {
+      "english": "Understanding loans helps you avoid debt problems.",
+      "sesotho": "Ho utlwisisa ho qoba mathata a molato."
+    },
+    {
+      "english": "Always repay loans to build trust.",
+      "sesotho": "Dula o kgutlisa ho haha tshepo."
+    },
+    {
+      "english": "Borrowing wisely can help you achieve goals.",
+      "sesotho": "Ho alima ka bohlale ho thusa dipakane."
+    },
+    {
+      "english": "Loans can help pay for education.",
+      "sesotho": "Dikoloto di thusa ho lefella thuto."
+    },
+    {
+      "english": "Understanding loans prevents mistakes.",
+      "sesotho": "Ho utlwisisa ho thibela diphoso."
+    },
+    {
+      "english": "Good debt vs bad debt matters.",
+      "sesotho": "Molato o motle vs o mobe o bohlokwa."
+    },
+    {
+      "english": "Loans enable education and business investment.",
+      "sesotho": "Dikoloto di dumella thuto le kgwebo."
+    },
+    {
+      "english": "Understanding terms prevents predatory lending.",
+      "sesotho": "Ho utlwisisa ho thibela ho alima ka bomadimabe."
+    },
+    {
+      "english": "Debt management is key to financial health.",
+      "sesotho": "Taolo ya molato ke senotlolo."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "Your friend borrows M20 and promises to pay back M25 next week. Is this a good deal for you?",
+        "sesotho": "Motswalle o alima M20 mme o tshepisa ho kgutlisa M25 bekeng e tlang. Na ke ntho e ntle?"
+      },
+      "advice": {
+        "english": "Yes, M5 extra is interest. But always be careful lending to friends.",
+        "sesotho": "E, M5 e eketsehileng ke phaello. Empa dula o hlokolosi ha o alima metswalle."
+      },
+      "lesson": {
+        "english": "Interest is earned when you lend money too.",
+        "sesotho": "Phaello e fumanwa le ha o alima chelete."
+      }
+    },
+    {
+      "situation": {
+        "english": "You need M5,000 for school fees. Two options: Borrow from bank at 8% for 1 year, or from a loan shark at 30% for 6 months. Which is safer?",
+        "sesotho": "O hloka M5,000 bakeng sa ditefello. Banka 8% selemo, kapa loan shark 30% dikgwedi tse 6. E feng e bolokehileng?"
+      },
+      "advice": {
+        "english": "Bank: M5,400 total. Loan shark: M5,750 total. Bank is cheaper and safer.",
+        "sesotho": "Banka: M5,400. Loan shark: M5,750. Banka e theko e tlase le e bolokehileng."
+      },
+      "lesson": {
+        "english": "Avoid loan sharks with extremely high interest rates.",
+        "sesotho": "Qoba loan sharks tse nang le diphaello tse phahameng haholo."
+      }
+    },
+    {
+      "situation": {
+        "english": "You graduate with M20,000 student loan at 10% over 5 years. Monthly payment is M425. Is this manageable on a M4,000 salary?",
+        "sesotho": "O qeta ka kalimo ya M20,000 ka 10% dilemo tse 5. Tefo ya kgwedi M425. Na see se a kgoneha ka moputso wa M4,000?"
+      },
+      "advice": {
+        "english": "M425 is about 10.6% of income — manageable. But reduce other expenses.",
+        "sesotho": "M425 ke 10.6% ya moputso — ea kgoneha. Empa fokotsa ditshenyehelo tse ding."
+      },
+      "lesson": {
+        "english": "Keep debt payments under 15% of monthly income.",
+        "sesotho": "Boloka ditefo tsa molato ka tlasa 15% ya moputso."
+      }
+    }
+  ]
+}

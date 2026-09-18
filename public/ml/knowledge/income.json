@@ -1,0 +1,306 @@
+{
+  "definitions": [
+    {
+      "english": "Income is the money you receive from allowance, gifts, or small jobs.",
+      "sesotho": "Moputso ke chelete eo o e fumanang ho tswa ho chelete ya pokotho, dimpho kapa mesebetsi e menyenyane."
+    },
+    {
+      "english": "When someone gives you money, that is income.",
+      "sesotho": "Ha motho a o fa chelete, ke moputso."
+    },
+    {
+      "english": "Your pocket money is income.",
+      "sesotho": "Chelete ya pokotho ya hao ke moputso."
+    },
+    {
+      "english": "Income is money coming in. Expenses are money going out.",
+      "sesotho": "Moputso ke chelete e kenang. Ditshenyehelo ke chelete e tswang."
+    },
+    {
+      "english": "If your parents give you M30 per week, that is weekly income.",
+      "sesotho": "Haeba batswadi ba o fa M30 ka beke, ke moputso wa beke."
+    },
+    {
+      "english": "Income is money received regularly from work or other sources.",
+      "sesotho": "Moputso ke chelete e fumanwang kgafetsa ho tswa mosebetsing kapa mehloding e meng."
+    },
+    {
+      "english": "Income is the flow of money into your possession.",
+      "sesotho": "Moputso ke phallo ya chelete e kenang matsohong a hao."
+    },
+    {
+      "english": "Sources include wages, allowances, business profits, and investment returns.",
+      "sesotho": "Mehlodi e kenyelletsa meputso, dipokotho, phaello ya kgwebo le matsete."
+    },
+    {
+      "english": "Gross income is before deductions. Net income is what you receive.",
+      "sesotho": "Moputso o felletseng ke pele ho ditefello. Moputso o hlwekileng ke seo o se fumanang."
+    },
+    {
+      "english": "Regular income helps you plan and budget.",
+      "sesotho": "Moputso o tloaelehileng o o thusa ho rera le ho etsa tekanyetso."
+    },
+    {
+      "english": "Income includes earned income, unearned income, and transfer payments.",
+      "sesotho": "Moputso o kenyelletsa moputso o sebetswang, o sa sebetsweng le ditefello tsa phetiso."
+    },
+    {
+      "english": "Disposable income equals gross income minus taxes.",
+      "sesotho": "Moputso o sebediswang o lekana le moputso o felletseng ho tlosa makgetho."
+    },
+    {
+      "english": "Income streams can be active or passive.",
+      "sesotho": "Mehlodi ya moputso e ka ba e sebetsang kapa e sa sebetseng."
+    },
+    {
+      "english": "Income diversification is key to financial resilience.",
+      "sesotho": "Ho fapanya mehlodi ya moputso ke senotlolo sa botsitso ba lichelete."
+    },
+    {
+      "english": "Student income includes bursaries, part-time work, and entrepreneurship.",
+      "sesotho": "Moputso wa moithuti o kenyelletsa dibursary, mosebetsi wa nakwana le kgwebo."
+    }
+  ],
+  "examples": [
+    {
+      "english": "Your grandmother gives you M10. That is income!",
+      "sesotho": "Nkhono o o fa M10. Ke moputso!"
+    },
+    {
+      "english": "You help wash dishes and get M5. That is income.",
+      "sesotho": "O thusa ho hlatswa dijana mme o fumana M5. Ke moputso."
+    },
+    {
+      "english": "Your parents give you M20 pocket money every week.",
+      "sesotho": "Batswadi ba o fa M20 ya pokotho beke le beke."
+    },
+    {
+      "english": "You sell old toys and get M15.",
+      "sesotho": "O rekisa dipapadi tsa kgale mme o fumana M15."
+    },
+    {
+      "english": "You receive M50 for your birthday. That is special income.",
+      "sesotho": "O fumana M50 ka letsatsi la hao la tswalo. Ke moputso o kgethehileng."
+    },
+    {
+      "english": "Part-time job at M25/hour for 20 hours = M500 weekly.",
+      "sesotho": "Mosebetsi wa nakwana ka M25/ka hora dihora tse 20 = M500 ka beke."
+    },
+    {
+      "english": "Sell 10 items at M15 each = M150 business income.",
+      "sesotho": "Rekisa dintho tse 10 ka M15 ka bonngwe = M150 moputso wa kgwebo."
+    },
+    {
+      "english": "Monthly allowance of M300 is regular income.",
+      "sesotho": "Chelete ya kgwedi ya M300 ke moputso o tloaelehileng."
+    },
+    {
+      "english": "Earn M200 helping a neighbour.",
+      "sesotho": "Fumana M200 ka ho thusa moahelani."
+    },
+    {
+      "english": "Interest from savings = M20. That is investment income.",
+      "sesotho": "Phaello ho tswa polokong = M20. Ke moputso wa matsete."
+    },
+    {
+      "english": "Bursary M2,500 plus part-time M1,000 = M3,500 monthly.",
+      "sesotho": "Bursary M2,500 le mosebetsi wa nakwana M1,000 = M3,500 ka kgwedi."
+    },
+    {
+      "english": "Freelance: 5 projects at M400 = M2,000 monthly.",
+      "sesotho": "Freelance: diprojeke tse 5 ka M400 = M2,000 ka kgwedi."
+    },
+    {
+      "english": "M50,000 invested at 6 percent = M3,000 annual interest.",
+      "sesotho": "M50,000 e kentsweng ka 6% = M3,000 phaello ka selemo."
+    },
+    {
+      "english": "Tutoring: 10 students at M200 = M2,000 monthly.",
+      "sesotho": "Ho ruta: baithuti ba 10 ka M200 = M2,000 ka kgwedi."
+    },
+    {
+      "english": "Mixed income streams create financial stability.",
+      "sesotho": "Mehlodi e fapaneng ya moputso e bopa botsitso ba lichelete."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "Income is only from jobs — FALSE! Gifts count too.",
+      "sesotho": "Moputso o tswa mesebetsing feela — HA SE NNETE! Dimpho le tsona di balwa."
+    },
+    {
+      "english": "More income means more problems — FALSE! More opportunities.",
+      "sesotho": "Moputso o mongata o bolela mathata — HA SE NNETE! Menyetla e mengata."
+    },
+    {
+      "english": "Only adults have income — FALSE! Children can earn.",
+      "sesotho": "Ke batho ba baholo feela ba nang le moputso — HA SE NNETE! Bana le bona ba ka fumana."
+    },
+    {
+      "english": "You need a full-time job for income — FALSE! Part-time counts.",
+      "sesotho": "O hloka mosebetsi wa nako yohle — HA SE NNETE! Wa nakwana le wona o balwa."
+    },
+    {
+      "english": "Income is always money — FALSE! Goods can be income.",
+      "sesotho": "Moputso ke chelete kamehla — HA SE NNETE! Thepa le yona e ka ba moputso."
+    },
+    {
+      "english": "All income should be spent — FALSE! Save a portion.",
+      "sesotho": "Moputso wohle o lokela ho sebediswa — HA SE NNETE! Boloka karolo."
+    },
+    {
+      "english": "Bursary money needs no management — FALSE! It requires budgeting.",
+      "sesotho": "Chelete ya bursary ha e hloke taolo — HA SE NNETE! E hloka tekanyetso."
+    },
+    {
+      "english": "Side income need not be reported — FALSE! Tax may apply.",
+      "sesotho": "Moputso wa lehlakoreng ha o hloke ho tlalehwa — HA SE NNETE! Makgetho a ka sebetsa."
+    },
+    {
+      "english": "Passive income means no work — FALSE! Requires upfront effort.",
+      "sesotho": "Moputso o sa sebetseng o bolela ho se sebetse — HA SE NNETE! O hloka boikitlaetso pele."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to learn how to earn more money?",
+      "sesotho": "Na o batla ho ithuta ho fumana chelete e ngata?"
+    },
+    {
+      "english": "Should we talk about budgeting your income?",
+      "sesotho": "Na re bue ka tekanyetso ya moputso?"
+    },
+    {
+      "english": "Want to know how to save from income?",
+      "sesotho": "Na o batla ho tseba ho boloka ho tswa moputsong?"
+    },
+    {
+      "english": "Should we explore student business ideas?",
+      "sesotho": "Na re hlahlobe mehopolo ya dikgwebo tsa baithuti?"
+    },
+    {
+      "english": "Want to understand gross vs net income?",
+      "sesotho": "Na o batla ho utlwisisa phapang ya gross le net?"
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Help with chores to earn pocket money.",
+      "sesotho": "Thusa ka mesebetsi ya lapeng."
+    },
+    {
+      "english": "Ask grandparents for small jobs to earn money.",
+      "sesotho": "Kopa bo-nkhono mesebetsi e menyenyane."
+    },
+    {
+      "english": "Sell old toys you no longer use.",
+      "sesotho": "Rekisa dipapadi tsa kgale."
+    },
+    {
+      "english": "Find part-time work in your community.",
+      "sesotho": "Fumana mosebetsi wa nakwana."
+    },
+    {
+      "english": "Offer tutoring services to younger students.",
+      "sesotho": "Fana ka ho ruta baithuti ba banyane."
+    },
+    {
+      "english": "Sell items you make or no longer need.",
+      "sesotho": "Rekisa dintho tseo o di etsang."
+    },
+    {
+      "english": "Apply for bursaries and scholarships.",
+      "sesotho": "Kopa dibursary le di-scholarship."
+    },
+    {
+      "english": "Explore freelance and gig opportunities.",
+      "sesotho": "Hlahloba freelance le gig economy."
+    },
+    {
+      "english": "Start a small campus business.",
+      "sesotho": "Qala kgwebo e nyane khamphaseng."
+    }
+  ],
+  "why": [
+    {
+      "english": "Income helps you buy things you need.",
+      "sesotho": "Moputso o thusa ho reka ditlhoko."
+    },
+    {
+      "english": "Earning money teaches responsibility.",
+      "sesotho": "Ho fumana ho ruta boikarabelo."
+    },
+    {
+      "english": "Saving from income builds good habits.",
+      "sesotho": "Ho boloka ho tswa moputsong ho haha ditlwaelo."
+    },
+    {
+      "english": "Income provides financial independence.",
+      "sesotho": "Moputso o fana ka boikemelo."
+    },
+    {
+      "english": "Multiple income sources create stability.",
+      "sesotho": "Mehlodi e mengata e bopa botsitso."
+    },
+    {
+      "english": "Earning builds work experience.",
+      "sesotho": "Ho fumana ho haha boiphihlelo."
+    },
+    {
+      "english": "Income diversification reduces risk.",
+      "sesotho": "Ho fapanya ho fokotsa kotsi."
+    },
+    {
+      "english": "Passive income builds wealth over time.",
+      "sesotho": "O sa sebetseng o haha maruo."
+    },
+    {
+      "english": "Financial independence requires income management.",
+      "sesotho": "Boikemelo bo hloka taolo ya moputso."
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "You earn M10 helping a neighbour. Should you spend it all or save some?",
+        "sesotho": "O fumana M10 ka ho thusa moahelani. O sebedise tsohle kapa o boloke tse ding?"
+      },
+      "advice": {
+        "english": "Save M3 and spend M7. Always save something from what you earn.",
+        "sesotho": "Boloka M3 mme o sebedise M7. Dula o boloka ho tswa ho seo o se fumanang."
+      },
+      "lesson": {
+        "english": "Saving from income builds good habits.",
+        "sesotho": "Ho boloka ho tswa moputsong ho haha ditlwaelo."
+      }
+    },
+    {
+      "situation": {
+        "english": "You can tutor for M50/hour (5 hours/week) or work at a shop for M25/hour (10 hours/week). Which earns more?",
+        "sesotho": "O ka ruta ka M50/ka hora (dihora tse 5) kapa lebenkeleng ka M25/ka hora (dihora tse 10). Ke efe e fumanang ho feta?"
+      },
+      "advice": {
+        "english": "Tutoring: M250/week. Shop: M250/week. Same! But tutoring uses less time.",
+        "sesotho": "Ho ruta: M250/ka beke. Lebenkele: M250/ka beke. Hoa tshwana! Empa ho ruta ho sebedisa nako e nyane."
+      },
+      "lesson": {
+        "english": "Higher hourly rate means more free time.",
+        "sesotho": "Phaello e phahameng ka hora e bolela nako e ngata ya phomolo."
+      }
+    },
+    {
+      "situation": {
+        "english": "You have two income options: Fixed job M2,000/month or freelance averaging M2,500/month but irregular. Which is safer?",
+        "sesotho": "O na le dikgetho tse pedi: Mosebetsi o tsitsitseng M2,000/kgwedi kapa freelance M2,500/kgwedi empa e sa tshwarahala. E feng e bolokehileng?"
+      },
+      "advice": {
+        "english": "Fixed job is more stable for budgeting. Freelance offers more but riskier.",
+        "sesotho": "Mosebetsi o tsitsitseng o bolokehile bakeng sa tekanyetso. Freelance e fana ka ho feta empa e kotsi."
+      },
+      "lesson": {
+        "english": "Stable income makes budgeting easier.",
+        "sesotho": "Moputso o tsitsitseng o etsa tekanyetso e be bonolo."
+      }
+    }
+  ]
+}

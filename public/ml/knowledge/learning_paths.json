@@ -1,0 +1,114 @@
+{
+  "saving": [
+    {
+      "english": "Budgeting",
+      "sesotho": "Tekanyetso"
+    },
+    {
+      "english": "Interest",
+      "sesotho": "Phaello"
+    },
+    {
+      "english": "Investing",
+      "sesotho": "Matsete"
+    }
+  ],
+  "money": [
+    {
+      "english": "Saving",
+      "sesotho": "Ho boloka"
+    },
+    {
+      "english": "Budgeting",
+      "sesotho": "Tekanyetso"
+    },
+    {
+      "english": "Banking",
+      "sesotho": "Banka"
+    }
+  ],
+  "budgeting": [
+    {
+      "english": "Saving",
+      "sesotho": "Ho boloka"
+    },
+    {
+      "english": "Needs & Wants",
+      "sesotho": "Ditlhoko le Ditakatso"
+    },
+    {
+      "english": "Income",
+      "sesotho": "Moputso"
+    }
+  ],
+  "interest": [
+    {
+      "english": "Loans",
+      "sesotho": "Dikoloto"
+    },
+    {
+      "english": "Investing",
+      "sesotho": "Matsete"
+    },
+    {
+      "english": "Saving",
+      "sesotho": "Ho boloka"
+    }
+  ],
+  "loans": [
+    {
+      "english": "Interest",
+      "sesotho": "Phaello"
+    },
+    {
+      "english": "Budgeting",
+      "sesotho": "Tekanyetso"
+    },
+    {
+      "english": "Income",
+      "sesotho": "Moputso"
+    }
+  ],
+  "income": [
+    {
+      "english": "Budgeting",
+      "sesotho": "Tekanyetso"
+    },
+    {
+      "english": "Saving",
+      "sesotho": "Ho boloka"
+    },
+    {
+      "english": "Investing",
+      "sesotho": "Matsete"
+    }
+  ],
+  "banking": [
+    {
+      "english": "Saving",
+      "sesotho": "Ho boloka"
+    },
+    {
+      "english": "Interest",
+      "sesotho": "Phaello"
+    },
+    {
+      "english": "Loans",
+      "sesotho": "Dikoloto"
+    }
+  ],
+  "needs_wants": [
+    {
+      "english": "Budgeting",
+      "sesotho": "Tekanyetso"
+    },
+    {
+      "english": "Saving",
+      "sesotho": "Ho boloka"
+    },
+    {
+      "english": "Income",
+      "sesotho": "Moputso"
+    }
+  ]
+}
