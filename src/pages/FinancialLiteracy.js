@@ -8,6 +8,9 @@ import { getActivitiesForGrade, getCharacterForGrade } from '../data/activityEng
 import { getAIResponse } from '../data/mlClassifier';
 import InteractiveActivity from '../components/InteractiveActivity';
 
+// Universal — no user-facing grade selection. One experience for everyone.
+const gradeId = 'grade8';
+
 function useInView(threshold = 0.15) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -53,7 +56,6 @@ const BADGES = [
 ];
 
 function FinancialLiteracy() {
-  const [gradeId, setGradeId] = useState(() => localStorage.getItem('fl_grade') || 'grade1');
   const [language, setLanguage] = useState(() => localStorage.getItem('fl_language') || 'english');
   const [mode, setMode] = useState('play');
   const [activityIndex, setActivityIndex] = useState(0);
@@ -84,14 +86,9 @@ function FinancialLiteracy() {
   const gradeData = curriculumData.grades[gradeId];
   const modules = gradeData?.modules || [];
   const currentModule = modules[currentModuleIndex];
-  const phaseData = gradeData ? curriculumData.phases[gradeData.phase] : null;
   const activities = getActivitiesForGrade(gradeId);
   const currentActivity = activities[activityIndex];
   const character = getCharacterForGrade(gradeId, language);
-
-  useEffect(() => {
-    localStorage.setItem('fl_grade', gradeId);
-  }, [gradeId]);
 
   useEffect(() => {
     localStorage.setItem('fl_language', language);
@@ -121,13 +118,7 @@ function FinancialLiteracy() {
       });
       setQuizQuestions(allQuestions);
     }
-  }, [gradeId, modules]);
-
-  useEffect(() => {
-    setActivityIndex(0);
-    setMode('play');
-    setSelectedOption(null);
-  }, [gradeId]);
+  }, [modules]);
 
   const getCurrentLevel = () => {
     if (gradeId.startsWith('uni_')) return 'university';
@@ -142,7 +133,7 @@ function FinancialLiteracy() {
     if (currentActivity?.id && !newCompleted.includes(currentActivity.id)) {
       newCompleted.push(currentActivity.id);
       setCompletedActivities(newCompleted);
-      
+
       const count = newCompleted.length;
       const newBadges = BADGES.filter(
         (badge) => count >= badge.threshold && !earnedBadges.includes(badge.id)
@@ -151,7 +142,7 @@ function FinancialLiteracy() {
         setEarnedBadges((prev) => [...prev, ...newBadges.map((b) => b.id)]);
       }
     }
-    
+
     if (activityIndex < activities.length - 1) {
       setActivityIndex((prev) => prev + 1);
     } else {
@@ -161,13 +152,11 @@ function FinancialLiteracy() {
   };
 
   const getResponse = (question) => {
-    // 1. ML-powered AI (uses trained model + rich knowledge base)
-    const mlResponse = getAIResponse(question, gradeId, language);
+    const mlResponse = getAIResponse(question, language);
     if (mlResponse && !mlResponse.includes('still loading')) {
       return { type: 'assistant', text: mlResponse, time: 'Now', related: null };
     }
 
-    // 2. Calculation Engine
     const calculation = calculationEngine.solve(question, language);
     if (calculation) {
       return {
@@ -178,13 +167,11 @@ function FinancialLiteracy() {
       };
     }
 
-    // 3. Conversational layer
     const conversational = getConversationalResponse(question, language);
     if (conversational) {
       return { type: 'assistant', text: conversational, time: 'Now', related: null };
     }
 
-    // 4. Financial library fallback
     const libraryAnswer = financialLibrary.getAnswer(question, getCurrentLevel(), language);
     if (libraryAnswer) {
       let text = `**${libraryAnswer.title}**\n\n${libraryAnswer.explanation}`;
@@ -194,7 +181,6 @@ function FinancialLiteracy() {
       return { type: 'assistant', text, time: 'Now', related: null };
     }
 
-    // 5. Final fallback
     return {
       type: 'assistant',
       text: getRandomResponse(
@@ -305,13 +291,8 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* GRADE SELECTOR */}
+      {/* LANGUAGE TOGGLE */}
       <section id="flr-learning" className="flr-section">
-        <div className="flr-section-intro">
-          <h2>{ui.chooseGrade}</h2>
-          <p>{language === 'sesotho' ? 'Khetha kereiti ea hau hore re hlalose ka botebo bo nepahetseng.' : 'Select your grade so lessons match your level.'}</p>
-        </div>
-
         <div className="flr-lang-toggle">
           <button className={`flr-lang-btn ${language === 'english' ? 'active' : ''}`} onClick={() => setLanguage('english')}>
             English
@@ -320,29 +301,6 @@ function FinancialLiteracy() {
             Sesotho
           </button>
         </div>
-
-        <div className="flr-grade-selector">
-          <select
-            className="flr-grade-select"
-            value={gradeId}
-            onChange={(e) => setGradeId(e.target.value)}
-          >
-            {curriculumData.gradeOptions.map((g) => (
-              <option key={g.id} value={g.id}>
-                {g.label[language]}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {gradeData && (
-          <div className="flr-grade-indicator">
-            <span>{gradeData.icon}</span>
-            <span>{gradeData.label[language]}</span>
-            <span>— {gradeData.age[language]}</span>
-            {phaseData && <span className="flr-phase-badge">{phaseData.title[language]}</span>}
-          </div>
-        )}
       </section>
 
       {/* MODE TABS */}
@@ -599,73 +557,3 @@ function FinancialLiteracy() {
 }
 
 export default FinancialLiteracy;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
