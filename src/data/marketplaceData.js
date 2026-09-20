@@ -31,7 +31,7 @@ export const featuredProviders = [
 export const foodItems = [
   {
     name: 'Papa + Minced Meat',
-    price: 'M60',
+    price: 'M40',
     provider: 'Maseeiso Thaanyane',
     providerId: 'maseeiso',
     image: '/images/maseeiso/food/1.png',
@@ -47,7 +47,7 @@ export const foodItems = [
   },
   {
     name: 'Rice + Chicken Strips',
-    price: 'M60',
+    price: 'M40',
     provider: 'Maseeiso Thaanyane',
     providerId: 'maseeiso',
     image: '/images/maseeiso/food/3.png',
@@ -55,7 +55,7 @@ export const foodItems = [
   },
   {
     name: 'Papa + Wors',
-    price: 'M60',
+    price: 'M55',
     provider: 'Maseeiso Thaanyane',
     providerId: 'maseeiso',
     image: '/images/maseeiso/food/4.png',
@@ -63,7 +63,7 @@ export const foodItems = [
   },
   {
     name: 'Papa + Chakalaka + Pork',
-    price: 'M60',
+    price: 'M85',
     provider: 'Maseeiso Thaanyane',
     providerId: 'maseeiso',
     image: '/images/maseeiso/food/5.png',
