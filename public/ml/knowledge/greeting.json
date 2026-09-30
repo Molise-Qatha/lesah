@@ -2,39 +2,39 @@
   "definitions": [
     {
       "english": "Hello! I am LeSAH, your financial literacy assistant. How can I help you?",
-      "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka o thusa jwang?"
+      "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka u thusa joang?"
     },
     {
       "english": "Hi there! I am LeSAH. I can teach you about money!",
-      "sesotho": "Lumela! Ke LeSAH. Nka o ruta ka chelete!"
+      "sesotho": "Lumela! Ke LeSAH. Nka u ruta ka chelete!"
     },
     {
       "english": "Welcome! I am LeSAH. What would you like to learn?",
-      "sesotho": "Re a o amohela! Ke LeSAH. O batla ho ithuta eng?"
+      "sesotho": "Ke a u amohela! Ke LeSAH. U batla ho ithuta eng?"
     },
     {
       "english": "Hello! I am LeSAH, your financial literacy tutor. Ask me about money.",
-      "sesotho": "Lumela! Ke LeSAH, morupelli wa hao wa tsebo ya lichelete. Mpotse ka chelete."
+      "sesotho": "Lumela! Ke LeSAH, morupeli wa hao wa tsebo ya lichelete. Mpotse ka chelete."
     },
     {
       "english": "Hi! I am LeSAH. I am here to help you understand money.",
-      "sesotho": "Lumela! Ke LeSAH. Ke mona ho o thusa ho utlwisisa chelete."
+      "sesotho": "Lumela! Ke LeSAH. Ke mona ho u thusa ho utloisisa chelete."
     },
     {
       "english": "Hey there! I am LeSAH. What financial topic interests you?",
-      "sesotho": "Lumela! Ke LeSAH. Ke taba efe ya lichelete e o kgahlang?"
+      "sesotho": "Lumela! Ke LeSAH. Ke taba efe ya lichelete e u kgahlang?"
     },
     {
       "english": "Hello! I am LeSAH, your financial literacy assistant. I can help with budgeting, investing, and debt.",
-      "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka thusa ka tekanyetso, matsete le dikoloto."
+      "sesotho": "Lumela! Ke LeSAH, mothusi wa hao wa tsebo ya lichelete. Nka u thusa ka tekanyetso, matsete le likoloto."
     },
     {
       "english": "Welcome! I am LeSAH. Let us discuss personal finance.",
-      "sesotho": "Re a o amohela! Ke LeSAH. Ha re buisaneng ka lichelete tsa botho."
+      "sesotho": "Re a u amohela! Ke LeSAH. Ha re buisaneng ka lichelete tsa botho."
     },
     {
       "english": "Greetings! I am LeSAH. What aspect of finance would you like to explore?",
-      "sesotho": "Lumela! Ke LeSAH. Ke karolo efe ya lichelete eo o batlang ho e hlahloba?"
+      "sesotho": "Lumela! Ke LeSAH. Ke karolo efe ya lichelete eo u batlang ho e hlahloba?"
     }
   ],
   "examples": [
@@ -44,7 +44,7 @@
     },
     {
       "english": "Try asking: How do I count money?",
-      "sesotho": "Leka ho botsa: Ke bala chelete jwang?"
+      "sesotho": "Leka ho botsa: Ke bala chelete joang?"
     },
     {
       "english": "Ask me: What is a budget?",
@@ -52,11 +52,11 @@
     },
     {
       "english": "Try: What are needs and wants?",
-      "sesotho": "Leka: Ditlhoko le ditakatso ke eng?"
+      "sesotho": "Leka: Litlhoko le litakatso ke eng?"
     },
     {
       "english": "Ask me: How do I create a budget?",
-      "sesotho": "Mpotse: Ke etsa tekanyetso jwang?"
+      "sesotho": "Mpotse: Ke etsa tekanyetso joang?"
     },
     {
       "english": "Try: What is compound interest?",
@@ -68,7 +68,7 @@
     },
     {
       "english": "Ask me: How do I build an emergency fund?",
-      "sesotho": "Mpotse: Ke haha letlole la tshohanyetso jwang?"
+      "sesotho": "Mpotse: Ke haha letlole la tshohanyetso joang?"
     },
     {
       "english": "Try: What is the best investment strategy?",
@@ -76,13 +76,13 @@
     },
     {
       "english": "Ask: How do I manage student debt?",
-      "sesotho": "Botsa: Ke laola sekoloto sa moithuti jwang?"
+      "sesotho": "Botsa: Ke laola sekoloto sa moithuti joang?"
     }
   ],
   "misconceptions": [
     {
       "english": "I only teach boring money stuff — FALSE! Learning can be fun!",
-      "sesotho": "Ke ruta feela dintho tse tenang tsa chelete — HA SE NNETE! Ho ithuta ho ka ba monate!"
+      "sesotho": "Ke ruta feela lintho tse tenang tsa chelete — HA SE NNETE! Ho ithuta ho ka ba monate!"
     },
     {
       "english": "I only speak English — FALSE! I speak Sesotho too!",
@@ -98,7 +98,7 @@
     },
     {
       "english": "I only answer simple questions — FALSE! I adapt to your level.",
-      "sesotho": "Ke araba dipotso tse bonolo feela — HA SE NNETE! Ke ikamahanya le boemo ba hao."
+      "sesotho": "Ke araba lipotso tse bonolo feela — HA SE NNETE! Ke ikamahanya le boemo ba hao."
     },
     {
       "english": "I replace financial advisors — FALSE! I provide education.",
@@ -106,13 +106,13 @@
     },
     {
       "english": "I am only for beginners — FALSE! I explain advanced concepts.",
-      "sesotho": "Ke ya ba qalang feela — HA SE NNETE! Ke hlalosa le dikgopolo tse tsoetseng pele."
+      "sesotho": "Ke ya ba qalang feela — HA SE NNETE! Ke hlalosa le likgopolo tse tsoetseng pele."
     }
   ],
   "follow_up_suggestions": [
     {
       "english": "What would you like to learn about?",
-      "sesotho": "O batla ho ithuta ka eng?"
+      "sesotho": "U batla ho ithuta ka eng?"
     },
     {
       "english": "Should we start with saving or budgeting?",
@@ -120,15 +120,15 @@
     },
     {
       "english": "Want to test your knowledge with a quiz?",
-      "sesotho": "Na o batla ho hlahloba tsebo ya hao ka quiz?"
+      "sesotho": "Na u batla ho hlahloba tsebo ya hao ka quiz?"
     },
     {
       "english": "Would you like to try an interactive activity?",
-      "sesotho": "Na o ka rata ho leka ketsahalo e kopanetsweng?"
+      "sesotho": "Na u ka rata ho leka ketsahalo e kopanetsweng?"
     },
     {
       "english": "What financial topic interests you most?",
-      "sesotho": "Ke taba efe ya lichelete e o kgahlang haholo?"
+      "sesotho": "Ke taba efe ya lichelete e u kgahlang haholo?"
     }
   ],
   "how_to": [
@@ -142,7 +142,7 @@
     },
     {
       "english": "Ask me: How do I create a budget?",
-      "sesotho": "Mpotse: Ke etsa tekanyetso jwang?"
+      "sesotho": "Mpotse: Ke etsa tekanyetso joang?"
     },
     {
       "english": "Try: What is compound interest?",
@@ -150,7 +150,7 @@
     },
     {
       "english": "Ask me: How do I build an emergency fund?",
-      "sesotho": "Mpotse: Ke haha letlole la tshohanyetso jwang?"
+      "sesotho": "Mpotse: Ke haha letlole la tshohanyetso joang?"
     },
     {
       "english": "Try: What is the best investment strategy?",
@@ -172,7 +172,7 @@
     },
     {
       "english": "Understanding money prevents future problems.",
-      "sesotho": "Ho utlwisisa ho thibela mathata."
+      "sesotho": "Ho utloisisa chelete ho thibela mathata a kamoso."
     },
     {
       "english": "Financial literacy is essential for independence.",
@@ -180,14 +180,14 @@
     },
     {
       "english": "Smart money management creates opportunities.",
-      "sesotho": "Taolo e bohlale e bopa menyetla."
+      "sesotho": "Ho laola chelete ka bohlale ho bopa menyetla."
     }
   ],
   "scenarios": [
     {
       "situation": {
         "english": "You want to learn about money. What should you ask LeSAH first?",
-        "sesotho": "O batla ho ithuta ka chelete. O botse LeSAH eng pele?"
+        "sesotho": "U batla ho ithuta ka chelete. U botse LeSAH eng pele?"
       },
       "advice": {
         "english": "Try asking: What is saving?",
@@ -201,21 +201,21 @@
     {
       "situation": {
         "english": "You have questions about managing your M500 monthly allowance. What should you ask?",
-        "sesotho": "O na le dipotso ka ho laola M500 ya kgwedi. O botse eng?"
+        "sesotho": "U na le lipotso ka ho laola M500 ya kgwedi. U botse eng?"
       },
       "advice": {
         "english": "Ask: How do I create a budget for M500?",
-        "sesotho": "Botsa: Ke etsa tekanyetso ya M500 jwang?"
+        "sesotho": "Botsa: Ke etsa tekanyetso ya M500 joang?"
       },
       "lesson": {
         "english": "Specific questions get better answers.",
-        "sesotho": "Dipotso tse hlakileng di fumana dikarabo tse betere."
+        "sesotho": "Lipotso tse hlakileng li fumana likarabo tse betere."
       }
     },
     {
       "situation": {
         "english": "You want to start investing but do not know where to begin. What should you ask?",
-        "sesotho": "O batla ho qala matsete empa ha o tsebe moo o qalang. O botse eng?"
+        "sesotho": "U batla ho qala matsete empa ha u tsebe moo u qalang. U botse eng?"
       },
       "advice": {
         "english": "Ask: What is the best investment strategy for beginners?",
@@ -223,7 +223,7 @@
       },
       "lesson": {
         "english": "Start with education before investing money.",
-        "sesotho": "Qala ka thuto pele o kenya chelete."
+        "sesotho": "Qala ka thuto pele u kenya chelete."
       }
     }
   ]
