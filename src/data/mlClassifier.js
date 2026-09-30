@@ -1,3 +1,6 @@
+// ML Intent Classifier for LeSAH Financial Literacy
+// Loads trained model + per-topic knowledge files
+// Includes mood detection and emoji handling
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -40,7 +43,7 @@ export const loadKnowledgeBase = async () => {
 // --- Emoji handling ---
 
 const EMOJI_TO_TEXT = {
-  '👋': 'hello', '🙋': 'hello', '🙋‍♀️': 'hello', '🙋‍♂️': 'hello',
+  '👋': 'hello', '🙋': 'hello',
   '😊': 'happy', '😀': 'happy', '😄': 'happy', '🙂': 'happy',
   '😢': 'sad', '😭': 'sad', '😔': 'sad',
   '😡': 'angry', '😠': 'angry',
@@ -49,7 +52,7 @@ const EMOJI_TO_TEXT = {
   '😴': 'tired', '😩': 'tired', '😫': 'tired',
   '💔': 'broken',
   '🙏': 'please',
-  '❓': 'question', '❔': 'question', '❓': 'question',
+  '❓': 'question', '❔': 'question',
   '💰': 'money', '💵': 'money', '💸': 'money', '🪙': 'money',
   '🏦': 'bank', '📈': 'interest', '📊': 'budget',
   '🎉': 'celebrate', '🎊': 'celebrate', '👍': 'good', '👎': 'bad'
@@ -72,7 +75,6 @@ function expandEmojis(text) {
       out = out.split(emoji).join(' ' + EMOJI_TO_TEXT[emoji] + ' ');
     }
   }
-  // Any other emoji — just strip and replace with space
   out = out.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, ' ');
   return out;
 }
@@ -83,49 +85,80 @@ const MOOD_PATTERNS = [
   {
     mood: 'confused',
     patterns: [
-      /i don'?t (understand|get)/i, /i'?m confus/i, /confus(ed|ing)?\b/i,
-      /what do you mean/i, /huh\b/i, /makes? no sense/i,
-      /ha ke utlwisise/i, /ha ke utloisise/i, /ha ke utlwisise/i,
-      /ke utlwisiseng/i, /ha ke tsebe/i, /ha ke utloisise/i
-/i
+      /i don'?t (understand|get)/i,
+      /i'?m confus/i,
+      /confus(ed|ing)?/i,
+      /what do you mean/i,
+      /makes? no sense/i,
+      /ha ke utlwisise/i,
+      /ha ke utloisise/i,
+      /ke utlwisiseng/i,
+      /ha ke tsebe/i
     ]
   },
   {
     mood: 'frustrated',
     patterns: [
-      /frustrat/i, /annoy(ed|ing)/i, /i'?m (so )?(broke|tired|done|sick)/i,
-      /nothing works/i, /this sucks/i, /stress(ed|ful)/i,
-      /ke khathetse/i, /ke tenehile/i, /ke tena/i, /mathata/i
+      /frustrat/i,
+      /annoy(ed|ing)/i,
+      /i'?m (so )?(broke|tired|done|sick)/i,
+      /nothing works/i,
+      /this sucks/i,
+      /stress(ed|ful)/i,
+      /ke khathetse/i,
+      /ke tenehile/i,
+      /mathata/i
     ]
   },
   {
     mood: 'worried',
     patterns: [
-      /worri(ed|es)/i, /scared/i, /anxious/i, /afraid/i,
-      /i'?m nervous/i, /what if/i,
-      /ke tshohile/i, /ke tshwenyehile/i, /ke tshoenyehile/i
+      /worri(ed|es)/i,
+      /scared/i,
+      /anxious/i,
+      /afraid/i,
+      /i'?m nervous/i,
+      /what if/i,
+      /ke tshohile/i,
+      /ke tshwenyehile/i
     ]
   },
   {
     mood: 'urgent',
     patterns: [
-      /urgent/i, /asap/i, /right now/i, /immediately/i, /quick(ly)?/i,
-      /ka potlako/i, /hanghang/i, /kapele/i
+      /urgent/i,
+      /asap/i,
+      /right now/i,
+      /immediately/i,
+      /ka potlako/i,
+      /hanghang/i,
+      /kapele/i
     ]
   },
   {
     mood: 'excited',
     patterns: [
-      /excited/i, /can'?t wait/i, /\byay+\b/i, /yes+!+/i, /lets go/i,
-      /i'?m happy/i, /so happy/i
+      /excited/i,
+      /can'?t wait/i,
+      /\byay+\b/i,
+      /lets go/i,
+      /i'?m happy/i,
+      /so happy/i
     ]
   },
   {
     mood: 'positive',
     patterns: [
-      /thank(s| you)/i, /\bgreat\b/i, /\bawesome\b/i, /\bamazing\b/i,
-      /that (helps|worked)/i, /\bnice\b/i, /well done/i,
-      /kea leboha/i, /ke leboha/i, /ke a leboha/i, /ho monate/i, /hantle/i
+      /thank(s| you)/i,
+      /\bgreat\b/i,
+      /\bawesome\b/i,
+      /\bamazing\b/i,
+      /that (helps|worked)/i,
+      /\bnice\b/i,
+      /well done/i,
+      /kea leboha/i,
+      /ke leboha/i,
+      /ho monate/i
     ]
   }
 ];
@@ -283,10 +316,7 @@ export function getAIResponse(question, language) {
       : 'AI is still loading. Please try again.';
   }
 
-  // Step 1: expand emojis into text
   const expanded = expandEmojis(question);
-
-  // Step 2: detect mood
   const mood = detectMood(expanded);
 
   const amount = extractAmount(expanded);
@@ -309,8 +339,6 @@ export function getAIResponse(question, language) {
   }
 
   const topicData = knowledgeBase[topicId];
-
-  // Helper: decorate the answer with a mood emoji prefix
   const moodPrefix = MOOD_EMOJI[mood] ? MOOD_EMOJI[mood] + ' ' : '';
 
   if (!topicData) {
@@ -320,7 +348,7 @@ export function getAIResponse(question, language) {
   }
 
   let intent = 'definition';
-  if (/how do|how can|how to|how should|how does|joang|kamuo|kamoo|jwang/i.test(expanded)) intent = 'how_to';
+  if (/how do|how can|how to|how should|how does|joang|kamoo|jwang/i.test(expanded)) intent = 'how_to';
   else if (/why|hobaneng|ke hobane/i.test(expanded)) intent = 'why';
   else if (/should|advice|recommend|keletso|nka etsa eng/i.test(expanded)) intent = 'advice';
 
