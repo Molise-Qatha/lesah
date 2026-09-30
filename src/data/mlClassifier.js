@@ -1,5 +1,3 @@
-// ML Intent Classifier for LeSAH Financial Literacy
-// Loads trained model + per-topic knowledge files
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -39,6 +37,111 @@ export const loadKnowledgeBase = async () => {
   }
 };
 
+// --- Emoji handling ---
+
+const EMOJI_TO_TEXT = {
+  '👋': 'hello', '🙋': 'hello', '🙋‍♀️': 'hello', '🙋‍♂️': 'hello',
+  '😊': 'happy', '😀': 'happy', '😄': 'happy', '🙂': 'happy',
+  '😢': 'sad', '😭': 'sad', '😔': 'sad',
+  '😡': 'angry', '😠': 'angry',
+  '😟': 'worried', '😰': 'worried', '😨': 'worried',
+  '🤔': 'confused', '🤨': 'confused',
+  '😴': 'tired', '😩': 'tired', '😫': 'tired',
+  '💔': 'broken',
+  '🙏': 'please',
+  '❓': 'question', '❔': 'question', '❓': 'question',
+  '💰': 'money', '💵': 'money', '💸': 'money', '🪙': 'money',
+  '🏦': 'bank', '📈': 'interest', '📊': 'budget',
+  '🎉': 'celebrate', '🎊': 'celebrate', '👍': 'good', '👎': 'bad'
+};
+
+const MOOD_EMOJI = {
+  confused:   '🤔',
+  frustrated: '😔',
+  worried:    '😟',
+  urgent:     '⚡',
+  positive:   '😊',
+  excited:    '🎉',
+  neutral:    ''
+};
+
+function expandEmojis(text) {
+  let out = text;
+  for (const emoji in EMOJI_TO_TEXT) {
+    if (out.indexOf(emoji) !== -1) {
+      out = out.split(emoji).join(' ' + EMOJI_TO_TEXT[emoji] + ' ');
+    }
+  }
+  // Any other emoji — just strip and replace with space
+  out = out.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, ' ');
+  return out;
+}
+
+// --- Mood detection ---
+
+const MOOD_PATTERNS = [
+  {
+    mood: 'confused',
+    patterns: [
+      /i don'?t (understand|get)/i, /i'?m confus/i, /confus(ed|ing)?\b/i,
+      /what do you mean/i, /huh\b/i, /makes? no sense/i,
+      /ha ke utlwisise/i, /ha ke utloisise/i, /ha ke utlwisise/i,
+      /ke utlwisiseng/i, /ha ke tsebe/i, /ha ke utloisise/i
+/i
+    ]
+  },
+  {
+    mood: 'frustrated',
+    patterns: [
+      /frustrat/i, /annoy(ed|ing)/i, /i'?m (so )?(broke|tired|done|sick)/i,
+      /nothing works/i, /this sucks/i, /stress(ed|ful)/i,
+      /ke khathetse/i, /ke tenehile/i, /ke tena/i, /mathata/i
+    ]
+  },
+  {
+    mood: 'worried',
+    patterns: [
+      /worri(ed|es)/i, /scared/i, /anxious/i, /afraid/i,
+      /i'?m nervous/i, /what if/i,
+      /ke tshohile/i, /ke tshwenyehile/i, /ke tshoenyehile/i
+    ]
+  },
+  {
+    mood: 'urgent',
+    patterns: [
+      /urgent/i, /asap/i, /right now/i, /immediately/i, /quick(ly)?/i,
+      /ka potlako/i, /hanghang/i, /kapele/i
+    ]
+  },
+  {
+    mood: 'excited',
+    patterns: [
+      /excited/i, /can'?t wait/i, /\byay+\b/i, /yes+!+/i, /lets go/i,
+      /i'?m happy/i, /so happy/i
+    ]
+  },
+  {
+    mood: 'positive',
+    patterns: [
+      /thank(s| you)/i, /\bgreat\b/i, /\bawesome\b/i, /\bamazing\b/i,
+      /that (helps|worked)/i, /\bnice\b/i, /well done/i,
+      /kea leboha/i, /ke leboha/i, /ke a leboha/i, /ho monate/i, /hantle/i
+    ]
+  }
+];
+
+function detectMood(text) {
+  for (let i = 0; i < MOOD_PATTERNS.length; i++) {
+    const entry = MOOD_PATTERNS[i];
+    for (let j = 0; j < entry.patterns.length; j++) {
+      if (entry.patterns[j].test(text)) return entry.mood;
+    }
+  }
+  return 'neutral';
+}
+
+// --- Core classifier ---
+
 function tokenize(text) {
   return text
     .toLowerCase()
@@ -60,7 +163,9 @@ const SESOTHO_WORDS = [
   'fumana', 'tseba', 'rata', 'kena', 'jwang', 'mme', 'hobaneng',
   'nthuse', 'thusang', 'bala', 'reka', 'rekisa', 'sebedisa', 'alima',
   'boloke', 'poloko', 'keno', 'mokitlane', 'sekoloto', 'moputso',
-  'tekanyetso', 'ditlhoko', 'ditakatso', 'dibanka', 'banka', 'akhaonto'
+  'tekanyetso', 'ditlhoko', 'ditakatso', 'dibanka', 'banka', 'akhaonto',
+  'kheleke', 'hela', 'hele', 'lesah', 'tsoile', 'phela', 'teng',
+  'tshohile', 'khathetse', 'utlwisisa', 'utloisise'
 ];
 
 function classifyTopic(text) {
@@ -178,13 +283,19 @@ export function getAIResponse(question, language) {
       : 'AI is still loading. Please try again.';
   }
 
-  const amount = extractAmount(question);
-  const result = classifyTopic(question);
-  const lang = detectLanguage(question, language);
+  // Step 1: expand emojis into text
+  const expanded = expandEmojis(question);
+
+  // Step 2: detect mood
+  const mood = detectMood(expanded);
+
+  const amount = extractAmount(expanded);
+  const result = classifyTopic(expanded);
+  const lang = detectLanguage(expanded, language);
 
   let topicId = result.topic;
   if (topicId === 'unknown' || result.confidence < 0.1) {
-    const q = question.toLowerCase();
+    const q = expanded.toLowerCase();
     if (/bolok|save|saving|poloko/.test(q)) topicId = 'saving';
     else if (/chelete|money|maloti|lisente/.test(q)) topicId = 'money';
     else if (/tekanyetso|budget|moralo/.test(q)) topicId = 'budgeting';
@@ -193,29 +304,34 @@ export function getAIResponse(question, language) {
     else if (/moputso|income|fumana|earn/.test(q)) topicId = 'income';
     else if (/banka|bank|akhaonto|deposit|withdraw/.test(q)) topicId = 'banking';
     else if (/tlhoko|takatso|need|want/.test(q)) topicId = 'needs_wants';
-    else if (/lumela|hello|hi|dumela/.test(q)) topicId = 'greeting';
+    else if (/lumela|hello|hi|dumela|kheleke|hela|hele|le kae|lesah|tsoile|phela|teng/.test(q)) topicId = 'greeting';
+    else if (/confus|utlwisis|utloisis/.test(q)) topicId = 'greeting';
   }
 
   const topicData = knowledgeBase[topicId];
+
+  // Helper: decorate the answer with a mood emoji prefix
+  const moodPrefix = MOOD_EMOJI[mood] ? MOOD_EMOJI[mood] + ' ' : '';
+
   if (!topicData) {
-    return lang === 'sesotho'
+    return moodPrefix + (lang === 'sesotho'
       ? 'Ke utloisisa potso ea hau. Na u botsa ka ho boloka, tekanyetso, kapa chelete?'
-      : 'I understand your question. Are you asking about saving, budgeting, or money?';
+      : 'I understand your question. Are you asking about saving, budgeting, or money?');
   }
 
   let intent = 'definition';
-  if (/how do|how can|how to|how should|how does|joang|kamoo|jwang/i.test(question)) intent = 'how_to';
-  else if (/why|hobaneng|ke hobane/i.test(question)) intent = 'why';
-  else if (/should|advice|recommend|keletso|nka etsa eng/i.test(question)) intent = 'advice';
+  if (/how do|how can|how to|how should|how does|joang|kamuo|kamoo|jwang/i.test(expanded)) intent = 'how_to';
+  else if (/why|hobaneng|ke hobane/i.test(expanded)) intent = 'why';
+  else if (/should|advice|recommend|keletso|nka etsa eng/i.test(expanded)) intent = 'advice';
 
   if (amount && topicId === 'saving') {
     const personalized = personalizeSavingAdvice(amount, lang);
-    if (personalized) return personalized;
+    if (personalized) return moodPrefix + personalized;
   }
 
   if (amount && topicId === 'budgeting') {
     const personalized = personalizeBudgetAdvice(amount, lang);
-    if (personalized) return personalized;
+    if (personalized) return moodPrefix + personalized;
   }
 
   let answer = '';
@@ -264,7 +380,13 @@ export function getAIResponse(question, language) {
     }
   }
 
-  return answer || (lang === 'sesotho' ? 'Ke utloisisa potso ea hau.' : 'I understand your question.');
+  if (!answer) {
+    answer = lang === 'sesotho'
+      ? 'Ke utloisisa potso ea hau.'
+      : 'I understand your question.';
+  }
+
+  return moodPrefix + answer;
 }
 
 loadMLModel();
