@@ -1,6 +1,6 @@
 // ML Intent Classifier for LeSAH Financial Literacy
 // Loads trained model + per-topic knowledge files
-// Includes mood detection and emoji handling
+// Includes mood detection, emoji handling, and money-request handler
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -55,7 +55,8 @@ const EMOJI_TO_TEXT = {
   '❓': 'question', '❔': 'question',
   '💰': 'money', '💵': 'money', '💸': 'money', '🪙': 'money',
   '🏦': 'bank', '📈': 'interest', '📊': 'budget',
-  '🎉': 'celebrate', '🎊': 'celebrate', '👍': 'good', '👎': 'bad'
+  '🎉': 'celebrate', '🎊': 'celebrate', '👍': 'good', '👎': 'bad',
+  '😂': 'laugh', '🤣': 'laugh', '😅': 'laugh'
 };
 
 const MOOD_EMOJI = {
@@ -65,6 +66,7 @@ const MOOD_EMOJI = {
   urgent:     '⚡',
   positive:   '😊',
   excited:    '🎉',
+  playful:    '😄',
   neutral:    ''
 };
 
@@ -79,9 +81,31 @@ function expandEmojis(text) {
   return out;
 }
 
+// --- Money-request handler (jokes like "mphe chelete") ---
+
+function detectMoneyRequest(text) {
+  const t = text.toLowerCase();
+  return /mphe chelete|ntefe chelete|nnee chelete|mphe maloti|mphe sente|ntefe maloti|ntefe sente|give me (some |free |the )?money|give me cash|send me money|i want free money|where can i get free money|where can i get money for free|easy money please|gimme money|gimme cash|mphe tjhelete|mphe mali/i.test(t);
+}
+
+function moneyRequestResponse(lang) {
+  if (lang === 'sesotho') {
+    return '😄 Nka u fa keletso, eseng chelete! Ha ke na chelete ea ho u fa, empa nka u thusa ho ithuta ho e fumana le ho e boloka. U batla ho qala kae?';
+  }
+  return "😄 I can give you advice, not money! I don't have cash to hand out, but I can help you learn how to earn and save. Where would you like to start?";
+}
+
 // --- Mood detection ---
 
 const MOOD_PATTERNS = [
+  {
+    mood: 'playful',
+    patterns: [
+      /haha/i, /\blol\b/i, /lmao/i, /😂/i, /🤣/i, /just kidding/i,
+      /i'?m joking/i, /for fun/i, /only joking/i,
+      /ke a soasoa/i, /ke a qabola/i
+    ]
+  },
   {
     mood: 'confused',
     patterns: [
@@ -198,7 +222,7 @@ const SESOTHO_WORDS = [
   'boloke', 'poloko', 'keno', 'mokitlane', 'sekoloto', 'moputso',
   'tekanyetso', 'ditlhoko', 'ditakatso', 'dibanka', 'banka', 'akhaonto',
   'kheleke', 'hela', 'hele', 'lesah', 'tsoile', 'phela', 'teng',
-  'tshohile', 'khathetse', 'utlwisisa', 'utloisise'
+  'tshohile', 'khathetse', 'utlwisisa', 'utloisise', 'mphe', 'ntefe'
 ];
 
 function classifyTopic(text) {
@@ -318,10 +342,15 @@ export function getAIResponse(question, language) {
 
   const expanded = expandEmojis(question);
   const mood = detectMood(expanded);
+  const lang = detectLanguage(expanded, language);
+
+  // SPECIAL CASE: playful request for money — respond warmly before classifying
+  if (detectMoneyRequest(question) || detectMoneyRequest(expanded)) {
+    return moneyRequestResponse(lang);
+  }
 
   const amount = extractAmount(expanded);
   const result = classifyTopic(expanded);
-  const lang = detectLanguage(expanded, language);
 
   let topicId = result.topic;
   if (topicId === 'unknown' || result.confidence < 0.1) {
