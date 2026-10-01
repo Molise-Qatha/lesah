@@ -10218,5 +10218,1061 @@
   {
     "text": "money emoji test",
     "intent": "money"
+  },
+  {
+    "text": "tekanyetso ke eng",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso e bolela eng",
+    "intent": "budgeting"
+  },
+  {
+    "text": "moralo oa chelete ke eng",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke etsa tekanyetso joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "nka etsa tekanyetso joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke qala tekanyetso joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "nthute ho etsa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "nthuse ka tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke batla ho ithuta ka tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke hloka tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso ea ka",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera chelete ea ka joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke hlophisa chelete joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke arola chelete joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho arola chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho arola moputso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho rera litshenyehelo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho rera tshebediso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera khoeli joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera beke joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera selemo joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera M500 joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera M1000 joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera M2000 joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera stipend ea ka joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera bursary ea ka joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera moputso oa ka joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke rera chelete ea ka ea khoeli joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "50 30 20 ke eng",
+    "intent": "budgeting"
+  },
+  {
+    "text": "50 30 20 e sebetsa joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "zero based budgeting ke eng",
+    "intent": "budgeting"
+  },
+  {
+    "text": "mekhoa ea tekanyetso ke efe",
+    "intent": "budgeting"
+  },
+  {
+    "text": "mekhoa ea tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "mokhoa o motle oa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "mokhoa o bonolo oa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke hlophisa litshenyehelo joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke latela litshenyehelo joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho ngola litshenyehelo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho boloka litshenyehelo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke boloka litshenyehelo kae",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke ngola litshenyehelo kae",
+    "intent": "budgeting"
+  },
+  {
+    "text": "app ea tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "buka ea tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "envelope system",
+    "intent": "budgeting"
+  },
+  {
+    "text": "lienfelopo tsa chelete",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho sebelisa lienfelopo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho arola chelete ka lienfelopo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "litlhoko le litakatso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "phapang ea litlhoko le litakatso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "litlhoko li kae le litakatso li kae",
+    "intent": "budgeting"
+  },
+  {
+    "text": "litlhoko pele ho litakatso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho beha litlhoko pele",
+    "intent": "budgeting"
+  },
+  {
+    "text": "hobaneng ke lokela ho rera",
+    "intent": "budgeting"
+  },
+  {
+    "text": "hobaneng tekanyetso e le bohlokwa",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso e bohlokwa joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho rera ho thusa joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "molemo oa tekanyetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho rera chelete ho na le molemo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "chelete ea ka e fela hobaneng",
+    "intent": "budgeting"
+  },
+  {
+    "text": "chelete ea ka ha e tshwarelle hobaneng",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke sebelisa chelete ho feta",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke sebelisa ho feta moputso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke sebelisa ho feta chelete ea ka",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke fokotsa joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke fokotsa litshenyehelo joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho fokotsa litshenyehelo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho fokotsa boithabiso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke fokotsa boithabiso joang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho fokotsa lijo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho fokotsa lipalangwang",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ho fokotsa tshebediso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "chelete ea ka ea khoeli",
+    "intent": "budgeting"
+  },
+  {
+    "text": "chelete ea ka ea beke",
+    "intent": "budgeting"
+  },
+  {
+    "text": "chelete ea ka ea letsatsi",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le M500 ka khoeli",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le M1000 ka khoeli",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le M2000 ka khoeli",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le M3000 ka khoeli",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le M5000 ka khoeli",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le M200 ka beke",
+    "intent": "budgeting"
+  },
+  {
+    "text": "ke na le M100 ka letsatsi",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how do i budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to create a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to start a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for beginners",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting 101",
+    "intent": "budgeting"
+  },
+  {
+    "text": "define budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "define budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "explain budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tell me about budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "teach me budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i want to learn budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i need a budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i need help with budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "help me budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "explain 50 30 20",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what is zero based budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting methods",
+    "intent": "budgeting"
+  },
+  {
+    "text": "best budgeting method",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgeting tips",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to track expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "expense tracking",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to track spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "envelope budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how does the envelope system work",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what are needs",
+    "intent": "budgeting"
+  },
+  {
+    "text": "what are wants",
+    "intent": "budgeting"
+  },
+  {
+    "text": "needs before wants",
+    "intent": "budgeting"
+  },
+  {
+    "text": "why should i budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "why budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "benefits of budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "importance of budgeting",
+    "intent": "budgeting"
+  },
+  {
+    "text": "why is budgeting important",
+    "intent": "budgeting"
+  },
+  {
+    "text": "my money runs out",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i overspend",
+    "intent": "budgeting"
+  },
+  {
+    "text": "i always overspend",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to stop overspending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to spend less",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to cut costs",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to save on expenses",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to spend less on food",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to spend less on transport",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to reduce entertainment spending",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for M500",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for M1000",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for M2000",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for M3000",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget for student",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget as a student",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget on a stipend",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget my stipend",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget my bursary",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how to budget my bursary",
+    "intent": "budgeting"
+  },
+  {
+    "text": "weekly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "daily budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "yearly budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "money plan",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budjet",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgett",
+    "intent": "budgeting"
+  },
+  {
+    "text": "bujet",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetsoo",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyeto",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanetso",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budget??",
+    "intent": "budgeting"
+  },
+  {
+    "text": "tekanyetso??",
+    "intent": "budgeting"
+  },
+  {
+    "text": "how 2 budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "hw do i budget",
+    "intent": "budgeting"
+  },
+  {
+    "text": "budgettin",
+    "intent": "budgeting"
+  },
+  {
+    "text": "banka ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "bank ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto ea banka ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke bula akhaonto joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ke bula akhaonto ea banka joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ke batla ho bula akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "ke hloka akhaonto ea banka",
+    "intent": "banking"
+  },
+  {
+    "text": "nthuse ho bula akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "nthute ka banka",
+    "intent": "banking"
+  },
+  {
+    "text": "ke batla ho ithuta ka banka",
+    "intent": "banking"
+  },
+  {
+    "text": "libanka li sebetsa joang",
+    "intent": "banking"
+  },
+  {
+    "text": "libanka li etsa eng",
+    "intent": "banking"
+  },
+  {
+    "text": "banka e etsa eng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke boloka chelete bankeng joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ke kenya chelete bankeng joang",
+    "intent": "banking"
+  },
+  {
+    "text": "deposit ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "withdrawal ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "ho ntsha chelete bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke ntsha chelete joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ATM ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke sebelisa ATM joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ATM e sebetsa joang",
+    "intent": "banking"
+  },
+  {
+    "text": "PIN ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke lebala PIN",
+    "intent": "banking"
+  },
+  {
+    "text": "karete ea banka ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "debit card ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "credit card ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "phapang ea debit le credit",
+    "intent": "banking"
+  },
+  {
+    "text": "mobile banking ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "banking ea fono",
+    "intent": "banking"
+  },
+  {
+    "text": "ke sebelisa mobile banking joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ke romella chelete joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ho romella chelete",
+    "intent": "banking"
+  },
+  {
+    "text": "transfer ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke hlahloba balance joang",
+    "intent": "banking"
+  },
+  {
+    "text": "balance ea ka ke bokae",
+    "intent": "banking"
+  },
+  {
+    "text": "ke tseba balance ea ka joang",
+    "intent": "banking"
+  },
+  {
+    "text": "balance",
+    "intent": "banking"
+  },
+  {
+    "text": "overdraft ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke etsa overdraft joang",
+    "intent": "banking"
+  },
+  {
+    "text": "fixed deposit ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "fixed deposit e sebetsa joang",
+    "intent": "banking"
+  },
+  {
+    "text": "litefiso tsa banka",
+    "intent": "banking"
+  },
+  {
+    "text": "banka e lefisa bokae",
+    "intent": "banking"
+  },
+  {
+    "text": "ke lefa bokae bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "bank charges",
+    "intent": "banking"
+  },
+  {
+    "text": "phapang ea libanka",
+    "intent": "banking"
+  },
+  {
+    "text": "ke kgetha banka efe",
+    "intent": "banking"
+  },
+  {
+    "text": "banka e molemo ke efe",
+    "intent": "banking"
+  },
+  {
+    "text": "ke bapisa libanka joang",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto ea baithuti",
+    "intent": "banking"
+  },
+  {
+    "text": "student account",
+    "intent": "banking"
+  },
+  {
+    "text": "cheque account ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "current account ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "phapang ea savings le cheque",
+    "intent": "banking"
+  },
+  {
+    "text": "Central Bank ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "Banka e Kgolo ea Lesotho",
+    "intent": "banking"
+  },
+  {
+    "text": "CBL ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "bank interest ke eng",
+    "intent": "banking"
+  },
+  {
+    "text": "phaello ea banka",
+    "intent": "banking"
+  },
+  {
+    "text": "banka e fana ka phaello efe",
+    "intent": "banking"
+  },
+  {
+    "text": "ke fumana phaello bokae bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "ho boloka bankeng kapa lapeng",
+    "intent": "banking"
+  },
+  {
+    "text": "bank kapa lapeng",
+    "intent": "banking"
+  },
+  {
+    "text": "bank vs home",
+    "intent": "banking"
+  },
+  {
+    "text": "banking e bolokehile",
+    "intent": "banking"
+  },
+  {
+    "text": "chelete ea ka e bolokehile bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "ke tshaba banka",
+    "intent": "banking"
+  },
+  {
+    "text": "ke tshaba ho boloka bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "libanka li a utswa",
+    "intent": "banking"
+  },
+  {
+    "text": "ho utswa bankeng",
+    "intent": "banking"
+  },
+  {
+    "text": "two factor authentication",
+    "intent": "banking"
+  },
+  {
+    "text": "ho sireletsa akhaonto",
+    "intent": "banking"
+  },
+  {
+    "text": "ke sireletsa akhaonto ea ka joang",
+    "intent": "banking"
+  },
+  {
+    "text": "ke lebala password",
+    "intent": "banking"
+  },
+  {
+    "text": "password ea ka",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i open a bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "how to open a bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "what is banking",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a bank account",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a cheque account",
+    "intent": "banking"
+  },
+  {
+    "text": "what is an ATM",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a PIN",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a credit card",
+    "intent": "banking"
+  },
+  {
+    "text": "difference between debit and credit",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i use mobile banking",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i transfer money",
+    "intent": "banking"
+  },
+  {
+    "text": "how do i check my balance",
+    "intent": "banking"
+  },
+  {
+    "text": "what is an overdraft",
+    "intent": "banking"
+  },
+  {
+    "text": "what is a fixed deposit",
+    "intent": "banking"
+  },
+  {
+    "text": "bank fees",
+    "intent": "banking"
+  },
+  {
+    "text": "how much do banks charge",
+    "intent": "banking"
+  },
+  {
+    "text": "which bank is best",
+    "intent": "banking"
+  },
+  {
+    "text": "how to compare banks",
+    "intent": "banking"
+  },
+  {
+    "text": "what is the Central Bank",
+    "intent": "banking"
+  },
+  {
+    "text": "what is CBL",
+    "intent": "banking"
+  },
+  {
+    "text": "how much interest do banks pay",
+    "intent": "banking"
+  },
+  {
+    "text": "bank or home",
+    "intent": "banking"
+  },
+  {
+    "text": "is bank safe",
+    "intent": "banking"
+  },
+  {
+    "text": "how safe is my money in bank",
+    "intent": "banking"
+  },
+  {
+    "text": "i am scared of banks",
+    "intent": "banking"
+  },
+  {
+    "text": "how to protect my account",
+    "intent": "banking"
+  },
+  {
+    "text": "i forgot my password",
+    "intent": "banking"
+  },
+  {
+    "text": "account",
+    "intent": "banking"
+  },
+  {
+    "text": "banke",
+    "intent": "banking"
+  },
+  {
+    "text": "bankaa",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaunta",
+    "intent": "banking"
+  },
+  {
+    "text": "akhaonto??",
+    "intent": "banking"
+  },
+  {
+    "text": "bank??",
+    "intent": "banking"
+  },
+  {
+    "text": "banka??",
+    "intent": "banking"
+  },
+  {
+    "text": "how 2 open account",
+    "intent": "banking"
+  },
+  {
+    "text": "hw do i open bank",
+    "intent": "banking"
+  },
+  {
+    "text": "bank acc",
+    "intent": "banking"
   }
 ]

@@ -1,18 +1,26 @@
 {
   "2": {
-    "saving": 1
+    "saving": 1,
+    "budgeting": 1,
+    "banking": 1
   },
   "10": {
     "saving": 4
   },
   "20": {
-    "saving": 8
+    "saving": 8,
+    "budgeting": 3
   },
   "30": {
-    "saving": 4
+    "saving": 4,
+    "budgeting": 3
   },
   "50": {
-    "saving": 4
+    "saving": 4,
+    "budgeting": 3
+  },
+  "101": {
+    "budgeting": 1
   },
   "hi": {
     "greeting": 8
@@ -24,62 +32,62 @@
     "greeting": 17,
     "saving": 28,
     "money": 53,
-    "budgeting": 16,
+    "budgeting": 19,
     "interest": 30,
     "loans": 32,
     "income": 24,
-    "banking": 24,
+    "banking": 34,
     "needs_wants": 24
   },
   "is": {
     "greeting": 17,
     "saving": 32,
     "money": 65,
-    "budgeting": 16,
+    "budgeting": 18,
     "interest": 30,
     "loans": 43,
     "income": 26,
-    "banking": 22,
+    "banking": 35,
     "needs_wants": 37
   },
   "how": {
     "greeting": 19,
     "saving": 116,
     "money": 37,
-    "budgeting": 49,
+    "budgeting": 66,
     "interest": 34,
     "loans": 28,
     "income": 33,
-    "banking": 31,
+    "banking": 42,
     "needs_wants": 14
   },
   "do": {
     "greeting": 17,
     "saving": 33,
     "money": 20,
-    "budgeting": 13,
+    "budgeting": 15,
     "interest": 12,
     "loans": 15,
     "income": 14,
-    "banking": 17,
+    "banking": 24,
     "needs_wants": 16
   },
   "i": {
     "greeting": 37,
     "saving": 100,
     "money": 49,
-    "budgeting": 26,
+    "budgeting": 34,
     "interest": 24,
     "loans": 28,
     "income": 23,
-    "banking": 26,
+    "banking": 33,
     "needs_wants": 46
   },
   "tell": {
     "greeting": 17,
     "saving": 15,
     "money": 13,
-    "budgeting": 13,
+    "budgeting": 14,
     "interest": 10,
     "loans": 11,
     "income": 9,
@@ -90,7 +98,7 @@
     "greeting": 36,
     "saving": 42,
     "money": 37,
-    "budgeting": 26,
+    "budgeting": 29,
     "interest": 20,
     "loans": 22,
     "income": 18,
@@ -101,7 +109,7 @@
     "greeting": 34,
     "saving": 31,
     "money": 28,
-    "budgeting": 26,
+    "budgeting": 27,
     "interest": 20,
     "loans": 22,
     "income": 18,
@@ -112,7 +120,7 @@
     "greeting": 21,
     "saving": 23,
     "money": 12,
-    "budgeting": 13,
+    "budgeting": 15,
     "interest": 10,
     "loans": 11,
     "income": 9,
@@ -156,7 +164,7 @@
     "greeting": 17,
     "saving": 16,
     "money": 14,
-    "budgeting": 13,
+    "budgeting": 15,
     "interest": 12,
     "loans": 11,
     "income": 9,
@@ -167,7 +175,7 @@
     "greeting": 17,
     "saving": 23,
     "money": 16,
-    "budgeting": 13,
+    "budgeting": 14,
     "interest": 10,
     "loans": 11,
     "income": 9,
@@ -178,11 +186,11 @@
     "greeting": 18,
     "saving": 124,
     "money": 23,
-    "budgeting": 51,
+    "budgeting": 66,
     "interest": 16,
     "loans": 24,
     "income": 40,
-    "banking": 32,
+    "banking": 35,
     "needs_wants": 14
   },
   "know": {
@@ -212,12 +220,15 @@
     "greeting": 25,
     "money": 24,
     "needs_wants": 2,
-    "saving": 10
+    "saving": 10,
+    "budgeting": 13,
+    "banking": 2
   },
   "kae": {
     "greeting": 13,
     "money": 9,
-    "saving": 5
+    "saving": 5,
+    "budgeting": 4
   },
   "u": {
     "greeting": 21,
@@ -230,20 +241,21 @@
   "joang": {
     "greeting": 30,
     "saving": 29,
-    "banking": 2,
+    "banking": 18,
     "income": 4,
     "interest": 2,
-    "money": 27
+    "money": 27,
+    "budgeting": 25
   },
   "ho": {
     "greeting": 8,
     "saving": 97,
-    "budgeting": 11,
+    "budgeting": 36,
     "interest": 13,
     "loans": 15,
     "income": 9,
     "money": 20,
-    "banking": 6
+    "banking": 15
   },
   "ausi": {
     "greeting": 10
@@ -301,11 +313,12 @@
   },
   "save": {
     "saving": 196,
-    "budgeting": 2
+    "budgeting": 3
   },
   "why": {
     "saving": 14,
-    "money": 7
+    "money": 7,
+    "budgeting": 3
   },
   "where": {
     "saving": 13,
@@ -314,26 +327,29 @@
   },
   "tips": {
     "saving": 17,
-    "budgeting": 8,
+    "budgeting": 9,
     "banking": 2,
     "money": 1
   },
   "much": {
     "saving": 13,
     "money": 15,
-    "interest": 9
+    "interest": 9,
+    "banking": 2
   },
   "money": {
     "saving": 137,
     "money": 127,
-    "budgeting": 34,
+    "budgeting": 36,
     "income": 49,
-    "banking": 26,
+    "banking": 28,
     "loans": 5,
     "interest": 2
   },
   "boloka": {
-    "saving": 142
+    "saving": 142,
+    "budgeting": 2,
+    "banking": 3
   },
   "ke": {
     "saving": 117,
@@ -342,8 +358,9 @@
     "needs_wants": 4,
     "income": 9,
     "loans": 6,
-    "budgeting": 2,
-    "greeting": 8
+    "budgeting": 44,
+    "greeting": 8,
+    "banking": 45
   },
   "poloko": {
     "saving": 22,
@@ -351,11 +368,14 @@
     "banking": 2
   },
   "nka": {
-    "saving": 17
+    "saving": 17,
+    "budgeting": 1
   },
   "batla": {
     "saving": 17,
-    "money": 4
+    "money": 4,
+    "budgeting": 1,
+    "banking": 2
   },
   "goal": {
     "saving": 16
@@ -363,7 +383,7 @@
   "savings": {
     "saving": 14,
     "interest": 19,
-    "banking": 6
+    "banking": 7
   },
   "put": {
     "saving": 11
@@ -382,7 +402,8 @@
     "money": 4,
     "saving": 2,
     "needs_wants": 2,
-    "greeting": 3
+    "greeting": 3,
+    "budgeting": 2
   },
   "maloti": {
     "money": 27
@@ -396,8 +417,8 @@
     "saving": 48,
     "interest": 2,
     "loans": 6,
-    "budgeting": 8,
-    "banking": 4
+    "budgeting": 24,
+    "banking": 11
   },
   "currency": {
     "money": 18
@@ -408,7 +429,7 @@
   "and": {
     "money": 9,
     "needs_wants": 16,
-    "banking": 2,
+    "banking": 3,
     "budgeting": 2
   },
   "notes": {
@@ -421,7 +442,8 @@
     "money": 11,
     "interest": 1,
     "banking": 2,
-    "saving": 1
+    "saving": 1,
+    "budgeting": 1
   },
   "it": {
     "money": 1,
@@ -445,7 +467,8 @@
     "money": 13
   },
   "lesotho": {
-    "money": 32
+    "money": 32,
+    "banking": 1
   },
   "buying": {
     "money": 9
@@ -459,9 +482,9 @@
     "money": 5
   },
   "a": {
-    "budgeting": 17,
+    "budgeting": 22,
     "loans": 23,
-    "banking": 16,
+    "banking": 24,
     "needs_wants": 25,
     "saving": 24,
     "income": 6,
@@ -469,7 +492,7 @@
     "money": 10
   },
   "budget": {
-    "budgeting": 89,
+    "budgeting": 113,
     "saving": 2
   },
   "make": {
@@ -478,20 +501,20 @@
     "money": 3
   },
   "spending": {
-    "budgeting": 32,
+    "budgeting": 34,
     "saving": 4,
     "money": 1
   },
   "plan": {
-    "budgeting": 29,
+    "budgeting": 30,
     "loans": 2,
     "saving": 2
   },
   "track": {
-    "budgeting": 9
+    "budgeting": 11
   },
   "expenses": {
-    "budgeting": 15,
+    "budgeting": 17,
     "money": 2
   },
   "monthly": {
@@ -499,11 +522,11 @@
     "saving": 2
   },
   "student": {
-    "budgeting": 9,
+    "budgeting": 11,
     "loans": 15,
     "income": 13,
     "saving": 17,
-    "banking": 2,
+    "banking": 3,
     "money": 2
   },
   "manage": {
@@ -511,35 +534,38 @@
     "money": 1
   },
   "tekanyetso": {
-    "budgeting": 21
+    "budgeting": 41
   },
   "moralo": {
-    "budgeting": 11
+    "budgeting": 12
   },
   "etsa": {
-    "budgeting": 11,
-    "money": 6
+    "budgeting": 14,
+    "money": 6,
+    "banking": 3
   },
   "my": {
-    "budgeting": 32,
+    "budgeting": 36,
     "saving": 10,
     "interest": 4,
     "loans": 2,
-    "money": 5
+    "money": 5,
+    "banking": 4
   },
   "divide": {
     "budgeting": 9
   },
   "spend": {
-    "budgeting": 9,
+    "budgeting": 12,
     "saving": 2,
     "money": 2
   },
   "less": {
-    "budgeting": 11
+    "budgeting": 14
   },
   "interest": {
-    "interest": 161
+    "interest": 161,
+    "banking": 2
   },
   "rate": {
     "interest": 30,
@@ -550,7 +576,8 @@
     "banking": 5,
     "income": 2,
     "loans": 4,
-    "money": 1
+    "money": 1,
+    "budgeting": 1
   },
   "earn": {
     "interest": 15,
@@ -563,7 +590,8 @@
     "interest": 15
   },
   "phaello": {
-    "interest": 38
+    "interest": 38,
+    "banking": 3
   },
   "tswala": {
     "interest": 13
@@ -571,11 +599,13 @@
   "fumana": {
     "interest": 9,
     "income": 13,
-    "money": 1
+    "money": 1,
+    "banking": 1
   },
   "on": {
     "interest": 26,
-    "saving": 3
+    "saving": 3,
+    "budgeting": 4
   },
   "loans": {
     "interest": 7,
@@ -605,7 +635,8 @@
   },
   "pay": {
     "loans": 11,
-    "saving": 2
+    "saving": 2,
+    "banking": 1
   },
   "back": {
     "loans": 9
@@ -639,14 +670,16 @@
   "moputso": {
     "income": 15,
     "saving": 2,
-    "money": 1
+    "money": 1,
+    "budgeting": 3
   },
   "e": {
     "income": 11,
     "saving": 15,
     "interest": 6,
-    "banking": 2,
-    "money": 44
+    "banking": 11,
+    "money": 44,
+    "budgeting": 6
   },
   "kenang": {
     "income": 11,
@@ -672,7 +705,8 @@
   "as": {
     "income": 9,
     "saving": 7,
-    "money": 2
+    "money": 2,
+    "budgeting": 1
   },
   "side": {
     "income": 11,
@@ -683,42 +717,42 @@
     "money": 2
   },
   "bank": {
-    "banking": 55,
+    "banking": 72,
     "interest": 6,
     "loans": 2,
     "saving": 2
   },
   "account": {
-    "banking": 36,
+    "banking": 46,
     "interest": 4,
     "saving": 2
   },
   "open": {
-    "banking": 14
+    "banking": 18
   },
   "mobile": {
-    "banking": 22,
+    "banking": 25,
     "money": 3
   },
   "banking": {
-    "banking": 17
+    "banking": 23
   },
   "atm": {
-    "banking": 7
+    "banking": 11
   },
   "deposit": {
-    "banking": 11
+    "banking": 15
   },
   "withdraw": {
     "banking": 11
   },
   "banka": {
-    "banking": 13,
+    "banking": 29,
     "interest": 2,
     "loans": 2
   },
   "akhaonto": {
-    "banking": 13,
+    "banking": 23,
     "saving": 1
   },
   "ecocash": {
@@ -729,13 +763,13 @@
     "banking": 11
   },
   "card": {
-    "banking": 15
+    "banking": 18
   },
   "banks": {
-    "banking": 3
+    "banking": 7
   },
   "safe": {
-    "banking": 9
+    "banking": 11
   },
   "need": {
     "needs_wants": 43,
@@ -743,19 +777,23 @@
     "loans": 2,
     "banking": 2,
     "money": 5,
-    "greeting": 1
+    "greeting": 1,
+    "budgeting": 2
   },
   "vs": {
     "needs_wants": 14,
     "saving": 2,
     "income": 2,
-    "money": 2
+    "money": 2,
+    "banking": 1
   },
   "needs": {
-    "needs_wants": 19
+    "needs_wants": 19,
+    "budgeting": 2
   },
   "wants": {
-    "needs_wants": 17
+    "needs_wants": 17,
+    "budgeting": 2
   },
   "tlhoko": {
     "needs_wants": 15
@@ -764,10 +802,12 @@
     "needs_wants": 13
   },
   "litlhoko": {
-    "needs_wants": 13
+    "needs_wants": 13,
+    "budgeting": 5
   },
   "litakatso": {
-    "needs_wants": 11
+    "needs_wants": 11,
+    "budgeting": 4
   },
   "essential": {
     "needs_wants": 16
@@ -792,25 +832,27 @@
   },
   "difference": {
     "needs_wants": 9,
-    "banking": 2,
+    "banking": 3,
     "money": 1
   },
   "between": {
     "needs_wants": 9,
-    "banking": 2,
+    "banking": 3,
     "money": 1
   },
   "food": {
     "needs_wants": 7,
     "saving": 2,
-    "budgeting": 4
+    "budgeting": 5
   },
   "eng": {
     "money": 57,
     "interest": 11,
     "saving": 11,
     "income": 5,
-    "loans": 6
+    "loans": 6,
+    "budgeting": 5,
+    "banking": 22
   },
   "ea": {
     "money": 56,
@@ -818,12 +860,12 @@
     "interest": 8,
     "loans": 2,
     "needs_wants": 4,
-    "budgeting": 2,
-    "banking": 4
+    "budgeting": 22,
+    "banking": 20
   },
   "in": {
     "money": 5,
-    "banking": 2,
+    "banking": 3,
     "income": 1,
     "saving": 2
   },
@@ -841,7 +883,9 @@
     "money": 5
   },
   "best": {
-    "saving": 8
+    "saving": 8,
+    "budgeting": 1,
+    "banking": 1
   },
   "way": {
     "saving": 4
@@ -855,7 +899,7 @@
   "for": {
     "saving": 46,
     "loans": 8,
-    "budgeting": 18,
+    "budgeting": 24,
     "banking": 4,
     "money": 7,
     "interest": 3
@@ -876,7 +920,8 @@
   },
   "should": {
     "saving": 21,
-    "loans": 2
+    "loans": 2,
+    "budgeting": 1
   },
   "each": {
     "saving": 8
@@ -886,7 +931,7 @@
   },
   "start": {
     "saving": 9,
-    "budgeting": 2,
+    "budgeting": 3,
     "money": 2
   },
   "from": {
@@ -908,15 +953,17 @@
   },
   "m100": {
     "saving": 7,
-    "money": 4
+    "money": 4,
+    "budgeting": 1
   },
   "mokhoa": {
     "saving": 7,
-    "money": 1
+    "money": 1,
+    "budgeting": 2
   },
   "oa": {
     "saving": 9,
-    "budgeting": 4,
+    "budgeting": 9,
     "money": 1
   },
   "bohlokoa": {
@@ -925,11 +972,14 @@
   },
   "qala": {
     "saving": 6,
-    "money": 2
+    "money": 2,
+    "budgeting": 1
   },
   "hloka": {
     "saving": 3,
-    "money": 4
+    "money": 4,
+    "budgeting": 1,
+    "banking": 1
   },
   "challenge": {
     "saving": 2
@@ -948,7 +998,8 @@
   },
   "with": {
     "saving": 7,
-    "money": 2
+    "money": 2,
+    "budgeting": 1
   },
   "little": {
     "saving": 3
@@ -968,24 +1019,29 @@
   },
   "important": {
     "saving": 2,
-    "money": 2
+    "money": 2,
+    "budgeting": 1
   },
   "importance": {
-    "saving": 4
+    "saving": 4,
+    "budgeting": 1
   },
   "of": {
     "saving": 10,
     "loans": 2,
     "needs_wants": 4,
     "money": 6,
-    "income": 2
+    "income": 2,
+    "budgeting": 2,
+    "banking": 1
   },
   "reasons": {
     "saving": 2
   },
   "or": {
     "saving": 3,
-    "needs_wants": 8
+    "needs_wants": 8,
+    "banking": 1
   },
   "consistently": {
     "saving": 4
@@ -1004,7 +1060,9 @@
   "the": {
     "saving": 3,
     "interest": 2,
-    "money": 8
+    "money": 8,
+    "budgeting": 1,
+    "banking": 1
   },
   "future": {
     "saving": 4
@@ -1042,18 +1100,20 @@
     "greeting": 1
   },
   "daily": {
-    "saving": 2
+    "saving": 2,
+    "budgeting": 1
   },
   "weekly": {
     "saving": 2,
-    "budgeting": 2
+    "budgeting": 3
   },
   "m50": {
     "saving": 3,
     "money": 4
   },
   "m200": {
-    "saving": 5
+    "saving": 5,
+    "budgeting": 1
   },
   "phone": {
     "saving": 2
@@ -1066,38 +1126,47 @@
   },
   "transport": {
     "saving": 2,
-    "budgeting": 4
+    "budgeting": 5
   },
   "bokae": {
     "saving": 9,
-    "money": 6
+    "money": 6,
+    "banking": 4
   },
   "bolokiloeng": {
     "saving": 2
   },
   "o": {
     "saving": 5,
-    "greeting": 1
+    "greeting": 1,
+    "budgeting": 2
   },
   "motle": {
-    "saving": 3
+    "saving": 3,
+    "budgeting": 1
   },
   "nthuse": {
     "saving": 3,
-    "money": 1
+    "money": 1,
+    "budgeting": 1,
+    "banking": 1
   },
   "ka": {
     "saving": 36,
     "interest": 2,
     "greeting": 2,
-    "money": 35
+    "money": 35,
+    "budgeting": 22,
+    "banking": 8
   },
   "hobaneng": {
     "saving": 3,
-    "money": 5
+    "money": 5,
+    "budgeting": 4
   },
   "lokela": {
-    "saving": 8
+    "saving": 8,
+    "budgeting": 1
   },
   "formula": {
     "interest": 6
@@ -1113,7 +1182,8 @@
     "interest": 2
   },
   "bonolo": {
-    "interest": 2
+    "interest": 2,
+    "budgeting": 1
   },
   "will": {
     "interest": 2,
@@ -1182,10 +1252,12 @@
   },
   "out": {
     "loans": 2,
-    "money": 2
+    "money": 2,
+    "budgeting": 1
   },
   "fees": {
-    "loans": 2
+    "loans": 2,
+    "banking": 1
   },
   "personal": {
     "loans": 2
@@ -1213,7 +1285,9 @@
   "tsa": {
     "needs_wants": 4,
     "saving": 1,
-    "money": 3
+    "money": 3,
+    "budgeting": 1,
+    "banking": 1
   },
   "mehlala": {
     "needs_wants": 4
@@ -1222,7 +1296,8 @@
     "needs_wants": 4,
     "greeting": 6,
     "saving": 6,
-    "money": 13
+    "money": 13,
+    "budgeting": 9
   },
   "thuto": {
     "needs_wants": 2,
@@ -1231,7 +1306,8 @@
   },
   "kapa": {
     "needs_wants": 2,
-    "saving": 2
+    "saving": 2,
+    "banking": 2
   },
   "called": {
     "money": 4
@@ -1241,7 +1317,7 @@
   },
   "beginners": {
     "saving": 3,
-    "budgeting": 2,
+    "budgeting": 3,
     "interest": 2
   },
   "basics": {
@@ -1252,14 +1328,17 @@
   "learn": {
     "saving": 2,
     "interest": 1,
-    "money": 1
+    "money": 1,
+    "budgeting": 1
   },
   "teach": {
     "saving": 3,
-    "money": 1
+    "money": 1,
+    "budgeting": 1
   },
   "benefits": {
-    "saving": 2
+    "saving": 2,
+    "budgeting": 1
   },
   "helps": {
     "saving": 2
@@ -1278,13 +1357,13 @@
     "money": 2
   },
   "create": {
-    "budgeting": 2
+    "budgeting": 3
   },
   "making": {
     "budgeting": 2
   },
   "budgeting": {
-    "budgeting": 18
+    "budgeting": 34
   },
   "stick": {
     "budgeting": 2
@@ -1312,10 +1391,10 @@
     "budgeting": 4
   },
   "reduce": {
-    "budgeting": 4
+    "budgeting": 5
   },
   "cut": {
-    "budgeting": 4
+    "budgeting": 5
   },
   "down": {
     "budgeting": 2
@@ -1327,7 +1406,7 @@
     "banking": 2
   },
   "use": {
-    "banking": 2,
+    "banking": 3,
     "money": 4
   },
   "services": {
@@ -1340,23 +1419,24 @@
     "banking": 2
   },
   "an": {
-    "banking": 4,
+    "banking": 6,
     "saving": 2
   },
   "debit": {
-    "banking": 4
+    "banking": 7
   },
   "sebetsa": {
-    "banking": 2,
+    "banking": 5,
     "interest": 2,
-    "money": 2
+    "money": 2,
+    "budgeting": 1
   },
   "kenya": {
-    "banking": 2,
+    "banking": 3,
     "saving": 1
   },
   "bankeng": {
-    "banking": 4,
+    "banking": 13,
     "saving": 4
   },
   "nt?a": {
@@ -1411,7 +1491,8 @@
     "saving": 2
   },
   "before": {
-    "saving": 2
+    "saving": 2,
+    "budgeting": 1
   },
   "yourself": {
     "saving": 2
@@ -1423,7 +1504,8 @@
     "saving": 2
   },
   "m500": {
-    "saving": 7
+    "saving": 7,
+    "budgeting": 3
   },
   "goals": {
     "saving": 2
@@ -1432,7 +1514,8 @@
     "saving": 2
   },
   "method": {
-    "saving": 4
+    "saving": 4,
+    "budgeting": 1
   },
   "m20": {
     "money": 2
@@ -1453,10 +1536,10 @@
     "money": 2
   },
   "rera": {
-    "budgeting": 2
+    "budgeting": 19
   },
   "tracking": {
-    "budgeting": 2
+    "budgeting": 3
   },
   "earned": {
     "interest": 2
@@ -1474,12 +1557,14 @@
     "banking": 2
   },
   "bula": {
-    "banking": 2,
+    "banking": 6,
     "saving": 1
   },
   "phapang": {
     "needs_wants": 2,
-    "money": 3
+    "money": 3,
+    "budgeting": 1,
+    "banking": 3
   },
   "pakeng": {
     "needs_wants": 2
@@ -1682,15 +1767,20 @@
   },
   "bolela": {
     "saving": 2,
-    "money": 2
+    "money": 2,
+    "budgeting": 1
   },
   "ithuta": {
     "saving": 1,
-    "money": 2
+    "money": 2,
+    "budgeting": 1,
+    "banking": 1
   },
   "nthute": {
     "saving": 1,
-    "money": 1
+    "money": 1,
+    "budgeting": 1,
+    "banking": 1
   },
   "mpotse": {
     "saving": 1,
@@ -1703,11 +1793,13 @@
     "saving": 3
   },
   "m2000": {
-    "saving": 2
+    "saving": 2,
+    "budgeting": 3
   },
   "m1000": {
     "saving": 4,
-    "money": 1
+    "money": 1,
+    "budgeting": 3
   },
   "hokae": {
     "saving": 3,
@@ -1715,15 +1807,19 @@
   },
   "bohlokwa": {
     "saving": 1,
-    "money": 3
+    "money": 3,
+    "budgeting": 2
   },
   "sebelisa": {
     "saving": 2,
-    "money": 8
+    "money": 8,
+    "budgeting": 4,
+    "banking": 2
   },
   "mekhoa": {
     "saving": 1,
-    "money": 1
+    "money": 1,
+    "budgeting": 2
   },
   "likeletso": {
     "saving": 1
@@ -1739,10 +1835,12 @@
     "saving": 5
   },
   "stipend": {
-    "saving": 4
+    "saving": 4,
+    "budgeting": 3
   },
   "bursary": {
-    "saving": 3
+    "saving": 3,
+    "budgeting": 3
   },
   "monyane": {
     "saving": 2
@@ -1752,7 +1850,9 @@
   },
   "efe": {
     "saving": 1,
-    "money": 3
+    "money": 3,
+    "budgeting": 1,
+    "banking": 3
   },
   "20%": {
     "saving": 1
@@ -1782,10 +1882,13 @@
     "saving": 5
   },
   "thusa": {
-    "saving": 3
+    "saving": 3,
+    "budgeting": 1
   },
   "molemo": {
-    "saving": 2
+    "saving": 2,
+    "budgeting": 2,
+    "banking": 1
   },
   "ofe": {
     "saving": 1
@@ -1832,16 +1935,20 @@
     "saving": 1
   },
   "beke": {
-    "saving": 2
+    "saving": 2,
+    "budgeting": 3
   },
   "khoeli": {
-    "saving": 5
+    "saving": 5,
+    "budgeting": 8
   },
   "selemo": {
-    "saving": 1
+    "saving": 1,
+    "budgeting": 1
   },
   "letsatsi": {
-    "saving": 1
+    "saving": 1,
+    "budgeting": 2
   },
   "leng": {
     "saving": 2
@@ -1850,7 +1957,8 @@
     "saving": 1
   },
   "lapeng": {
-    "saving": 3
+    "saving": 3,
+    "banking": 2
   },
   "moo": {
     "saving": 1
@@ -1863,7 +1971,8 @@
     "money": 2
   },
   "fono": {
-    "saving": 1
+    "saving": 1,
+    "banking": 1
   },
   "koloi": {
     "saving": 1
@@ -1887,7 +1996,8 @@
   },
   "define": {
     "saving": 1,
-    "money": 1
+    "money": 1,
+    "budgeting": 2
   },
   "easy": {
     "saving": 1,
@@ -1906,13 +2016,16 @@
     "saving": 1
   },
   "home": {
-    "saving": 1
+    "saving": 1,
+    "banking": 2
   },
   "low": {
     "saving": 1
   },
   "hw": {
-    "saving": 1
+    "saving": 1,
+    "budgeting": 1,
+    "banking": 1
   },
   "saave": {
     "saving": 1
@@ -1969,7 +2082,8 @@
     "money": 1
   },
   "tseba": {
-    "money": 2
+    "money": 2,
+    "banking": 1
   },
   "mesebetsi": {
     "money": 3
@@ -2023,7 +2137,8 @@
     "money": 1
   },
   "fela": {
-    "money": 5
+    "money": 5,
+    "budgeting": 1
   },
   "kapele": {
     "money": 3
@@ -2032,7 +2147,8 @@
     "money": 1
   },
   "ha": {
-    "money": 8
+    "money": 8,
+    "budgeting": 1
   },
   "tsela": {
     "money": 1
@@ -2086,7 +2202,8 @@
     "money": 1
   },
   "runs": {
-    "money": 1
+    "money": 1,
+    "budgeting": 1
   },
   "finishing": {
     "money": 1
@@ -2191,7 +2308,8 @@
     "money": 1
   },
   "am": {
-    "money": 3
+    "money": 3,
+    "banking": 1
   },
   "broke": {
     "money": 4
@@ -2227,7 +2345,8 @@
     "money": 1
   },
   "tshwarelle": {
-    "money": 1
+    "money": 1,
+    "budgeting": 1
   },
   "too": {
     "money": 1
@@ -2239,10 +2358,12 @@
     "money": 1
   },
   "stop": {
-    "money": 1
+    "money": 1,
+    "budgeting": 1
   },
   "always": {
-    "money": 1
+    "money": 1,
+    "budgeting": 1
   },
   "everything": {
     "money": 1
@@ -2254,13 +2375,16 @@
     "money": 1
   },
   "latela": {
-    "money": 3
+    "money": 3,
+    "budgeting": 1
   },
   "litshenyehelo": {
-    "money": 1
+    "money": 1,
+    "budgeting": 9
   },
   "bolokehile": {
-    "money": 1
+    "money": 1,
+    "banking": 2
   },
   "ntho": {
     "money": 1
@@ -2432,5 +2556,258 @@
   },
   "test": {
     "money": 1
+  },
+  "hlophisa": {
+    "budgeting": 2
+  },
+  "arola": {
+    "budgeting": 4
+  },
+  "tshebediso": {
+    "budgeting": 2
+  },
+  "zero": {
+    "budgeting": 2
+  },
+  "based": {
+    "budgeting": 2
+  },
+  "ngola": {
+    "budgeting": 2
+  },
+  "app": {
+    "budgeting": 1
+  },
+  "buka": {
+    "budgeting": 1
+  },
+  "envelope": {
+    "budgeting": 3
+  },
+  "system": {
+    "budgeting": 2
+  },
+  "lienfelopo": {
+    "budgeting": 3
+  },
+  "li": {
+    "budgeting": 2,
+    "banking": 3
+  },
+  "pele": {
+    "budgeting": 2
+  },
+  "beha": {
+    "budgeting": 1
+  },
+  "feta": {
+    "budgeting": 3
+  },
+  "fokotsa": {
+    "budgeting": 8
+  },
+  "boithabiso": {
+    "budgeting": 2
+  },
+  "lijo": {
+    "budgeting": 1
+  },
+  "lipalangwang": {
+    "budgeting": 1
+  },
+  "m3000": {
+    "budgeting": 2
+  },
+  "m5000": {
+    "budgeting": 1
+  },
+  "methods": {
+    "budgeting": 1
+  },
+  "expense": {
+    "budgeting": 1
+  },
+  "overspend": {
+    "budgeting": 2
+  },
+  "overspending": {
+    "budgeting": 1
+  },
+  "costs": {
+    "budgeting": 1
+  },
+  "entertainment": {
+    "budgeting": 1
+  },
+  "yearly": {
+    "budgeting": 1
+  },
+  "budjet": {
+    "budgeting": 1
+  },
+  "budgett": {
+    "budgeting": 1
+  },
+  "bujet": {
+    "budgeting": 1
+  },
+  "tekanyetsoo": {
+    "budgeting": 1
+  },
+  "tekanyeto": {
+    "budgeting": 1
+  },
+  "tekanetso": {
+    "budgeting": 1
+  },
+  "budget??": {
+    "budgeting": 1
+  },
+  "tekanyetso??": {
+    "budgeting": 1
+  },
+  "budgettin": {
+    "budgeting": 1
+  },
+  "libanka": {
+    "banking": 5
+  },
+  "withdrawal": {
+    "banking": 1
+  },
+  "ntsha": {
+    "banking": 2
+  },
+  "pin": {
+    "banking": 3
+  },
+  "lebala": {
+    "banking": 2
+  },
+  "karete": {
+    "banking": 1
+  },
+  "credit": {
+    "banking": 4
+  },
+  "romella": {
+    "banking": 2
+  },
+  "transfer": {
+    "banking": 2
+  },
+  "hlahloba": {
+    "banking": 1
+  },
+  "balance": {
+    "banking": 5
+  },
+  "overdraft": {
+    "banking": 3
+  },
+  "fixed": {
+    "banking": 3
+  },
+  "litefiso": {
+    "banking": 1
+  },
+  "lefisa": {
+    "banking": 1
+  },
+  "lefa": {
+    "banking": 1
+  },
+  "charges": {
+    "banking": 1
+  },
+  "kgetha": {
+    "banking": 1
+  },
+  "bapisa": {
+    "banking": 1
+  },
+  "baithuti": {
+    "banking": 1
+  },
+  "cheque": {
+    "banking": 3
+  },
+  "current": {
+    "banking": 1
+  },
+  "central": {
+    "banking": 2
+  },
+  "kgolo": {
+    "banking": 1
+  },
+  "cbl": {
+    "banking": 2
+  },
+  "fana": {
+    "banking": 1
+  },
+  "tshaba": {
+    "banking": 2
+  },
+  "utswa": {
+    "banking": 2
+  },
+  "two": {
+    "banking": 1
+  },
+  "factor": {
+    "banking": 1
+  },
+  "authentication": {
+    "banking": 1
+  },
+  "sireletsa": {
+    "banking": 2
+  },
+  "password": {
+    "banking": 3
+  },
+  "check": {
+    "banking": 1
+  },
+  "charge": {
+    "banking": 1
+  },
+  "which": {
+    "banking": 1
+  },
+  "compare": {
+    "banking": 1
+  },
+  "scared": {
+    "banking": 1
+  },
+  "protect": {
+    "banking": 1
+  },
+  "forgot": {
+    "banking": 1
+  },
+  "banke": {
+    "banking": 1
+  },
+  "bankaa": {
+    "banking": 1
+  },
+  "akhaunta": {
+    "banking": 1
+  },
+  "akhaonto??": {
+    "banking": 1
+  },
+  "bank??": {
+    "banking": 1
+  },
+  "banka??": {
+    "banking": 1
+  },
+  "acc": {
+    "banking": 1
   }
 }
