@@ -185,6 +185,12 @@ export default function SelibaSaTsebo() {
                 {filtered.length} material{filtered.length !== 1 ? 's' : ''}{' '}
                 available
               </span>
+              <Link
+                to="/student-zone/seliba-sa-tsebo/upload"
+                className="seliba-upload-btn"
+              >
+                ⬆ Upload Material
+              </Link>
             </div>
 
             {filtered.length === 0 ? (
@@ -192,8 +198,15 @@ export default function SelibaSaTsebo() {
                 <h3>Nothing here yet</h3>
                 <p>
                   No study materials have been shared for these filters. Be the
-                  first to contribute — upload a PDF next session.
+                  first to contribute — upload a PDF and share what you know.
                 </p>
+                <Link
+                  to="/student-zone/seliba-sa-tsebo/upload"
+                  className="seliba-upload-btn"
+                  style={{ display: 'inline-block', marginTop: 20 }}
+                >
+                  ⬆ Upload the First Material
+                </Link>
               </div>
             ) : (
               <div className="seliba-grid">
