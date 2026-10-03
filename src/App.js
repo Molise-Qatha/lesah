@@ -35,6 +35,7 @@ import KopanangTest from './pages/animation-lab/KopanangTest';
 import SelibaSaTsebo from './pages/SelibaSaTsebo';
 import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
 import SelibaUpload from './pages/seliba/SelibaUpload';
+import SelibaAdminQueue from './pages/seliba/SelibaAdminQueue';
 
 import './App.css';
 
@@ -124,6 +125,7 @@ function App() {
           {/* ✅ Seliba sa Tsebo — study materials */}
           <Route path="/student-zone/seliba-sa-tsebo" element={<SelibaSaTsebo />} />
           <Route path="/student-zone/seliba-sa-tsebo/upload" element={<SelibaUpload />} />
+          <Route path="/student-zone/seliba-sa-tsebo/admin" element={<SelibaAdminQueue />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
