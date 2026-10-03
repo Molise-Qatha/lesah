@@ -37,7 +37,7 @@ import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
 
 import './App.css';
 
-// 🛠️ NEW: A layout wrapper to hide Header/Footer ONLY on specific pages
+// 🛠️ Layout wrapper to hide Header/Footer ONLY on specific pages
 function AppLayout({ children }) {
   const location = useLocation();
   const isSceneTest = location.pathname === '/animation-lab/scene01-camera-test';
@@ -86,7 +86,6 @@ function App() {
 
   return (
     <Router>
-      {/* 🛠️ We wrap the whole app in the AppLayout */}
       <AppLayout>
         <Routes>
           {/* Home Page */}
@@ -95,7 +94,6 @@ function App() {
           {/* Animation Lab — UNLISTED development routes */}
           <Route path="/animation-lab" element={<AnimationLab />} />
           <Route path="/animation-lab/kopanang" element={<KopanangTest />} />
-          {/* 🛠️ This one now runs inside AppLayout, so Header/Footer are hidden */}
           <Route path="/animation-lab/scene01-camera-test" element={<Scene01CameraTest />} />
 
           {/* Service Pages */}
@@ -120,6 +118,9 @@ function App() {
           <Route path="/student-zone/sudoku" element={<SudokuGame />} />
           <Route path="/student-zone/campus-map" element={<CampusMap />} />
           <Route path="/student-zone/hokalla" element={<HoKallaEntry />} />
+
+          {/* ✅ Seliba sa Tsebo — study materials */}
+          <Route path="/student-zone/seliba-sa-tsebo" element={<SelibaSaTsebo />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
@@ -162,4 +163,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
