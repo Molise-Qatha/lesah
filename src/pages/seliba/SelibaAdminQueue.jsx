@@ -1,53 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import './selibaStyles.css';
 
-const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL || 'https://tsfnvmfioscjlffgwgx.supabase.co';
-const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = 'https://tsfnvmfioscjlffgwgx.supabase.co';
 
 export default function SelibaAdminQueue() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [authed, setAuthed] = useState(false);
+  const [session, setSession] = useState(null);
   const [pending, setPending] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [working, setWorking] = useState(null);
   const [expanded, setExpanded] = useState(null);
 
-  const loadPending = async (pwd) => {
+  // Check for existing session on load
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) loadPending();
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) loadPending();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const loadPending = async () => {
     setLoading(true);
     setError('');
-    const { data, error: rpcError } = await supabase.rpc('get_pending_materials', {
-      admin_password: pwd,
-    });
+    const { data, error: fetchError } = await supabase
+      .from('materials')
+      .select('*')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: true });
+
     setLoading(false);
 
-    if (rpcError) {
-      setError('Wrong password, or you do not have access.');
-      return false;
+    if (fetchError) {
+      setError('Could not load pending materials: ' + fetchError.message);
+      return;
     }
     setPending(data || []);
-    return true;
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const ok = await loadPending(password);
-    if (ok) setAuthed(true);
+    setError('');
+    setLoading(true);
+
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
+    setLoading(false);
+    if (authError) {
+      setError(authError.message);
+      return;
+    }
+    setPassword('');
+    // Session state change triggers loadPending via the effect above
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+    setPending([]);
   };
 
   const handleApprove = async (id) => {
     setWorking(id);
-    const { data } = await supabase.rpc('approve_material', {
-      material_id: id,
-      admin_password: password,
-    });
+    const { error: updateError } = await supabase
+      .from('materials')
+      .update({
+        status: 'approved',
+        approved_at: new Date().toISOString(),
+        approved_by: session?.user?.email || 'admin',
+      })
+      .eq('id', id);
+
     setWorking(null);
-    if (data?.success) {
-      setPending((prev) => prev.filter((m) => m.id !== id));
+    if (updateError) {
+      alert('Approval failed: ' + updateError.message);
     } else {
-      alert('Approval failed: ' + (data?.error || 'Unknown error'));
+      setPending((prev) => prev.filter((m) => m.id !== id));
     }
   };
 
@@ -55,16 +96,21 @@ export default function SelibaAdminQueue() {
     const reason = window.prompt('Reason for rejection (optional):');
     if (reason === null) return; // cancelled
     setWorking(id);
-    const { data } = await supabase.rpc('reject_material', {
-      material_id: id,
-      admin_password: password,
-      rejection_reason: reason || null,
-    });
+    const { error: updateError } = await supabase
+      .from('materials')
+      .update({
+        status: 'rejected',
+        rejection_reason: reason || null,
+        approved_at: new Date().toISOString(),
+        approved_by: session?.user?.email || 'admin',
+      })
+      .eq('id', id);
+
     setWorking(null);
-    if (data?.success) {
-      setPending((prev) => prev.filter((m) => m.id !== id));
+    if (updateError) {
+      alert('Rejection failed: ' + updateError.message);
     } else {
-      alert('Rejection failed: ' + (data?.error || 'Unknown error'));
+      setPending((prev) => prev.filter((m) => m.id !== id));
     }
   };
 
@@ -72,7 +118,7 @@ export default function SelibaAdminQueue() {
     `${SUPABASE_URL}/storage/v1/object/materials/${filePath}`;
 
   // ── Login Screen ──
-  if (!authed) {
+  if (!session) {
     return (
       <div className="seliba-page">
         <div className="seliba-container">
@@ -81,10 +127,10 @@ export default function SelibaAdminQueue() {
             <p className="sesotho-subtitle">Seliba sa Tsebo — Review Queue</p>
             <form onSubmit={handleLogin} style={{ marginTop: 24 }}>
               <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Admin password"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Admin email"
                 style={{
                   width: '100%',
                   padding: '12px 14px',
@@ -95,14 +141,31 @@ export default function SelibaAdminQueue() {
                   fontSize: 14,
                   marginBottom: 12,
                 }}
-                autoFocus
+                required
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                style={{
+                  width: '100%',
+                  padding: '12px 14px',
+                  background: '#0a0f1a',
+                  border: '1px solid #2a2a4e',
+                  borderRadius: 6,
+                  color: '#fff',
+                  fontSize: 14,
+                  marginBottom: 12,
+                }}
+                required
               />
               <button
                 type="submit"
                 className="seliba-download-btn"
                 disabled={loading}
               >
-                {loading ? 'Checking…' : 'Unlock Queue'}
+                {loading ? 'Signing in…' : 'Sign In'}
               </button>
               {error && <div className="seliba-form-error" style={{ marginTop: 12 }}>{error}</div>}
             </form>
@@ -116,32 +179,50 @@ export default function SelibaAdminQueue() {
   return (
     <div className="seliba-page">
       <div className="seliba-container">
-        <Link to="/student-zone/seliba-sa-tsebo" style={{ color: '#a0a0c0', fontSize: 14, textDecoration: 'none' }}>
-          ← Back to Seliba sa Tsebo
-        </Link>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Link to="/student-zone/seliba-sa-tsebo" style={{ color: '#a0a0c0', fontSize: 14, textDecoration: 'none' }}>
+            ← Back to Seliba sa Tsebo
+          </Link>
+          <button
+            onClick={handleSignOut}
+            style={{
+              background: 'transparent',
+              border: '1px solid #533483',
+              color: '#a0a0c0',
+              padding: '6px 14px',
+              borderRadius: 6,
+              cursor: 'pointer',
+              fontSize: 13,
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
 
         <div className="seliba-hero" style={{ marginTop: 20 }}>
           <h1>Review Queue</h1>
-          <p className="sesotho-subtitle">{pending.length} material{pending.length !== 1 ? 's' : ''} pending</p>
+          <p className="sesotho-subtitle">
+            {pending.length} material{pending.length !== 1 ? 's' : ''} pending
+          </p>
           <p>
-            Preview each submission and choose to approve or reject. Approved
-            materials appear immediately on Seliba sa Tsebo.
+            Signed in as <strong>{session.user.email}</strong>. Preview each
+            submission and choose to approve or reject.
           </p>
         </div>
 
-        {pending.length === 0 ? (
+        {loading && <div className="seliba-loading">Loading queue…</div>}
+
+        {!loading && pending.length === 0 && (
           <div className="seliba-empty">
             <h3>All caught up</h3>
             <p>No pending submissions right now.</p>
           </div>
-        ) : (
+        )}
+
+        {!loading && pending.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {pending.map((m) => (
-              <div
-                key={m.id}
-                className="seliba-card"
-                style={{ padding: 24 }}
-              >
+              <div key={m.id} className="seliba-card" style={{ padding: 24 }}>
                 <div className="seliba-card-badges">
                   <span className={`seliba-badge ${m.subject === 'Law' ? 'subject-law' : m.subject === 'Science' ? 'subject-science' : 'subject-other'}`}>
                     {m.subject}
@@ -191,8 +272,7 @@ export default function SelibaAdminQueue() {
                 {expanded === m.id && (
                   <div style={{ marginTop: 16, borderTop: '1px solid #2a2a4e', paddingTop: 16 }}>
                     <p style={{ color: '#a0a0c0', fontSize: 12, marginBottom: 8 }}>
-                      If the preview doesn't load below, open it in a new tab:
-                      {' '}
+                      If the preview doesn't load, open it in a new tab:{' '}
                       <a
                         href={previewUrl(m.file_path)}
                         target="_blank"
