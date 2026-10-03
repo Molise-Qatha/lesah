@@ -13,6 +13,7 @@ export default function SelibaAdminQueue() {
   const [working, setWorking] = useState(null);
   const [expanded, setExpanded] = useState(null);
   const [previewUrls, setPreviewUrls] = useState({});
+  const [previewLoading, setPreviewLoading] = useState(null);
 
   // Check for existing session on load
   useEffect(() => {
@@ -28,6 +29,15 @@ export default function SelibaAdminQueue() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Clean up blob URLs when leaving
+  useEffect(() => {
+    return () => {
+      Object.values(previewUrls).forEach((url) => {
+        if (url && url.startsWith('blob:')) URL.revokeObjectURL(url);
+      });
+    };
+  }, [previewUrls]);
 
   const loadPending = async () => {
     setLoading(true);
@@ -66,11 +76,14 @@ export default function SelibaAdminQueue() {
   };
 
   const handleSignOut = async () => {
+    Object.values(previewUrls).forEach((url) => {
+      if (url && url.startsWith('blob:')) URL.revokeObjectURL(url);
+    });
+    setPreviewUrls({});
     await supabase.auth.signOut();
     setSession(null);
     setPending([]);
     setExpanded(null);
-    setPreviewUrls({});
   };
 
   const handleApprove = async (id) => {
@@ -114,22 +127,35 @@ export default function SelibaAdminQueue() {
     }
   };
 
+  // Download PDF into a blob URL — no JWT, no expiration
   const openPreview = async (material) => {
+    // Toggle off
     if (expanded === material.id) {
       setExpanded(null);
       return;
     }
 
-    const { data, error: signError } = await supabase.storage
-      .from('materials')
-      .createSignedUrl(material.file_path, 300);
-
-    if (signError) {
-      alert('Could not load preview: ' + signError.message);
+    // Already loaded, just show it
+    if (previewUrls[material.id]) {
+      setExpanded(material.id);
       return;
     }
 
-    setPreviewUrls((prev) => ({ ...prev, [material.id]: data.signedUrl }));
+    setPreviewLoading(material.id);
+
+    const { data, error: downloadError } = await supabase.storage
+      .from('materials')
+      .download(material.file_path);
+
+    setPreviewLoading(null);
+
+    if (downloadError) {
+      alert('Could not load preview: ' + downloadError.message);
+      return;
+    }
+
+    const blobUrl = URL.createObjectURL(data);
+    setPreviewUrls((prev) => ({ ...prev, [material.id]: blobUrl }));
     setExpanded(material.id);
   };
 
@@ -176,11 +202,7 @@ export default function SelibaAdminQueue() {
                 }}
                 required
               />
-              <button
-                type="submit"
-                className="seliba-download-btn"
-                disabled={loading}
-              >
+              <button type="submit" className="seliba-download-btn" disabled={loading}>
                 {loading ? 'Signing in…' : 'Sign In'}
               </button>
               {error && (
@@ -280,9 +302,14 @@ export default function SelibaAdminQueue() {
                   <button
                     className="test-btn"
                     onClick={() => openPreview(m)}
+                    disabled={previewLoading === m.id}
                     style={{ flex: 1 }}
                   >
-                    {expanded === m.id ? '⬇ Hide Preview' : '👁 Preview PDF'}
+                    {previewLoading === m.id
+                      ? '⏳ Loading…'
+                      : expanded === m.id
+                      ? '⬇ Hide Preview'
+                      : '👁 Preview PDF'}
                   </button>
                   <button
                     className="seliba-download-btn"
@@ -305,14 +332,14 @@ export default function SelibaAdminQueue() {
                 {expanded === m.id && previewUrls[m.id] && (
                   <div style={{ marginTop: 16, borderTop: '1px solid #2a2a4e', paddingTop: 16 }}>
                     <p style={{ color: '#a0a0c0', fontSize: 12, marginBottom: 8 }}>
-                      If the preview doesn't load below, open it in a new tab:{' '}
+                      Can't see it below?{' '}
                       <a
                         href={previewUrls[m.id]}
                         target="_blank"
                         rel="noreferrer"
                         style={{ color: '#e94560' }}
                       >
-                        Open PDF
+                        Open in new tab
                       </a>
                     </p>
                     <iframe
