@@ -34,6 +34,7 @@ import AnimationLab from './pages/animation-lab/AnimationLab';
 import KopanangTest from './pages/animation-lab/KopanangTest';
 import SelibaSaTsebo from './pages/SelibaSaTsebo';
 import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
+import SelibaUpload from './pages/seliba/SelibaUpload';
 
 import './App.css';
 
@@ -107,6 +108,7 @@ function App() {
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/financial-literacy" element={<FinancialLiteracy />} />
 
+
           {/* Student Zone */}
           <Route path="/student-zone" element={<StudentZone />} />
 
@@ -121,6 +123,7 @@ function App() {
 
           {/* ✅ Seliba sa Tsebo — study materials */}
           <Route path="/student-zone/seliba-sa-tsebo" element={<SelibaSaTsebo />} />
+          <Route path="/student-zone/seliba-sa-tsebo/upload" element={<SelibaUpload />} />
 
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
