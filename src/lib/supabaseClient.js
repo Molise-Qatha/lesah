@@ -7,6 +7,6 @@ import { createClient } from '@supabase/supabase-js';
 // Row Level Security (RLS) on the database enforces real protection.
 
 const SUPABASE_URL = 'https://tsfnvmfioscjlffgwgx.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzZmxudm1maW9zY2psZmZnd2d4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzQ5MTMsImV4cCI6MjEwNjU1MDkxM30.DOCrUOUHVEcUVNJpzv85HyzqOkAe2aDaVo1DX__J2lw';
+const SUPABASE_ANON_KEY = 'sb_publishable_ZLCe55l4OQ4k7VBSYQLIXQ_7veDWNp9';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
