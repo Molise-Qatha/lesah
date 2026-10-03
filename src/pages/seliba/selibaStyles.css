@@ -1,0 +1,248 @@
+/* ============================================
+   Seliba sa Tsebo — Study Material Sharing
+   ============================================ */
+
+.seliba-page {
+  min-height: 100vh;
+  background: #0a0f1a;
+  color: #ffffff;
+  padding: 40px 20px 80px;
+}
+
+.seliba-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Hero ── */
+.seliba-hero {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 12px;
+  border: 1px solid #2a2a4e;
+}
+
+.seliba-hero h1 {
+  font-size: 42px;
+  margin: 0 0 12px;
+  color: #ffd700;
+  letter-spacing: 1px;
+}
+
+.seliba-hero .sesotho-subtitle {
+  font-size: 16px;
+  color: #a0a0c0;
+  margin: 0 0 8px;
+  font-style: italic;
+}
+
+.seliba-hero p {
+  max-width: 640px;
+  margin: 0 auto;
+  color: #c0c0d0;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* ── Filter bar ── */
+.seliba-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #12172a;
+  border-radius: 10px;
+  border: 1px solid #2a2a4e;
+  align-items: flex-end;
+}
+
+.seliba-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.seliba-filter-group label {
+  font-size: 12px;
+  color: #a0a0c0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.seliba-filter-group input,
+.seliba-filter-group select {
+  padding: 10px 12px;
+  background: #0a0f1a;
+  border: 1px solid #2a2a4e;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.seliba-filter-group input:focus,
+.seliba-filter-group select:focus {
+  outline: none;
+  border-color: #e94560;
+}
+
+/* ── Results info ── */
+.seliba-results-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #a0a0c0;
+  font-size: 14px;
+}
+
+/* ── Grid of cards ── */
+.seliba-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* ── File card ── */
+.seliba-card {
+  background: #12172a;
+  border: 1px solid #2a2a4e;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.seliba-card:hover {
+  transform: translateY(-3px);
+  border-color: #e94560;
+}
+
+.seliba-card-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.seliba-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.seliba-badge.subject-law {
+  background: #4a1a3a;
+  color: #ff8fc0;
+}
+
+.seliba-badge.subject-science {
+  background: #1a3a4a;
+  color: #8fd0ff;
+}
+
+.seliba-badge.subject-other {
+  background: #2a2a3a;
+  color: #c0c0d0;
+}
+
+.seliba-badge.year {
+  background: #2a1a4a;
+  color: #c0a0ff;
+}
+
+.seliba-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.seliba-card .card-description {
+  color: #a0a0c0;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.seliba-card .card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #7070a0;
+  padding-top: 10px;
+  border-top: 1px solid #2a2a4e;
+}
+
+.seliba-download-btn {
+  background: #e94560;
+  color: #ffffff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+}
+
+.seliba-download-btn:hover {
+  background: #c73450;
+}
+
+.seliba-download-btn:disabled {
+  background: #4a4a5a;
+  cursor: wait;
+}
+
+/* ── States ── */
+.seliba-loading,
+.seliba-empty,
+.seliba-error {
+  text-align: center;
+  padding: 80px 20px;
+  color: #a0a0c0;
+}
+
+.seliba-loading {
+  font-size: 16px;
+}
+
+.seliba-empty h3 {
+  color: #ffffff;
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+.seliba-empty p {
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.seliba-error {
+  color: #ff8090;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .seliba-hero h1 {
+    font-size: 30px;
+  }
+
+  .seliba-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -32,6 +32,7 @@ import ProviderProfile from './pages/ProviderProfile';
 import HoKallaEntry from './pages/HoKallaEntry';
 import AnimationLab from './pages/animation-lab/AnimationLab';
 import KopanangTest from './pages/animation-lab/KopanangTest';
+import SelibaSaTsebo from './pages/SelibaSaTsebo';
 import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
 
 import './App.css';
