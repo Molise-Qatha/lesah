@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import './selibaStyles.css';
 
-const SUPABASE_URL = 'https://tsfnvmfioscjlffgwgx.supabase.co';
-
 export default function SelibaAdminQueue() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +12,7 @@ export default function SelibaAdminQueue() {
   const [error, setError] = useState('');
   const [working, setWorking] = useState(null);
   const [expanded, setExpanded] = useState(null);
+  const [previewUrls, setPreviewUrls] = useState({});
 
   // Check for existing session on load
   useEffect(() => {
@@ -64,13 +63,14 @@ export default function SelibaAdminQueue() {
       return;
     }
     setPassword('');
-    // Session state change triggers loadPending via the effect above
   };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setSession(null);
     setPending([]);
+    setExpanded(null);
+    setPreviewUrls({});
   };
 
   const handleApprove = async (id) => {
@@ -94,7 +94,7 @@ export default function SelibaAdminQueue() {
 
   const handleReject = async (id) => {
     const reason = window.prompt('Reason for rejection (optional):');
-    if (reason === null) return; // cancelled
+    if (reason === null) return;
     setWorking(id);
     const { error: updateError } = await supabase
       .from('materials')
@@ -114,8 +114,24 @@ export default function SelibaAdminQueue() {
     }
   };
 
-  const previewUrl = (filePath) =>
-    `${SUPABASE_URL}/storage/v1/object/materials/${filePath}`;
+  const openPreview = async (material) => {
+    if (expanded === material.id) {
+      setExpanded(null);
+      return;
+    }
+
+    const { data, error: signError } = await supabase.storage
+      .from('materials')
+      .createSignedUrl(material.file_path, 300);
+
+    if (signError) {
+      alert('Could not load preview: ' + signError.message);
+      return;
+    }
+
+    setPreviewUrls((prev) => ({ ...prev, [material.id]: data.signedUrl }));
+    setExpanded(material.id);
+  };
 
   // ── Login Screen ──
   if (!session) {
@@ -167,7 +183,11 @@ export default function SelibaAdminQueue() {
               >
                 {loading ? 'Signing in…' : 'Sign In'}
               </button>
-              {error && <div className="seliba-form-error" style={{ marginTop: 12 }}>{error}</div>}
+              {error && (
+                <div className="seliba-form-error" style={{ marginTop: 12 }}>
+                  {error}
+                </div>
+              )}
             </form>
           </div>
         </div>
@@ -180,7 +200,10 @@ export default function SelibaAdminQueue() {
     <div className="seliba-page">
       <div className="seliba-container">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link to="/student-zone/seliba-sa-tsebo" style={{ color: '#a0a0c0', fontSize: 14, textDecoration: 'none' }}>
+          <Link
+            to="/student-zone/seliba-sa-tsebo"
+            style={{ color: '#a0a0c0', fontSize: 14, textDecoration: 'none' }}
+          >
             ← Back to Seliba sa Tsebo
           </Link>
           <button
@@ -224,11 +247,21 @@ export default function SelibaAdminQueue() {
             {pending.map((m) => (
               <div key={m.id} className="seliba-card" style={{ padding: 24 }}>
                 <div className="seliba-card-badges">
-                  <span className={`seliba-badge ${m.subject === 'Law' ? 'subject-law' : m.subject === 'Science' ? 'subject-science' : 'subject-other'}`}>
+                  <span
+                    className={`seliba-badge ${
+                      m.subject === 'Law'
+                        ? 'subject-law'
+                        : m.subject === 'Science'
+                        ? 'subject-science'
+                        : 'subject-other'
+                    }`}
+                  >
                     {m.subject}
                   </span>
                   <span className="seliba-badge year">{m.year_level}</span>
-                  {m.course_code && <span className="seliba-badge year">{m.course_code}</span>}
+                  {m.course_code && (
+                    <span className="seliba-badge year">{m.course_code}</span>
+                  )}
                 </div>
 
                 <h3>{m.title}</h3>
@@ -246,7 +279,7 @@ export default function SelibaAdminQueue() {
                 <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
                   <button
                     className="test-btn"
-                    onClick={() => setExpanded(expanded === m.id ? null : m.id)}
+                    onClick={() => openPreview(m)}
                     style={{ flex: 1 }}
                   >
                     {expanded === m.id ? '⬇ Hide Preview' : '👁 Preview PDF'}
@@ -269,12 +302,12 @@ export default function SelibaAdminQueue() {
                   </button>
                 </div>
 
-                {expanded === m.id && (
+                {expanded === m.id && previewUrls[m.id] && (
                   <div style={{ marginTop: 16, borderTop: '1px solid #2a2a4e', paddingTop: 16 }}>
                     <p style={{ color: '#a0a0c0', fontSize: 12, marginBottom: 8 }}>
-                      If the preview doesn't load, open it in a new tab:{' '}
+                      If the preview doesn't load below, open it in a new tab:{' '}
                       <a
-                        href={previewUrl(m.file_path)}
+                        href={previewUrls[m.id]}
                         target="_blank"
                         rel="noreferrer"
                         style={{ color: '#e94560' }}
@@ -284,7 +317,7 @@ export default function SelibaAdminQueue() {
                     </p>
                     <iframe
                       title={`preview-${m.id}`}
-                      src={previewUrl(m.file_path)}
+                      src={previewUrls[m.id]}
                       style={{
                         width: '100%',
                         height: 600,
