@@ -68,6 +68,17 @@ const games = [
 
 const campusFeatures = [
   {
+    id: 'seliba',
+    icon: '📚',
+    title: 'Seliba sa Tsebo',
+    desc: 'Study materials, notes, and past papers shared freely by NUL students.',
+    link: '/student-zone/seliba-sa-tsebo',
+    available: true,
+    cta: 'Browse Materials',
+    featured: true,
+    badge: 'NEW',
+  },
+  {
     id: 'map',
     icon: '🗺️',
     title: 'Campus Map',
@@ -87,7 +98,7 @@ const campusFeatures = [
   },
   {
     id: 'papers',
-    icon: '📚',
+    icon: '📝',
     title: 'Past Papers',
     desc: 'Prepare for exams using previous examination papers.',
     link: null,
@@ -144,7 +155,7 @@ function StudentZone() {
 
   return (
     <div className="sz-new">
-      {/* ═══════════ HERO (PRESERVED) ═══════════ */}
+      {/* ═══════════ HERO ═══════════ */}
       <section className="sz-hero" style={heroStyle}>
         <img
           src="/images/student-zone/hero-bg.jpg"
@@ -178,14 +189,14 @@ function StudentZone() {
             <span className="sz-discovery-icon">🎮</span>
             <span className="sz-discovery-label">Play</span>
           </div>
+          <Link to="/student-zone/seliba-sa-tsebo" className="sz-discovery-item">
+            <span className="sz-discovery-icon">📚</span>
+            <span className="sz-discovery-label">Study</span>
+          </Link>
           <Link to="/student-zone/campus-map" className="sz-discovery-item">
             <span className="sz-discovery-icon">🗺️</span>
             <span className="sz-discovery-label">Campus</span>
           </Link>
-          <div className="sz-discovery-item" onClick={refreshQuote}>
-            <span className="sz-discovery-icon">💡</span>
-            <span className="sz-discovery-label">Motivate</span>
-          </div>
           <Link to="/marketplace" className="sz-discovery-item">
             <span className="sz-discovery-icon">🛒</span>
             <span className="sz-discovery-label">Market</span>
@@ -245,11 +256,17 @@ function StudentZone() {
 
         <div className="sz-resources-list">
           {campusFeatures.map((feature) => (
-            <div key={feature.id} className="sz-resource-row">
+            <div
+              key={feature.id}
+              className={`sz-resource-row ${feature.featured ? 'sz-resource-featured' : ''}`}
+            >
               <span className="sz-resource-icon">{feature.icon}</span>
               <div className="sz-resource-info">
                 <h3>
                   {feature.title}
+                  {feature.badge && (
+                    <span className="sz-new-tag">{feature.badge}</span>
+                  )}
                   {!feature.available && (
                     <span className="sz-coming-tag">Coming Soon</span>
                   )}

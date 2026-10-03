@@ -447,3 +447,48 @@
     font-size: 2rem;
   }
 }
+/* ═══════════ FEATURED RESOURCE (Seliba) ═══════════ */
+.sz-resource-featured {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid #ffd700;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sz-resource-featured::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #ffd700;
+}
+
+.sz-new-tag {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 2px 8px;
+  background: #ffd700;
+  color: #0a0f1a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 10px;
+  vertical-align: middle;
+}
+
+.sz-resource-featured .sz-resource-icon {
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
+}
+
+.sz-resource-featured .sz-resource-btn {
+  background: #ffd700;
+  color: #0a0f1a;
+  font-weight: 700;
+}
+
+.sz-resource-featured .sz-resource-btn:hover {
+  background: #e6c200;
+}
