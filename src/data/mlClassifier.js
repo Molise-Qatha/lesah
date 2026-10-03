@@ -1,6 +1,7 @@
 // ML Intent Classifier for LeSAH Financial Literacy
 // Loads trained model + per-topic knowledge files
-// Includes mood detection, emoji handling, and money-request handler
+// Includes mood detection, emoji handling, money-request handler,
+// and localStorage-based conversation memory.
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -81,7 +82,7 @@ function expandEmojis(text) {
   return out;
 }
 
-// --- Money-request handler (jokes like "mphe chelete") ---
+// --- Money-request handler ---
 
 function detectMoneyRequest(text) {
   const t = text.toLowerCase();
@@ -333,7 +334,65 @@ function personalizeBudgetAdvice(amount, lang) {
   return `You have M${amount}. Split: 50% needs (M${needs}), 30% wants (M${wants}), 20% savings (M${savings}).`;
 }
 
-export function getAIResponse(question, language) {
+// ============================================================
+//  CONVERSATION MEMORY (localStorage)
+// ============================================================
+
+const HISTORY_KEY = 'lesah_chat_history';
+const HISTORY_MAX = 10;                          // keep last N entries total
+const HISTORY_EXPIRY_MS = 2 * 60 * 60 * 1000;    // 2 hours
+
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data) || data.length === 0) return [];
+
+    const lastTs = data[data.length - 1].ts || 0;
+    if (Date.now() - lastTs > HISTORY_EXPIRY_MS) {
+      localStorage.removeItem(HISTORY_KEY);
+      return [];
+    }
+    return data;
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveHistory(history) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-HISTORY_MAX)));
+  } catch (e) {
+    // storage full or disabled — silently ignore
+  }
+}
+
+function appendHistory(role, content) {
+  if (!content) return;
+  const history = loadHistory();
+  history.push({ role: role, content: String(content), ts: Date.now() });
+  saveHistory(history);
+}
+
+export function clearAIHistory() {
+  try {
+    localStorage.removeItem(HISTORY_KEY);
+  } catch (e) {}
+}
+
+function getRecentUserContext(maxMessages) {
+  const limit = maxMessages || 3;
+  const history = loadHistory();
+  const userMsgs = history.filter(function (h) { return h.role === 'user'; });
+  return userMsgs.slice(-limit).map(function (h) { return h.content; }).join(' ');
+}
+
+// ============================================================
+//  INTERNAL RESPONSE BUILDER
+// ============================================================
+
+function computeAIResponse(question, language) {
   if (!trainedModel || !knowledgeBase) {
     return language === 'sesotho'
       ? 'AI e ntse e qala. Ka kopo leka hape.'
@@ -344,7 +403,7 @@ export function getAIResponse(question, language) {
   const mood = detectMood(expanded);
   const lang = detectLanguage(expanded, language);
 
-  // SPECIAL CASE: playful request for money — respond warmly before classifying
+  // Special case: playful request for money
   if (detectMoneyRequest(question) || detectMoneyRequest(expanded)) {
     return moneyRequestResponse(lang);
   }
@@ -353,7 +412,23 @@ export function getAIResponse(question, language) {
   const result = classifyTopic(expanded);
 
   let topicId = result.topic;
-  if (topicId === 'unknown' || result.confidence < 0.1) {
+  let confidence = result.confidence;
+
+  // NEW: if classification is weak, retry with recent context
+  if (topicId === 'unknown' || confidence < 0.1) {
+    const contextText = getRecentUserContext(3);
+    if (contextText) {
+      const combined = contextText + ' ' + expanded;
+      const ctxResult = classifyTopic(combined);
+      if (ctxResult.topic !== 'unknown' && ctxResult.confidence >= 0.1) {
+        topicId = ctxResult.topic;
+        confidence = ctxResult.confidence;
+      }
+    }
+  }
+
+  // Regex fallback (unchanged)
+  if (topicId === 'unknown' || confidence < 0.1) {
     const q = expanded.toLowerCase();
     if (/bolok|save|saving|poloko/.test(q)) topicId = 'saving';
     else if (/chelete|money|maloti|lisente/.test(q)) topicId = 'money';
@@ -446,5 +521,17 @@ export function getAIResponse(question, language) {
   return moodPrefix + answer;
 }
 
+// ============================================================
+//  PUBLIC WRAPPER — adds memory
+// ============================================================
+
+export function getAIResponse(question, language) {
+  const answer = computeAIResponse(question, language);
+  appendHistory('user', question);
+  appendHistory('ai', answer);
+  return answer;
+}
+
+// Kick off model + knowledge loading
 loadMLModel();
 loadKnowledgeBase();
