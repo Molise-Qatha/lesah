@@ -1,0 +1,168 @@
+.room-lobby {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: #0a0f1a;
+}
+
+.room-lobby-card {
+  max-width: 500px;
+  width: 100%;
+  background: #12172a;
+  border: 1px solid #2a2a4e;
+  border-radius: 12px;
+  padding: 40px 30px;
+  text-align: center;
+}
+
+.room-lobby-icon {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.room-lobby-card h2 {
+  color: #ffffff;
+  font-size: 24px;
+  margin: 0 0 12px;
+}
+
+.room-lobby-card p {
+  color: #a0a0c0;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.room-lobby-btn-primary {
+  background: #e94560;
+  color: #ffffff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.room-lobby-btn-primary:hover {
+  background: #c73450;
+}
+
+.room-lobby-link {
+  display: block;
+  margin-top: 20px;
+  color: #a0a0c0;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.room-lobby-link:hover {
+  color: #ffffff;
+}
+
+/* ── Active Room ── */
+.room-lobby-active {
+  min-height: 100vh;
+  background: #0a0f1a;
+}
+
+.room-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 24px;
+  background: #12172a;
+  border-bottom: 1px solid #2a2a4e;
+  flex-wrap: wrap;
+}
+
+.room-status-left,
+.room-status-center,
+.room-status-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.room-code-label {
+  color: #7070a0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.room-code {
+  background: #0a0f1a;
+  color: #ffd700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.room-status-waiting {
+  color: #ffd700;
+  font-size: 13px;
+}
+
+.room-status-ready {
+  color: #8fff8f;
+  font-size: 13px;
+}
+
+.room-copy-btn,
+.room-leave-btn {
+  background: #1a1a2e;
+  color: #ffffff;
+  border: 1px solid #533483;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.room-copy-btn:hover,
+.room-leave-btn:hover {
+  background: #2a2a4e;
+}
+
+.room-share-hint {
+  max-width: 600px;
+  margin: 40px auto 0;
+  padding: 24px;
+  background: #12172a;
+  border: 1px dashed #533483;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.room-share-hint p {
+  color: #a0a0c0;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.room-share-link {
+  background: #0a0f1a;
+  border: 1px solid #2a2a4e;
+  color: #8fd0ff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 13px;
+  word-break: break-all;
+  margin-bottom: 12px;
+}
+
+.room-share-note {
+  color: #7070a0 !important;
+  font-size: 12px !important;
+}
