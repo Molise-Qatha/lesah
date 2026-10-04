@@ -5,7 +5,7 @@ import { getConversationalResponse, getRandomResponse } from '../data/conversati
 import { financialLibrary } from '../data/financialLibrary';
 import { calculationEngine } from '../data/calculationEngine';
 import { getActivitiesForGrade, getCharacterForGrade } from '../data/activityEngine';
-import { getAIResponse } from '../data/mlClassifier';
+import { getAIResponse, getAIResponseAsync } from '../data/mlClassifier';
 import InteractiveActivity from '../components/InteractiveActivity';
 
 // Universal — no user-facing grade selection. One experience for everyone.
@@ -151,8 +151,8 @@ function FinancialLiteracy() {
     setSelectedOption(null);
   };
 
-  const getResponse = (question) => {
-    const mlResponse = getAIResponse(question, language);
+  const getResponse = async (question) => {
+    const mlResponse = await getAIResponseAsync(question, language);
     if (mlResponse && !mlResponse.includes('still loading')) {
       return { type: 'assistant', text: mlResponse, time: 'Now', related: null };
     }
@@ -199,8 +199,8 @@ function FinancialLiteracy() {
     setChatInput('');
     setChatMessages((prev) => [...prev, { type: 'user', text, time: 'Now' }]);
     setIsTyping(true);
-    setTimeout(() => {
-      const response = getResponse(text);
+    setTimeout(async () => {
+      const response = await getResponse(text);
       setChatMessages((prev) => [...prev, response]);
       setIsTyping(false);
     }, 700);
