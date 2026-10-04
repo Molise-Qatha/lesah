@@ -152,7 +152,7 @@ function FinancialLiteracy() {
   };
 
   const getResponse = async (question) => {
-    const mlResponse = await getAIResponseAsync(question, language);
+    const mlResponse = await getAIResponseAsync(question);
     if (mlResponse && !mlResponse.includes('still loading')) {
       return { type: 'assistant', text: mlResponse, time: 'Now', related: null };
     }
@@ -250,7 +250,6 @@ function FinancialLiteracy() {
 
   return (
     <div className="fl-redesign">
-      {/* HERO */}
       <section className="flr-hero" ref={heroRef}>
         <div className="flr-hero-bg">
           <div className="flr-hero-glow flr-glow-1" />
@@ -291,7 +290,6 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* LANGUAGE TOGGLE */}
       <section id="flr-learning" className="flr-section">
         <div className="flr-lang-toggle">
           <button className={`flr-lang-btn ${language === 'english' ? 'active' : ''}`} onClick={() => setLanguage('english')}>
@@ -303,7 +301,6 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* MODE TABS */}
       <section className="flr-mode-tabs">
         <button className={`flr-mode-tab ${mode === 'play' ? 'active' : ''}`} onClick={() => setMode('play')}>
           🎮 {language === 'sesotho' ? 'Bapala' : 'Play'}
@@ -316,7 +313,6 @@ function FinancialLiteracy() {
         </button>
       </section>
 
-      {/* CHARACTER GREETING */}
       <section className="flr-character-greeting" style={{ background: character.background }}>
         <span className="flr-greeting-emoji">{character.emoji}</span>
         <div>
@@ -325,10 +321,8 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* MAIN WORKSPACE */}
       <section className="flr-workspace">
         <div className="flr-workspace-grid">
-          {/* LEFT PANEL */}
           <div className="flr-lesson">
             {mode === 'play' && currentActivity && (
               <InteractiveActivity
@@ -434,7 +428,6 @@ function FinancialLiteracy() {
             )}
           </div>
 
-          {/* RIGHT PANEL — CHAT */}
           <div id="flr-chat" className="flr-chat-panel">
             <div className="flr-chat-header">
               <span className="flr-chat-avatar">🤖</span>
@@ -488,7 +481,6 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* BADGES */}
       {earnedBadges.length > 0 && (
         <section className="flr-badges-section">
           <h3>{language === 'sesotho' ? 'Libadge tsa hau' : 'Your Badges'}</h3>
@@ -503,7 +495,6 @@ function FinancialLiteracy() {
         </section>
       )}
 
-      {/* QUICK QUESTIONS */}
       <section className="flr-quick-section">
         <div className="flr-quick-pills">
           {QUICK_QUESTIONS[language].map((q, i) => (
@@ -514,7 +505,6 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* PROGRESS */}
       <section className="flr-progress-section" ref={progressRef}>
         <div className={`flr-progress ${progressInView ? 'visible' : ''}`}>
           <h3>{language === 'sesotho' ? 'Tsoelo-pele ea Hau' : 'Your Progress'}</h3>
@@ -528,7 +518,6 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* DAILY TIP */}
       <section className="flr-tip-section">
         <div className="flr-tip">
           <span className="flr-tip-icon">🌿</span>
@@ -543,7 +532,6 @@ function FinancialLiteracy() {
         </div>
       </section>
 
-      {/* OFFLINE NOTICE */}
       <div className="flr-offline-notice">
         <span>📶</span>
         <p>

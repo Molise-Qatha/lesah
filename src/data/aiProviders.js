@@ -1,21 +1,18 @@
 // ============================================================
 //  LeSAH · External AI Provider (Google Gemini)
-//  Model fallback chain — tries each model in order until one works
-//  Uses legacy generateContent endpoint (still supported for 3.x)
+//  Model fallback chain + Lesotho Sesotho dialect hint
 // ============================================================
 
 const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_KEY || '';
 
-// Fallback chain — tried in order.
-// If one is overloaded (503) or missing (404), we move to the next.
 const GEMINI_MODELS = [
-  'gemini-3.8-flash',        // most capable, but most likely to be overloaded
-  'gemini-3.5-flash',        // stable mid-tier
-  'gemini-3.5-flash-lite',   // lighter, more available
-  'gemini-3.1-flash-lite',   // lightest, most available
+  'gemini-3.5-flash',
+  'gemini-3.8-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
 ];
 
-const SYSTEM_PROMPT = `You are a friendly financial literacy tutor for students in Lesotho, Southern Africa.
+const BASE_PROMPT = `You are a friendly financial literacy tutor for students in Lesotho, Southern Africa.
 Rules:
 - Keep answers SHORT (2-4 sentences max unless the user asks for detail).
 - Use simple English (or Sesotho if the user writes in Sesotho).
@@ -25,7 +22,33 @@ Rules:
 - Never ask for personal info.
 - If the question is not about money, saving, budgeting, loans, banking, or personal finance, politely redirect.`;
 
-// ---------- Single model attempt ----------
+const SESOTHO_HINT = `
+
+SESOTHO — DIALECT RULES (CRITICAL):
+The user is writing in Lesotho Sesotho, NOT South African Sesotho.
+- Use "lumela" not "dumela"
+- Use "joang" not "jwang"
+- Use "chelete" not "tjhelete"
+- Use "lit'sepe" for coins, not "lichepe"
+- Use "Afrika Boroa" not "Afrika Borwa"
+- Never use letters "w" or "y" in Sesotho words — replace with "o"/"u" and "e"/"i"
+- Use "u" for "you" (subject and object), not "o"
+- Respond fully in Sesotho, not mixed with English.`;
+
+const SESOTHO_MARKERS = /\b(ke|eng|ho|boloka|chelete|phaello|kalimo|joang|lumela|bokae|nka|batla|hloka|fumana|tseba|rata|hobaneng|nthuse|thusang|bala|reka|rekisa|sebelisa|alima|boloke|poloko|keno|mokitlane|sekoloto|moputso|tekanyetso|litlhoko|litakatso|banka|akhaonto|mphe|ntefe|hangata|lula|ntate|ausi|abuti)\b/i;
+
+function looksLikeSesotho(text) {
+  if (!text) return false;
+  if (SESOTHO_MARKERS.test(text)) return true;
+  // Two or more apostrophes strongly suggest Sesotho orthography (lit'sepe, tš)
+  const apostrophes = (text.match(/'/g) || []).length;
+  return apostrophes >= 2;
+}
+
+function buildSystemPrompt(isSesotho) {
+  return isSesotho ? BASE_PROMPT + SESOTHO_HINT : BASE_PROMPT;
+}
+
 async function tryGeminiModel(model, question, history) {
   const contents = [
     ...history.map((h) => ({
@@ -37,6 +60,8 @@ async function tryGeminiModel(model, question, history) {
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
+  const isSesotho = looksLikeSesotho(question);
+
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -44,7 +69,7 @@ async function tryGeminiModel(model, question, history) {
       'x-goog-api-key': GEMINI_API_KEY,
     },
     body: JSON.stringify({
-      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      system_instruction: { parts: [{ text: buildSystemPrompt(isSesotho) }] },
       contents,
       generationConfig: {
         temperature: 0.6,
@@ -65,7 +90,6 @@ async function tryGeminiModel(model, question, history) {
   return text ? text.trim() : null;
 }
 
-// ---------- Fallback chain ----------
 async function callGemini(question, history) {
   if (!GEMINI_API_KEY) throw new Error('Gemini key missing');
 
@@ -80,10 +104,6 @@ async function callGemini(question, history) {
       }
     } catch (err) {
       lastErr = err;
-      // 404 = model doesn't exist / retired → try next
-      // 503 = overloaded → try next
-      // 429 = rate limited → try next (probably won't help, but no harm)
-      // Other errors (400, 403) → key/config problem, no point retrying
       if (err.status === 400 || err.status === 401 || err.status === 403) {
         throw err;
       }
@@ -94,7 +114,6 @@ async function callGemini(question, history) {
   throw lastErr || new Error('All Gemini models failed');
 }
 
-// ---------- Public API ----------
 export async function callExternalAI(question, history = []) {
   try {
     const answer = await callGemini(question, history);
