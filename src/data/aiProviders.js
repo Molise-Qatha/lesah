@@ -1,16 +1,17 @@
 // ============================================================
 //  LeSAH · External AI Provider (Google Gemini)
-//  Model: gemini-2.0-flash
-//  Free tier limits (as of 2025): 15 requests/min, 20 requests/day
-//  No credit card required for free tier.
+//  Model: gemini-3.8-flash (GA, current as of 2026)
+//  Legacy generateContent endpoint still supported for 3.x
+//  Free tier: limited daily requests (verify in AI Studio)
 // ============================================================
 
 const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_KEY || '';
 
-// Working models (v1beta endpoint):
-//   gemini-2.0-flash    — stable, current default (free tier: 20 req/day)
-//   gemini-2.5-flash    — newer, higher quality, tighter limits
-const GEMINI_MODEL = 'gemini-2.0-flash';
+// Working models (generateContent endpoint):
+//   gemini-3.8-flash        — GA, most capable Flash (current default)
+//   gemini-3.5-flash-lite   — lighter, cheaper, more generous free tier
+//   gemini-3.1-flash-lite   — lightest free option
+const GEMINI_MODEL = 'gemini-3.8-flash';
 
 const SYSTEM_PROMPT = `You are a friendly financial literacy tutor for students in Lesotho, Southern Africa.
 Rules:
@@ -34,11 +35,15 @@ async function callGemini(question, history) {
     { role: 'user', parts: [{ text: question }] },
   ];
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+  // Legacy generateContent endpoint — still works for 3.x models
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-goog-api-key': GEMINI_API_KEY,
+    },
     body: JSON.stringify({
       system_instruction: {
         parts: [{ text: SYSTEM_PROMPT }],
@@ -46,7 +51,7 @@ async function callGemini(question, history) {
       contents,
       generationConfig: {
         temperature: 0.6,
-        maxOutputTokens: 300,
+        maxOutputTokens: 500,
       },
     }),
   });
