@@ -1,7 +1,9 @@
 // ML Intent Classifier for LeSAH Financial Literacy
 // Loads trained model + per-topic knowledge files
 // Includes mood detection, emoji handling, money-request handler,
-// and localStorage-based conversation memory.
+// localStorage-based conversation memory, and Google Gemini fallback.
+
+import { callExternalAI, hasExternalAI } from './aiProviders';
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -339,8 +341,8 @@ function personalizeBudgetAdvice(amount, lang) {
 // ============================================================
 
 const HISTORY_KEY = 'lesah_chat_history';
-const HISTORY_MAX = 10;                          // keep last N entries total
-const HISTORY_EXPIRY_MS = 2 * 60 * 60 * 1000;    // 2 hours
+const HISTORY_MAX = 10;
+const HISTORY_EXPIRY_MS = 2 * 60 * 60 * 1000;
 
 function loadHistory() {
   try {
@@ -408,13 +410,19 @@ function computeAIResponse(question, language) {
     return moneyRequestResponse(lang);
   }
 
-  const amount = extractAmount(expanded);
+  let amount = null;
+  try {
+    amount = extractAmount(expanded);
+  } catch (e) {
+    amount = null;
+  }
+
   const result = classifyTopic(expanded);
 
   let topicId = result.topic;
   let confidence = result.confidence;
 
-  // NEW: if classification is weak, retry with recent context
+  // If classification is weak, retry with recent context
   if (topicId === 'unknown' || confidence < 0.1) {
     const contextText = getRecentUserContext(3);
     if (contextText) {
@@ -427,7 +435,7 @@ function computeAIResponse(question, language) {
     }
   }
 
-  // Regex fallback (unchanged)
+  // Regex fallback
   if (topicId === 'unknown' || confidence < 0.1) {
     const q = expanded.toLowerCase();
     if (/bolok|save|saving|poloko/.test(q)) topicId = 'saving';
@@ -522,7 +530,7 @@ function computeAIResponse(question, language) {
 }
 
 // ============================================================
-//  PUBLIC WRAPPER — adds memory
+//  PUBLIC API — sync (local only)
 // ============================================================
 
 export function getAIResponse(question, language) {
@@ -530,6 +538,50 @@ export function getAIResponse(question, language) {
   appendHistory('user', question);
   appendHistory('ai', answer);
   return answer;
+}
+
+// ============================================================
+//  PUBLIC API — async (local first, then Gemini fallback)
+// ============================================================
+
+export async function getAIResponseAsync(question, language) {
+  // 1. Try the local classifier first
+  const localAnswer = computeAIResponse(question, language);
+  const expanded = expandEmojis(question);
+  const result = classifyTopic(expanded);
+
+  // 2. High-confidence local answer → return it, skip the network call
+  if (result.confidence >= 0.3 && result.topic !== 'unknown') {
+    appendHistory('user', question);
+    appendHistory('ai', localAnswer);
+    return localAnswer;
+  }
+
+  // 3. Low-confidence → try Gemini
+  if (hasExternalAI()) {
+    try {
+      const history = loadHistory()
+        .slice(-6)
+        .map((h) => ({
+          role: h.role === 'ai' ? 'assistant' : 'user',
+          content: h.content,
+        }));
+
+      const external = await callExternalAI(question, history);
+      if (external) {
+        appendHistory('user', question);
+        appendHistory('ai', external);
+        return external;
+      }
+    } catch (err) {
+      console.warn('[AI] External fallback failed:', err);
+    }
+  }
+
+  // 4. Nothing worked → return local fallback
+  appendHistory('user', question);
+  appendHistory('ai', localAnswer);
+  return localAnswer;
 }
 
 // Kick off model + knowledge loading
