@@ -1,15 +1,16 @@
 // ============================================================
 //  LeSAH · External AI Provider (Google Gemini)
-//  Free tier: 15 requests/min, 1,500 requests/day
-//  No credit card required.
+//  Model: gemini-2.0-flash
+//  Free tier limits (as of 2025): 15 requests/min, 20 requests/day
+//  No credit card required for free tier.
 // ============================================================
 
 const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_KEY || '';
 
-// Model options (free tier):
-//   gemini-1.5-flash        — fastest, most available
-//   gemini-2.0-flash-exp    — newer, experimental
-const GEMINI_MODEL = 'gemini-1.5-flash';
+// Working models (v1beta endpoint):
+//   gemini-2.0-flash    — stable, current default (free tier: 20 req/day)
+//   gemini-2.5-flash    — newer, higher quality, tighter limits
+const GEMINI_MODEL = 'gemini-2.0-flash';
 
 const SYSTEM_PROMPT = `You are a friendly financial literacy tutor for students in Lesotho, Southern Africa.
 Rules:
@@ -25,7 +26,6 @@ Rules:
 async function callGemini(question, history) {
   if (!GEMINI_API_KEY) throw new Error('Gemini key missing');
 
-  // Gemini expects "contents" as an array of { role, parts: [{ text }] }
   const contents = [
     ...history.map((h) => ({
       role: h.role === 'assistant' ? 'model' : 'user',
@@ -53,7 +53,7 @@ async function callGemini(question, history) {
 
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Gemini ${res.status}: ${errText.slice(0, 120)}`);
+    throw new Error(`Gemini ${res.status}: ${errText.slice(0, 200)}`);
   }
 
   const data = await res.json();
