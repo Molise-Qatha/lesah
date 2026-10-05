@@ -1,5 +1,5 @@
 // src/pages/ProviderRouter.js
-// Routes /provider/:id to the correct vendor component.
+// Routes /provider/:providerId to the correct vendor component.
 // Maseeiso keeps using the ORIGINAL ProviderProfile.js untouched.
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
@@ -40,9 +40,10 @@ function NotFound({ id }) {
 }
 
 function ProviderRouter() {
-  const { id } = useParams();
-  const Component = ROUTES[id];
-  if (!Component) return <NotFound id={id} />;
+  // 👇 THE FIX: read `providerId`, matching the route definition in App.js
+  const { providerId } = useParams();
+  const Component = ROUTES[providerId];
+  if (!Component) return <NotFound id={providerId} />;
   return <Component />;
 }
 
