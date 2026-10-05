@@ -28,7 +28,7 @@ import CampusMap from './pages/CampusMap';
 import Marketplace from './pages/Marketplace';
 import CommunitySafety from './pages/CommunitySafety';
 import VendorGuidelines from './pages/VendorGuidelines';
-import ProviderProfile from './pages/ProviderProfile';
+import ProviderRouter from './pages/ProviderRouter';
 import HoKallaEntry from './pages/HoKallaEntry';
 import AnimationLab from './pages/animation-lab/AnimationLab';
 import KopanangTest from './pages/animation-lab/KopanangTest';
@@ -108,10 +108,9 @@ function App() {
           <Route path="/tech" element={<Tech />} />
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/learn-more" element={<LearnMore />} />
-          <Route path="/provider/:providerId" element={<ProviderProfile />} />
+          <Route path="/provider/:providerId" element={<ProviderRouter />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/financial-literacy" element={<FinancialLiteracy />} />
-
 
           {/* Student Zone */}
           <Route path="/student-zone" element={<StudentZone />} />
@@ -171,4 +170,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
