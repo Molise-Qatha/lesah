@@ -1,9 +1,11 @@
 // ML Intent Classifier for LeSAH Financial Literacy
 // Loads trained model + per-topic knowledge files
 // Includes mood detection, emoji handling, money-request handler,
-// localStorage-based conversation memory, and Google Gemini fallback.
+// offline scam detector, localStorage conversation memory,
+// and Google Gemini fallback.
 
 import { callExternalAI, hasExternalAI } from './aiProviders';
+import { detectScam, buildScamResponse, buildScamCaution } from './scamDetector';
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -405,6 +407,13 @@ function computeAIResponse(question, language) {
   const mood = detectMood(expanded);
   const lang = detectLanguage(expanded, language);
 
+  // Special case: scam detection runs BEFORE everything else.
+  // Returns the warning directly so no random topic answer can override it.
+  const scamCheck = detectScam(question);
+  if (scamCheck.level === 'high') {
+    return buildScamResponse(scamCheck);
+  }
+
   // Special case: playful request for money
   if (detectMoneyRequest(question) || detectMoneyRequest(expanded)) {
     return moneyRequestResponse(lang);
@@ -526,6 +535,11 @@ function computeAIResponse(question, language) {
       : 'I understand your question.';
   }
 
+  // Soft caution if suspicious (35-59) but not high risk — appended to the normal answer
+  if (scamCheck.level === 'suspicious') {
+    answer += buildScamCaution(lang === 'sesotho');
+  }
+
   return moodPrefix + answer;
 }
 
@@ -545,7 +559,18 @@ export function getAIResponse(question, language) {
 // ============================================================
 
 export async function getAIResponseAsync(question, language) {
-  // 1. Try the local classifier first
+  // 0. Scam check — MUST run first, before any network call.
+  //    High-risk scam messages never go to Gemini — we don't want the
+  //    LLM to soften the warning or hallucinate verification steps.
+  const scamCheck = detectScam(question);
+  if (scamCheck.level === 'high') {
+    const scamAnswer = buildScamResponse(scamCheck);
+    appendHistory('user', question);
+    appendHistory('ai', scamAnswer);
+    return scamAnswer;
+  }
+
+  // 1. Try the local classifier
   const localAnswer = computeAIResponse(question, language);
   const expanded = expandEmojis(question);
   const result = classifyTopic(expanded);
