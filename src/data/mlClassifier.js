@@ -13,7 +13,7 @@ let knowledgeBase = null;
 const TOPIC_FILES = [
   'saving', 'money', 'budgeting', 'interest', 'loans', 'income',
   'banking', 'needs_wants', 'greeting', 'comparisons',
-  'learning_paths', 'emergency_scenarios'
+  'learning_paths', 'emergency_scenarios', 'scams'
 ];
 
 export const loadMLModel = async () => {
@@ -220,6 +220,8 @@ const STOP_WORDS = [
 ];
 
 const SESOTHO_WORDS = [
+  'boqhekanyetsi', 'baqhekanyetsi', 'thetsa', 'tshepisa', 'ntshepisang',
+  'tumela', 'kholoa', 'tshepa', 'sie', 'koloi', 'fono', 'thepa', 'patala',
   'ke', 'eng', 'ho', 'boloka', 'chelete', 'phaello', 'kalimo', 'joang',
   'lumela', 'bokae', 'le', 'ka', 'ea', 'na', 'nka', 'batla', 'hloka',
   'fumana', 'tseba', 'rata', 'kena', 'jwang', 'mme', 'hobaneng',
@@ -227,7 +229,12 @@ const SESOTHO_WORDS = [
   'boloke', 'poloko', 'keno', 'mokitlane', 'sekoloto', 'moputso',
   'tekanyetso', 'ditlhoko', 'ditakatso', 'dibanka', 'banka', 'akhaonto',
   'kheleke', 'hela', 'hele', 'lesah', 'tsoile', 'phela', 'teng',
-  'tshohile', 'khathetse', 'utlwisisa', 'utloisise', 'mphe', 'ntefe'
+  'tshohile', 'khathetse', 'utlwisisa', 'utloisise', 'mphe', 'ntefe',
+  'penya', 'penye', 'penyang', 'tobetsa', 'mona', 'motho', 'reng', 'ntshepa',
+  'thola', 'ngata', 'phahameng', 'oa', 'hona', 'mang', 'monyetla',
+  'kgwebo', 'khoebo', 'matsete', 'hlola', 'eketsa', 'tiisitsoeng',
+  'bohlale', 'bothata', 'tshabo', 'setsomi', 'tsotelle', 'hlokomela',
+  'netefatsa', 'seke', 'tsamaya', 'bitsa', 'karolo', 'mokhatlo'
 ];
 
 function classifyTopic(text) {
@@ -407,8 +414,7 @@ function computeAIResponse(question, language) {
   const mood = detectMood(expanded);
   const lang = detectLanguage(expanded, language);
 
-  // Special case: scam detection runs BEFORE everything else.
-  // Returns the warning directly so no random topic answer can override it.
+  // Special case: scam detection runs BEFORE everything else
   const scamCheck = detectScam(question);
   if (scamCheck.level === 'high') {
     return buildScamResponse(scamCheck);
@@ -447,7 +453,8 @@ function computeAIResponse(question, language) {
   // Regex fallback
   if (topicId === 'unknown' || confidence < 0.1) {
     const q = expanded.toLowerCase();
-    if (/bolok|save|saving|poloko/.test(q)) topicId = 'saving';
+    if (/boqhekanyetsi|scam|ntshepis|thetsa|penya|penye|ntshepisang|utswa/.test(q)) topicId = 'scams';
+    else if (/bolok|save|saving|poloko/.test(q)) topicId = 'saving';
     else if (/chelete|money|maloti|lisente/.test(q)) topicId = 'money';
     else if (/tekanyetso|budget|moralo/.test(q)) topicId = 'budgeting';
     else if (/phaello|interest|tswala/.test(q)) topicId = 'interest';
@@ -535,7 +542,6 @@ function computeAIResponse(question, language) {
       : 'I understand your question.';
   }
 
-  // Soft caution if suspicious (35-59) but not high risk — appended to the normal answer
   if (scamCheck.level === 'suspicious') {
     answer += buildScamCaution(lang === 'sesotho');
   }
@@ -559,9 +565,7 @@ export function getAIResponse(question, language) {
 // ============================================================
 
 export async function getAIResponseAsync(question, language) {
-  // 0. Scam check — MUST run first, before any network call.
-  //    High-risk scam messages never go to Gemini — we don't want the
-  //    LLM to soften the warning or hallucinate verification steps.
+  // 0. Scam check — MUST run before anything else.
   const scamCheck = detectScam(question);
   if (scamCheck.level === 'high') {
     const scamAnswer = buildScamResponse(scamCheck);
@@ -570,12 +574,12 @@ export async function getAIResponseAsync(question, language) {
     return scamAnswer;
   }
 
-  // 1. Try the local classifier
+  // 1. Local classifier
   const localAnswer = computeAIResponse(question, language);
   const expanded = expandEmojis(question);
   const result = classifyTopic(expanded);
 
-  // 2. High-confidence local answer → return it, skip the network call
+  // 2. High-confidence → return local
   if (result.confidence >= 0.3 && result.topic !== 'unknown') {
     appendHistory('user', question);
     appendHistory('ai', localAnswer);
@@ -603,7 +607,7 @@ export async function getAIResponseAsync(question, language) {
     }
   }
 
-  // 4. Nothing worked → return local fallback
+  // 4. Fallback to local
   appendHistory('user', question);
   appendHistory('ai', localAnswer);
   return localAnswer;

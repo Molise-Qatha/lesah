@@ -1,0 +1,164 @@
+{
+  "definitions": [
+    {
+      "english": "A scam is when someone tricks you into giving away money or property. They promise something good, but their real goal is to take what is yours.",
+      "sesotho": "Boqhekanyetsi ke ha motho a u thetsa hore u fane ka chelete kapa thepa. Ba tshepisa ntho e ntle, empa sepheo sa bona sa nnete ele ho nka seo e leng sa hao."
+    },
+    {
+      "english": "Scams are lies designed to steal your money. They look real because scammers are good at pretending.",
+      "sesotho": "Boqhekanyetsi ke mashano a etseditseng ho utswa chelete ea hao. A shebahala e le a nnete hobane baqhekanyetsi ba tseba ho iketsa eka ke ba nnete."
+    },
+    {
+      "english": "A scam is any offer that sounds too good to be true. If it feels wrong, it probably is.",
+      "sesotho": "Boqhekanyetsi ke tlhahiso efe kapa efe e utloahalang e le ntle haholo hore e ka ba nnete. Haeba e utloahala e se nnete, mohlomong hase se nnete."
+    }
+  ],
+  "examples": [
+    {
+      "english": "Someone promises M10,000 if you send M500 first. That is a scam.",
+      "sesotho": "Motho o tshepisa M10,000 haeba u romela M500 pele. Seo ke boqhekanyetsi."
+    },
+    {
+      "english": "A link says you won a prize from Econet. Real companies never ask you to pay to claim a prize.",
+      "sesotho": "Link e re u hapile mpho ho tswa ho Econet. Likhamphani tsa nnete ha li kope chelete hore u nke mpho."
+    },
+    {
+      "english": "A person says pay M600 once a year and receive money monthly. That is a pyramid scheme.",
+      "sesotho": "Motho o re u lefe M600 hanngoe ka selemo ebe u fumana chelete khoeli le khoeli. Seo ke boqhekanyetsi ba pyramid."
+    },
+    {
+      "english": "Someone asks you to leave your car or phone as proof. Real deals never require this.",
+      "sesotho": "Motho o kopa hore u sie koloi kapa fono ea hao e le bopaki. Ditumellano tsa nnete ha li hloke sena."
+    },
+    {
+      "english": "A job is promised but you must pay first. Real jobs pay you, they do not charge you.",
+      "sesotho": "Mosebetsi o tshepisitsoe empa u tlameha ho lefa pele. Mesebetsi ea nnete ea u lefa, ha e u lefise."
+    }
+  ],
+  "misconceptions": [
+    {
+      "english": "Only foolish people fall for scams — FALSE! Scammers target everyone, especially people who need money.",
+      "sesotho": "Ke batho ba senang boikarabello feela ba oelang boqhekanyetsing — HA SE NNETE! Baqhekanyetsi ba hlasela bohle, haholo batho ba hlokang chelete."
+    },
+    {
+      "english": "If it looks professional, it is real — FALSE! Scammers use real logos and fake websites.",
+      "sesotho": "Haeba e shebahala e le ea profeshenale, ke ea nnete — HA SE NNETE! Baqhekanyetsi ba sebelisa matshwao a nnete le liwebosaete(website) tsa bohata."
+    },
+    {
+      "english": "If a friend sent it, it is safe — FALSE! Friends forward scams without knowing.",
+      "sesotho": "Haeba motsoalle a e rometse, e bolokehile — HA SE NNETE! Metswalle e ka fetisa boqhekanyetsi ba sa elelloe, hlokomela sena."
+    }
+  ],
+  "how_to": [
+    {
+      "english": "Never send money before you receive a service or product.",
+      "sesotho": "Seke oa romela chelete pele u fumana tshebeletso kapa sehlahisoa."
+    },
+    {
+      "english": "Never click links from people you do not know.",
+      "sesotho": "Seke oa penya link ho tsoa ho batho bao u sa ba tsebeng."
+    },
+    {
+      "english": "Verify with the real company using their official phone number — not the number in the message.",
+      "sesotho": "Netefatsa le khamphani ea nnete ka nomoro ea bona ea molao — eseng nomoro e leng molaetseng."
+    },
+    {
+      "english": "If something sounds too good to be true, it is.",
+      "sesotho": "Haeba ntho e utloahala e le ntle haholo hore e ka ba nnete, ha se nnete."
+    },
+    {
+      "english": "Ask a trusted person before you act. A second opinion saves money.",
+      "sesotho": "Botsa motho eo u mo tshepang pele u etsa letho. Maikutlo a bobeli a pholosa chelete."
+    },
+    {
+      "english": "Report the scam to the police and to the company being impersonated.",
+      "sesotho": "Tlaleha boqhekanyetsi ho mapolesa le ho khamphani eo motho a iketsang eka ke eona."
+    }
+  ],
+  "why": [
+    {
+      "english": "Scams steal money you cannot afford to lose.",
+      "sesotho": "Boqhekanyetsi bo utsoa chelete eo sa lokelang ho lahleheloa ke eona."
+    },
+    {
+      "english": "Scammers target desperate people — students, job seekers, and first-time investors.",
+      "sesotho": "Baqhekanyetsi ba hlasela batho ba hlokang — baithuti, ba batlang mesebetsi le batsetedi ba pele."
+    },
+    {
+      "english": "Once money is sent, it is almost impossible to recover.",
+      "sesotho": "Hang ha chelete e rometsoe, ho batla ho le thata ho e fumana hape."
+    }
+  ],
+  "follow_up_suggestions": [
+    {
+      "english": "Want to know the warning signs of a scam?",
+      "sesotho": "Na u batla ho tseba matshwao a boqhekanyetsi?"
+    },
+    {
+      "english": "Should we talk about how to report a scam?",
+      "sesotho": "Na re bue ka ho tlaleha boqhekanyetsi?"
+    },
+    {
+      "english": "Want to learn how to check if an investment is real?",
+      "sesotho": "Na u batla ho ithuta ho netefatsa matsete?"
+    }
+  ],
+  "scenarios": [
+    {
+      "situation": {
+        "english": "Someone says pay M600 once a year and receive money monthly from an organisation. Should you trust it?",
+        "sesotho": "Motho o re lefa M600 hanngoe ka selemo ebe u fumana chelete khoeli le khoeli ho tsoa mokhatlong. Na u lokela ho e tshepa?"
+      },
+      "advice": {
+        "english": "No. This is a classic pyramid scheme. Real investments do not work this way. If it collapses, you lose everything.",
+        "sesotho": "Che. Ona ke boqhekanyetsi ba pyramid. Matsete a nnete ha a sebetse tjena. Haeba e putlama, u lahlehelwa ke tsohle."
+      },
+      "lesson": {
+        "english": "Monthly payouts from a joining fee are a pyramid scheme signal.",
+        "sesotho": "Tefo ea khoeli le khoeli ho tsoa tefisong ea ho kena ke letshwao la boqhekanyetsi ba pyramid."
+      }
+    },
+    {
+      "situation": {
+        "english": "You receive a message: you won M10,000 from Econet. Send 40% to claim it. Real?",
+        "sesotho": "U fumana molaetsa: u hapile M10,000 ho tsoa ho Econet. Romela 40% ho e nka. Na ke nnete?"
+      },
+      "advice": {
+        "english": "No. Real companies never ask you to pay to claim a prize. Econet would credit your account directly.",
+        "sesotho": "Che. Likhamphani tsa nnete ha li kope chelete ho nka mpho. Econet e ka kenya chelete akhaontong ea hao ka kotloloho."
+      },
+      "lesson": {
+        "english": "Any prize that requires payment is a scam.",
+        "sesotho": "Mpho efe kapa efe e hlokang tefo ke boqhekanyetsi."
+      }
+    },
+    {
+      "situation": {
+        "english": "Someone offers you a job but says you must pay M200 for papers or training first.",
+        "sesotho": "Motho o u fa mosebetsi empa o re u tlameha ho lefa M200 bakeng sa lipampiri kapa thupelo pele."
+      },
+      "advice": {
+        "english": "This is almost always a scam. Real employers pay you. They do not charge you to start work.",
+        "sesotho": "Hona hangata ke boqhekanyetsi. Bahiri ba nnete ba u lefa. Ha ba u lefise hore u qale mosebetsi."
+      },
+      "lesson": {
+        "english": "You should never pay to get a job.",
+        "sesotho": "Ha ua lokela ho lefa ho fumana mosebetsi."
+      }
+    },
+    {
+      "situation": {
+        "english": "Someone asks you to leave your car or phone as proof you will return.",
+        "sesotho": "Motho o kopa hore u sie koloi kapa fono ea hao e le bopaki ba hore u tla khutla."
+      },
+      "advice": {
+        "english": "Never leave your property with someone you do not fully trust. Real deals do not require this.",
+        "sesotho": "Seke oa sie thepa ea hao ho motho eo u sa mo tshepeng ka botlalo. Ditumellano tsa nnete ha li hloke sena."
+      },
+      "lesson": {
+        "english": "If they need your property as 'proof', they are planning to take it.",
+        "sesotho": "Haeba ba hloka thepa ea hao e le 'bopaki', ba rera ho e nka."
+      }
+    }
+  ]
+}
