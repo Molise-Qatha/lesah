@@ -1,276 +1,318 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { featuredProviders, foodItems, categories } from '../data/marketplaceData';
-import { services } from '../data/services';
-import HorizontalScroller from '../components/HorizontalScroller';
+import { featuredProviders } from '../data/marketplaceData';
+import { products, productCategories, formatPrice } from '../data/products';
 import './Marketplace.css';
+
+const SORT_OPTIONS = [
+  { id: 'newest', label: 'Newest' },
+  { id: 'rating', label: 'Top Rated' },
+  { id: 'price-low', label: 'Price: Low to High' },
+  { id: 'price-high', label: 'Price: High to Low' },
+];
 
 function Marketplace() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
 
-  // Filter featured providers based on search + category
-  const filteredProviders = useMemo(() => {
-    return featuredProviders.filter((p) => {
+  // Filter + sort products
+  const visibleProducts = useMemo(() => {
+    let list = products.filter((p) => {
       const matchesSearch =
         !searchTerm ||
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.services.some((s) => s.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        p.category.toLowerCase().includes(searchTerm.toLowerCase());
+        p.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory =
-        activeCategory === 'all' ||
-        p.category.toLowerCase().includes(activeCategory.toLowerCase());
+        activeCategory === 'all' || p.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, activeCategory]);
 
-  // Filter food items
-  const filteredFood = useMemo(() => {
-    return foodItems.filter((item) => {
-      const matchesSearch =
-        !searchTerm ||
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.provider.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        activeCategory === 'all' || activeCategory === 'food';
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchTerm, activeCategory]);
+    switch (sortBy) {
+      case 'rating':
+        list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        break;
+      case 'price-low':
+        list = [...list].sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+        break;
+      case 'price-high':
+        list = [...list].sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+        break;
+      case 'newest':
+      default:
+        list = [...list].sort(
+          (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+        );
+    }
+    return list;
+  }, [searchTerm, activeCategory, sortBy]);
 
-  const featuredProvider = featuredProviders.find((p) => p.featured);
+  // Top vendors for sidebar
+  const sidebarVendors = useMemo(
+    () =>
+      [...featuredProviders]
+        .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        .slice(0, 5),
+    []
+  );
 
   const becomeVendor = () => {
     window.open(
       `https://wa.me/26656613551?text=${encodeURIComponent(
-        'Hello LeSAH, I want to list my business on the Marketplace.\n\nBusiness Name:\nCategory:\nServices:\nContact Number:'
+        'Hello LeSAH, I want to list my business on the Marketplace.\n\nBusiness Name:\nCategory:\nContact Number:'
       )}`,
       '_blank'
     );
   };
 
   return (
-    <div className="marketplace-new">
-      {/* ═══════════ HERO ═══════════ */}
+    <div className="mp-page">
+      {/* ═══════════ HERO BANNER ═══════════ */}
       <section
-        className="mp-hero"
+        className="mp-hero-banner"
         style={{ backgroundImage: "url('/assets/images/marketplace-hero.jpg')" }}
       >
-        <div className="mp-hero-content">
-          <h1>What do you need today?</h1>
-          <p>Services built around student life in Lesotho — delivered by real people you can trust.</p>
+        <div className="mp-hero-inner">
+          <div className="mp-hero-text">
+            <h1>LeSAH Marketplace</h1>
+            <p>
+              Buy and sell products and services from students and local
+              businesses. Support each other. Grow together.
+            </p>
+          </div>
+          <div className="mp-hero-tag">
+            <span>Students</span>
+            <span>supporting</span>
+            <span>students</span>
+          </div>
+        </div>
+      </section>
 
-          {/* Search */}
-          <div className="mp-search-wrapper">
+      <div className="mp-container">
+        {/* ═══════════ SEARCH + LOCATION ═══════════ */}
+        <div className="mp-search-row">
+          <div className="mp-search-wrap">
             <span className="mp-search-icon">🔍</span>
             <input
               type="text"
               className="mp-search-input"
-              placeholder="Search for food, laundry, eggs, hair, tutoring and more..."
+              placeholder="Search for products or services (e.g. eggs, hair, laundry...)"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
-              <button className="mp-search-clear" onClick={() => setSearchTerm('')}>
+              <button
+                className="mp-search-clear"
+                onClick={() => setSearchTerm('')}
+                aria-label="Clear search"
+              >
                 ✕
               </button>
             )}
           </div>
-
-          {/* Category Scroller */}
-          <div className="mp-category-scroller">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                className={`mp-category-chip ${activeCategory === cat.id ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat.id)}
-              >
-                <span>{cat.icon}</span>
-                <span>{cat.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ BROWSE SERVICES (primary layer) ═══════════ */}
-      <section className="mp-section">
-        <div className="mp-section-header">
-          <h2>Browse Services</h2>
-          <p>Pick what you need — we&apos;ll show you who can deliver it.</p>
+          <button className="mp-location-btn" type="button">
+            <span>📍</span>
+            <span>Roma &amp; Surroundings</span>
+            <span className="mp-location-caret">▾</span>
+          </button>
         </div>
 
-        <div className="mp-services-grid">
-          {services.map((service) => {
-            const hasProviders = service.providerIds.length > 0;
-            return (
-              <Link
-                key={service.id}
-                to={`/services/${service.id}`}
-                className={`mp-service-tile ${!hasProviders ? 'mp-service-tile--empty' : ''}`}
-              >
-                <span className="mp-service-tile-icon">{service.icon}</span>
-                <h3 className="mp-service-tile-name">{service.name}</h3>
-                <p className="mp-service-tile-tagline">{service.tagline}</p>
-                <span className="mp-service-tile-count">
-                  {hasProviders
-                    ? `${service.providerIds.length} ${service.providerIds.length === 1 ? 'provider' : 'providers'}`
-                    : 'Coming soon'}
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ═══════════ THE PEOPLE (secondary layer) ═══════════ */}
-      <section className="mp-section mp-section-alt">
-        <div className="mp-section-header">
-          <h2>Meet the People Behind LeSAH</h2>
-          <p>Every service on LeSAH comes from a real person in our community. Here are some of them.</p>
-        </div>
-
-        {filteredProviders.length > 0 ? (
-          <HorizontalScroller>
-            {filteredProviders.map((provider) => (
-              <Link
-                key={provider.id}
-                to={provider.profileUrl}
-                className="mp-business-card"
-              >
-                <div className="mp-business-image">
-                  {provider.image ? (
-                    <img
-                      src={provider.image}
-                      alt={provider.name}
-                      loading="lazy"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="mp-business-placeholder">
-                      {provider.name.charAt(0)}
-                    </div>
-                  )}
-                  <div className="mp-business-overlay">
-                    <h3>{provider.name}</h3>
-                    <p>{provider.category}</p>
-                    <span className="mp-business-link">View Profile →</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </HorizontalScroller>
-        ) : (
-          <div className="mp-empty">
-            <p>No providers match your search.</p>
-            <button onClick={() => { setSearchTerm(''); setActiveCategory('all'); }}>
-              Clear filters
+        {/* ═══════════ CATEGORY TILES ═══════════ */}
+        <div className="mp-cat-row">
+          {productCategories.map((cat) => (
+            <button
+              key={cat.id}
+              className={`mp-cat-tile ${
+                activeCategory === cat.id ? 'active' : ''
+              }`}
+              onClick={() => setActiveCategory(cat.id)}
+            >
+              <span className="mp-cat-icon">{cat.icon}</span>
+              <span className="mp-cat-label">{cat.label}</span>
             </button>
-          </div>
-        )}
-      </section>
-
-      {/* ═══════════ FOOD DISCOVERY ═══════════ */}
-      {(activeCategory === 'all' || activeCategory === 'food') && filteredFood.length > 0 && (
-        <section className="mp-section">
-          <div className="mp-section-header">
-            <h2>Food for Students</h2>
-            <p>Affordable meals from providers around the student community.</p>
-          </div>
-          <HorizontalScroller>
-            {filteredFood.map((item, idx) => (
-              <Link
-                key={idx}
-                to={item.profileUrl}
-                className="mp-food-card"
-              >
-                <div className="mp-food-image">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-                <div className="mp-food-info">
-                  <h4>{item.name}</h4>
-                  <span className="mp-food-price">{item.price}</span>
-                  <span className="mp-food-provider">{item.provider}</span>
-                </div>
-              </Link>
-            ))}
-          </HorizontalScroller>
-        </section>
-      )}
-
-      {/* ═══════════ FEATURED PROVIDER ═══════════ */}
-      {featuredProvider && (
-        <section className="mp-section mp-featured">
-          <div className="mp-featured-grid">
-            <div className="mp-featured-image">
-              {featuredProvider.image ? (
-                <img
-                  src={featuredProvider.image}
-                  alt={featuredProvider.name}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              ) : (
-                <div className="mp-featured-placeholder">
-                  {featuredProvider.name.charAt(0)}
-                </div>
-              )}
-            </div>
-            <div className="mp-featured-info">
-              <span className="mp-featured-badge">Featured Provider</span>
-              <h2>{featuredProvider.name}</h2>
-              <p className="mp-featured-category">{featuredProvider.category}</p>
-              <p className="mp-featured-detail">
-                {featuredProvider.statusIcon || '🎓'} {featuredProvider.status}
-                {featuredProvider.course ? ` • ${featuredProvider.course}` : ''}
-              </p>
-              <p className="mp-featured-detail">📍 {featuredProvider.location}</p>
-              <Link to={featuredProvider.profileUrl} className="mp-btn">
-                View Full Profile →
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ═══════════ TRUST SECTION ═══════════ */}
-      <section className="mp-section mp-trust">
-        <h2>Know who you&apos;re dealing with.</h2>
-        <p>LeSAH helps students discover the people behind the services they use.</p>
-        <div className="mp-trust-items">
-          {featuredProviders.slice(0, 3).map((p) => (
-            <Link key={p.id} to={p.profileUrl} className="mp-trust-card">
-              <span className="mp-trust-icon">{p.statusIcon || '🎓'}</span>
-              <strong>{p.name}</strong>
-              <span>{p.status}</span>
-              {p.course && <span>{p.course}</span>}
-              <span>📍 {p.location}</span>
-              <span className="mp-trust-link">Learn More →</span>
-            </Link>
           ))}
         </div>
-      </section>
 
-      {/* ═══════════ PROVIDER CTA ═══════════ */}
-      <section className="mp-section mp-cta">
-        <h2>Do you have a business?</h2>
-        <p>
-          Turn your skills, products or services into an opportunity to reach students
-          across Lesotho.
-        </p>
-        <button className="mp-btn mp-btn-large" onClick={becomeVendor}>
-          List Your Business →
-        </button>
-      </section>
+        {/* ═══════════ MAIN GRID + SIDEBAR ═══════════ */}
+        <div className="mp-layout">
+          {/* Main column */}
+          <div className="mp-main">
+            <div className="mp-list-header">
+              <h2>Featured Products &amp; Services</h2>
+              <div className="mp-sort">
+                <label htmlFor="mp-sort-select">Sort by:</label>
+                <select
+                  id="mp-sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  {SORT_OPTIONS.map((o) => (
+                    <option key={o.id} value={o.id}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {visibleProducts.length === 0 ? (
+              <div className="mp-empty-products">
+                <p>No products match your search.</p>
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setActiveCategory('all');
+                  }}
+                >
+                  Clear filters
+                </button>
+              </div>
+            ) : (
+              <div className="mp-product-grid">
+                {visibleProducts.map((p) => {
+                  const vendor = featuredProviders.find(
+                    (v) => v.id === p.vendorId
+                  );
+                  return (
+                    <Link
+                      key={p.id}
+                      to={`/product/${p.id}`}
+                      className="mp-product-card"
+                    >
+                      <div className="mp-product-image">
+                        {p.image ? (
+                          <img
+                            src={p.image}
+                            alt={p.name}
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : null}
+                        {p.verified && (
+                          <span className="mp-verified-badge">
+                            ✓ LeSAH Verified
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mp-product-body">
+                        <h3 className="mp-product-name">{p.name}</h3>
+                        <p className="mp-product-price">{formatPrice(p)}</p>
+
+                        {vendor && (
+                          <div className="mp-product-vendor">
+                            <img
+                              src={vendor.image}
+                              alt={vendor.name}
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                            <div className="mp-product-vendor-info">
+                              <span className="mp-product-vendor-name">
+                                {vendor.name}
+                              </span>
+                              <span className="mp-product-vendor-cat">
+                                {vendor.category}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="mp-product-meta">
+                          <span className="mp-rating">
+                            ⭐ {p.rating} ({p.reviews})
+                          </span>
+                          <span className="mp-location">📍 {p.location}</span>
+                        </div>
+
+                        <button
+                          className="mp-order-btn"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.location.href = `/product/${p.id}`;
+                          }}
+                        >
+                          🛒 Order Now
+                        </button>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <aside className="mp-sidebar">
+            {/* Featured Vendors */}
+            <div className="mp-sidebar-card">
+              <div className="mp-sidebar-header">
+                <span className="mp-sidebar-icon">👥</span>
+                <h3>Featured Vendors</h3>
+              </div>
+              <ul className="mp-vendor-list">
+                {sidebarVendors.map((v) => (
+                  <li key={v.id}>
+                    <Link to={v.profileUrl} className="mp-vendor-item">
+                      <img
+                        src={v.image}
+                        alt={v.name}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      <div className="mp-vendor-text">
+                        <span className="mp-vendor-name">{v.name}</span>
+                        <span className="mp-vendor-cat">{v.category}</span>
+                        <span className="mp-vendor-rating">
+                          ⭐ {v.rating} ({v.reviews})
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support local */}
+            <div className="mp-sidebar-card mp-sidebar-support">
+              <div className="mp-sidebar-header">
+                <span className="mp-sidebar-icon">🤝</span>
+                <h3>Support Local Students</h3>
+              </div>
+              <p>
+                Every purchase helps a fellow student or local business. Together
+                we build a stronger community.
+              </p>
+              <div className="mp-support-tag">
+                <span>Small choices.</span>
+                <span>Big impact.</span>
+              </div>
+            </div>
+
+            {/* Verified note */}
+            <div className="mp-sidebar-card mp-sidebar-verified">
+              <div className="mp-sidebar-header">
+                <span className="mp-sidebar-icon">🛡️</span>
+                <h3>All items are verified by LeSAH</h3>
+              </div>
+              <p>We review every listing to ensure quality and trust.</p>
+            </div>
+
+            {/* CTA */}
+            <button className="mp-sidebar-cta" onClick={becomeVendor}>
+              <span className="mp-sidebar-cta-plus">+</span>
+              <span>
+                <strong>Share Your Products / Services</strong>
+                <em>Be part of the marketplace. Grow your business.</em>
+              </span>
+            </button>
+          </aside>
+        </div>
+      </div>
     </div>
   );
 }

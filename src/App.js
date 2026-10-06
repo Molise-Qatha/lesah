@@ -26,6 +26,7 @@ import Morabaraba from './pages/Morabaraba';
 import SudokuGame from './pages/SudokuGame';
 import CampusMap from './pages/CampusMap';
 import Marketplace from './pages/Marketplace';
+import ProductPage from './pages/ProductPage';
 import ServicePage from './pages/ServicePage';
 import CommunitySafety from './pages/CommunitySafety';
 import VendorGuidelines from './pages/VendorGuidelines';
@@ -41,7 +42,6 @@ import MultiplayerTest from './pages/MultiplayerTest';
 
 import './App.css';
 
-// 🛠️ Layout wrapper to hide Header/Footer ONLY on specific pages
 function AppLayout({ children }) {
   const location = useLocation();
   const isSceneTest = location.pathname === '/animation-lab/scene01-camera-test';
@@ -55,7 +55,6 @@ function AppLayout({ children }) {
   );
 }
 
-// Protected route wrapper for admin-only pages
 function AdminRoute({ children }) {
   const token = localStorage.getItem('access_token');
   const userStr = localStorage.getItem('user');
@@ -77,7 +76,6 @@ function AdminRoute({ children }) {
 }
 
 function App() {
-  // Record site visit once per browser session
   useEffect(() => {
     const alreadyVisited = sessionStorage.getItem('visit_recorded');
     if (!alreadyVisited) {
@@ -92,7 +90,6 @@ function App() {
     <Router>
       <AppLayout>
         <Routes>
-          {/* Home Page */}
           <Route path="/" element={<LandingPage />} />
 
           {/* Animation Lab — UNLISTED development routes */}
@@ -111,6 +108,7 @@ function App() {
           <Route path="/learn-more" element={<LearnMore />} />
           <Route path="/provider/:providerId" element={<ProviderRouter />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="/services" element={<Navigate to="/marketplace" replace />} />
           <Route path="/services/:serviceId" element={<ServicePage />} />
           <Route path="/financial-literacy" element={<FinancialLiteracy />} />
@@ -127,7 +125,6 @@ function App() {
           <Route path="/student-zone/campus-map" element={<CampusMap />} />
           <Route path="/student-zone/hokalla" element={<HoKallaEntry />} />
 
-          {/* ✅ Seliba sa Tsebo — study materials */}
           <Route path="/student-zone/seliba-sa-tsebo" element={<SelibaSaTsebo />} />
           <Route path="/student-zone/seliba-sa-tsebo/upload" element={<SelibaUpload />} />
           <Route path="/student-zone/seliba-sa-tsebo/admin" element={<SelibaAdminQueue />} />
@@ -143,7 +140,6 @@ function App() {
           <Route path="/community-safety" element={<CommunitySafety />} />
           <Route path="/vendor-guidelines" element={<VendorGuidelines />} />
 
-          {/* Admin Dashboard (Protected) */}
           <Route
             path="/admin"
             element={
@@ -153,7 +149,6 @@ function App() {
             }
           />
 
-          {/* 404 */}
           <Route
             path="*"
             element={

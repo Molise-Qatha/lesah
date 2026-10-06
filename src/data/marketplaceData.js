@@ -12,6 +12,8 @@ export const featuredProviders = [
     profileUrl: '/provider/maseeiso',
     services: ['Food & Meals', 'Laundry'],
     featured: true,
+    rating: 4.8,
+    reviews: 12,
   },
   {
     id: 'easylearn',
@@ -20,11 +22,13 @@ export const featuredProviders = [
     status: 'Online Tutor',
     statusIcon: '💻',
     course: 'Maths • Physics • Biology',
-    location: 'Online — Lesotho & SA',
+    location: 'Online',
     image: '/assets/providers/easylearn/profile.jpg',
     profileUrl: '/provider/easylearn',
     services: ['Matric Maths', 'Physics', 'Biology'],
     featured: false,
+    rating: 5.0,
+    reviews: 8,
   },
   {
     id: 'pontso',
@@ -38,11 +42,13 @@ export const featuredProviders = [
     profileUrl: '/provider/pontso',
     services: ['Braids', 'Essence', 'Knotless', 'French Curls'],
     featured: false,
+    rating: 4.9,
+    reviews: 15,
   },
   {
     id: 'thapelo',
     name: 'Thapelo Thoo',
-    category: 'Groceries',
+    category: 'Eggs & Poultry',
     status: 'NUL Student',
     statusIcon: '🎓',
     course: 'BEd (Year 3)',
@@ -51,6 +57,8 @@ export const featuredProviders = [
     profileUrl: '/provider/thapelo',
     services: ['Eggs', 'Pullets', 'Chickens'],
     featured: false,
+    rating: 4.6,
+    reviews: 8,
   },
   {
     id: 'rorisang',
@@ -64,6 +72,8 @@ export const featuredProviders = [
     profileUrl: '/provider/rorisang',
     services: ['Shein Orders', 'Shopping Runner'],
     featured: false,
+    rating: 4.7,
+    reviews: 9,
   },
 ];
 
@@ -76,7 +86,7 @@ export const foodItems = [
   { name: 'Papa + Chakalaka + Pork', price: 'M85', provider: 'Maseeiso Thaanyane', providerId: 'maseeiso', image: '/images/maseeiso/food/5.png', profileUrl: '/provider/maseeiso' },
 ];
 
-// Categories for the horizontal scroller
+// Categories (kept for backward compatibility)
 export const categories = [
   { id: 'all', icon: '🏪', label: 'All' },
   { id: 'food', icon: '🍲', label: 'Food' },
@@ -89,7 +99,7 @@ export const categories = [
   { id: 'digital', icon: '💻', label: 'Digital Services' },
 ];
 
-// Services around you
+// Services around you (kept for backward compatibility)
 export const servicesList = [
   { id: 'laundry', icon: '🧺', label: 'Laundry', hasProviders: true },
   { id: 'haircuts', icon: '💇', label: 'Haircuts', hasProviders: true },

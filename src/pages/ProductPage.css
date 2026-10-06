@@ -1,0 +1,260 @@
+/* src/pages/ProductPage.css */
+
+.pp-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #0f172a;
+}
+
+.pp-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 4rem;
+}
+
+.pp-back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #1e3a5f;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.pp-back:hover {
+  text-decoration: underline;
+}
+
+.pp-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 2rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.pp-image {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: #eef2f7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.pp-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pp-verified {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+}
+
+.pp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.pp-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+}
+
+.pp-price {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.pp-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #64748b;
+  flex-wrap: wrap;
+}
+
+.pp-rating {
+  color: #b45309;
+  font-weight: 700;
+}
+
+.pp-vendor-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease;
+}
+.pp-vendor-card:hover {
+  border-color: #2563eb;
+}
+.pp-vendor-card img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eef2f7;
+  flex-shrink: 0;
+}
+.pp-vendor-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.pp-vendor-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1e3a5f;
+}
+.pp-vendor-cat {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.pp-vendor-detail {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.pp-order-btn {
+  margin-top: 0.5rem;
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.95rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.pp-order-btn:hover {
+  background: #2563eb;
+}
+
+.pp-info-note {
+  font-size: 0.82rem;
+  color: #64748b;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Related */
+.pp-related h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e3a5f;
+  margin: 0 0 1rem;
+  letter-spacing: -0.3px;
+}
+
+.pp-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.pp-related-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.pp-related-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(30, 58, 95, 0.1);
+}
+
+.pp-related-image {
+  aspect-ratio: 4 / 3;
+  background: #eef2f7;
+  overflow: hidden;
+}
+.pp-related-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pp-related-body {
+  padding: 0.75rem 0.9rem 0.9rem;
+}
+.pp-related-body h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.pp-related-body p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+/* Not found */
+.pp-not-found {
+  text-align: center;
+  padding: 4rem 1.5rem;
+}
+.pp-not-found h1 {
+  color: #1e3a5f;
+  margin: 0 0 0.75rem;
+}
+.pp-not-found p {
+  color: #64748b;
+  margin: 0 0 1.5rem;
+}
+.pp-back-cta {
+  display: inline-block;
+  background: #1e3a5f;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.pp-back-cta:hover {
+  background: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pp-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .pp-related-grid {
+    grid-template-columns: 1fr;
+  }
+  .pp-title {
+    font-size: 1.5rem;
+  }
+}
