@@ -26,6 +26,7 @@ import Morabaraba from './pages/Morabaraba';
 import SudokuGame from './pages/SudokuGame';
 import CampusMap from './pages/CampusMap';
 import Marketplace from './pages/Marketplace';
+import ServicePage from './pages/ServicePage';
 import CommunitySafety from './pages/CommunitySafety';
 import VendorGuidelines from './pages/VendorGuidelines';
 import ProviderRouter from './pages/ProviderRouter';
@@ -110,6 +111,8 @@ function App() {
           <Route path="/learn-more" element={<LearnMore />} />
           <Route path="/provider/:providerId" element={<ProviderRouter />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/services" element={<Navigate to="/marketplace" replace />} />
+          <Route path="/services/:serviceId" element={<ServicePage />} />
           <Route path="/financial-literacy" element={<FinancialLiteracy />} />
 
           {/* Student Zone */}

@@ -612,3 +612,101 @@
   position: relative;
   z-index: 1;
 }
+/* ═══════════════════════════════════════════
+   Browse Services — primary discovery tiles
+   ═══════════════════════════════════════════ */
+
+.mp-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.mp-service-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  padding: 1.25rem 1.25rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.mp-service-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(27, 94, 32, 0.1);
+  border-color: #a5d6a7;
+}
+
+.mp-service-tile-icon {
+  font-size: 2.25rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.mp-service-tile-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a2e1a;
+}
+
+.mp-service-tile-tagline {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.mp-service-tile-count {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.mp-service-tile--empty {
+  background: #fafafa;
+  border-style: dashed;
+  opacity: 0.85;
+}
+
+.mp-service-tile--empty .mp-service-tile-count {
+  color: #999;
+  background: #f0f0f0;
+}
+
+.mp-service-tile--empty:hover {
+  border-color: #ccc;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 480px) {
+  .mp-services-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  .mp-service-tile {
+    padding: 1rem;
+  }
+  .mp-service-tile-icon {
+    font-size: 1.85rem;
+  }
+  .mp-service-tile-name {
+    font-size: 1rem;
+  }
+  .mp-service-tile-tagline {
+    font-size: 0.8rem;
+  }
+}

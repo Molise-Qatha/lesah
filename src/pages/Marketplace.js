@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { featuredProviders, foodItems, categories, servicesList } from '../data/marketplaceData';
+import { featuredProviders, foodItems, categories } from '../data/marketplaceData';
+import { services } from '../data/services';
 import HorizontalScroller from '../components/HorizontalScroller';
 import './Marketplace.css';
 
@@ -55,8 +56,8 @@ function Marketplace() {
         style={{ backgroundImage: "url('/assets/images/marketplace-hero.jpg')" }}
       >
         <div className="mp-hero-content">
-          <h1>Discover. Connect. Support.</h1>
-          <p>Find businesses and services built around student life in Lesotho.</p>
+          <h1>What do you need today?</h1>
+          <p>Services built around student life in Lesotho — delivered by real people you can trust.</p>
 
           {/* Search */}
           <div className="mp-search-wrapper">
@@ -64,7 +65,7 @@ function Marketplace() {
             <input
               type="text"
               className="mp-search-input"
-              placeholder="Search for food, laundry, groceries, accommodation, delivery and more..."
+              placeholder="Search for food, laundry, eggs, hair, tutoring and more..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -91,11 +92,41 @@ function Marketplace() {
         </div>
       </section>
 
-      {/* ═══════════ STUDENT BUSINESSES ═══════════ */}
+      {/* ═══════════ BROWSE SERVICES (primary layer) ═══════════ */}
       <section className="mp-section">
         <div className="mp-section-header">
-          <h2>Student Businesses</h2>
-          <p>Discover products and services created by students and young entrepreneurs.</p>
+          <h2>Browse Services</h2>
+          <p>Pick what you need — we&apos;ll show you who can deliver it.</p>
+        </div>
+
+        <div className="mp-services-grid">
+          {services.map((service) => {
+            const hasProviders = service.providerIds.length > 0;
+            return (
+              <Link
+                key={service.id}
+                to={`/services/${service.id}`}
+                className={`mp-service-tile ${!hasProviders ? 'mp-service-tile--empty' : ''}`}
+              >
+                <span className="mp-service-tile-icon">{service.icon}</span>
+                <h3 className="mp-service-tile-name">{service.name}</h3>
+                <p className="mp-service-tile-tagline">{service.tagline}</p>
+                <span className="mp-service-tile-count">
+                  {hasProviders
+                    ? `${service.providerIds.length} ${service.providerIds.length === 1 ? 'provider' : 'providers'}`
+                    : 'Coming soon'}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ═══════════ THE PEOPLE (secondary layer) ═══════════ */}
+      <section className="mp-section mp-section-alt">
+        <div className="mp-section-header">
+          <h2>Meet the People Behind LeSAH</h2>
+          <p>Every service on LeSAH comes from a real person in our community. Here are some of them.</p>
         </div>
 
         {filteredProviders.length > 0 ? (
@@ -124,7 +155,7 @@ function Marketplace() {
                   <div className="mp-business-overlay">
                     <h3>{provider.name}</h3>
                     <p>{provider.category}</p>
-                    <span className="mp-business-link">View Business →</span>
+                    <span className="mp-business-link">View Profile →</span>
                   </div>
                 </div>
               </Link>
@@ -132,7 +163,7 @@ function Marketplace() {
           </HorizontalScroller>
         ) : (
           <div className="mp-empty">
-            <p>No businesses match your search.</p>
+            <p>No providers match your search.</p>
             <button onClick={() => { setSearchTerm(''); setActiveCategory('all'); }}>
               Clear filters
             </button>
@@ -142,7 +173,7 @@ function Marketplace() {
 
       {/* ═══════════ FOOD DISCOVERY ═══════════ */}
       {(activeCategory === 'all' || activeCategory === 'food') && filteredFood.length > 0 && (
-        <section className="mp-section mp-section-alt">
+        <section className="mp-section">
           <div className="mp-section-header">
             <h2>Food for Students</h2>
             <p>Affordable meals from providers around the student community.</p>
@@ -175,26 +206,6 @@ function Marketplace() {
         </section>
       )}
 
-      {/* ═══════════ SERVICES AROUND YOU ═══════════ */}
-      <section className="mp-section">
-        <div className="mp-section-header">
-          <h2>Services Around You</h2>
-        </div>
-        <div className="mp-services-scroller">
-          {servicesList.map((service) => (
-            <button
-              key={service.id}
-              className="mp-service-chip"
-              onClick={() => setActiveCategory(service.id)}
-            >
-              <span className="mp-service-icon">{service.icon}</span>
-              <span className="mp-service-label">{service.label}</span>
-              {service.hasProviders && <span className="mp-service-dot" />}
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* ═══════════ FEATURED PROVIDER ═══════════ */}
       {featuredProvider && (
         <section className="mp-section mp-featured">
@@ -219,7 +230,8 @@ function Marketplace() {
               <h2>{featuredProvider.name}</h2>
               <p className="mp-featured-category">{featuredProvider.category}</p>
               <p className="mp-featured-detail">
-                {featuredProvider.statusIcon || '🎓'} {featuredProvider.status} • {featuredProvider.course}
+                {featuredProvider.statusIcon || '🎓'} {featuredProvider.status}
+                {featuredProvider.course ? ` • ${featuredProvider.course}` : ''}
               </p>
               <p className="mp-featured-detail">📍 {featuredProvider.location}</p>
               <Link to={featuredProvider.profileUrl} className="mp-btn">
@@ -232,15 +244,15 @@ function Marketplace() {
 
       {/* ═══════════ TRUST SECTION ═══════════ */}
       <section className="mp-section mp-trust">
-        <h2>Know who you're dealing with.</h2>
-        <p>LeSAH helps students discover the people behind the businesses they use.</p>
+        <h2>Know who you&apos;re dealing with.</h2>
+        <p>LeSAH helps students discover the people behind the services they use.</p>
         <div className="mp-trust-items">
-          {featuredProviders.slice(0, 1).map((p) => (
+          {featuredProviders.slice(0, 3).map((p) => (
             <Link key={p.id} to={p.profileUrl} className="mp-trust-card">
               <span className="mp-trust-icon">{p.statusIcon || '🎓'}</span>
               <strong>{p.name}</strong>
               <span>{p.status}</span>
-              <span>{p.course}</span>
+              {p.course && <span>{p.course}</span>}
               <span>📍 {p.location}</span>
               <span className="mp-trust-link">Learn More →</span>
             </Link>
