@@ -579,18 +579,18 @@
     padding: 6px 12px;
   }
 }
+
 /* ═══════════════════════════════════════════
    Marketplace hero — background image overlay
-   (Appended so it overrides earlier .mp-hero rules)
+   (background-image is set inline in Marketplace.js
+    because webpack cannot resolve /public paths from CSS)
    ═══════════════════════════════════════════ */
 
 .mp-hero {
   position: relative;
-  background-image: url('/assets/images/marketplace-hero.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* Fallback colour while image loads, or if missing */
   background-color: #1a4d2e;
 }
 

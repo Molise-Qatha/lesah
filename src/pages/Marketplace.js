@@ -50,11 +50,14 @@ function Marketplace() {
   return (
     <div className="marketplace-new">
       {/* ═══════════ HERO ═══════════ */}
-      <section className="mp-hero">
+      <section
+        className="mp-hero"
+        style={{ backgroundImage: "url('/assets/images/marketplace-hero.jpg')" }}
+      >
         <div className="mp-hero-content">
           <h1>Discover. Connect. Support.</h1>
           <p>Find businesses and services built around student life in Lesotho.</p>
-          
+
           {/* Search */}
           <div className="mp-search-wrapper">
             <span className="mp-search-icon">🔍</span>
@@ -216,7 +219,7 @@ function Marketplace() {
               <h2>{featuredProvider.name}</h2>
               <p className="mp-featured-category">{featuredProvider.category}</p>
               <p className="mp-featured-detail">
-                🎓 {featuredProvider.status} • {featuredProvider.course}
+                {featuredProvider.statusIcon || '🎓'} {featuredProvider.status} • {featuredProvider.course}
               </p>
               <p className="mp-featured-detail">📍 {featuredProvider.location}</p>
               <Link to={featuredProvider.profileUrl} className="mp-btn">
@@ -234,7 +237,7 @@ function Marketplace() {
         <div className="mp-trust-items">
           {featuredProviders.slice(0, 1).map((p) => (
             <Link key={p.id} to={p.profileUrl} className="mp-trust-card">
-              <span className="mp-trust-icon">🎓</span>
+              <span className="mp-trust-icon">{p.statusIcon || '🎓'}</span>
               <strong>{p.name}</strong>
               <span>{p.status}</span>
               <span>{p.course}</span>
