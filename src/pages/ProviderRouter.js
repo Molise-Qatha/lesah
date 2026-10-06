@@ -7,11 +7,15 @@ import { useParams, Link } from 'react-router-dom';
 import ProviderProfile from './ProviderProfile'; // existing Maseeiso page — untouched
 import EasyLearnProfile from './EasyLearnProfile';
 import HairVendorProfile from './HairVendorProfile';
+import ThapeloProfile from './ThapeloProfile';
+import RorisangProfile from './RorisangProfile';
 
 const ROUTES = {
   maseeiso: ProviderProfile,
   easylearn: EasyLearnProfile,
   pontso: HairVendorProfile,
+  thapelo: ThapeloProfile,
+  rorisang: RorisangProfile,
 };
 
 function NotFound({ id }) {
@@ -40,7 +44,6 @@ function NotFound({ id }) {
 }
 
 function ProviderRouter() {
-  // 👇 THE FIX: read `providerId`, matching the route definition in App.js
   const { providerId } = useParams();
   const Component = ROUTES[providerId];
   if (!Component) return <NotFound id={providerId} />;
