@@ -611,3 +611,330 @@
     font-size: 3.5rem;
   }
 }
+/* ═══════════ MOBILE-ONLY EXTRAS (hidden on desktop) ═══════════ */
+.mp-vendors-mobile,
+.mp-cta-mobile {
+  display: none;
+}
+
+/* ═══════════ TABLET ═══════════ */
+@media (max-width: 1024px) {
+  .mp-layout {
+    grid-template-columns: 1fr;
+  }
+  .mp-sidebar {
+    position: static;
+  }
+  .mp-product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ═══════════ MOBILE ═══════════ */
+@media (max-width: 640px) {
+  /* ── Hero ─────────────────────────── */
+  .mp-hero-banner {
+    min-height: auto;
+    padding: 1.5rem 1rem;
+  }
+  .mp-hero-inner {
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .mp-hero-text h1 {
+    font-size: 1.45rem;
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+  }
+  .mp-hero-text p {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    max-width: 100%;
+  }
+  .mp-hero-tag {
+    display: flex;
+    font-size: 0.78rem;
+    line-height: 1.15;
+    flex-shrink: 0;
+  }
+  .mp-hero-tag span:nth-child(2) {
+    padding-right: 0.6rem;
+  }
+
+  /* ── Container ───────────────────── */
+  .mp-container {
+    padding: 0.9rem 0.85rem 3rem;
+  }
+
+  /* ── Search + Location ──────────── */
+  .mp-search-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .mp-search-wrap {
+    padding: 0 0.35rem;
+  }
+  .mp-search-input {
+    padding: 0.75rem 0.35rem;
+    font-size: 0.85rem;
+  }
+  .mp-search-icon {
+    font-size: 0.9rem;
+  }
+  .mp-location-btn {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.82rem;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* ── Categories — horizontal scroller ── */
+  .mp-cat-row {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .mp-cat-row::-webkit-scrollbar {
+    display: none;
+  }
+  .mp-cat-tile {
+    flex: 0 0 auto;
+    min-width: 74px;
+    padding: 0.65rem 0.5rem;
+    gap: 0.3rem;
+  }
+  .mp-cat-icon {
+    font-size: 1.15rem;
+  }
+  .mp-cat-label {
+    font-size: 0.7rem;
+  }
+
+  /* ── Mobile Featured Vendors ────── */
+  .mp-vendors-mobile {
+    display: block;
+    margin-bottom: 1.25rem;
+  }
+  .mp-vendors-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.65rem;
+  }
+  .mp-vendors-mobile-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #1e3a5f;
+    letter-spacing: -0.3px;
+  }
+  .mp-see-all {
+    font-size: 0.78rem;
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .mp-vendors-scroll {
+    display: flex;
+    gap: 0.85rem;
+    overflow-x: auto;
+    padding: 0.15rem 0 0.4rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .mp-vendors-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .mp-vendor-chip {
+    flex: 0 0 auto;
+    width: 78px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .mp-vendor-chip img {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #eef2f7;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+  }
+  .mp-vendor-chip-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #1e3a5f;
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 78px;
+  }
+
+  /* ── List header ─────────────────── */
+  .mp-list-header {
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+  }
+  .mp-list-header h2 {
+    font-size: 1.05rem;
+    letter-spacing: -0.3px;
+  }
+  .mp-sort {
+    font-size: 0.72rem;
+    gap: 0.3rem;
+    flex-shrink: 0;
+  }
+  .mp-sort label {
+    display: none;
+  }
+  .mp-sort select {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.72rem;
+    border-radius: 6px;
+  }
+
+  /* ── Product grid — single column ─ */
+  .mp-product-grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  /* ── Product card — horizontal ─── */
+  .mp-product-card {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .mp-product-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .mp-product-image {
+    width: 108px;
+    min-width: 108px;
+    aspect-ratio: auto;
+    height: auto;
+    align-self: stretch;
+    border-radius: 0;
+  }
+  .mp-product-image img,
+  .mp-product-icon-fallback {
+    height: 100%;
+  }
+  .mp-product-icon-fallback span {
+    font-size: 2.6rem;
+  }
+
+  .mp-verified-badge {
+    top: 6px;
+    left: 6px;
+    right: auto;
+    font-size: 0.58rem;
+    padding: 0.18rem 0.4rem;
+    border-radius: 4px;
+    letter-spacing: 0;
+  }
+
+  .mp-product-body {
+    padding: 0.6rem 0.7rem 0.7rem;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .mp-product-name {
+    font-size: 0.87rem;
+    line-height: 1.22;
+    font-weight: 700;
+  }
+  .mp-product-price {
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+
+  .mp-product-vendor {
+    padding: 0.3rem 0 0;
+    border-top: 1px solid #f1f5f9;
+    gap: 0.4rem;
+    margin-top: 0.15rem;
+  }
+  .mp-product-vendor img {
+    width: 22px;
+    height: 22px;
+  }
+  .mp-product-vendor-name {
+    font-size: 0.72rem;
+  }
+  .mp-product-vendor-cat {
+    font-size: 0.64rem;
+  }
+
+  .mp-order-btn {
+    margin-top: 0.45rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 7px;
+    align-self: stretch;
+  }
+
+  /* ── Empty state ─────────────────── */
+  .mp-empty-products {
+    padding: 2rem 1rem;
+  }
+
+  /* ── Sidebar hidden on mobile ───── */
+  .mp-sidebar {
+    display: none;
+  }
+
+  /* ── Mobile CTA at bottom ───────── */
+  .mp-cta-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+    padding: 1rem 1rem 1.1rem;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+  }
+  .mp-cta-mobile-text strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1e3a5f;
+    margin-bottom: 0.2rem;
+  }
+  .mp-cta-mobile-text em {
+    font-style: normal;
+    font-size: 0.78rem;
+    color: #64748b;
+    line-height: 1.4;
+  }
+  .mp-cta-mobile-btn {
+    background: #ea580c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .mp-cta-mobile-btn:hover {
+    background: #c2410c;
+  }
+}
