@@ -6,7 +6,6 @@ import './Marketplace.css';
 
 const SORT_OPTIONS = [
   { id: 'newest', label: 'Newest' },
-  { id: 'rating', label: 'Top Rated' },
   { id: 'price-low', label: 'Price: Low to High' },
   { id: 'price-high', label: 'Price: High to Low' },
 ];
@@ -16,7 +15,6 @@ function Marketplace() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
 
-  // Filter + sort products
   const visibleProducts = useMemo(() => {
     let list = products.filter((p) => {
       const matchesSearch =
@@ -28,11 +26,8 @@ function Marketplace() {
     });
 
     switch (sortBy) {
-      case 'rating':
-        list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0));
-        break;
       case 'price-low':
-        list = [...list].sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+        list = [...list].sort((a, b) => (a.price ?? 99999) - (b.price ?? 99999));
         break;
       case 'price-high':
         list = [...list].sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
@@ -46,14 +41,12 @@ function Marketplace() {
     return list;
   }, [searchTerm, activeCategory, sortBy]);
 
-  // Top vendors for sidebar
-  const sidebarVendors = useMemo(
-    () =>
-      [...featuredProviders]
-        .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-        .slice(0, 5),
-    []
-  );
+  const sidebarVendors = useMemo(() => {
+    const sorted = [...featuredProviders].sort(
+      (a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+    );
+    return sorted.slice(0, 5);
+  }, []);
 
   const becomeVendor = () => {
     window.open(
@@ -66,7 +59,6 @@ function Marketplace() {
 
   return (
     <div className="mp-page">
-      {/* ═══════════ HERO BANNER ═══════════ */}
       <section
         className="mp-hero-banner"
         style={{ backgroundImage: "url('/assets/images/marketplace-hero.jpg')" }}
@@ -88,7 +80,6 @@ function Marketplace() {
       </section>
 
       <div className="mp-container">
-        {/* ═══════════ SEARCH + LOCATION ═══════════ */}
         <div className="mp-search-row">
           <div className="mp-search-wrap">
             <span className="mp-search-icon">🔍</span>
@@ -116,14 +107,11 @@ function Marketplace() {
           </button>
         </div>
 
-        {/* ═══════════ CATEGORY TILES ═══════════ */}
         <div className="mp-cat-row">
           {productCategories.map((cat) => (
             <button
               key={cat.id}
-              className={`mp-cat-tile ${
-                activeCategory === cat.id ? 'active' : ''
-              }`}
+              className={`mp-cat-tile ${activeCategory === cat.id ? 'active' : ''}`}
               onClick={() => setActiveCategory(cat.id)}
             >
               <span className="mp-cat-icon">{cat.icon}</span>
@@ -132,9 +120,7 @@ function Marketplace() {
           ))}
         </div>
 
-        {/* ═══════════ MAIN GRID + SIDEBAR ═══════════ */}
         <div className="mp-layout">
-          {/* Main column */}
           <div className="mp-main">
             <div className="mp-list-header">
               <h2>Featured Products &amp; Services</h2>
@@ -188,7 +174,11 @@ function Marketplace() {
                               e.currentTarget.style.display = 'none';
                             }}
                           />
-                        ) : null}
+                        ) : (
+                          <div className="mp-product-icon-fallback">
+                            <span>{p.icon || '📦'}</span>
+                          </div>
+                        )}
                         {p.verified && (
                           <span className="mp-verified-badge">
                             ✓ LeSAH Verified
@@ -221,9 +211,6 @@ function Marketplace() {
                         )}
 
                         <div className="mp-product-meta">
-                          <span className="mp-rating">
-                            ⭐ {p.rating} ({p.reviews})
-                          </span>
                           <span className="mp-location">📍 {p.location}</span>
                         </div>
 
@@ -245,9 +232,7 @@ function Marketplace() {
             )}
           </div>
 
-          {/* Sidebar */}
           <aside className="mp-sidebar">
-            {/* Featured Vendors */}
             <div className="mp-sidebar-card">
               <div className="mp-sidebar-header">
                 <span className="mp-sidebar-icon">👥</span>
@@ -267,9 +252,6 @@ function Marketplace() {
                       <div className="mp-vendor-text">
                         <span className="mp-vendor-name">{v.name}</span>
                         <span className="mp-vendor-cat">{v.category}</span>
-                        <span className="mp-vendor-rating">
-                          ⭐ {v.rating} ({v.reviews})
-                        </span>
                       </div>
                     </Link>
                   </li>
@@ -277,15 +259,14 @@ function Marketplace() {
               </ul>
             </div>
 
-            {/* Support local */}
             <div className="mp-sidebar-card mp-sidebar-support">
               <div className="mp-sidebar-header">
                 <span className="mp-sidebar-icon">🤝</span>
                 <h3>Support Local Students</h3>
               </div>
               <p>
-                Every purchase helps a fellow student or local business. Together
-                we build a stronger community.
+                Every purchase helps a fellow student or local business.
+                Together we build a stronger community.
               </p>
               <div className="mp-support-tag">
                 <span>Small choices.</span>
@@ -293,7 +274,6 @@ function Marketplace() {
               </div>
             </div>
 
-            {/* Verified note */}
             <div className="mp-sidebar-card mp-sidebar-verified">
               <div className="mp-sidebar-header">
                 <span className="mp-sidebar-icon">🛡️</span>
@@ -302,7 +282,6 @@ function Marketplace() {
               <p>We review every listing to ensure quality and trust.</p>
             </div>
 
-            {/* CTA */}
             <button className="mp-sidebar-cta" onClick={becomeVendor}>
               <span className="mp-sidebar-cta-plus">+</span>
               <span>

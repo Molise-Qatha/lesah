@@ -21,9 +21,7 @@
   font-weight: 600;
   font-size: 0.95rem;
 }
-.pp-back:hover {
-  text-decoration: underline;
-}
+.pp-back:hover { text-decoration: underline; }
 
 .pp-layout {
   display: grid;
@@ -33,7 +31,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .pp-image {
@@ -50,6 +48,28 @@
   display: block;
 }
 
+/* Icon fallback — used when a product has no real photo */
+.pp-icon-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+.pp-icon-fallback span {
+  font-size: 8rem;
+  line-height: 1;
+  color: #1e3a5f;
+  font-weight: 300;
+  font-family: 'Georgia', serif;
+}
+
+.pp-icon-fallback--small span {
+  font-size: 3.5rem;
+}
+
 .pp-verified {
   position: absolute;
   top: 12px;
@@ -60,6 +80,7 @@
   font-weight: 700;
   padding: 0.35rem 0.7rem;
   border-radius: 6px;
+  z-index: 1;
 }
 
 .pp-info {
@@ -92,11 +113,6 @@
   flex-wrap: wrap;
 }
 
-.pp-rating {
-  color: #b45309;
-  font-weight: 700;
-}
-
 .pp-vendor-card {
   display: flex;
   align-items: center;
@@ -109,9 +125,7 @@
   color: inherit;
   transition: border-color 0.15s ease;
 }
-.pp-vendor-card:hover {
-  border-color: #2563eb;
-}
+.pp-vendor-card:hover { border-color: #2563eb; }
 .pp-vendor-card img {
   width: 48px;
   height: 48px;
@@ -152,9 +166,7 @@
   cursor: pointer;
   transition: background 0.15s ease;
 }
-.pp-order-btn:hover {
-  background: #2563eb;
-}
+.pp-order-btn:hover { background: #2563eb; }
 
 .pp-info-note {
   font-size: 0.82rem;
@@ -163,7 +175,33 @@
   border-top: 1px solid #f1f5f9;
 }
 
-/* Related */
+/* ── Reviews ─────────────────────────── */
+.pp-reviews {
+  margin-bottom: 3rem;
+}
+
+.pp-reviews h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e3a5f;
+  margin: 0 0 1rem;
+  letter-spacing: -0.3px;
+}
+
+.pp-reviews-empty {
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+.pp-reviews-empty p {
+  margin: 0;
+}
+
+/* ── Related ─────────────────────────── */
 .pp-related h2 {
   font-size: 1.35rem;
   font-weight: 800;
@@ -219,19 +257,13 @@
   color: #2563eb;
 }
 
-/* Not found */
+/* ── Not found ──────────────────────── */
 .pp-not-found {
   text-align: center;
   padding: 4rem 1.5rem;
 }
-.pp-not-found h1 {
-  color: #1e3a5f;
-  margin: 0 0 0.75rem;
-}
-.pp-not-found p {
-  color: #64748b;
-  margin: 0 0 1.5rem;
-}
+.pp-not-found h1 { color: #1e3a5f; margin: 0 0 0.75rem; }
+.pp-not-found p { color: #64748b; margin: 0 0 1.5rem; }
 .pp-back-cta {
   display: inline-block;
   background: #1e3a5f;
@@ -241,20 +273,14 @@
   border-radius: 10px;
   font-weight: 600;
 }
-.pp-back-cta:hover {
-  background: #2563eb;
-}
+.pp-back-cta:hover { background: #2563eb; }
 
-/* Responsive */
 @media (max-width: 768px) {
   .pp-layout {
     grid-template-columns: 1fr;
     gap: 1.25rem;
   }
-  .pp-related-grid {
-    grid-template-columns: 1fr;
-  }
-  .pp-title {
-    font-size: 1.5rem;
-  }
+  .pp-related-grid { grid-template-columns: 1fr; }
+  .pp-title { font-size: 1.5rem; }
+  .pp-icon-fallback span { font-size: 5rem; }
 }

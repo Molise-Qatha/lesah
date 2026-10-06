@@ -1,4 +1,3 @@
-// src/pages/ProductPage.js
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { featuredProviders } from '../data/marketplaceData';
@@ -39,19 +38,13 @@ function ProductPage() {
     .slice(0, 3);
 
   const handleOrder = () => {
-    if (product.type === 'download') {
-      window.location.href = product.downloadUrl || '/student-zone/seliba-sa-tsebo';
-      return;
-    }
     if (!vendor) return;
 
-    // Website vendors (like Easy Learn)
     if (vendor.id === 'easylearn') {
       window.open('https://easylearn.co.ls', '_blank', 'noopener,noreferrer');
       return;
     }
 
-    // WhatsApp vendors
     const wa = {
       maseeiso: '26656208144',
       pontso: '26651439005',
@@ -71,11 +64,7 @@ function ProductPage() {
   };
 
   const ctaLabel =
-    product.type === 'download'
-      ? '⬇ Download'
-      : vendor?.id === 'easylearn'
-      ? '🌐 Visit Website'
-      : '🛒 Order Now';
+    vendor?.id === 'easylearn' ? '🌐 Visit Website' : '🛒 Order Now';
 
   return (
     <div className="pp-page">
@@ -85,7 +74,6 @@ function ProductPage() {
         </Link>
 
         <div className="pp-layout">
-          {/* Image */}
           <div className="pp-image">
             {product.image ? (
               <img
@@ -95,22 +83,22 @@ function ProductPage() {
                   e.currentTarget.style.display = 'none';
                 }}
               />
-            ) : null}
+            ) : (
+              <div className="pp-icon-fallback">
+                <span>{product.icon || '📦'}</span>
+              </div>
+            )}
             {product.verified && (
               <span className="pp-verified">✓ LeSAH Verified</span>
             )}
           </div>
 
-          {/* Info */}
           <div className="pp-info">
             <h1 className="pp-title">{product.name}</h1>
 
             <p className="pp-price">{formatPrice(product)}</p>
 
             <div className="pp-meta">
-              <span className="pp-rating">
-                ⭐ {product.rating} ({product.reviews} reviews)
-              </span>
               <span className="pp-location">📍 {product.location}</span>
             </div>
 
@@ -144,6 +132,16 @@ function ProductPage() {
           </div>
         </div>
 
+        <section className="pp-reviews">
+          <h2>Reviews</h2>
+          <div className="pp-reviews-empty">
+            <p>
+              No reviews yet. Reviews from real customers will appear here once
+              the feature launches.
+            </p>
+          </div>
+        </section>
+
         {related.length > 0 && (
           <section className="pp-related">
             <h2>You may also like</h2>
@@ -164,7 +162,11 @@ function ProductPage() {
                           e.currentTarget.style.display = 'none';
                         }}
                       />
-                    ) : null}
+                    ) : (
+                      <div className="pp-icon-fallback pp-icon-fallback--small">
+                        <span>{r.icon || '📦'}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="pp-related-body">
                     <h3>{r.name}</h3>
