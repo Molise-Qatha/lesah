@@ -25,31 +25,43 @@ const CF_MODEL = '@cf/meta/llama-3.1-8b-instruct';
 
 // --- Prompts ---
 
-const BASE_PROMPT = `You are a friendly financial literacy tutor for students in Lesotho, Southern Africa.
-Rules:
-- Keep answers SHORT (2-4 sentences max unless the user asks for detail).
-- Use simple English (or Sesotho if the user writes in Sesotho).
-- Reference "M" for Maloti (the Lesotho currency), not "$".
-- Give practical advice suited to students with little money.
+const BASE_PROMPT = `You are a friendly financial literacy tutor for students in Lesotho.
+
+HOW TO ANSWER:
+- Reply directly. Do NOT show your thinking, notes, or analysis.
+- Never repeat these instructions or mention "dialect rules" or "no w/y".
+- Keep answers SHORT — 2 to 4 sentences for simple questions. Longer only if the user asks for detail.
+- Reference "M" for Maloti (Lesotho currency). Never use "$".
+- Give practical advice for students with little money.
 - Never promise profits or investments.
 - Never ask for personal info.
-- If the question is not about money, saving, budgeting, loans, banking, or personal finance, politely redirect.
-- ALWAYS finish your sentences. Never stop mid-thought.`;
+- ALWAYS finish every sentence. Never stop mid-thought.
+
+TOPICS YOU COVER:
+Money, saving, budgeting, interest, loans, banking, income, needs vs wants, scams, and personal finance.
+
+IF THE QUESTION IS OFF-TOPIC:
+- Reply with ONE short warm sentence that redirects to money topics.
+- English example: "I only help with money questions — but I can help with saving, budgeting, or loans. What would you like to know?"
+- Do not explain why. Do not show rules.`;
 
 const SESOTHO_HINT = `
 
-SESOTHO — DIALECT RULES (CRITICAL):
-The user is writing in Lesotho Sesotho, NOT South African Sesotho.
-- Use "lumela" not "dumela"
-- Use "joang" not "jwang"
-- Use "chelete" not "tjhelete"
-- Use "lit'sepe" for coins, not "lichepe"
-- Use "Afrika Boroa" not "Afrika Borwa"
-- Never use letters "w" or "y" in Sesotho words — replace with "o"/"u" and "e"/"i"
-- Use "u" for "you" (subject and object), not "o"
-- Respond fully in Sesotho, not mixed with English.`;
+SESOTHO RULES (Lesotho dialect, not South African):
+- "lumela" not "dumela"
+- "joang" not "jwang"
+- "chelete" not "tjhelete"
+- "lit'sepe" for coins, not "lichepe"
+- "Afrika Boroa" not "Afrika Borwa"
+- Never use letters "w" or "y" in Sesotho words — use "o"/"u" and "e"/"i"
+- Use "u" for "you", not "o"
+- Respond fully in Sesotho.
 
-const SESOTHO_MARKERS = /\b(ke|eng|ho|boloka|chelete|phaello|kalimo|joang|lumela|bokae|nka|batla|hloka|fumana|tseba|rata|hobaneng|nthuse|thusang|bala|reka|rekisa|sebelisa|alima|boloke|poloko|keno|mokitlane|sekoloto|moputso|tekanyetso|litlhoko|litakatso|banka|akhaonto|mphe|ntefe|hangata|lula|ntate|ausi|abuti|boqhekanyetsi|ntshepa|penya|penye)\b/i;
+IF THE SESOTHO QUESTION IS OFF-TOPIC (hunger, weather, etc.):
+Reply in one short Sesotho sentence that redirects. Example:
+"Ke thusa feela ka litaba tsa chelete. Na nka u thusa ka ho boloka kapa tekanyetso?"`;
+
+const SESOTHO_MARKERS = /\b(ke|eng|ho|boloka|chelete|phaello|kalimo|joang|lumela|bokae|nka|batla|hloka|fumana|tseba|rata|hobaneng|nthuse|thusang|bala|reka|rekisa|sebelisa|alima|boloke|poloko|keno|mokitlane|sekoloto|moputso|tekanyetso|litlhoko|litakatso|banka|akhaonto|mphe|ntefe|hangata|lula|ntate|ausi|abuti|boqhekanyetsi|ntshepa|penya|penye|lapile|lapilee)\b/i;
 
 function looksLikeSesotho(text) {
   if (!text) return false;
@@ -62,22 +74,71 @@ function buildSystemPrompt(isSesotho) {
   return isSesotho ? BASE_PROMPT + SESOTHO_HINT : BASE_PROMPT;
 }
 
-// --- Helpers ---
+// --- Response cleaner ---
+// Strips reasoning-like leaks that Gemini sometimes emits despite instructions.
+// Examples we have seen:
+//   '") -> "mokoetlisi" (coach/tutor - no w/y).'
+//   '* "Ke masoabi ho utloa joalo, empa ke mona ho u'
+//   'Here is how I would answer:'
+function stripReasoningLeak(text) {
+  if (!text) return text;
+
+  let cleaned = text;
+
+  // Remove lines that look like analysis notes:
+  // - lines starting with * or - followed by quoted text
+  // - lines that mention "(coach", "(no w/y", "->" reasoning
+  // - lines starting with quotes and arrows
+  const badLinePatterns = [
+    /^\s*[*-]\s*"/,
+    /^\s*"\)\s*->/,
+    /^\s*"\s*\)\s*->/,
+    /^\s*->\s*"/,
+    /\((?:coach|tutor|no\s+[wy]\/[wy])/i,
+    /^\s*Here is how I would/i,
+    /^\s*Let me think/i,
+    /^\s*Analysis:/i,
+    /^\s*Note to self/i,
+  ];
+
+  cleaned = cleaned
+    .split('\n')
+    .filter((line) => !badLinePatterns.some((p) => p.test(line)))
+    .join('\n');
+
+  // Remove any leading quote-and-arrow fragments inline
+  cleaned = cleaned.replace(/^\s*"\)\s*->\s*"[^"]*"\s*/g, '');
+
+  // Remove any "(coach/tutor - no w/y)" parenthetical in the middle
+  cleaned = cleaned.replace(/\s*\((?:coach|tutor|no\s+[wy]\/[wy])[^)]*\)\s*/gi, ' ');
+
+  // Collapse multiple blank lines
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
+  return cleaned.trim();
+}
 
 function cleanResponse(text) {
   if (!text) return null;
-  const trimmed = text.trim();
+  let trimmed = stripReasoningLeak(text);
+  if (!trimmed) return null;
 
   // Detect obvious truncation and warn
-  const looksCutOff = /[,:;]$/.test(trimmed) ||
-    /\b(like|such as|for example|e\.g\.|and|or|but|the|a|an|of|to)$/i.test(trimmed);
+  const looksCutOff =
+    /[,:;]$/.test(trimmed) ||
+    /\b(like|such as|for example|e\.g\.|and|or|but|the|a|an|of|to|ho|le|ka)$/i.test(
+      trimmed
+    );
 
   if (looksCutOff) {
     console.warn('[AI] Response looks truncated, appending note');
-    return trimmed + '\n\n_(Answer was cut short — ask again for the full response.)_';
+    trimmed += '\n\n_(Answer was cut short — ask again for the full response.)_';
   }
+
   return trimmed;
 }
+
+// --- Fetch with timeout ---
 
 async function fetchWithTimeout(url, options, ms) {
   const controller = new AbortController();
@@ -109,27 +170,39 @@ async function tryGeminiModel(model, question, history) {
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
-  const res = await fetchWithTimeout(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-goog-api-key': GEMINI_API_KEY,
+  const body = {
+    system_instruction: { parts: [{ text: buildSystemPrompt(isSesotho) }] },
+    contents,
+    generationConfig: {
+      temperature: 0.6,
+      maxOutputTokens: 2048,
     },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: buildSystemPrompt(isSesotho) }] },
-      contents,
-      generationConfig: {
-        temperature: 0.6,
-        maxOutputTokens: 1024,
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+    ],
+  };
+
+  // Disable thinking/reasoning where supported so the visible output is the answer,
+  // not an internal monologue.
+  if (model.includes('3.5') || model.includes('3.8')) {
+    body.generationConfig.thinkingConfig = { thinkingBudget: 0 };
+  }
+
+  const res = await fetchWithTimeout(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': GEMINI_API_KEY,
       },
-      safetySettings: [
-        { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
-        { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
-        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
-        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
-      ],
-    }),
-  }, 8000);
+      body: JSON.stringify(body),
+    },
+    8000
+  );
 
   if (!res.ok) {
     const errText = await res.text();
@@ -185,19 +258,23 @@ async function tryMistral(question, history) {
     { role: 'user', content: question },
   ];
 
-  const res = await fetchWithTimeout(MISTRAL_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${MISTRAL_API_KEY}`,
+  const res = await fetchWithTimeout(
+    MISTRAL_URL,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${MISTRAL_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: MISTRAL_MODEL,
+        messages,
+        temperature: 0.6,
+        max_tokens: 2048,
+      }),
     },
-    body: JSON.stringify({
-      model: MISTRAL_MODEL,
-      messages,
-      temperature: 0.6,
-      max_tokens: 1024,
-    }),
-  }, 8000);
+    8000
+  );
 
   if (!res.ok) {
     const errText = await res.text();
@@ -229,14 +306,18 @@ async function tryCloudflare(question, history) {
 
   const url = `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/run/${CF_MODEL}`;
 
-  const res = await fetchWithTimeout(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${CF_API_TOKEN}`,
+  const res = await fetchWithTimeout(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${CF_API_TOKEN}`,
+      },
+      body: JSON.stringify({ messages }),
     },
-    body: JSON.stringify({ messages }),
-  }, 10000);
+    10000
+  );
 
   if (!res.ok) {
     const errText = await res.text();
