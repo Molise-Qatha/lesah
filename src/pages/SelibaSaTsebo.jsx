@@ -4,6 +4,12 @@ import { supabase } from '../lib/supabaseClient';
 import SelibaFileCard from './seliba/SelibaFileCard';
 import './seliba/selibaStyles.css';
 
+const extOf = (path) => {
+  if (!path) return 'pdf';
+  const parts = path.split('.');
+  return (parts.length > 1 ? parts.pop() : 'pdf').toLowerCase();
+};
+
 export default function SelibaSaTsebo() {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,10 +80,11 @@ export default function SelibaSaTsebo() {
 
       if (signError) throw signError;
 
-      // 2. Trigger browser download
+      // 2. Trigger browser download — use actual extension from file_path
+      const ext = extOf(material.file_path);
       const a = document.createElement('a');
       a.href = signed.signedUrl;
-      a.download = material.title + '.pdf';
+      a.download = `${material.title}.${ext}`;
       a.target = '_blank';
       document.body.appendChild(a);
       a.click();
@@ -198,7 +205,7 @@ export default function SelibaSaTsebo() {
                 <h3>Nothing here yet</h3>
                 <p>
                   No study materials have been shared for these filters. Be the
-                  first to contribute — upload a PDF and share what you know.
+                  first to contribute — upload a file and share what you know.
                 </p>
                 <Link
                   to="/student-zone/seliba-sa-tsebo/upload"

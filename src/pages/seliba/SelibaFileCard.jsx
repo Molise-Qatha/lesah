@@ -1,5 +1,17 @@
 import React from 'react';
 
+const extOf = (path) => {
+  if (!path) return 'pdf';
+  const parts = path.split('.');
+  return (parts.length > 1 ? parts.pop() : 'pdf').toLowerCase();
+};
+
+const labelForExt = (ext) => {
+  if (ext === 'pdf') return 'Download PDF';
+  if (['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(ext)) return 'Download Image';
+  return 'Download';
+};
+
 export default function SelibaFileCard({ material, onDownload }) {
   const subjectClass =
     material.subject === 'Law'
@@ -7,6 +19,8 @@ export default function SelibaFileCard({ material, onDownload }) {
       : material.subject === 'Science'
       ? 'subject-science'
       : 'subject-other';
+
+  const ext = extOf(material.file_path);
 
   return (
     <div className="seliba-card">
@@ -39,7 +53,7 @@ export default function SelibaFileCard({ material, onDownload }) {
         className="seliba-download-btn"
         onClick={() => onDownload(material)}
       >
-        Download PDF
+        {labelForExt(ext)}
       </button>
     </div>
   );

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import './selibaStyles.css';
 
+const isImagePath = (path) => /\.(png|jpe?g|webp|gif)$/i.test(path || '');
+
 export default function SelibaAdminQueue() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +24,9 @@ export default function SelibaAdminQueue() {
       if (session) loadPending();
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) loadPending();
     });
@@ -127,15 +131,13 @@ export default function SelibaAdminQueue() {
     }
   };
 
-  // Download PDF into a blob URL — no JWT, no expiration
+  // Download file into a blob URL — no JWT, no expiration
   const openPreview = async (material) => {
-    // Toggle off
     if (expanded === material.id) {
       setExpanded(null);
       return;
     }
 
-    // Already loaded, just show it
     if (previewUrls[material.id]) {
       setExpanded(material.id);
       return;
@@ -164,7 +166,10 @@ export default function SelibaAdminQueue() {
     return (
       <div className="seliba-page">
         <div className="seliba-container">
-          <div className="seliba-hero" style={{ maxWidth: 500, margin: '60px auto' }}>
+          <div
+            className="seliba-hero"
+            style={{ maxWidth: 500, margin: '60px auto' }}
+          >
             <h1>Admin Access</h1>
             <p className="sesotho-subtitle">Seliba sa Tsebo — Review Queue</p>
             <form onSubmit={handleLogin} style={{ marginTop: 24 }}>
@@ -202,7 +207,11 @@ export default function SelibaAdminQueue() {
                 }}
                 required
               />
-              <button type="submit" className="seliba-download-btn" disabled={loading}>
+              <button
+                type="submit"
+                className="seliba-download-btn"
+                disabled={loading}
+              >
                 {loading ? 'Signing in…' : 'Sign In'}
               </button>
               {error && (
@@ -221,7 +230,13 @@ export default function SelibaAdminQueue() {
   return (
     <div className="seliba-page">
       <div className="seliba-container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Link
             to="/student-zone/seliba-sa-tsebo"
             style={{ color: '#a0a0c0', fontSize: 14, textDecoration: 'none' }}
@@ -266,97 +281,133 @@ export default function SelibaAdminQueue() {
 
         {!loading && pending.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {pending.map((m) => (
-              <div key={m.id} className="seliba-card" style={{ padding: 24 }}>
-                <div className="seliba-card-badges">
-                  <span
-                    className={`seliba-badge ${
-                      m.subject === 'Law'
-                        ? 'subject-law'
-                        : m.subject === 'Science'
-                        ? 'subject-science'
-                        : 'subject-other'
-                    }`}
-                  >
-                    {m.subject}
-                  </span>
-                  <span className="seliba-badge year">{m.year_level}</span>
-                  {m.course_code && (
-                    <span className="seliba-badge year">{m.course_code}</span>
+            {pending.map((m) => {
+              const isImage = isImagePath(m.file_path);
+              return (
+                <div key={m.id} className="seliba-card" style={{ padding: 24 }}>
+                  <div className="seliba-card-badges">
+                    <span
+                      className={`seliba-badge ${
+                        m.subject === 'Law'
+                          ? 'subject-law'
+                          : m.subject === 'Science'
+                          ? 'subject-science'
+                          : 'subject-other'
+                      }`}
+                    >
+                      {m.subject}
+                    </span>
+                    <span className="seliba-badge year">{m.year_level}</span>
+                    {m.course_code && (
+                      <span className="seliba-badge year">{m.course_code}</span>
+                    )}
+                    <span className="seliba-badge year">
+                      {isImage ? '🖼️ Image' : '📄 PDF'}
+                    </span>
+                  </div>
+
+                  <h3>{m.title}</h3>
+                  {m.description && (
+                    <p className="card-description">{m.description}</p>
+                  )}
+
+                  <div className="card-meta">
+                    <span>From: {m.uploader_name || 'Anonymous'}</span>
+                    <span>{m.uploader_email}</span>
+                  </div>
+                  <div className="card-meta">
+                    <span>{(m.file_size / 1024 / 1024).toFixed(2)} MB</span>
+                    <span>{new Date(m.created_at).toLocaleString()}</span>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                    <button
+                      className="test-btn"
+                      onClick={() => openPreview(m)}
+                      disabled={previewLoading === m.id}
+                      style={{ flex: 1 }}
+                    >
+                      {previewLoading === m.id
+                        ? '⏳ Loading…'
+                        : expanded === m.id
+                        ? '⬇ Hide Preview'
+                        : `👁 Preview ${isImage ? 'Image' : 'PDF'}`}
+                    </button>
+                    <button
+                      className="seliba-download-btn"
+                      onClick={() => handleApprove(m.id)}
+                      disabled={working === m.id}
+                      style={{ flex: 1, background: '#2e7d32' }}
+                    >
+                      ✅ Approve
+                    </button>
+                    <button
+                      className="seliba-download-btn"
+                      onClick={() => handleReject(m.id)}
+                      disabled={working === m.id}
+                      style={{ flex: 1, background: '#c62828' }}
+                    >
+                      ❌ Reject
+                    </button>
+                  </div>
+
+                  {expanded === m.id && previewUrls[m.id] && (
+                    <div
+                      style={{
+                        marginTop: 16,
+                        borderTop: '1px solid #2a2a4e',
+                        paddingTop: 16,
+                      }}
+                    >
+                      <p
+                        style={{
+                          color: '#a0a0c0',
+                          fontSize: 12,
+                          marginBottom: 8,
+                        }}
+                      >
+                        Can&apos;t see it below?{' '}
+                        <a
+                          href={previewUrls[m.id]}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: '#e94560' }}
+                        >
+                          Open in new tab
+                        </a>
+                      </p>
+
+                      {isImage ? (
+                        <img
+                          src={previewUrls[m.id]}
+                          alt={`preview-${m.id}`}
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: 700,
+                            display: 'block',
+                            margin: '0 auto',
+                            border: '1px solid #2a2a4e',
+                            borderRadius: 6,
+                          }}
+                        />
+                      ) : (
+                        <iframe
+                          title={`preview-${m.id}`}
+                          src={previewUrls[m.id]}
+                          style={{
+                            width: '100%',
+                            height: 600,
+                            border: '1px solid #2a2a4e',
+                            borderRadius: 6,
+                            background: '#000',
+                          }}
+                        />
+                      )}
+                    </div>
                   )}
                 </div>
-
-                <h3>{m.title}</h3>
-                {m.description && <p className="card-description">{m.description}</p>}
-
-                <div className="card-meta">
-                  <span>From: {m.uploader_name || 'Anonymous'}</span>
-                  <span>{m.uploader_email}</span>
-                </div>
-                <div className="card-meta">
-                  <span>{(m.file_size / 1024 / 1024).toFixed(2)} MB</span>
-                  <span>{new Date(m.created_at).toLocaleString()}</span>
-                </div>
-
-                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-                  <button
-                    className="test-btn"
-                    onClick={() => openPreview(m)}
-                    disabled={previewLoading === m.id}
-                    style={{ flex: 1 }}
-                  >
-                    {previewLoading === m.id
-                      ? '⏳ Loading…'
-                      : expanded === m.id
-                      ? '⬇ Hide Preview'
-                      : '👁 Preview PDF'}
-                  </button>
-                  <button
-                    className="seliba-download-btn"
-                    onClick={() => handleApprove(m.id)}
-                    disabled={working === m.id}
-                    style={{ flex: 1, background: '#2e7d32' }}
-                  >
-                    ✅ Approve
-                  </button>
-                  <button
-                    className="seliba-download-btn"
-                    onClick={() => handleReject(m.id)}
-                    disabled={working === m.id}
-                    style={{ flex: 1, background: '#c62828' }}
-                  >
-                    ❌ Reject
-                  </button>
-                </div>
-
-                {expanded === m.id && previewUrls[m.id] && (
-                  <div style={{ marginTop: 16, borderTop: '1px solid #2a2a4e', paddingTop: 16 }}>
-                    <p style={{ color: '#a0a0c0', fontSize: 12, marginBottom: 8 }}>
-                      Can't see it below?{' '}
-                      <a
-                        href={previewUrls[m.id]}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ color: '#e94560' }}
-                      >
-                        Open in new tab
-                      </a>
-                    </p>
-                    <iframe
-                      title={`preview-${m.id}`}
-                      src={previewUrls[m.id]}
-                      style={{
-                        width: '100%',
-                        height: 600,
-                        border: '1px solid #2a2a4e',
-                        borderRadius: 6,
-                        background: '#000',
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
