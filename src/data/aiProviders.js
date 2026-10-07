@@ -1,6 +1,7 @@
 // ============================================================
 //  LeSAH · External AI Provider (Google Gemini)
 //  Model fallback chain + Lesotho Sesotho dialect hint
+//  Full response handling with finish-reason logging
 // ============================================================
 
 const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_KEY || '';
@@ -20,7 +21,8 @@ Rules:
 - Give practical advice suited to students with little money.
 - Never promise profits or investments.
 - Never ask for personal info.
-- If the question is not about money, saving, budgeting, loans, banking, or personal finance, politely redirect.`;
+- If the question is not about money, saving, budgeting, loans, banking, or personal finance, politely redirect.
+- ALWAYS finish your sentences. Never stop mid-thought.`;
 
 const SESOTHO_HINT = `
 
@@ -40,7 +42,6 @@ const SESOTHO_MARKERS = /\b(ke|eng|ho|boloka|chelete|phaello|kalimo|joang|lumela
 function looksLikeSesotho(text) {
   if (!text) return false;
   if (SESOTHO_MARKERS.test(text)) return true;
-  // Two or more apostrophes strongly suggest Sesotho orthography (lit'sepe, tš)
   const apostrophes = (text.match(/'/g) || []).length;
   return apostrophes >= 2;
 }
@@ -73,8 +74,14 @@ async function tryGeminiModel(model, question, history) {
       contents,
       generationConfig: {
         temperature: 0.6,
-        maxOutputTokens: 500,
+        maxOutputTokens: 1024,
       },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_ONLY_HIGH' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_ONLY_HIGH' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+      ],
     }),
   });
 
@@ -86,8 +93,36 @@ async function tryGeminiModel(model, question, history) {
   }
 
   const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  return text ? text.trim() : null;
+  const candidate = data?.candidates?.[0];
+  const finishReason = candidate?.finishReason;
+  const text = candidate?.content?.parts?.[0]?.text;
+
+  if (finishReason && finishReason !== 'STOP') {
+    console.warn(`[AI] ${model} finishReason: ${finishReason}`);
+  }
+
+  if (finishReason === 'SAFETY') {
+    console.warn('[AI] Response blocked by safety filter');
+    return null;
+  }
+
+  if (!text) {
+    console.warn(`[AI] ${model} returned no text. Reason: ${finishReason || 'unknown'}`);
+    return null;
+  }
+
+  const trimmed = text.trim();
+
+  // Detect obviously-truncated responses and append a hint
+  const looksCutOff = /[,:;]$/.test(trimmed) ||
+                      /\b(like|such as|for example|e\.g\.|and|or|but|the|a|an|of|to)$/i.test(trimmed);
+
+  if (finishReason === 'MAX_TOKENS' || looksCutOff) {
+    console.warn(`[AI] ${model} response looks truncated: "${trimmed.slice(-40)}"`);
+    return trimmed + '\n\n_(Answer was cut short — ask again for the full response.)_';
+  }
+
+  return trimmed;
 }
 
 async function callGemini(question, history) {
