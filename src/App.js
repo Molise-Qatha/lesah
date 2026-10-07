@@ -17,6 +17,7 @@ import LearnMore from './pages/LearnMore';
 import Eats from './pages/Eats';
 import Tech from './pages/Tech';
 import FinancialLiteracy from './pages/FinancialLiteracy';
+import FinancialLiteracyAI from './pages/FinancialLiteracyAI';
 import StudentZone from './pages/StudentZone';
 import LilothoGame from './pages/LilothoGame';
 import WordScrambleGame from './pages/WordScrambleGame';
@@ -45,12 +46,13 @@ import './App.css';
 function AppLayout({ children }) {
   const location = useLocation();
   const isSceneTest = location.pathname === '/animation-lab/scene01-camera-test';
+  const isAIChat = location.pathname === '/financial-literacy';
 
   return (
     <div className="App">
       {!isSceneTest && <Header />}
       {children}
-      {!isSceneTest && <Footer />}
+      {!isSceneTest && !isAIChat && <Footer />}
     </div>
   );
 }
@@ -111,7 +113,10 @@ function App() {
           <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="/services" element={<Navigate to="/marketplace" replace />} />
           <Route path="/services/:serviceId" element={<ServicePage />} />
-          <Route path="/financial-literacy" element={<FinancialLiteracy />} />
+
+          {/* Financial Literacy — AI chat is the main page, lessons live at /learn */}
+          <Route path="/financial-literacy" element={<FinancialLiteracyAI />} />
+          <Route path="/financial-literacy/learn" element={<FinancialLiteracy />} />
 
           {/* Student Zone */}
           <Route path="/student-zone" element={<StudentZone />} />
