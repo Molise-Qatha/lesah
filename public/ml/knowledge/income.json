@@ -2,7 +2,7 @@
   "definitions": [
     {
       "english": "Income is the money you receive from allowance, gifts, or small jobs.",
-      "sesotho": "Moputso ke chelete eo o e fumanang ho tswa ho chelete ya pokotho, dimpho kapa mesebetsi e menyenyane."
+      "sesotho": "Moputso ke chelete eo o e fumanang ho tswa ho chelete ya pokotho, limpho kapa mesebetsi e menyenyane."
     },
     {
       "english": "When someone gives you money, that is income.",
@@ -22,7 +22,7 @@
     },
     {
       "english": "Income is money received regularly from work or other sources.",
-      "sesotho": "Moputso ke chelete e fumanwang kgafetsa ho tswa mosebetsing kapa mehloding e meng."
+      "sesotho": "Moputso ke chelete e fumanwang hangata ho tswa mosebetsing kapa mehloding e meng."
     },
     {
       "english": "Income is the flow of money into your possession.",
@@ -68,7 +68,7 @@
     },
     {
       "english": "You help wash dishes and get M5. That is income.",
-      "sesotho": "O thusa ho hlatswa dijana mme o fumana M5. Ke moputso."
+      "sesotho": "U thusa ho hlatswa dijana mme o fumana M5. Ke moputso."
     },
     {
       "english": "Your parents give you M20 pocket money every week.",
@@ -76,19 +76,19 @@
     },
     {
       "english": "You sell old toys and get M15.",
-      "sesotho": "O rekisa dipapadi tsa kgale mme o fumana M15."
+      "sesotho": "U rekisa lipapadi tsa kgale mme o fumana M15."
     },
     {
       "english": "You receive M50 for your birthday. That is special income.",
-      "sesotho": "O fumana M50 ka letsatsi la hao la tswalo. Ke moputso o kgethehileng."
+      "sesotho": "U fumana M50 ka letsatsi la hao la tswalo. Ke moputso o kgethehileng."
     },
     {
       "english": "Part-time job at M25/hour for 20 hours = M500 weekly.",
-      "sesotho": "Mosebetsi wa nakwana ka M25/ka hora dihora tse 20 = M500 ka beke."
+      "sesotho": "Mosebetsi wa nakwana ka M25/ka hora lihora tse 20 = M500 ka beke."
     },
     {
       "english": "Sell 10 items at M15 each = M150 business income.",
-      "sesotho": "Rekisa dintho tse 10 ka M15 ka bonngwe = M150 moputso wa kgwebo."
+      "sesotho": "Rekisa lintho tse 10 ka M15 ka bonngwe = M150 moputso wa kgwebo."
     },
     {
       "english": "Monthly allowance of M300 is regular income.",
@@ -108,7 +108,7 @@
     },
     {
       "english": "Freelance: 5 projects at M400 = M2,000 monthly.",
-      "sesotho": "Freelance: diprojeke tse 5 ka M400 = M2,000 ka kgwedi."
+      "sesotho": "Freelance: liprojeke tse 5 ka M400 = M2,000 ka kgwedi."
     },
     {
       "english": "M50,000 invested at 6 percent = M3,000 annual interest.",
@@ -138,7 +138,7 @@
     },
     {
       "english": "You need a full-time job for income — FALSE! Part-time counts.",
-      "sesotho": "O hloka mosebetsi wa nako yohle — HA SE NNETE! Wa nakwana le wona o balwa."
+      "sesotho": "U hloka mosebetsi wa nako yohle — HA SE NNETE! Wa nakwana le wona o balwa."
     },
     {
       "english": "Income is always money — FALSE! Goods can be income.",
@@ -158,7 +158,7 @@
     },
     {
       "english": "Passive income means no work — FALSE! Requires upfront effort.",
-      "sesotho": "Moputso o sa sebetseng o bolela ho se sebetse — HA SE NNETE! O hloka boikitlaetso pele."
+      "sesotho": "Moputso o sa sebetseng o bolela ho se sebetse — HA SE NNETE! U hloka boikitlaetso pele."
     }
   ],
   "follow_up_suggestions": [
@@ -194,7 +194,7 @@
     },
     {
       "english": "Sell old toys you no longer use.",
-      "sesotho": "Rekisa dipapadi tsa kgale."
+      "sesotho": "Rekisa lipapadi tsa kgale."
     },
     {
       "english": "Find part-time work in your community.",
@@ -206,7 +206,7 @@
     },
     {
       "english": "Sell items you make or no longer need.",
-      "sesotho": "Rekisa dintho tseo o di etsang."
+      "sesotho": "Rekisa lintho tseo o di etsang."
     },
     {
       "english": "Apply for bursaries and scholarships.",
@@ -224,7 +224,7 @@
   "why": [
     {
       "english": "Income helps you buy things you need.",
-      "sesotho": "Moputso o thusa ho reka ditlhoko."
+      "sesotho": "Moputso o thusa ho reka litlhoko."
     },
     {
       "english": "Earning money teaches responsibility.",
@@ -252,7 +252,7 @@
     },
     {
       "english": "Passive income builds wealth over time.",
-      "sesotho": "O sa sebetseng o haha maruo."
+      "sesotho": "U sa sebetseng o haha maruo."
     },
     {
       "english": "Financial independence requires income management.",
@@ -263,7 +263,7 @@
     {
       "situation": {
         "english": "You earn M10 helping a neighbour. Should you spend it all or save some?",
-        "sesotho": "O fumana M10 ka ho thusa moahelani. O sebedise tsohle kapa o boloke tse ding?"
+        "sesotho": "U fumana M10 ka ho thusa moahelani. U sebedise tsohle kapa o boloke tse ding?"
       },
       "advice": {
         "english": "Save M3 and spend M7. Always save something from what you earn.",
@@ -277,11 +277,11 @@
     {
       "situation": {
         "english": "You can tutor for M50/hour (5 hours/week) or work at a shop for M25/hour (10 hours/week). Which earns more?",
-        "sesotho": "O ka ruta ka M50/ka hora (dihora tse 5) kapa lebenkeleng ka M25/ka hora (dihora tse 10). Ke efe e fumanang ho feta?"
+        "sesotho": "U ka ruta ka M50/ka hora (lihora tse 5) kapa lebenkeleng ka M25/ka hora (lihora tse 10). Ke efe e fumanang ho feta?"
       },
       "advice": {
         "english": "Tutoring: M250/week. Shop: M250/week. Same! But tutoring uses less time.",
-        "sesotho": "Ho ruta: M250/ka beke. Lebenkele: M250/ka beke. Hoa tshwana! Empa ho ruta ho sebedisa nako e nyane."
+        "sesotho": "Ho ruta: M250/ka beke. Lebenkele: M250/ka beke. Hoa tshoana! Empa ho ruta ho sebedisa nako e nyane."
       },
       "lesson": {
         "english": "Higher hourly rate means more free time.",
@@ -291,7 +291,7 @@
     {
       "situation": {
         "english": "You have two income options: Fixed job M2,000/month or freelance averaging M2,500/month but irregular. Which is safer?",
-        "sesotho": "O na le dikgetho tse pedi: Mosebetsi o tsitsitseng M2,000/kgwedi kapa freelance M2,500/kgwedi empa e sa tshwarahala. E feng e bolokehileng?"
+        "sesotho": "U na le likgetho tse pedi: Mosebetsi o tsitsitseng M2,000/kgwedi kapa freelance M2,500/kgwedi empa e sa tshwarahala. E feng e bolokehileng?"
       },
       "advice": {
         "english": "Fixed job is more stable for budgeting. Freelance offers more but riskier.",

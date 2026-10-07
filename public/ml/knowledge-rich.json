@@ -4,7 +4,7 @@
       "primary": [
         {
           "english": "Saving means keeping some money for later instead of spending it all now.",
-          "sesotho": "Ho boloka ho bolela ho boloka chelete bakeng sa hamorao."
+          "sesotho": "Ho boloka ho bolela ho boloka chelete bakeng sa hamorao ntle le ho e sebelisa kaofela."
         },
         {
           "english": "When you save, you put money away so you can use it another day.",
@@ -12,11 +12,11 @@
         },
         {
           "english": "Saving is like keeping a seed instead of eating it — you keep it for the future.",
-          "sesotho": "Ho boloka ho tshwana le ho boloka peo ho e-na le ho e ja."
+          "sesotho": "Ho boloka ho ts'oana le ho boloka peo ho e-na le ho e ja."
         },
         {
           "english": "Saving means you do not spend all your money today.",
-          "sesotho": "Ho boloka ho bolela hore ha o sebedise chelete yohle kajeno."
+          "sesotho": "Ho boloka ho bolela hore ha o sebelise chelete eohle kajeno."
         },
         {
           "english": "Saving is when you put money in a safe place and do not touch it.",
@@ -26,33 +26,33 @@
       "high_school": [
         {
           "english": "Saving is setting aside a portion of your income for future use.",
-          "sesotho": "Ho boloka ke ho behella karolo ya moputso wa hao ka thoko."
+          "sesotho": "Ho boloka ke ho behella karolo ea moputso oa hao ka thoko."
         },
         {
           "english": "Saving means deliberately keeping some money for later needs.",
-          "sesotho": "Ho boloka ho bolela ho boloka chelete ka boomo bakeng sa ditlhoko tsa hamorao."
+          "sesotho": "Ho boloka ho bolela ho boloka chelete bakeng sa litlhoko tsa hamorao."
         },
         {
           "english": "Saving is the habit of putting money aside regularly.",
-          "sesotho": "Ho boloka ke tlwaelo ya ho behella chelete ka thoko kgafetsa."
+          "sesotho": "Ho boloka ke tloaelo ya ho behella chelete ka thoko khafetsa."
         },
         {
           "english": "When you save, you delay spending today so you have money tomorrow.",
-          "sesotho": "Ha o boloka, o liehisa tshebediso kajeno hore o be le chelete hosane."
+          "sesotho": "Ha o boloka, o liehisa tshebeliso kajeno hore o be le chelete hosane."
         },
         {
           "english": "Saving is the foundation of financial health.",
-          "sesotho": "Ho boloka ke motheo wa bophelo bo botle ba lichelete."
+          "sesotho": "Ho boloka ke motheo oa bophelo bo botle ba lichelete."
         }
       ],
       "university": [
         {
           "english": "Saving is the deliberate allocation of income toward future goals.",
-          "sesotho": "Ho boloka ke ho arola moputso ka boomo ho ya dipakaneng tsa bokamoso."
+          "sesotho": "Ho boloka ke ho arola moputso ka boomo ho ea lipakaneng tsa bokamoso."
         },
         {
           "english": "Saving means prioritizing financial security over immediate spending.",
-          "sesotho": "Ho boloka ho bolela ho beha tshireletso ya lichelete pele."
+          "sesotho": "Ho boloka ho bolela ho beha tshireletso ea lichelete pele."
         },
         {
           "english": "Saving is a financial discipline providing liquidity for emergencies.",
@@ -76,7 +76,7 @@
         },
         {
           "english": "Your grandmother gives you M5. You put M2 in your piggy bank.",
-          "sesotho": "Nkhono o fa M5. O kenya M2 ka piggy bank."
+          "sesotho": "Nkhono o ofa M5. O kenya M2 ka piggy bank."
         },
         {
           "english": "A toy costs M50. Saving M10 per week means you will have it in 5 weeks.",

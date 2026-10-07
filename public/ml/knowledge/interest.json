@@ -10,7 +10,7 @@
     },
     {
       "english": "Interest is like a reward for saving your money.",
-      "sesotho": "Phaello e tshwana le moputso wa ho boloka chelete ya hao."
+      "sesotho": "Phaello e tshoana le moputso wa ho boloka chelete ya hao."
     },
     {
       "english": "If you put M100 in the bank and get M5 extra, that M5 is interest.",
@@ -142,11 +142,11 @@
     },
     {
       "english": "All banks offer same rates — FALSE! Rates vary significantly.",
-      "sesotho": "Dibanka tsohle di fana ka diphaello tse tshwanang — HA SE NNETE! Di fapana haholo."
+      "sesotho": "Dibanka tsohle di fana ka liphaello tse tshoanang — HA SE NNETE! Di fapana haholo."
     },
     {
       "english": "Compound equals simple interest — FALSE! Compound grows faster.",
-      "sesotho": "E kopaneng e tshwana le e bonolo — HA SE NNETE! E kopaneng e hola ka potlako."
+      "sesotho": "E kopaneng e tshoana le e bonolo — HA SE NNETE! E kopaneng e hola ka potlako."
     },
     {
       "english": "Low rates always help borrowers — FALSE! They hurt savers too.",
@@ -176,11 +176,11 @@
     },
     {
       "english": "Should we compare savings accounts?",
-      "sesotho": "Na re bapise diakhaonto tsa poloko?"
+      "sesotho": "Na re bapise liakhaonto tsa poloko?"
     },
     {
       "english": "Want to understand loan interest?",
-      "sesotho": "Na o batla ho utlwisisa phaello ya dikoloto?"
+      "sesotho": "Na o batla ho utlwisisa phaello ya likoloto?"
     }
   ],
   "how_to": [
@@ -190,7 +190,7 @@
     },
     {
       "english": "Ask the bank about interest rates.",
-      "sesotho": "Botsa banka ka diphaello."
+      "sesotho": "Botsa banka ka liphaello."
     },
     {
       "english": "Leave your savings untouched to earn more.",
@@ -198,7 +198,7 @@
     },
     {
       "english": "Compare interest rates from different banks.",
-      "sesotho": "Bapisa diphaello tsa dibanka."
+      "sesotho": "Bapisa liphaello tsa libanka."
     },
     {
       "english": "Understand simple vs compound interest.",
@@ -244,7 +244,7 @@
     },
     {
       "english": "Interest rates affect savings and loans.",
-      "sesotho": "Diphaello di ama poloko le dikoloto."
+      "sesotho": "Diphaello di ama poloko le likoloto."
     },
     {
       "english": "Interest represents the time value of money.",
@@ -263,7 +263,7 @@
     {
       "situation": {
         "english": "You save M100 at 5% interest. After one year, how much do you have?",
-        "sesotho": "O boloka M100 ka 5%. Kamora selemo, o na le bokae?"
+        "sesotho": "U boloka M100 ka 5%. Kamora selemo, o na le bokae?"
       },
       "advice": {
         "english": "M100 x 5% = M5 interest. Total = M105.",
@@ -277,7 +277,7 @@
     {
       "situation": {
         "english": "You borrow M1,000 at 10% annual interest for 2 years. What is the total repayment?",
-        "sesotho": "O alima M1,000 ka 10% ka selemo dilemo tse 2. Kakaretso ya tefo ke bokae?"
+        "sesotho": "U alima M1,000 ka 10% ka selemo dilemo tse 2. Kakaretso ya tefo ke bokae?"
       },
       "advice": {
         "english": "Interest = M1,000 x 10% x 2 = M200. Total = M1,200.",
@@ -291,7 +291,7 @@
     {
       "situation": {
         "english": "You have M5,000 to save. Bank A offers 5% simple interest. Bank B offers 4.8% compound interest. Which is better after 5 years?",
-        "sesotho": "O na le M5,000 ho boloka. Banka A e fana ka 5% simple. Banka B e fana ka 4.8% compound. E feng e betere kamora dilemo tse 5?"
+        "sesotho": "U na le M5,000 ho boloka. Banka A e fana ka 5% simple. Banka B e fana ka 4.8% compound. E feng e betere kamora dilemo tse 5?"
       },
       "advice": {
         "english": "Bank A: M5,000 + (M5,000 x 5% x 5) = M6,250. Bank B: M5,000 x (1.048)^5 = M6,317. Bank B is better.",

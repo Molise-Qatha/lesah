@@ -5,7 +5,7 @@
   },
   "needs_vs_wants": {
     "english": "Needs are things you MUST have to live. Wants are things you would LIKE but can live without. Needs are essential for survival and wellbeing. Wants improve quality of life but are optional. Needs are non-discretionary (rent, food, healthcare). Wants are discretionary (entertainment, luxury items).",
-    "sesotho": "Ditlhoko ke tseo o T LAMEHANG ho ba le tsona. Ditakatso ke tseo o ka phelang ntle le tsona. Ditlhoko di bohlokwa bakeng sa ho phela. Ditakatso di ntlafatsa bophelo empa ke tsa boikgethelo. Ditlhoko ha di qojwe (rente, dijo). Ditakatso ke tsa boikgethelo (boithabiso)."
+    "sesotho": "Ditlhoko ke tseo o T LAMEHANG ho ba le tsona. Ditakatso ke tseo o ka phelang ntle le tsona. Ditlhoko di bohlokwa bakeng sa ho phela. Ditakatso di ntlafatsa bophelo empa ke tsa boikgethelo. Ditlhoko ha di qojwe (rente, lijo). Ditakatso ke tsa boikgethelo (boithabiso)."
   },
   "simple_vs_compound_interest": {
     "english": "Simple interest is calculated once on your starting money. Compound interest is calculated on your money PLUS the interest you earned. Simple interest: I = P x r x t (principal only). Compound interest: A = P(1+r)^n (principal + accumulated interest). Simple interest grows linearly. Compound interest grows exponentially — this is why it accelerates wealth building.",
@@ -17,10 +17,10 @@
   },
   "bank_vs_mobile_money": {
     "english": "A bank is a building where you keep money. Mobile money is on your phone. Banks offer more services (loans, interest) but may have fees. Mobile money is convenient but has transfer fees. Banks are regulated financial institutions with deposit insurance. Mobile money operators are telecom-based with different regulations.",
-    "sesotho": "Banka ke moaho moo o bolokang chelete. Mobile money e fonong ya hao. Dibanka di fana ka ditshebeletso tse ngata empa di lefisa. Mobile money e bonolo empa e na le ditefiso. Dibanka di laolwa ka molao. Mobile money e itshetlehile ho telecom."
+    "sesotho": "Banka ke moaho moo o bolokang chelete. Mobile money e fonong ya hao. Dibanka di fana ka ditshebeletso tse ngata empa di lefisa. Mobile money e bonolo empa e na le litefiso. Dibanka di laolwa ka molao. Mobile money e itshetlehile ho telecom."
   },
   "income_vs_profit": {
     "english": "Income is money you receive. Profit is money left after paying costs. Income is total money received. Profit = Income - Expenses. Income (revenue) is the top line. Profit is the bottom line after all costs, taxes, and expenses.",
-    "sesotho": "Moputso ke chelete eo o e fumanang. Phaello ke chelete e setseng kamora ho lefa ditshenyehelo. Moputso ke kakaretso e fumanweng. Phaello = Moputso - Ditshenyehelo. Moputso ke top line. Phaello ke bottom line kamora ditshenyehelo tsohle."
+    "sesotho": "Moputso ke chelete eo o e fumanang. Phaello ke chelete e setseng kamora ho lefa litshenyehelo. Moputso ke kakaretso e fumanweng. Phaello = Moputso - Ditshenyehelo. Moputso ke top line. Phaello ke bottom line kamora litshenyehelo tsohle."
   }
 }

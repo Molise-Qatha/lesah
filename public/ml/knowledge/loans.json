@@ -18,7 +18,7 @@
     },
     {
       "english": "A loan is like borrowing a book — you give it back.",
-      "sesotho": "Kalimo e tshwana le ho alima buka — o a e kgutlisa."
+      "sesotho": "Kalimo e tshoana le ho alima buka — o a e kgutlisa."
     },
     {
       "english": "A loan is borrowed money repaid with interest over time.",
@@ -34,7 +34,7 @@
     },
     {
       "english": "The cost of a loan includes interest and fees.",
-      "sesotho": "Theko ya kalimo e kenyelletsa phaello le ditefiso."
+      "sesotho": "Theko ya kalimo e kenyelletsa phaello le litefiso."
     },
     {
       "english": "Repayment terms define how long you have to repay.",
@@ -42,7 +42,7 @@
     },
     {
       "english": "Loans are debt instruments requiring repayment with interest.",
-      "sesotho": "Dikoloto ke disebediswa tsa molato tse hlokang ho kgutlisa le phaello."
+      "sesotho": "Dikoloto ke lisebediswa tsa molato tse hlokang ho kgutlisa le phaello."
     },
     {
       "english": "Key metrics include APR and debt-to-income ratio.",
@@ -54,7 +54,7 @@
     },
     {
       "english": "Credit risk determines loan eligibility and rates.",
-      "sesotho": "Kotsi ya mokitlane e etsa qeto ya ho tshwaneleha le diphaello."
+      "sesotho": "Kotsi ya mokitlane e etsa qeto ya ho tshwaneleha le liphaello."
     },
     {
       "english": "Student loans may offer deferment and income-based repayment.",
@@ -64,7 +64,7 @@
   "examples": [
     {
       "english": "Borrow M50 from a friend. You must give back M50.",
-      "sesotho": "Alima M50 ho motswalle. O tlameha ho kgutlisa M50."
+      "sesotho": "Alima M50 ho motswalle. U tlameha ho kgutlisa M50."
     },
     {
       "english": "Borrow M20 and repay M22. The extra M2 is interest.",
@@ -76,7 +76,7 @@
     },
     {
       "english": "A toy costs M60. You borrow M60 and repay from allowance.",
-      "sesotho": "Sebapadiswa se bitsa M60. O alima M60 mme o kgutlisa ho tswa cheleteng ya pokotho."
+      "sesotho": "Sebapadiswa se bitsa M60. U alima M60 mme o kgutlisa ho tswa cheleteng ya pokotho."
     },
     {
       "english": "Borrowing is a promise to return something. Always keep your promise!",
@@ -92,11 +92,11 @@
     },
     {
       "english": "Phone on credit M3,000 at 15 percent over 12 months = M3,450 total.",
-      "sesotho": "Fono ka mokitlane M3,000 ka 15% dikgwedi tse 12 = M3,450 yohle."
+      "sesotho": "Fono ka mokitlane M3,000 ka 15% likgwedi tse 12 = M3,450 yohle."
     },
     {
       "english": "Personal loan M2,000 for school fees at 10 percent over 6 months.",
-      "sesotho": "Kalimo ya botho M2,000 bakeng sa ditefello tsa sekolo ka 10% dikgwedi tse 6."
+      "sesotho": "Kalimo ya botho M2,000 bakeng sa ditefello tsa sekolo ka 10% likgwedi tse 6."
     },
     {
       "english": "Family loans may have no interest but are still commitments.",
@@ -126,7 +126,7 @@
   "misconceptions": [
     {
       "english": "You do not have to pay back loans — FALSE! Always repay.",
-      "sesotho": "Ha o tlamehe ho kgutlisa dikoloto — HA SE NNETE! Dula o kgutlisa."
+      "sesotho": "Ha o tlamehe ho kgutlisa likoloto — HA SE NNETE! Dula o kgutlisa."
     },
     {
       "english": "Borrowing is always bad — FALSE! Sometimes it helps.",
@@ -134,7 +134,7 @@
     },
     {
       "english": "Only adults can borrow — FALSE! But always ask parents first.",
-      "sesotho": "Ke batho ba baholo feela ba ka alimang — HA SE NNETE! Empa dula o botsa batswadi pele."
+      "sesotho": "Ke batho ba baholo feela ba ka alimang — HA SE NNETE! Empa lula o botsa batswadi pele."
     },
     {
       "english": "Student loans are free money — FALSE! They must be repaid.",
@@ -150,7 +150,7 @@
     },
     {
       "english": "Lower rate always means cheaper loan — FALSE! Consider fees.",
-      "sesotho": "Phaello e tlase e bolela kalimo e theko e tlase — HA SE NNETE! Nahana ka ditefiso."
+      "sesotho": "Phaello e tlase e bolela kalimo e theko e tlase — HA SE NNETE! Nahana ka litefiso."
     },
     {
       "english": "Defaulting has no consequences — FALSE! It damages credit.",
@@ -158,7 +158,7 @@
     },
     {
       "english": "Perfect credit needed for any loan — FALSE! Options exist.",
-      "sesotho": "Ho hlokahala mokitlane o phethahetseng — HA SE NNETE! Ho na le dikgetho."
+      "sesotho": "Ho hlokahala mokitlane o phethahetseng — HA SE NNETE! Ho na le likgetho."
     }
   ],
   "follow_up_suggestions": [
@@ -168,19 +168,19 @@
     },
     {
       "english": "Should we talk about student loans?",
-      "sesotho": "Na re bue ka dikoloto tsa baithuti?"
+      "sesotho": "Na re bue ka likoloto tsa baithuti?"
     },
     {
       "english": "Want to understand interest on loans?",
-      "sesotho": "Na o batla ho utlwisisa phaello ya dikoloto?"
+      "sesotho": "Na o batla ho utlwisisa phaello ya likoloto?"
     },
     {
       "english": "Should we learn how to repay loans?",
-      "sesotho": "Na re ithute ho kgutlisa dikoloto?"
+      "sesotho": "Na re ithute ho kgutlisa likoloto?"
     },
     {
       "english": "Want to know the risks of borrowing?",
-      "sesotho": "Na o batla ho tseba dikotsi tsa ho alima?"
+      "sesotho": "Na o batla ho tseba likotsi tsa ho alima?"
     }
   ],
   "how_to": [
@@ -194,15 +194,15 @@
     },
     {
       "english": "Pay back loans as soon as you can.",
-      "sesotho": "Kgutlisa dikoloto kapele."
+      "sesotho": "Kgutlisa likoloto kapele."
     },
     {
       "english": "Compare loan offers from different lenders.",
-      "sesotho": "Bapisa dikoloto tsa ba alimang."
+      "sesotho": "Bapisa likoloto tsa ba alimang."
     },
     {
       "english": "Understand total cost including interest and fees.",
-      "sesotho": "Utlwisisa theko yohle le ditefiso."
+      "sesotho": "Utlwisisa theko yohle le litefiso."
     },
     {
       "english": "Read loan terms carefully before signing.",
@@ -232,7 +232,7 @@
     },
     {
       "english": "Borrowing wisely can help you achieve goals.",
-      "sesotho": "Ho alima ka bohlale ho thusa dipakane."
+      "sesotho": "Ho alima ka bohlale ho thusa lipakane."
     },
     {
       "english": "Loans can help pay for education.",
@@ -267,7 +267,7 @@
       },
       "advice": {
         "english": "Yes, M5 extra is interest. But always be careful lending to friends.",
-        "sesotho": "E, M5 e eketsehileng ke phaello. Empa dula o hlokolosi ha o alima metswalle."
+        "sesotho": "E, M5 e eketsehileng ke phaello. Empa lula o hlokolosi ha o alima metswalle."
       },
       "lesson": {
         "english": "Interest is earned when you lend money too.",
@@ -277,7 +277,7 @@
     {
       "situation": {
         "english": "You need M5,000 for school fees. Two options: Borrow from bank at 8% for 1 year, or from a loan shark at 30% for 6 months. Which is safer?",
-        "sesotho": "O hloka M5,000 bakeng sa ditefello. Banka 8% selemo, kapa loan shark 30% dikgwedi tse 6. E feng e bolokehileng?"
+        "sesotho": "U hloka M5,000 bakeng sa ditefello. Banka 8% selemo, kapa loan shark 30% likgwedi tse 6. E feng e bolokehileng?"
       },
       "advice": {
         "english": "Bank: M5,400 total. Loan shark: M5,750 total. Bank is cheaper and safer.",
@@ -285,17 +285,17 @@
       },
       "lesson": {
         "english": "Avoid loan sharks with extremely high interest rates.",
-        "sesotho": "Qoba loan sharks tse nang le diphaello tse phahameng haholo."
+        "sesotho": "Qoba loan sharks tse nang le liphaello tse phahameng haholo."
       }
     },
     {
       "situation": {
         "english": "You graduate with M20,000 student loan at 10% over 5 years. Monthly payment is M425. Is this manageable on a M4,000 salary?",
-        "sesotho": "O qeta ka kalimo ya M20,000 ka 10% dilemo tse 5. Tefo ya kgwedi M425. Na see se a kgoneha ka moputso wa M4,000?"
+        "sesotho": "U qeta ka kalimo ya M20,000 ka 10% dilemo tse 5. Tefo ya kgwedi M425. Na see se a kgoneha ka moputso wa M4,000?"
       },
       "advice": {
         "english": "M425 is about 10.6% of income — manageable. But reduce other expenses.",
-        "sesotho": "M425 ke 10.6% ya moputso — ea kgoneha. Empa fokotsa ditshenyehelo tse ding."
+        "sesotho": "M425 ke 10.6% ya moputso — ea kgoneha. Empa fokotsa litshenyehelo tse ding."
       },
       "lesson": {
         "english": "Keep debt payments under 15% of monthly income.",
