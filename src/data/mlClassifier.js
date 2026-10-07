@@ -2,10 +2,11 @@
 // Loads trained model + per-topic knowledge files
 // Includes mood detection, emoji handling, money-request handler,
 // offline scam detector, localStorage conversation memory,
-// and Google Gemini fallback.
+// answer caching, and Google Gemini fallback.
 
 import { callExternalAI, hasExternalAI } from './aiProviders';
 import { detectScam, buildScamResponse, buildScamCaution } from './scamDetector';
+import { findCachedAnswer, storeCachedAnswer } from './aiLearningCache';
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -234,7 +235,8 @@ const SESOTHO_WORDS = [
   'thola', 'ngata', 'phahameng', 'oa', 'hona', 'mang', 'monyetla',
   'kgwebo', 'khoebo', 'matsete', 'hlola', 'eketsa', 'tiisitsoeng',
   'bohlale', 'bothata', 'tshabo', 'setsomi', 'tsotelle', 'hlokomela',
-  'netefatsa', 'seke', 'tsamaya', 'bitsa', 'karolo', 'mokhatlo'
+  'netefatsa', 'seke', 'tsamaya', 'bitsa', 'karolo', 'mokhatlo',
+  'lapile', 'lapilee', 'tsoile', 'masoabi'
 ];
 
 function classifyTopic(text) {
@@ -561,7 +563,7 @@ export function getAIResponse(question, language) {
 }
 
 // ============================================================
-//  PUBLIC API — async (local first, then Gemini fallback)
+//  PUBLIC API — async (local → cache → Gemini fallback)
 // ============================================================
 
 export async function getAIResponseAsync(question, language) {
@@ -586,7 +588,15 @@ export async function getAIResponseAsync(question, language) {
     return localAnswer;
   }
 
-  // 3. Low-confidence → try Gemini
+  // 3. Check learning cache before burning quota
+  const cached = findCachedAnswer(question);
+  if (cached) {
+    appendHistory('user', question);
+    appendHistory('ai', cached);
+    return cached;
+  }
+
+  // 4. Low-confidence → try external providers
   if (hasExternalAI()) {
     try {
       const history = loadHistory()
@@ -598,6 +608,7 @@ export async function getAIResponseAsync(question, language) {
 
       const external = await callExternalAI(question, history);
       if (external) {
+        storeCachedAnswer(question, external);
         appendHistory('user', question);
         appendHistory('ai', external);
         return external;
@@ -607,7 +618,7 @@ export async function getAIResponseAsync(question, language) {
     }
   }
 
-  // 4. Fallback to local
+  // 5. Fallback to local
   appendHistory('user', question);
   appendHistory('ai', localAnswer);
   return localAnswer;
