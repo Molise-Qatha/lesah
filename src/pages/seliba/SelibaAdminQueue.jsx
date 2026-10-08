@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
+import AdminNav from '../../components/AdminNav';
 import './selibaStyles.css';
 
 const isImagePath = (path) => /\.(png|jpe?g|webp|gif)$/i.test(path || '');
@@ -230,6 +231,8 @@ export default function SelibaAdminQueue() {
   return (
     <div className="seliba-page">
       <div className="seliba-container">
+        <AdminNav />
+
         <div
           style={{
             display: 'flex',
