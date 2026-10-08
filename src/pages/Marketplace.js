@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { featuredProviders } from '../data/marketplaceData';
 import { products, productCategories, formatPrice } from '../data/products';
 import './Marketplace.css';
@@ -11,6 +11,7 @@ const SORT_OPTIONS = [
 ];
 
 function Marketplace() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
@@ -49,12 +50,7 @@ function Marketplace() {
   }, []);
 
   const becomeVendor = () => {
-    window.open(
-      `https://wa.me/26656613551?text=${encodeURIComponent(
-        'Hello LeSAH, I want to list my business on the Marketplace.\n\nBusiness Name:\nCategory:\nContact Number:'
-      )}`,
-      '_blank'
-    );
+    navigate('/vendor/register');
   };
 
   return (
