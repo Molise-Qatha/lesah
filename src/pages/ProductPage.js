@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { featuredProviders } from '../data/marketplaceData';
 import { getProductById, products, formatPrice } from '../data/products';
@@ -7,6 +7,25 @@ import './ProductPage.css';
 function ProductPage() {
   const { productId } = useParams();
   const product = getProductById(productId);
+
+  // Build the gallery: prefer `images[]` if present, else fall back to `image`
+  const gallery = useMemo(() => {
+    if (!product) return [];
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      return product.images;
+    }
+    return product.image ? [product.image] : [];
+  }, [product]);
+
+  const [activeImage, setActiveImage] = useState(0);
+
+  // Reset thumbnail selection whenever the product changes
+  useEffect(() => {
+    setActiveImage(0);
+  }, [productId]);
+
+  // Clamp in case the active index is out of range (belt + braces)
+  const safeActive = activeImage < gallery.length ? activeImage : 0;
 
   if (!product) {
     return (
@@ -66,6 +85,9 @@ function ProductPage() {
   const ctaLabel =
     vendor?.id === 'easylearn' ? '🌐 Visit Website' : '🛒 Order Now';
 
+  const hasGallery = gallery.length > 0;
+  const hasMultiple = gallery.length > 1;
+
   return (
     <div className="pp-page">
       <div className="pp-container">
@@ -75,14 +97,35 @@ function ProductPage() {
 
         <div className="pp-layout">
           <div className="pp-image">
-            {product.image ? (
-              <img
-                src={product.image}
-                alt={product.name}
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+            {hasGallery ? (
+              <>
+                <img
+                  src={gallery[safeActive]}
+                  alt={product.name}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                {hasMultiple && (
+                  <div className="pp-thumbs" role="tablist">
+                    {gallery.map((src, i) => (
+                      <button
+                        key={`${src}-${i}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={i === safeActive}
+                        className={`pp-thumb ${
+                          i === safeActive ? 'active' : ''
+                        }`}
+                        onClick={() => setActiveImage(i)}
+                        aria-label={`View image ${i + 1} of ${gallery.length}`}
+                      >
+                        <img src={src} alt="" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
             ) : (
               <div className="pp-icon-fallback">
                 <span>{product.icon || '📦'}</span>
@@ -100,6 +143,11 @@ function ProductPage() {
 
             <div className="pp-meta">
               <span className="pp-location">📍 {product.location}</span>
+              {hasMultiple && (
+                <span className="pp-photo-count">
+                  🖼️ {gallery.length} photos
+                </span>
+              )}
             </div>
 
             {vendor && (
