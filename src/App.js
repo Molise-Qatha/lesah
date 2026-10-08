@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminAnalytics from './pages/AdminAnalytics';
+import AdminVendors from './pages/AdminVendors';
 import LearnMore from './pages/LearnMore';
 import Eats from './pages/Eats';
 import Tech from './pages/Tech';
@@ -41,6 +42,8 @@ import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
 import SelibaUpload from './pages/seliba/SelibaUpload';
 import SelibaAdminQueue from './pages/seliba/SelibaAdminQueue';
 import MultiplayerTest from './pages/MultiplayerTest';
+import VendorRegister from './pages/VendorRegister';
+import VendorDashboard from './pages/VendorDashboard';
 import { logPageVisit } from './data/analytics';
 import { supabase } from './lib/supabaseClient';
 
@@ -88,12 +91,10 @@ function AdminRoute({ children }) {
       if (mounted) setState({ loading: false, isAdmin });
     }
 
-    // Initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (mounted) check(session);
     });
 
-    // Listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (mounted) check(session);
     });
@@ -165,6 +166,10 @@ function App() {
           <Route path="/student-zone/seliba-sa-tsebo/upload" element={<SelibaUpload />} />
           <Route path="/student-zone/seliba-sa-tsebo/admin" element={<SelibaAdminQueue />} />
 
+          {/* Vendor */}
+          <Route path="/vendor/register" element={<VendorRegister />} />
+          <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+
           {/* Legal & Support Pages */}
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<Terms />} />
@@ -190,6 +195,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminAnalytics />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/vendors"
+            element={
+              <AdminRoute>
+                <AdminVendors />
               </AdminRoute>
             }
           />
