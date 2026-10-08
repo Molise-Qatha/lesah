@@ -2,11 +2,12 @@
 // Loads trained model + per-topic knowledge files
 // Includes mood detection, emoji handling, money-request handler,
 // offline scam detector, localStorage conversation memory,
-// answer caching, and Google Gemini fallback.
+// answer caching, analytics logging, and Google Gemini fallback.
 
 import { callExternalAI, hasExternalAI } from './aiProviders';
 import { detectScam, buildScamResponse, buildScamCaution } from './scamDetector';
 import { findCachedAnswer, storeCachedAnswer } from './aiLearningCache';
+import { logAIQuestion, logScamDetected } from './analytics';
 
 let trainedModel = null;
 let knowledgeBase = null;
@@ -236,7 +237,7 @@ const SESOTHO_WORDS = [
   'kgwebo', 'khoebo', 'matsete', 'hlola', 'eketsa', 'tiisitsoeng',
   'bohlale', 'bothata', 'tshabo', 'setsomi', 'tsotelle', 'hlokomela',
   'netefatsa', 'seke', 'tsamaya', 'bitsa', 'karolo', 'mokhatlo',
-  'lapile', 'lapilee', 'tsoile', 'masoabi'
+  'lapile', 'lapilee', 'masoabi'
 ];
 
 function classifyTopic(text) {
@@ -439,7 +440,6 @@ function computeAIResponse(question, language) {
   let topicId = result.topic;
   let confidence = result.confidence;
 
-  // If classification is weak, retry with recent context
   if (topicId === 'unknown' || confidence < 0.1) {
     const contextText = getRecentUserContext(3);
     if (contextText) {
@@ -452,7 +452,6 @@ function computeAIResponse(question, language) {
     }
   }
 
-  // Regex fallback
   if (topicId === 'unknown' || confidence < 0.1) {
     const q = expanded.toLowerCase();
     if (/boqhekanyetsi|scam|ntshepis|thetsa|penya|penye|ntshepisang|utswa/.test(q)) topicId = 'scams';
@@ -564,13 +563,16 @@ export function getAIResponse(question, language) {
 
 // ============================================================
 //  PUBLIC API — async (local → cache → Gemini fallback)
+//  Now logs every question to Supabase analytics.
 // ============================================================
 
 export async function getAIResponseAsync(question, language) {
-  // 0. Scam check — MUST run before anything else.
+  // 0. Scam check — MUST run before anything else
   const scamCheck = detectScam(question);
   if (scamCheck.level === 'high') {
     const scamAnswer = buildScamResponse(scamCheck);
+    logScamDetected(question, scamCheck.risk, scamCheck.flags);
+    logAIQuestion(question, 'scam_detector', 'scams', null, null);
     appendHistory('user', question);
     appendHistory('ai', scamAnswer);
     return scamAnswer;
@@ -580,17 +582,20 @@ export async function getAIResponseAsync(question, language) {
   const localAnswer = computeAIResponse(question, language);
   const expanded = expandEmojis(question);
   const result = classifyTopic(expanded);
+  const lang = detectLanguage(expanded, language);
 
   // 2. High-confidence → return local
   if (result.confidence >= 0.3 && result.topic !== 'unknown') {
+    logAIQuestion(question, 'local', result.topic, lang, result.confidence);
     appendHistory('user', question);
     appendHistory('ai', localAnswer);
     return localAnswer;
   }
 
-  // 3. Check learning cache before burning quota
+  // 3. Check learning cache
   const cached = findCachedAnswer(question);
   if (cached) {
+    logAIQuestion(question, 'cache', result.topic, lang, result.confidence);
     appendHistory('user', question);
     appendHistory('ai', cached);
     return cached;
@@ -609,6 +614,7 @@ export async function getAIResponseAsync(question, language) {
       const external = await callExternalAI(question, history);
       if (external) {
         storeCachedAnswer(question, external);
+        logAIQuestion(question, 'gemini', result.topic, lang, result.confidence);
         appendHistory('user', question);
         appendHistory('ai', external);
         return external;
@@ -619,6 +625,7 @@ export async function getAIResponseAsync(question, language) {
   }
 
   // 5. Fallback to local
+  logAIQuestion(question, 'fallback', result.topic, lang, result.confidence);
   appendHistory('user', question);
   appendHistory('ai', localAnswer);
   return localAnswer;

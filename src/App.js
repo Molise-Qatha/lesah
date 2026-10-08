@@ -13,6 +13,7 @@ import Support from './pages/Support';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminAnalytics from './pages/AdminAnalytics';
 import LearnMore from './pages/LearnMore';
 import Eats from './pages/Eats';
 import Tech from './pages/Tech';
@@ -40,8 +41,17 @@ import Scene01CameraTest from './pages/animation-lab/scenes/Scene01CameraTest';
 import SelibaUpload from './pages/seliba/SelibaUpload';
 import SelibaAdminQueue from './pages/seliba/SelibaAdminQueue';
 import MultiplayerTest from './pages/MultiplayerTest';
+import { logPageVisit } from './data/analytics';
 
 import './App.css';
+
+function RouteAnalytics() {
+  const location = useLocation();
+  useEffect(() => {
+    logPageVisit(location.pathname);
+  }, [location.pathname]);
+  return null;
+}
 
 function AppLayout({ children }) {
   const location = useLocation();
@@ -51,6 +61,7 @@ function AppLayout({ children }) {
   return (
     <div className="App">
       {!isSceneTest && <Header />}
+      <RouteAnalytics />
       {children}
       {!isSceneTest && !isAIChat && <Footer />}
     </div>
@@ -78,16 +89,6 @@ function AdminRoute({ children }) {
 }
 
 function App() {
-  useEffect(() => {
-    const alreadyVisited = sessionStorage.getItem('visit_recorded');
-    if (!alreadyVisited) {
-      sessionStorage.setItem('visit_recorded', 'true');
-      fetch(`${process.env.REACT_APP_API_URL}/api/v1/analytics/visit?path=/`, {
-        method: 'POST',
-      }).catch(() => {});
-    }
-  }, []);
-
   return (
     <Router>
       <AppLayout>
@@ -150,6 +151,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics"
+            element={
+              <AdminRoute>
+                <AdminAnalytics />
               </AdminRoute>
             }
           />
