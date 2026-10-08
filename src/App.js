@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import LandingPage from './pages/LandingPage';
@@ -42,9 +42,15 @@ import SelibaUpload from './pages/seliba/SelibaUpload';
 import SelibaAdminQueue from './pages/seliba/SelibaAdminQueue';
 import MultiplayerTest from './pages/MultiplayerTest';
 import { logPageVisit } from './data/analytics';
+import { supabase } from './lib/supabaseClient';
 
 import './App.css';
 
+// ---------- Admin email whitelist ----------
+// Add more admin emails here as needed.
+const ADMIN_EMAILS = ['customaryqatha@gmail.com'];
+
+// ---------- Page-visit tracker ----------
 function RouteAnalytics() {
   const location = useLocation();
   useEffect(() => {
@@ -53,6 +59,7 @@ function RouteAnalytics() {
   return null;
 }
 
+// ---------- Layout ----------
 function AppLayout({ children }) {
   const location = useLocation();
   const isSceneTest = location.pathname === '/animation-lab/scene01-camera-test';
@@ -68,26 +75,51 @@ function AppLayout({ children }) {
   );
 }
 
+// ---------- Admin gate (Supabase session + email whitelist) ----------
 function AdminRoute({ children }) {
-  const token = localStorage.getItem('access_token');
-  const userStr = localStorage.getItem('user');
+  const [state, setState] = useState({ loading: true, isAdmin: false });
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  useEffect(() => {
+    let mounted = true;
+
+    async function check(session) {
+      const email = session?.user?.email;
+      const isAdmin = !!email && ADMIN_EMAILS.includes(email);
+      if (mounted) setState({ loading: false, isAdmin });
+    }
+
+    // Initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (mounted) check(session);
+    });
+
+    // Listen for changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) check(session);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  if (state.loading) {
+    return (
+      <div style={{ padding: '100px 20px', textAlign: 'center', color: '#64748b' }}>
+        Loading...
+      </div>
+    );
   }
 
-  try {
-    const user = userStr ? JSON.parse(userStr) : null;
-    if (user?.role !== 'admin') {
-      return <Navigate to="/" replace />;
-    }
-  } catch {
-    return <Navigate to="/" replace />;
+  if (!state.isAdmin) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;
 }
 
+// ---------- App ----------
 function App() {
   return (
     <Router>
@@ -115,14 +147,12 @@ function App() {
           <Route path="/services" element={<Navigate to="/marketplace" replace />} />
           <Route path="/services/:serviceId" element={<ServicePage />} />
 
-          {/* Financial Literacy — AI chat is the main page, lessons live at /learn */}
+          {/* Financial Literacy — AI chat is main, lessons live at /learn */}
           <Route path="/financial-literacy" element={<FinancialLiteracyAI />} />
           <Route path="/financial-literacy/learn" element={<FinancialLiteracy />} />
 
           {/* Student Zone */}
           <Route path="/student-zone" element={<StudentZone />} />
-
-          {/* Game pages */}
           <Route path="/student-zone/lilotho" element={<LilothoGame />} />
           <Route path="/student-zone/word-scramble" element={<WordScrambleGame />} />
           <Route path="/student-zone/word-search" element={<WordSearchGame />} />
@@ -146,6 +176,7 @@ function App() {
           <Route path="/community-safety" element={<CommunitySafety />} />
           <Route path="/vendor-guidelines" element={<VendorGuidelines />} />
 
+          {/* Admin */}
           <Route
             path="/admin"
             element={
@@ -163,6 +194,7 @@ function App() {
             }
           />
 
+          {/* 404 */}
           <Route
             path="*"
             element={
