@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 import './Login.css';
 
 function Login() {
@@ -8,8 +9,6 @@ function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
-  // New state for password visibility
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -21,47 +20,23 @@ function Login() {
     setError('');
     setIsLoading(true);
 
-    const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-    const url = `${API_BASE}/api/v1/auth/login`;
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
+      email: formData.email.trim(),
+      password: formData.password,
+    });
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      
-      if (response.ok) {
-        // Store tokens
-        localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('refresh_token', data.refresh_token);
-        
-        // Fetch the current user profile to get role and other details
-        try {
-          const userRes = await fetch(`${API_BASE}/api/v1/users/me`, {
-            headers: { 'Authorization': `Bearer ${data.access_token}` }
-          });
-          if (userRes.ok) {
-            const userData = await userRes.json();
-            // Store user object with role
-            localStorage.setItem('user', JSON.stringify(userData));
-          } else {
-            console.warn('Could not fetch user profile after login');
-          }
-        } catch (profileErr) {
-          console.warn('Failed to fetch user profile:', profileErr);
-        }
-        
-        const from = location.state?.from || '/';
-        navigate(from);
-      } else {
-        setError(data.detail || 'Invalid email or password');
-      }
-    } catch (err) {
-      setError('Unable to connect to the server. Please try again.');
-    } finally {
-      setIsLoading(false);
+    setIsLoading(false);
+
+    if (authError) {
+      setError(authError.message || 'Invalid email or password');
+      return;
+    }
+
+    if (data?.session) {
+      const from = location.state?.from || '/';
+      navigate(from);
+    } else {
+      setError('Login failed. Please try again.');
     }
   };
 
@@ -81,20 +56,15 @@ function Login() {
               <label>Password</label>
               <div className="password-input-wrapper">
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   name="password"
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
-                <button
-                  type="button"
-                  className="toggle-password-btn"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? "🙈" : "👁️"}
+                <button type="button" className="toggle-password-btn" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password">
+                  {showPassword ? '🙈' : '👁️'}
                 </button>
               </div>
             </div>

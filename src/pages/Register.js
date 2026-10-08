@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 import './Register.css';
 
 function Register() {
@@ -16,8 +17,6 @@ function Register() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // New state for password visibility
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -35,6 +34,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     if (formData.password !== formData.confirm_password) {
       setError('Passwords do not match');
       return;
@@ -43,48 +43,43 @@ function Register() {
       setError('Password must be at least 8 characters');
       return;
     }
+
     setIsLoading(true);
 
-    const formattedPhone = formatPhoneNumber(formData.phone_number);
-    const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-    const url = `${API_BASE}/api/v1/auth/register`;
-
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    const { data, error: authError } = await supabase.auth.signUp({
+      email: formData.email.trim(),
+      password: formData.password,
+      options: {
+        data: {
           full_name: formData.full_name,
-          email: formData.email,
-          phone_number: formattedPhone,
+          phone_number: formatPhoneNumber(formData.phone_number),
           student_id: formData.student_id,
           institution: formData.institution,
           course: formData.course,
-          password: formData.password
-        }),
-      });
+        },
+      },
+    });
 
-      const data = await response.json();
-      if (response.ok) {
-        alert('Registration successful! Please log in.');
-        navigate('/login');
-      } else {
-        if (data.detail) {
-          if (Array.isArray(data.detail)) {
-            setError(data.detail.map(err => err.msg).join(', '));
-          } else {
-            setError(data.detail);
-          }
-        } else {
-          setError('Registration failed. Please try again.');
-        }
-      }
-    } catch (err) {
-      console.error('Fetch error:', err);
-      setError('Unable to connect to the server. Please check your internet connection and try again.');
-    } finally {
-      setIsLoading(false);
+    setIsLoading(false);
+
+    if (authError) {
+      setError(authError.message || 'Registration failed');
+      return;
     }
+
+    if (data?.user && !data?.session) {
+      alert('Registration successful! Please check your email to confirm your account, then log in.');
+      navigate('/login');
+      return;
+    }
+
+    if (data?.session) {
+      alert('Registration successful!');
+      navigate('/');
+      return;
+    }
+
+    setError('Something unexpected happened. Please try again.');
   };
 
   return (
@@ -131,20 +126,15 @@ function Register() {
                 <label>Password</label>
                 <div className="password-input-wrapper">
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     placeholder="Create a strong password"
                     value={formData.password}
                     onChange={handleChange}
                     required
                   />
-                  <button
-                    type="button"
-                    className="toggle-password-btn"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? "🙈" : "👁️"}
+                  <button type="button" className="toggle-password-btn" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle">
+                    {showPassword ? '🙈' : '👁️'}
                   </button>
                 </div>
                 <small className="hint">8+ chars, upper, lower, number, special</small>
@@ -153,20 +143,15 @@ function Register() {
                 <label>Confirm Password</label>
                 <div className="password-input-wrapper">
                   <input
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={showConfirmPassword ? 'text' : 'password'}
                     name="confirm_password"
                     placeholder="Confirm your password"
                     value={formData.confirm_password}
                     onChange={handleChange}
                     required
                   />
-                  <button
-                    type="button"
-                    className="toggle-password-btn"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                  >
-                    {showConfirmPassword ? "🙈" : "👁️"}
+                  <button type="button" className="toggle-password-btn" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-label="Toggle">
+                    {showConfirmPassword ? '🙈' : '👁️'}
                   </button>
                 </div>
               </div>
